@@ -14,29 +14,46 @@ The Vite configuration is the build system entry point for the Storyboard app. I
 
 This file is architecturally significant because it controls how routes are auto-generated from `src/pages/`, how CSS custom properties from `@primer/primitives` are made available across the codebase, and which CSS features (nesting, focus-visible, logical properties) are enabled or disabled during the build.
 
-<details>
-<summary>Technical details</summary>
+## Composition
 
-### Composition
+Exports a single Vite config via `defineConfig`. The two plugins handle React JSX transforms and automatic route generation:
 
-Exports a single `defineConfig` object with:
-- **plugins**: `@vitejs/plugin-react` for JSX/React support, `@generouted/react-router/plugin` for file-based route generation from `src/pages/`.
-- **server.port**: Dev server runs on port `1234`.
-- **css.postcss.plugins**:
-  - `@csstools/postcss-global-data` — injects all `@primer/primitives` CSS files as global data so custom media queries are resolvable everywhere.
-  - `postcss-preset-env` — Stage 2 CSS features with `@github/browserslist-config` targets. Nesting enabled (with `noIsPseudoSelector`), `focus-visible` and `logical-properties` disabled.
+```js
+plugins: [react(), generouted()],
+server: { port: 1234 },
+```
 
-### Dependencies
+The PostCSS pipeline has two stages. First, `postcssGlobalData` injects all Primer Primitives CSS files so their custom media queries are resolvable in any stylesheet:
+
+```js
+postcssGlobalData({
+    files: globSync('node_modules/@primer/primitives/dist/css/**/*.css'),
+}),
+```
+
+Then `postcssPresetEnv` transpiles Stage 2 CSS features for the browsers defined in `@github/browserslist-config`, with specific feature overrides:
+
+```js
+postcssPresetEnv({
+    stage: 2,
+    browsers,
+    features: {
+        'nesting-rules': { noIsPseudoSelector: true },
+        'focus-visible-pseudo-class': false,
+        'logical-properties-and-values': false,
+    },
+}),
+```
+
+## Dependencies
 
 - `@vitejs/plugin-react` — React JSX transform
-- `@generouted/react-router/plugin` — File-based routing
-- `@csstools/postcss-global-data` — Global CSS custom media
-- `postcss-preset-env` — CSS transpilation
-- `@github/browserslist-config` — Browser targets
-- `glob` — Glob sync for finding Primer CSS files
+- `@generouted/react-router/plugin` — File-based routing from `src/pages/`
+- `@csstools/postcss-global-data` — Makes Primer custom media queries globally available
+- `postcss-preset-env` — CSS transpilation to target browsers
+- `@github/browserslist-config` — GitHub's browser support targets
+- `glob` — `globSync` for finding Primer CSS files at build time
 
-### Dependents
+## Dependents
 
-No files import `vite.config.js` directly; it is consumed by the Vite CLI (`vite`, `vite build`, `vite preview`).
-
-</details>
+No files import this directly; it is consumed by the Vite CLI (`vite`, `vite build`, `vite preview`).

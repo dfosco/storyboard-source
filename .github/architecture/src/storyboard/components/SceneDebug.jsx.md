@@ -12,21 +12,38 @@ importance: high
 
 A debug/development component that loads a scene and renders its fully resolved data as formatted JSON. It's used to verify the loader pipeline is working correctly — confirming that `$ref` and `$global` directives resolve as expected. It loads scene data independently via `loadScene()` rather than through the provider context.
 
-Scene selection follows the same priority as the provider: `sceneName` prop first, then `?scene=` URL param, then `"default"`.
+Scene selection follows: `sceneName` prop first, then `?scene=` URL param, then `"default"`.
 
-<details>
-<summary>Technical details</summary>
+## Composition
 
-### Composition
+```jsx
+export default function SceneDebug({ sceneName } = {}) {
+  const [searchParams] = useSearchParams()
+  const sceneFromUrl = searchParams.get('scene')
+  const activeSceneName = sceneName || sceneFromUrl || 'default'
 
-- **Default export**: `SceneDebug({ sceneName })` — React component with optional `sceneName` prop
-- Manages its own `data`, `error`, and `loading` state via `useState`
-- Calls `loadScene(activeSceneName)` in a `useEffect` keyed on the active scene name
-- Renders loading spinner, error message, or `JSON.stringify(data, null, 2)` in a `<pre>` block
-- Uses `PropTypes` for prop validation
-- Uses CSS Modules from `SceneDebug.module.css`
+  const [data, setData] = useState(null)
+  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(true)
 
-### Dependencies
+  useEffect(() => {
+    loadScene(activeSceneName)
+      .then((sceneData) => { setData(sceneData); setLoading(false) })
+      .catch((err) => { setError(err.message); setLoading(false) })
+  }, [activeSceneName])
+
+  // Renders loading state, error state, or JSON.stringify(data, null, 2)
+}
+```
+
+The component manages its own loading lifecycle independently of the `StoryboardProvider`. It renders one of three states:
+- **Loading**: `<Text>Loading scene: {activeSceneName}...</Text>`
+- **Error**: Error title + message
+- **Success**: `<pre>{JSON.stringify(data, null, 2)}</pre>`
+
+Uses `PropTypes` for prop validation and CSS Modules from `SceneDebug.module.css`.
+
+## Dependencies
 
 - `react` — `useState`, `useEffect`
 - `react-router-dom` — `useSearchParams`
@@ -35,12 +52,10 @@ Scene selection follows the same priority as the provider: `sceneName` prop firs
 - `../core/loader.js` — `loadScene`
 - `./SceneDebug.module.css` — CSS Modules
 
-### Dependents
+## Dependents
 
 Currently not imported by any page. Available as a standalone debug tool.
 
-### Notes
+## Notes
 
-- Unlike the `StoryboardProvider`, this component checks `sceneName` prop before the URL param (provider checks URL first). This is a minor inconsistency but allows explicit prop control to take priority in debug scenarios.
-
-</details>
+Unlike the `StoryboardProvider`, this component checks `sceneName` prop before the URL param (provider checks URL first). This is a minor inconsistency but allows explicit prop control to take priority in debug scenarios.

@@ -14,33 +14,80 @@ The scene loader is the data engine of the storyboard system. It loads scene JSO
 
 The loader supports JSONC (JSON with comments) via `jsonc-parser`, uses Vite's `import.meta.glob` for eager loading of all data files at build time, and detects circular `$ref` chains to prevent infinite loops.
 
-<details>
-<summary>Technical details</summary>
+## Composition
 
-### Composition
+**`loadScene(sceneName)`** — the main entry point. Loads a scene file, processes `$global` merges, then resolves all `$ref` objects recursively:
 
-- **`loadScene(sceneName)`** (exported) — Main entry point. Loads a scene file, processes `$global` merges, then resolves all `$ref` objects recursively. Returns a `Promise<object>`.
-- **`deepMerge(target, source)`** (exported) — Deep merges two objects; source wins on conflicts, arrays are replaced (not concatenated).
-- **`resolveRefs(node, baseDir, seen)`** (internal) — Recursively walks the data tree replacing `{ "$ref": "path" }` objects with the referenced file's contents. Tracks visited paths in a `Set` to detect circular references.
-- **`resolveRefPath(ref, baseDir)`** (internal) — Resolves relative paths like `../objects/navigation` against a base directory.
-- **`loadDataFile(dataPath)`** (internal) — Loads a data file by path (without extension), trying `.jsonc` then `.json`. Uses JSONC parser.
-- **`dataModules`** (internal) — `import.meta.glob('../../data/**/*.{json,jsonc}')` eagerly loaded as raw text strings.
+```js
+export async function loadScene(sceneName = 'default') {
+  const scenePath = `scenes/${sceneName}`
+  let sceneData = loadDataFile(scenePath)
 
-### Dependencies
+  // 1. Merge $global references into root (scene values win)
+  if (Array.isArray(sceneData.$global)) { /* ... */ }
+
+  // 2. Resolve $ref objects throughout the tree
+  sceneData = await resolveRefs(sceneData, baseDir)
+
+  return sceneData
+}
+```
+
+**`deepMerge(target, source)`** — deep merges two objects. Source wins on conflicts, arrays are replaced (not concatenated):
+
+```js
+function deepMerge(target, source) {
+  const result = { ...target }
+  for (const key of Object.keys(source)) {
+    if (/* both values are plain objects */) {
+      result[key] = deepMerge(targetValue, sourceValue)
+    } else {
+      result[key] = sourceValue
+    }
+  }
+  return result
+}
+```
+
+**`resolveRefs(node, baseDir, seen)`** — recursively walks the data tree replacing `{ "$ref": "path" }` objects with the referenced file's contents. Tracks visited paths in a `Set` for circular reference detection:
+
+```js
+if (node.$ref && typeof node.$ref === 'string') {
+  const resolved = resolveRefPath(node.$ref, baseDir)
+  if (seen.has(resolved)) {
+    throw new Error(`Circular $ref detected: ${resolved}`)
+  }
+  seen.add(resolved)
+  const refData = loadDataFile(resolved)
+  return resolveRefs(refData, refDir, seen)
+}
+```
+
+**`loadDataFile(dataPath)`** — loads a data file by path (without extension), trying `.jsonc` then `.json`, parsing with JSONC parser.
+
+**`dataModules`** — all data files eagerly loaded at build time via:
+
+```js
+const dataModules = import.meta.glob('../../data/**/*.{json,jsonc}', {
+  eager: true,
+  query: '?raw',
+  import: 'default',
+})
+```
+
+## Dependencies
 
 - `jsonc-parser` — `parse` function for JSONC support
 - Vite's `import.meta.glob` — Build-time eager import of all data files
 
-### Dependents
+## Dependents
 
 - `src/storyboard/context.jsx` — calls `loadScene()` in the provider
 - `src/storyboard/components/SceneDebug.jsx` — calls `loadScene()` directly for debug display
 - `src/storyboard/index.js` — re-exports `loadScene`
 
-### Notes
+## Notes
 
-- Data files are loaded eagerly at build time via `import.meta.glob` with `{ eager: true, query: '?raw' }`. This means all JSON/JSONC files under `src/data/` are bundled, regardless of whether a scene references them.
+- Data files are loaded eagerly at build time via `import.meta.glob` with `{ eager: true, query: '?raw' }`. This means all JSON/JSONC files under `src/data/` are bundled regardless of whether a scene references them.
 - The `$global` directive is processed before `$ref` resolution, so global objects can themselves contain `$ref` entries that will be resolved.
 - Circular `$ref` detection uses a shared `Set` within a single `resolveRefs` call tree. Each `$global` reference is resolved independently (no cross-global cycle detection).
-
-</details>

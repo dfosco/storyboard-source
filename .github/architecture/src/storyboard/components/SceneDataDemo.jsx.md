@@ -14,24 +14,37 @@ A demo component that showcases the `useSceneData()` hook API. It reads the full
 
 Unlike `SceneDebug` (which loads scene data independently via `loadScene()`), this component relies entirely on the `StoryboardProvider` context, demonstrating the recommended data access pattern.
 
-<details>
-<summary>Technical details</summary>
+## Composition
 
-### Composition
+```jsx
+export default function SceneDataDemo() {
+  const scene = useSceneData()
+  const { user } = scene
 
-- **Default export**: `SceneDataDemo` component (no props)
-- Calls `useSceneData()` with no path to get the full scene object
-- Renders user info (`name`, `username`, `bio`, `location`) and navigation labels
-- Uses CSS Modules from `SceneDebug.module.css` for styling (shared styles)
+  return (
+    <div className={styles.container}>
+      <h2 className={styles.title}>useSceneData Demo</h2>
 
-### Dependencies
+      <section>
+        <Text as="h3" fontWeight="bold">User</Text>
+        <pre className={styles.codeBlock}>
+          {user.name} ({user.username})
+        </pre>
+        {/* ... bio, location, navigation labels */}
+      </section>
+    </div>
+  )
+}
+```
+
+The component expects the scene data to contain `user` (with `name`, `username`, `profile.bio`, `profile.location`) and `navigation.primary` (array with `label` fields). It uses CSS Modules from `SceneDebug.module.css` (shared styles).
+
+## Dependencies
 
 - `@primer/react` — `Text`
 - `../hooks/useSceneData.js` — `useSceneData`
 - `./SceneDebug.module.css` — CSS Modules (shared with `SceneDebug`)
 
-### Dependents
+## Dependents
 
 Currently not imported by any page. Available as a reusable demo component.
-
-</details>

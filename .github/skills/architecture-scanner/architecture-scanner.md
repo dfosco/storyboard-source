@@ -4,7 +4,10 @@
 
 ## What This Does
 
-Generates documentation files in `.github/architecture/` that describe every architecturally significant file in the codebase. Each file gets a `filename.ext.md` doc explaining its composition and goal. An `architecture.index.md` links everything together.
+Generates documentation files in `.github/architecture/` that describe every architecturally significant file in the codebase. The system has two layers:
+
+- **`architecture.index.md`** — The architectural overview. Groups files by category and includes a prose summary of each category's purpose, key concepts, and how the parts fit together. A reader should be able to understand the system's architecture from this file alone.
+- **Per-file docs** (`{filepath}.md`) — Detailed documentation for individual files, including what they do, how they work (with code samples), their dependencies, and dependents.
 
 ## How to Execute
 
@@ -89,35 +92,31 @@ importance: {importance}
 
 {1-2 paragraph architectural summary: what this file does, why it exists, and how it fits into the broader system. This should be readable by someone unfamiliar with the codebase.}
 
-<details>
-<summary>Technical details</summary>
+## Composition
 
-### Composition
+{Detailed description of the file's structure: what it exports, key functions/components, internal organization, type signatures, parameter details. Include code samples from the actual source file to illustrate key exports, signatures, and patterns — don't just describe them in prose.}
 
-{Detailed description of the file's structure: what it exports, key functions/components, internal organization, type signatures, parameter details}
-
-### Dependencies
+## Dependencies
 
 {List of significant imports — what this file depends on, and why}
 
-### Dependents
+## Dependents
 
 {What depends on this file — who imports it, derived by grepping}
 
-### Notes
+## Notes
 
 {Any non-obvious behavior, edge cases, circular dependency considerations, or architectural decisions worth noting. Omit this section if there's nothing notable.}
-
-</details>
 ```
 
 **Rules for writing docs:**
 - Read each file's actual content before writing its doc — do NOT guess
 - The **Goal** section is the most important — it should be a clear, standalone summary (1-2 paragraphs) that anyone can read without expanding the details
-- The `<details>` block contains the in-depth technical breakdown — be thorough here
+- The remaining sections (Composition, Dependencies, Dependents, Notes) are all top-level headings — do NOT wrap them in a `<details>` element
+- **Include code samples** — when describing exports, function signatures, component props, data shapes, or usage patterns, include actual code snippets from the source file. This makes docs scannable and concrete.
 - The "Dependents" section should be derived by grepping for imports of this file
-- For `low` importance files, keep the Goal brief (1 paragraph) and the details minimal
-- For `high` importance files, write a thorough Goal (2 paragraphs) and comprehensive details
+- For `medium` importance files, keep it concise — shorter Goal, fewer code samples
+- For `high` importance files, write a thorough Goal (2 paragraphs), comprehensive Composition with multiple code samples, and complete dependency/dependent lists
 
 ### Step 4: Generate the index
 
@@ -126,6 +125,31 @@ importance: {importance}
 ```
 
 This reads the generated doc files and creates `architecture.index.md` with a categorized table of contents.
+
+**After the script generates the index**, you MUST enhance it by adding a prose overview for each category section. The final index should follow this structure:
+
+```markdown
+# Architecture Index
+
+> Auto-generated documentation of architecturally significant files.
+> Run `scan the codebase architecture` to regenerate.
+
+## {Category Name}
+
+{1-2 paragraph overview of this category: what role these files play in the system, key concepts and patterns, and how they relate to each other. A reader should understand this subsystem's architecture from this paragraph alone, before clicking into any individual file doc.}
+
+- [`path/to/file.js`](./path/to/file.js.md) — {one-line description}
+- [`path/to/other.js`](./path/to/other.js.md) — {one-line description}
+
+## {Next Category}
+...
+```
+
+**Rules for the index:**
+- Each category section gets an architectural overview paragraph — not just a list of links
+- Each link gets a brief one-line description (pulled from the file doc's Goal section)
+- The overview should explain the category's purpose, key patterns, and how the files within it relate to each other
+- Write for someone unfamiliar with the codebase — the index is the entry point to understanding the architecture
 
 ### Step 5: Verify
 

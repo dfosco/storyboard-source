@@ -10,23 +10,28 @@ importance: medium
 
 ## Goal
 
-The home page route (`/`). Renders the `Playground` component and `ColorModeSwitcher`, serving as the default landing page and development sandbox for the app.
+The home page route (`/`). Renders the `Playground` component and `ColorModeSwitcher`, serving as the default landing page and development sandbox.
 
-<details>
-<summary>Technical details</summary>
+## Composition
 
-### Composition
+```jsx
+function Code() {
+    return (
+      <>
+        <Playground />
+        <ColorModeSwitcher />
+      </>
+    )
+}
 
-- **Default export**: `Code` component
-- Renders `<Playground />` and `<ColorModeSwitcher />` in a fragment
+export default Code
+```
 
-### Dependencies
+## Dependencies
 
 - `../components/Playground.jsx` — Main playground/sandbox component
 - `../components/ColorModeSwitcher.jsx` — Theme toggle
 
-### Dependents
+## Dependents
 
 Auto-registered as the `/` route by Generouted via file-based routing.
-
-</details>

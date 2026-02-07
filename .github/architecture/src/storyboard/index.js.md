@@ -10,28 +10,24 @@ importance: medium
 
 ## Goal
 
-The public barrel file for the storyboard system. It re-exports the five public APIs that consumers should use: `StoryboardProvider`, `useSceneData`, `useSceneLoading`, `getByPath`, and `loadScene`. All external imports of storyboard functionality should go through this module.
+The public barrel file for the storyboard system. All external imports of storyboard functionality should go through this module.
 
-<details>
-<summary>Technical details</summary>
+## Composition
 
-### Composition
+```js
+export { default as StoryboardProvider } from './context.jsx'
+export { useSceneData, useSceneLoading } from './hooks/useSceneData.js'
+export { getByPath } from './core/dotPath.js'
+export { loadScene } from './core/loader.js'
+```
 
-Re-exports from internal modules:
-- `StoryboardProvider` from `./context.jsx`
-- `useSceneData`, `useSceneLoading` from `./hooks/useSceneData.js`
-- `getByPath` from `./core/dotPath.js`
-- `loadScene` from `./core/loader.js`
+## Dependencies
 
-### Dependencies
+- `./context.jsx` — Provider component
+- `./hooks/useSceneData.js` — Data access hooks
+- `./core/dotPath.js` — Path utility
+- `./core/loader.js` — Scene loader
 
-- `./context.jsx`
-- `./hooks/useSceneData.js`
-- `./core/dotPath.js`
-- `./core/loader.js`
-
-### Dependents
+## Dependents
 
 This is the intended public import path for external consumers. Currently, internal files import from specific sub-modules directly (e.g., `_app.jsx` imports from `./storyboard/context.jsx`).
-
-</details>

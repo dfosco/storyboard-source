@@ -14,22 +14,25 @@ The root layout component for all routes, following Generouted's `_app.jsx` conv
 
 This is the bridge between the routing system and the storyboard data system — by placing the provider here, all pages automatically have access to scene data without needing to set up their own loading logic.
 
-<details>
-<summary>Technical details</summary>
+## Composition
 
-### Composition
+```jsx
+export default function App() {
+  return (
+    <StoryboardProvider>
+      <Outlet />
+    </StoryboardProvider>
+  )
+}
+```
 
-- Default export: `App` component
-- Renders `StoryboardProvider` → `Outlet`
-- No props — the provider reads the scene name from the URL's `?scene=` param or defaults to `"default"`
+No props — the `StoryboardProvider` reads the scene name from the URL's `?scene=` param or defaults to `"default"`. Every page component rendered via `<Outlet />` can call `useSceneData()` to access the loaded scene.
 
-### Dependencies
+## Dependencies
 
 - `react-router-dom` — `Outlet` for nested route rendering
 - `../storyboard/context.jsx` — `StoryboardProvider`
 
-### Dependents
+## Dependents
 
 Consumed automatically by Generouted as the root layout. All page components in `src/pages/` render inside this layout.
-
-</details>
