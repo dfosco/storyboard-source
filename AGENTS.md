@@ -52,7 +52,7 @@ Pages typically use the `Application` template which provides:
 
 ## Skills
 
-- **Primer Primitives** (`.github/skills/primer-primitives.md`) — Complete reference of all `@primer/primitives` CSS design tokens (sizes, typography, borders, breakpoints, controls, motion). **Always consult this skill file when working on Primer layout or CSS styling** to use correct token names.
+- **Primer Primitives** (`.github/skills/primer-primitives/primer-primitives.md`) — Complete reference of all `@primer/primitives` CSS design tokens (sizes, typography, borders, breakpoints, controls, motion). **Always consult this skill when writing CSS or any component that imports `@primer/react`.**
 - **Architecture Scanner** (`.github/skills/architecture-scanner/architecture-scanner.md`) — Scans the codebase and generates architecture documentation in `.github/architecture/`. Invoke with: "scan the codebase architecture", "update the architecture", "update arch".
 
 ## Storyboard Data System
