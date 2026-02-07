@@ -1,15 +1,6 @@
 {
-  "$import": ["shared/navigation.json"],
-  "user": {
-    "name": "Jane Doe",
-    "username": "janedoe",
-    "role": "admin",
-    "avatar": "https://avatars.githubusercontent.com/u/1?v=4",
-    "profile": {
-      "bio": "Designer & developer",
-      "location": "San Francisco, CA"
-    }
-  },
+  // "$global": ["../objects/navigation"],
+  "user": { "$ref": "../objects/jane-doe" },
   "projects": [
     {
       "id": 1,

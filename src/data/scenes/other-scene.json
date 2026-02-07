@@ -1,5 +1,5 @@
 {
-  "$import": ["shared/navigation.json"],
+  "$global": ["../objects/navigation"],
   "user": {
     "name": "John Doe",
     "username": "johndoe",

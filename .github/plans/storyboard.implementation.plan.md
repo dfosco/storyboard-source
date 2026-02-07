@@ -43,6 +43,8 @@ The file can import shared data using `$import`:
 - [x] Sample shared file: `/public/data/shared/navigation.json`
 - [x] Loader module: `src/storyboard/core/loader.js`
 - [x] Debug component that displays loaded JSON
+- [x] Object references: `$ref` (inline replacement) and `$global` (root-level merge) with relative path resolution — replaces `$import` (see `object-references.plan.md`)
+- [x] Reusable data objects directory: `src/data/objects/`
 
 ### Visual Feedback
 A `<SceneDebug />` component renders the loaded scene data as formatted JSON on the page. Confirms loading and merging work correctly.
