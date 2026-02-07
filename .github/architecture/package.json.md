@@ -12,7 +12,7 @@ importance: high
 
 Defines the Storyboard project's identity, scripts, and dependency tree. This is a private ESM (`"type": "module"`) project built with Vite and React 19. The four npm scripts are the primary developer commands.
 
-The dependency set reveals the project's core pillars: **Primer React** (`@primer/react`, `@primer/primitives`, `@primer/octicons-react`) for UI, **Generouted** for file-based routing, **styled-components** for Primer's CSS-in-JS layer, and **jsonc-parser** for loading data files with comment support. Dev dependencies cover the build toolchain (Vite, PostCSS, ESLint) and browser compatibility.
+The dependency set reveals the project's core pillars: **Primer React** (`@primer/react`, `@primer/primitives`, `@primer/octicons-react`) for UI, **Generouted** for file-based routing, **styled-components** for Primer's CSS-in-JS layer, and **jsonc-parser** for loading data files with comment support.
 
 ## Composition
 
@@ -45,4 +45,4 @@ This file is the root dependency manifest — all other files depend on the pack
 
 ## Dependents
 
-Consumed by `npm install`, `vite`, and all import statements throughout the codebase.
+Consumed by `npm install`, the Vite CLI (see [`vite.config.js`](./vite.config.js.md)), and all import statements throughout the codebase.

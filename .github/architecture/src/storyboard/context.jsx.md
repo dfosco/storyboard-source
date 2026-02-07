@@ -12,7 +12,7 @@ importance: high
 
 The `StoryboardProvider` component that loads scene data and provides it to the component tree via React context. It determines which scene to load from three sources (in priority order): the `?scene=` URL parameter, the `sceneName` prop, or the default `"default"`. It blocks rendering children until the scene is fully loaded, showing a loading fallback or error message as needed.
 
-This is the runtime core of the storyboard system — it calls `loadScene()` on mount, stores the result in state, and exposes it through `StoryboardContext` so any descendant can call `useSceneData()`.
+This is the runtime core of the storyboard system — it calls [`loadScene()`](./core/loader.js.md) on mount, stores the result in state, and exposes it through [`StoryboardContext`](./StoryboardContext.js.md) so any descendant can call [`useSceneData()`](./hooks/useSceneData.js.md).
 
 ## Composition
 
@@ -56,17 +56,17 @@ return (
 )
 ```
 
-Also re-exports `StoryboardContext` as a named export.
+Also re-exports [`StoryboardContext`](./StoryboardContext.js.md) as a named export.
 
 ## Dependencies
 
 - `react` — `useState`, `useEffect`
 - `react-router-dom` — `useSearchParams`
 - `@primer/react` — `Text`
-- `./core/loader.js` — `loadScene`
-- `./StoryboardContext.js` — `StoryboardContext`
+- [`src/storyboard/core/loader.js`](./core/loader.js.md) — `loadScene`
+- [`src/storyboard/StoryboardContext.js`](./StoryboardContext.js.md) — `StoryboardContext`
 
 ## Dependents
 
-- `src/pages/_app.jsx` — wraps the entire route tree
-- `src/storyboard/index.js` — re-exported as the public `StoryboardProvider`
+- [`src/pages/_app.jsx`](../pages/_app.jsx.md) — wraps the entire route tree
+- [`src/storyboard/index.js`](./index.js.md) — re-exported as the public `StoryboardProvider`

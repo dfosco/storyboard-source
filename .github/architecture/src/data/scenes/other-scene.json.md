@@ -10,7 +10,7 @@ importance: high
 
 ## Goal
 
-An alternate scene that demonstrates how the same prototype can render with different data. It shares the same structure as `default.json` (user, navigation, projects, settings) but uses a different user (John Doe, defined inline rather than via `$ref`) and the same navigation object. This validates that switching scenes via `?scene=other-scene` produces a meaningfully different UI state.
+An alternate scene that demonstrates how the same prototype can render with different data. It shares the same structure as [`src/data/scenes/default.json`](./default.json.md) (user, navigation, projects, settings) but uses a different user (John Doe, defined inline rather than via `$ref`) and the same navigation object. This validates that switching scenes via `?scene=other-scene` produces a meaningfully different UI state.
 
 ## Composition
 
@@ -32,8 +32,10 @@ An alternate scene that demonstrates how the same prototype can render with diff
 }
 ```
 
-- **`navigation`** uses `$ref` — same shared nav data as `default.json`
+- **`navigation`** uses `$ref` — same shared nav data as [`default.json`](./default.json.md)
 - **`user`** is inline — John Doe with admin role, demonstrating that scenes can mix `$ref` and inline data
+
+These `$ref` directives are resolved at load time by [`src/storyboard/core/loader.js`](../../storyboard/core/loader.js.md).
 
 ## Dependencies
 
@@ -41,7 +43,7 @@ An alternate scene that demonstrates how the same prototype can render with diff
 
 ## Dependents
 
-- Loaded by `loadScene('other-scene')` — accessible via `?scene=other-scene` URL param
+- Loaded by [`loadScene('other-scene')`](../../storyboard/core/loader.js.md) — accessible via `?scene=other-scene` URL param
 
 ## Notes
 

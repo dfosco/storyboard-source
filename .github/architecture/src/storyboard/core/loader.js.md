@@ -24,11 +24,22 @@ export async function loadScene(sceneName = 'default') {
   let sceneData = loadDataFile(scenePath)
 
   // 1. Merge $global references into root (scene values win)
-  if (Array.isArray(sceneData.$global)) { /* ... */ }
+  if (Array.isArray(sceneData.$global)) {
+    const globalPaths = sceneData.$global
+    delete sceneData.$global
+
+    let mergedGlobals = {}
+    for (const ref of globalPaths) {
+      const resolved = resolveRefPath(ref, baseDir)
+      let globalData = loadDataFile(resolved)
+      globalData = await resolveRefs(globalData, refDir)
+      mergedGlobals = deepMerge(mergedGlobals, globalData)
+    }
+    sceneData = deepMerge(mergedGlobals, sceneData)
+  }
 
   // 2. Resolve $ref objects throughout the tree
   sceneData = await resolveRefs(sceneData, baseDir)
-
   return sceneData
 }
 ```
@@ -82,12 +93,13 @@ const dataModules = import.meta.glob('../../data/**/*.{json,jsonc}', {
 
 ## Dependents
 
-- `src/storyboard/context.jsx` — calls `loadScene()` in the provider
-- `src/storyboard/components/SceneDebug.jsx` — calls `loadScene()` directly for debug display
-- `src/storyboard/index.js` — re-exports `loadScene`
+- [`src/storyboard/context.jsx`](../context.jsx.md) — calls `loadScene()` in the provider
+- [`src/storyboard/components/SceneDebug.jsx`](../components/SceneDebug.jsx.md) — calls `loadScene()` directly for debug display
+- [`src/storyboard/index.js`](../index.js.md) — re-exports `loadScene`
 
 ## Notes
 
 - Data files are loaded eagerly at build time via `import.meta.glob` with `{ eager: true, query: '?raw' }`. This means all JSON/JSONC files under `src/data/` are bundled regardless of whether a scene references them.
 - The `$global` directive is processed before `$ref` resolution, so global objects can themselves contain `$ref` entries that will be resolved.
 - Circular `$ref` detection uses a shared `Set` within a single `resolveRefs` call tree. Each `$global` reference is resolved independently (no cross-global cycle detection).
+- Scene files like [`src/data/scenes/default.json`](../../data/scenes/default.json.md) use `$ref` to compose reusable objects from `src/data/objects/`.

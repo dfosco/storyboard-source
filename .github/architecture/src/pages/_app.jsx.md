@@ -17,6 +17,9 @@ This is the bridge between the routing system and the storyboard data system —
 ## Composition
 
 ```jsx
+import { Outlet } from 'react-router-dom'
+import StoryboardProvider from '../storyboard/context.jsx'
+
 export default function App() {
   return (
     <StoryboardProvider>
@@ -26,13 +29,13 @@ export default function App() {
 }
 ```
 
-No props — the `StoryboardProvider` reads the scene name from the URL's `?scene=` param or defaults to `"default"`. Every page component rendered via `<Outlet />` can call `useSceneData()` to access the loaded scene.
+No props — the [`StoryboardProvider`](../storyboard/context.jsx.md) reads the scene name from the URL's `?scene=` param or defaults to `"default"`. Every page component rendered via `<Outlet />` can call `useSceneData()` to access the loaded scene.
 
 ## Dependencies
 
 - `react-router-dom` — `Outlet` for nested route rendering
-- `../storyboard/context.jsx` — `StoryboardProvider`
+- [`src/storyboard/context.jsx`](../storyboard/context.jsx.md) — `StoryboardProvider`
 
 ## Dependents
 
-Consumed automatically by Generouted as the root layout. All page components in `src/pages/` render inside this layout.
+Consumed automatically by Generouted as the root layout. All page components in `src/pages/` render inside this layout, including [`src/pages/index.jsx`](./index.jsx.md).

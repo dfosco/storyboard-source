@@ -23,11 +23,11 @@ export { loadScene } from './core/loader.js'
 
 ## Dependencies
 
-- `./context.jsx` — Provider component
-- `./hooks/useSceneData.js` — Data access hooks
-- `./core/dotPath.js` — Path utility
-- `./core/loader.js` — Scene loader
+- [`src/storyboard/context.jsx`](./context.jsx.md) — Provider component
+- [`src/storyboard/hooks/useSceneData.js`](./hooks/useSceneData.js.md) — Data access hooks
+- [`src/storyboard/core/dotPath.js`](./core/dotPath.js.md) — Path utility
+- [`src/storyboard/core/loader.js`](./core/loader.js.md) — Scene loader
 
 ## Dependents
 
-This is the intended public import path for external consumers. Currently, internal files import from specific sub-modules directly (e.g., `_app.jsx` imports from `./storyboard/context.jsx`).
+This is the intended public import path for external consumers. Currently, internal files import from specific sub-modules directly (e.g., [`src/pages/_app.jsx`](../pages/_app.jsx.md) imports from [`src/storyboard/context.jsx`](./context.jsx.md)).

@@ -29,7 +29,7 @@ This scene demonstrates the core data patterns: `$ref` for reusable objects, inl
       "stars": 2500,
       "issues": 42
     },
-    { "id": 2, "name": "storyboard", ... }
+    { "id": 2, "name": "storyboard", "..." }
   ],
   "settings": {
     "theme": "dark_dimmed",
@@ -43,6 +43,8 @@ This scene demonstrates the core data patterns: `$ref` for reusable objects, inl
 - **`projects`** is an inline array of project objects with id, name, description, owner, stars, issues
 - **`settings`** is inline with theme, notifications, and language preferences
 
+These `$ref` directives are resolved at load time by [`src/storyboard/core/loader.js`](../../storyboard/core/loader.js.md).
+
 ## Dependencies
 
 - `src/data/objects/jane-doe.json` — User data (via `$ref`)
@@ -50,5 +52,5 @@ This scene demonstrates the core data patterns: `$ref` for reusable objects, inl
 
 ## Dependents
 
-- Loaded by `loadScene('default')` — the fallback when no scene is specified
-- Used by `StoryboardProvider` and `SceneDebug` as the default scene
+- Loaded by [`loadScene('default')`](../../storyboard/core/loader.js.md) — the fallback when no scene is specified
+- Used by [`StoryboardProvider`](../../storyboard/context.jsx.md) and [`SceneDebug`](../../storyboard/components/SceneDebug.jsx.md) as the default scene

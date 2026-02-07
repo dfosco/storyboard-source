@@ -29,9 +29,9 @@ export default Code
 
 ## Dependencies
 
-- `../components/Playground.jsx` — Main playground/sandbox component
-- `../components/ColorModeSwitcher.jsx` — Theme toggle
+- `src/components/Playground.jsx` — Main playground/sandbox component
+- `src/components/ColorModeSwitcher.jsx` — Theme toggle
 
 ## Dependents
 
-Auto-registered as the `/` route by Generouted via file-based routing.
+Auto-registered as the `/` route by Generouted via file-based routing. Rendered inside the [`src/pages/_app.jsx`](./_app.jsx.md) layout.

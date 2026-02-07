@@ -12,7 +12,7 @@ importance: high
 
 The Vite configuration is the build system entry point for the Storyboard app. It wires together the React plugin, the Generouted file-based routing plugin, and a PostCSS pipeline that makes Primer Primitives CSS custom media queries available globally and transpiles modern CSS features for target browsers.
 
-This file is architecturally significant because it controls how routes are auto-generated from `src/pages/`, how CSS custom properties from `@primer/primitives` are made available across the codebase, and which CSS features (nesting, focus-visible, logical properties) are enabled or disabled during the build.
+This file controls how routes are auto-generated from `src/pages/`, how CSS custom properties from `@primer/primitives` are made available across the codebase, and which CSS features are enabled or disabled during the build.
 
 ## Composition
 

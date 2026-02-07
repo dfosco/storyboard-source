@@ -12,7 +12,7 @@ importance: high
 
 The primary consumer-facing hooks for the storyboard system. `useSceneData(path?)` lets any component access scene data by dot-notation path, while `useSceneLoading()` exposes the loading state. These hooks are the recommended way for page and component code to read storyboard data.
 
-Both hooks enforce that they are used within a `<StoryboardProvider>` by checking for a `null` context and throwing a descriptive error if missing.
+Both hooks enforce that they are used within a [`StoryboardProvider`](../context.jsx.md) by checking for a `null` context and throwing a descriptive error if missing.
 
 ## Composition
 
@@ -71,13 +71,13 @@ export function useSceneLoading() {
 ## Dependencies
 
 - `react` — `useContext`
-- `../StoryboardContext.js` — `StoryboardContext`
-- `../core/dotPath.js` — `getByPath`
+- [`src/storyboard/StoryboardContext.js`](../StoryboardContext.js.md) — `StoryboardContext`
+- [`src/storyboard/core/dotPath.js`](../core/dotPath.js.md) — `getByPath`
 
 ## Dependents
 
-- `src/storyboard/components/SceneDataDemo.jsx` — uses `useSceneData()` to display user and navigation data
-- `src/storyboard/index.js` — re-exports both hooks
+- [`src/storyboard/components/SceneDataDemo.jsx`](../components/SceneDataDemo.jsx.md) — uses `useSceneData()` to display user and navigation data
+- [`src/storyboard/index.js`](../index.js.md) — re-exports both hooks
 
 ## Notes
 

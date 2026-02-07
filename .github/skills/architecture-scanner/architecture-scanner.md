@@ -6,8 +6,8 @@
 
 Generates documentation files in `.github/architecture/` that describe every architecturally significant file in the codebase. The system has two layers:
 
-- **`architecture.index.md`** — The architectural overview. Groups files by category and includes a prose summary of each category's purpose, key concepts, and how the parts fit together. A reader should be able to understand the system's architecture from this file alone.
-- **Per-file docs** (`{filepath}.md`) — Detailed documentation for individual files, including what they do, how they work (with code samples), their dependencies, and dependents.
+- **`architecture.index.md`** — The architectural overview. Groups files by category (ordered and configured via the `categories` array in `files.json`) and includes prose summaries. Categories with `"priority": "critical"` get 2-3x more detailed overviews. A reader should be able to understand the system's architecture from this file alone.
+- **Per-file docs** (`{filepath}.md`) — Detailed documentation for individual files, including what they do, how they work (with code samples), their dependencies, and dependents. Every file reference is cross-linked to its architecture doc.
 
 ## How to Execute
 
@@ -114,6 +114,7 @@ importance: {importance}
 - The **Goal** section is the most important — it should be a clear, standalone summary (1-2 paragraphs) that anyone can read without expanding the details
 - The remaining sections (Composition, Dependencies, Dependents, Notes) are all top-level headings — do NOT wrap them in a `<details>` element
 - **Include code samples** — when describing exports, function signatures, component props, data shapes, or usage patterns, include actual code snippets from the source file. This makes docs scannable and concrete.
+- **Cross-link file references** — every time a file path is mentioned anywhere in the documentation (Goal, Composition, Dependencies, Dependents, Notes, or the index), it MUST be a markdown hyperlink to that file's architecture doc. Use relative paths from the current doc to the target doc. For example, in a doc at `.github/architecture/src/storyboard/context.jsx.md`, a reference to the loader would be written as [`src/storyboard/core/loader.js`](./core/loader.js.md). If the referenced file has no architecture doc (e.g., low-importance files), link to the source file on GitHub or leave it as plain text with a backtick code span.
 - The "Dependents" section should be derived by grepping for imports of this file
 - For `medium` importance files, keep it concise — shorter Goal, fewer code samples
 - For `high` importance files, write a thorough Goal (2 paragraphs), comprehensive Composition with multiple code samples, and complete dependency/dependent lists
@@ -126,7 +127,7 @@ importance: {importance}
 
 This reads the generated doc files and creates `architecture.index.md` with a categorized table of contents.
 
-**After the script generates the index**, you MUST enhance it by adding a prose overview for each category section. The final index should follow this structure:
+**After the script generates the index**, you MUST enhance it by adding a prose overview for each category section. Read the `categories` array in `files.json` to determine category order, display names, and priority levels. The final index should follow this structure:
 
 ```markdown
 # Architecture Index
@@ -136,7 +137,7 @@ This reads the generated doc files and creates `architecture.index.md` with a ca
 
 ## {Category Name}
 
-{1-2 paragraph overview of this category: what role these files play in the system, key concepts and patterns, and how they relate to each other. A reader should understand this subsystem's architecture from this paragraph alone, before clicking into any individual file doc.}
+{Overview paragraph(s) — see priority rules below}
 
 - [`path/to/file.js`](./path/to/file.js.md) — {one-line description}
 - [`path/to/other.js`](./path/to/other.js.md) — {one-line description}
@@ -145,10 +146,26 @@ This reads the generated doc files and creates `architecture.index.md` with a ca
 ...
 ```
 
+**Category configuration** is defined in `files.json` under the `categories` array:
+
+```json
+"categories": [
+  { "id": "storyboard", "name": "Storyboard System", "priority": "critical", "order": 1 },
+  { "id": "config", "name": "Configuration", "priority": "normal", "order": 5 }
+]
+```
+
+- **`order`** — Controls the display order of categories in the index (ascending)
+- **`name`** — The display heading used in the index (`## {name}`)
+- **`priority`** — Controls the depth of the overview:
+  - **`critical`** — The overview for this category should be 2-3x longer than normal. Write 3-4 paragraphs covering key concepts, data flow, architectural decisions, and how the parts interact. Include code samples or diagrams in the overview itself when helpful. These are the categories a new contributor must deeply understand.
+  - **`normal`** — Standard 1-2 paragraph overview explaining purpose, key patterns, and relationships between files.
+
 **Rules for the index:**
-- Each category section gets an architectural overview paragraph — not just a list of links
+- Category sections are ordered by the `order` field in the `categories` array
+- Each category section gets an architectural overview — length determined by `priority`
 - Each link gets a brief one-line description (pulled from the file doc's Goal section)
-- The overview should explain the category's purpose, key patterns, and how the files within it relate to each other
+- **Cross-link file references** — every file path mentioned in the overview text must link to its architecture doc (same rule as per-file docs)
 - Write for someone unfamiliar with the codebase — the index is the entry point to understanding the architecture
 
 ### Step 5: Verify

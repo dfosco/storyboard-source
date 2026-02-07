@@ -86,7 +86,8 @@ get_existing_importance() {
 import json, sys
 with open('$FILES_JSON') as f:
     data = json.load(f)
-for entry in data:
+files = data.get('files', data) if isinstance(data, dict) else data
+for entry in files:
     if entry['path'] == '$filepath':
         print(entry.get('importance', ''))
         sys.exit(0)
@@ -117,10 +118,36 @@ discover_files() {
     done
   done
 
-  # Build new files.json, preserving existing importance values
+  # Build new files.json, preserving existing importance values and categories
   local tmp_json
   tmp_json="$(mktemp)"
-  echo "[" > "$tmp_json"
+
+  # Preserve existing categories array if present
+  python3 -c "
+import json
+try:
+    with open('$FILES_JSON') as f:
+        data = json.load(f)
+    if isinstance(data, dict) and 'categories' in data:
+        print(json.dumps(data['categories'], indent=4))
+    else:
+        print('null')
+except:
+    print('null')
+" > "${tmp_json}.cats"
+
+  local cats
+  cats="$(cat "${tmp_json}.cats")"
+  rm -f "${tmp_json}.cats"
+
+  if [ "$cats" = "null" ]; then
+    echo "{" > "$tmp_json"
+    echo '  "files": [' >> "$tmp_json"
+  else
+    echo "{" > "$tmp_json"
+    echo '  "categories": '"$cats"',' >> "$tmp_json"
+    echo '  "files": [' >> "$tmp_json"
+  fi
 
   local first=true
   for relpath in "${ordered_paths[@]}"; do
@@ -137,12 +164,13 @@ discover_files() {
     else
       echo "," >> "$tmp_json"
     fi
-    printf '  { "path": "%s", "category": "%s", "importance": "%s" }' \
+    printf '    { "path": "%s", "category": "%s", "importance": "%s" }' \
       "$relpath" "$category" "$importance" >> "$tmp_json"
   done
 
   echo "" >> "$tmp_json"
-  echo "]" >> "$tmp_json"
+  echo "  ]" >> "$tmp_json"
+  echo "}" >> "$tmp_json"
 
   mkdir -p "$SKILL_DIR"
   mv "$tmp_json" "$FILES_JSON"
@@ -170,9 +198,14 @@ print_manifest() {
 import json
 with open('$FILES_JSON') as f:
     data = json.load(f)
-out = [e for e in data if e.get('importance') != 'low']
+files = data.get('files', data) if isinstance(data, dict) else data
+categories = data.get('categories', []) if isinstance(data, dict) else []
+cat_map = {c['id']: c for c in categories}
+out = [e for e in files if e.get('importance') != 'low']
 for e in out:
     e['doc'] = e['path'] + '.md'
+    cat = cat_map.get(e.get('category'), {})
+    e['category_priority'] = cat.get('priority', 'normal')
 print(json.dumps(out, indent=2))
 "
 }
@@ -192,8 +225,12 @@ repo_root = '$REPO_ROOT'
 with open(files_json) as f:
     data = json.load(f)
 
+files = data.get('files', data) if isinstance(data, dict) else data
+categories = data.get('categories', []) if isinstance(data, dict) else []
+cat_map = {c['id']: c for c in categories}
+
 results = []
-for entry in data:
+for entry in files:
     if entry.get('importance') == 'low':
         continue
     src = os.path.join(repo_root, entry['path'])
@@ -207,7 +244,10 @@ for entry in data:
         if os.path.getmtime(src) > os.path.getmtime(doc):
             status = 'stale'
     if status:
-        results.append({**entry, 'doc': entry['path'] + '.md', 'status': status})
+        e = {**entry, 'doc': entry['path'] + '.md', 'status': status}
+        cat = cat_map.get(entry.get('category'), {})
+        e['category_priority'] = cat.get('priority', 'normal')
+        results.append(e)
 
 print(json.dumps(results, indent=2))
 "
@@ -217,19 +257,21 @@ generate_index() {
   mkdir -p "$ARCH_DIR"
   local index_file="$ARCH_DIR/architecture.index.md"
 
-  # Category display names (order matters)
-  local CATEGORY_ORDER=(config entry routing template storyboard component page data style)
-  declare -A CATEGORY_NAMES=(
-    [config]="Configuration"
-    [entry]="Entry Points"
-    [routing]="Routing"
-    [template]="Templates"
-    [storyboard]="Storyboard System"
-    [component]="Shared Components"
-    [page]="Pages"
-    [data]="Data Files"
-    [style]="Global Styles"
-  )
+  # Read category order and names from files.json, falling back to defaults
+  local category_data
+  category_data="$(python3 -c "
+import json
+with open('$FILES_JSON') as f:
+    data = json.load(f)
+categories = data.get('categories', []) if isinstance(data, dict) else []
+if categories:
+    cats = sorted(categories, key=lambda c: c.get('order', 99))
+    for c in cats:
+        print(c['id'] + '|' + c.get('name', c['id']) + '|' + c.get('priority', 'normal'))
+else:
+    for pair in [('config','Configuration','normal'),('entry','Entry Points','normal'),('routing','Routing','normal'),('template','Templates','normal'),('storyboard','Storyboard System','normal'),('component','Shared Components','normal'),('page','Pages','normal'),('data','Data Files','normal'),('style','Global Styles','normal')]:
+        print('|'.join(pair))
+" 2>/dev/null)"
 
   cat > "$index_file" << 'HEADER'
 # Architecture Index
@@ -239,17 +281,14 @@ generate_index() {
 
 HEADER
 
-  echo "## Table of Contents" >> "$index_file"
-  echo "" >> "$index_file"
-
-  for cat in "${CATEGORY_ORDER[@]}"; do
+  while IFS='|' read -r cat cat_name cat_priority; do
     local has_files=false
     while IFS= read -r doc; do
       [ -f "$doc" ] || continue
       [[ "$doc" == */architecture.index.md ]] && continue
       if grep -q "^category: $cat" "$doc" 2>/dev/null; then
         if [ "$has_files" = false ]; then
-          echo "### ${CATEGORY_NAMES[$cat]}" >> "$index_file"
+          echo "## ${cat_name}" >> "$index_file"
           echo "" >> "$index_file"
           has_files=true
         fi
@@ -261,7 +300,7 @@ HEADER
     if [ "$has_files" = true ]; then
       echo "" >> "$index_file"
     fi
-  done
+  done <<< "$category_data"
 
   echo "Generated: $index_file"
 }

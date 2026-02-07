@@ -32,7 +32,7 @@ root.render(
 ```
 
 - `ThemeProvider` is set to `colorMode="auto"` — it follows the system preference by default, switchable at runtime via `ColorModeSwitcher`.
-- `<Routes />` is the Generouted entry point that renders the file-based route tree from `src/pages/`.
+- `<Routes />` is the Generouted entry point that renders the file-based route tree from `src/pages/`. The root layout is [`src/pages/_app.jsx`](./pages/_app.jsx.md).
 - `reset.css` and `globals.css` are imported as side effects for global styles.
 
 ## Dependencies
@@ -40,8 +40,7 @@ root.render(
 - `react`, `react-dom/client` — React 19 root API (`createRoot`)
 - `@generouted/react-router` — `Routes` component (auto-generated from `src/pages/`)
 - `@primer/react` — `ThemeProvider`, `BaseStyles`
-- `./components/ColorModeSwitcher` — Global theme toggle
-- `./reset.css`, `./globals.css` — Global stylesheets
+- `src/components/ColorModeSwitcher.jsx` — Global theme toggle
 
 ## Dependents
 
