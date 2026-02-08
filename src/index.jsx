@@ -6,6 +6,7 @@ import './reset.css'
 import './globals.css'
 
 import ColorModeSwitcher from './components/ColorModeSwitcher'
+import DevTools from './storyboard/components/DevTools/DevTools.jsx'
 
 const rootElement = document.getElementById('root')
 const root = createRoot(rootElement)
@@ -16,6 +17,7 @@ root.render(
             <BaseStyles>
                 <ColorModeSwitcher />
                 <Routes />
+                {import.meta.env.DEV && <DevTools />}
             </BaseStyles>
         </ThemeProvider>
     </StrictMode>
