@@ -211,7 +211,7 @@ Refresh the page — the override persists. Remove the hash params from the URL 
 
 ### Example: Form with StoryboardForm
 
-Storyboard provides form components that automatically persist to URL session state. No hooks or event handlers needed — just use a `name` prop.
+Storyboard provides form components that automatically persist to URL session state on submit. No hooks or event handlers needed — just use a `name` prop.
 
 ```jsx
 import { FormControl, Button } from '@primer/react'
@@ -219,7 +219,7 @@ import { StoryboardForm, TextInput, Textarea } from '../storyboard'
 
 function ProfileForm() {
   return (
-    <StoryboardForm data="user" onSubmit={(e) => e.preventDefault()}>
+    <StoryboardForm data="user">
       <FormControl>
         <FormControl.Label>Name</FormControl.Label>
         <TextInput name="name" />
@@ -296,6 +296,15 @@ Routes are auto-generated from the file structure in `src/pages/` via [@generout
 
 To create a new page, add a `.jsx` file to `src/pages/`.
 
+### Hash Preservation
+
+URL hash params (session state) are automatically preserved across all page navigations. A document-level interceptor converts `<a href>` clicks into client-side React Router navigations, carrying the current hash forward. This works with any link component — Primer's `UnderlineNav`, `NavList`, plain `<a>` tags, etc.
+
+Hash is **not** preserved when:
+- The link already defines its own hash fragment
+- The link points to an external origin
+- `switchScene()` is called (intentionally clears hash since it belongs to the previous scene)
+
 ---
 
 ## API Reference
@@ -315,11 +324,11 @@ To create a new page, add a `.jsx` file to `src/pages/`.
 |-----------|-------------|
 | `<StoryboardProvider>` | Wraps the app. Loads scene from `?scene=` param. Already configured in `src/index.jsx`. |
 | `<SceneDebug>` | Renders resolved scene data as formatted JSON. Useful for debugging. |
-| `<StoryboardForm>` | Form wrapper. `data` prop sets root path for child inputs (e.g. `data="checkout"`). |
-| `<TextInput>` | Wrapped Primer TextInput. `name` prop auto-syncs with session state. |
-| `<Textarea>` | Wrapped Primer Textarea. `name` prop auto-syncs with session state. |
-| `<Select>` | Wrapped Primer Select. `name` prop auto-syncs with session state. |
-| `<Checkbox>` | Wrapped Primer Checkbox. `name` prop auto-syncs with session state. |
+| `<StoryboardForm>` | Form wrapper. `data` prop sets root path for child inputs. Buffers values locally; flushes to URL hash on submit. |
+| `<TextInput>` | Wrapped Primer TextInput. `name` prop auto-binds to session state via form context. |
+| `<Textarea>` | Wrapped Primer Textarea. `name` prop auto-binds to session state via form context. |
+| `<Select>` | Wrapped Primer Select. `name` prop auto-binds to session state via form context. |
+| `<Checkbox>` | Wrapped Primer Checkbox. `name` prop auto-binds to session state via form context. |
 
 ### Utilities
 
@@ -331,6 +340,7 @@ To create a new page, add a `.jsx` file to `src/pages/`.
 | `setParam(key, value)` | Write a URL hash param. |
 | `getAllParams()` | Get all hash params as an object. |
 | `removeParam(key)` | Remove a URL hash param. |
+| `installHashPreserver(router, basename)` | Intercepts internal link clicks for client-side navigation with hash preservation. |
 
 ### Special JSON keys
 

@@ -200,7 +200,7 @@ switchScene('other-scene')  // updates ?scene= param, clears hash, reloads
 
 ---
 
-## Phase 5: Form Components
+## Phase 5: Form Components ✅
 
 ### Goal
 Provide designer-friendly form components that automatically persist to URL session state, requiring no hook or event handler knowledge.
@@ -227,21 +227,24 @@ This framework is meant for designers. Manual `useSession` + `onChange` handlers
 
 - Renders a native `<form>` element
 - `data` prop sets the root path for all fields (e.g., `data="checkout"`)
-- Provides a React context that child input components consume
+- Provides a React context (`FormContext`) that child input components consume
 - `data="checkout"` + `name="email"` → hash param `#checkout.email=...`
+- Values are **buffered locally** while typing — only flushed to URL hash on form submit
+- `preventDefault()` is handled internally by `StoryboardForm`
 
 **Scene data is optional** — forms work without a matching object in scene JSON. If `checkout` exists in the scene, its values serve as defaults. If not, fields start empty and write to hash params independently.
 
 **Wrapped Primer Components**
 Storyboard provides wrapped versions of Primer React form components:
 ```jsx
-import { TextInput } from '../storyboard/components'
+import { TextInput, Textarea, Select, Checkbox } from '../storyboard'
 ```
 
 Each wrapper:
 - Looks and behaves identically to the Primer original
-- Reads the `data` prefix from `StoryboardForm` context
-- Uses `useSession(prefix.name)` internally for auto-binding
+- Reads the `data` prefix from `StoryboardForm` context via `FormContext`
+- Buffers values in local draft state; reads session values as initial defaults
+- On form submit, `StoryboardForm` flushes all drafts to URL hash params
 - Passes through all other Primer props unchanged
 
 **URL Hash Format**
@@ -249,18 +252,29 @@ Each wrapper:
 /checkout?scene=default#checkout.email=user@example.com&checkout.quantity=5
 ```
 
+**Hash Preservation Across Navigation**
+A document-level click interceptor (`hashPreserver.js`) ensures URL hash params are never lost during page navigation:
+- Intercepts all `<a>` clicks on same-origin internal links
+- Prevents default browser navigation (which causes full page reloads)
+- Uses `router.navigate()` for client-side transitions, carrying the hash forward
+- Correctly skips external links, `target="_blank"`, and modifier-key clicks (cmd+click)
+- Installed once at app startup in `src/index.jsx`
+
 ### Deliverables
-- [ ] Form context: `src/storyboard/context/FormContext.js`
-- [ ] StoryboardForm component: `src/storyboard/components/StoryboardForm.jsx`
-- [ ] Wrapped TextInput: `src/storyboard/components/TextInput.jsx`
-- [ ] Wrapped Checkbox: `src/storyboard/components/Checkbox.jsx`
-- [ ] Wrapped Select: `src/storyboard/components/Select.jsx`
-- [ ] Wrapped Textarea: `src/storyboard/components/Textarea.jsx`
-- [ ] Updated exports in `src/storyboard/index.js`
-- [ ] Example form page demonstrating the pattern
+- [x] Form context: `src/storyboard/context/FormContext.js`
+- [x] StoryboardForm component: `src/storyboard/components/StoryboardForm.jsx`
+- [x] Wrapped TextInput: `src/storyboard/components/TextInput.jsx`
+- [x] Wrapped Checkbox: `src/storyboard/components/Checkbox.jsx`
+- [x] Wrapped Select: `src/storyboard/components/Select.jsx`
+- [x] Wrapped Textarea: `src/storyboard/components/Textarea.jsx`
+- [x] Updated exports in `src/storyboard/index.js`
+- [x] Example form page: `src/pages/Forms.jsx`
+- [x] Hash preservation: `src/storyboard/core/hashPreserver.js`
+- [x] Client-side navigation interceptor installed in `src/index.jsx`
+- [x] `StoryboardProvider` no longer flashes loading state on page navigation
 
 ### Visual Feedback
-Create a multi-field form using Primer components. Type in fields—URL hash updates live. Refresh page—values persist. Navigate away and back—values still there.
+The `Forms` page (`/Forms`) demonstrates a multi-field form with all wrapped components. Type in fields, click Submit — URL hash updates. Refresh page — values persist. Navigate to another page and back — hash params are preserved. Copy URL to new tab — state transfers.
 
 ---
 
@@ -300,7 +314,7 @@ URL hash param > localStorage > Scene JSON
 
 ---
 
-## File Structure (Current + Planned)
+## File Structure (Current)
 
 ```
 src/data/
@@ -312,24 +326,29 @@ src/data/
       └── other-scene.json
 
 src/storyboard/
-  ├── index.js                    # public exports
-  ├── context.jsx                 # StoryboardProvider
-  ├── StoryboardContext.js        # React context (createContext)
+  ├── index.js                    # ✅ public exports
+  ├── context.jsx                 # ✅ StoryboardProvider
+  ├── StoryboardContext.js        # ✅ React context (createContext)
+  ├── context/
+  │   └── FormContext.js          # ✅ form data prefix context
   ├── hooks/
   │   ├── useSceneData.js         # ✅ read-only scene data
-  │   └── useSession.js           # ✅ merged read/write via hash
+  │   ├── useSession.js           # ✅ merged read/write via hash
+  │   └── useScene.js             # ✅ scene name + switchScene
   ├── core/
   │   ├── loader.js               # ✅ scene loader with $ref/$global
   │   ├── session.js              # ✅ URL hash param utilities
-  │   └── dotPath.js              # ✅ dot-notation path resolver
+  │   ├── dotPath.js              # ✅ dot-notation path resolver
+  │   └── hashPreserver.js        # ✅ client-side nav + hash preservation
   └── components/
+      ├── DevTools/               # ✅ dev tools panel
       ├── SceneDebug.jsx          # ✅ debug JSON viewer
-      ├── SceneDataDemo.jsx       # ✅ demo component
-      ├── StoryboardForm.jsx      # 🔜 Phase 5
-      ├── TextInput.jsx           # 🔜 Phase 5
-      ├── Checkbox.jsx            # 🔜 Phase 5
-      ├── Select.jsx              # 🔜 Phase 5
-      └── Textarea.jsx            # 🔜 Phase 5
+      ├── SceneDataDemo.jsx       # ✅ demo component (uses StoryboardForm)
+      ├── StoryboardForm.jsx      # ✅ form wrapper with draft buffering
+      ├── TextInput.jsx           # ✅ wrapped Primer TextInput
+      ├── Checkbox.jsx            # ✅ wrapped Primer Checkbox
+      ├── Select.jsx              # ✅ wrapped Primer Select
+      └── Textarea.jsx            # ✅ wrapped Primer Textarea
 ```
 
 ---
@@ -345,9 +364,9 @@ Phase 3 (useSession + hash params) ✅
     ↓
 Phase 4 (Scene Switching) ✅
     ↓
-Phase 5 (Form Components) ← NEXT
+Phase 5 (Form Components) ✅
     ↓
-Phase 6 (Rename useSession → useCue) — Future
+Phase 6 (Rename useSession → useCue) ← NEXT
     ↓
 Phase 7 (localStorage Persistence) — Future
 ```
