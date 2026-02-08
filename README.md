@@ -4,9 +4,12 @@ A small framework to create stateful prototypes. Create `scenes` with JSON to pr
 
 - Set up interactions that create and edit data in your UI with ease
 - Every single change is saved to a unique URL — that means you can share *any* state of your prototype
+- Generates a static site that can be deployed anywhere 
 - Work with data structures that mirror your production app - without the complexity of connecting to APIs or using complex frameworks like NextJS
 
-Built with [Vite](https://vite.dev) and [generouted](https://github.com/oedotme/generouted). Uses [GitHub Primer](https://primer.style) for layout – support for more design systems coming soon!
+Built with [Vite](https://vite.dev) and [generouted](https://github.com/oedotme/generouted). 
+
+Uses [GitHub Primer](https://primer.style) for layout – support for more design systems coming soon!
 
 ## Quick Start
 
