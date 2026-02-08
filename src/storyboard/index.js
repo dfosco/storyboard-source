@@ -1,4 +1,6 @@
 export { default as StoryboardProvider } from './context.jsx'
 export { useSceneData, useSceneLoading } from './hooks/useSceneData.js'
+export { useSession } from './hooks/useSession.js'
 export { getByPath } from './core/dotPath.js'
 export { loadScene } from './core/loader.js'
+export { getParam, setParam, getAllParams, removeParam } from './core/session.js'

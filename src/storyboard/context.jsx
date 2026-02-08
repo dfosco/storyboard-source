@@ -1,11 +1,19 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
 import { Text } from '@primer/react'
 import { loadScene } from './core/loader.js'
 import { StoryboardContext } from './StoryboardContext.js'
 
 export { StoryboardContext }
+
+/**
+ * Read the ?scene= param directly from window.location.
+ * Avoids useSearchParams() which re-renders on every router
+ * navigation event (including hash changes), causing a flash.
+ */
+function getSceneParam() {
+  return new URLSearchParams(window.location.search).get('scene')
+}
 
 /**
  * Provides loaded scene data to the component tree.
@@ -15,9 +23,7 @@ export { StoryboardContext }
  * Blocks rendering children until scene data is loaded.
  */
 export default function StoryboardProvider({ sceneName, fallback, children }) {
-  const [searchParams] = useSearchParams()
-  const sceneFromUrl = searchParams.get('scene')
-  const activeSceneName = sceneFromUrl || sceneName || 'default'
+  const activeSceneName = getSceneParam() || sceneName || 'default'
 
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
