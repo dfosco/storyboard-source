@@ -1,0 +1,153 @@
+.wrapper {
+  position: fixed;
+  bottom: var(--base-size-24);
+  right: var(--base-size-24);
+  z-index: 9999;
+  font-family: var(--fontStack-system);
+}
+
+code {
+  font-family: var(--fontStack-monospace);
+  background-color: var(--bgColor-muted);
+  padding: 2px 4px;
+  border-radius: var(--borderRadius-small);
+
+  &:hover {
+    background-color: var(--bgColor-muted);
+  }
+}
+
+/* Floating trigger button */
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--base-size-8);
+  padding: var(--base-size-12);
+  background-color: var(--bgColor-subtle);
+  color: var(--fgColor-muted);
+  border: 1px solid var(--borderColor-default);
+  border-radius: var(--borderRadius-full);
+  font-size: var(--text-body-size-small);
+  font-weight: var(--base-text-weight-semibold);
+  font-family: var(--fontStack-system);
+  cursor: pointer;
+  box-shadow: var(--shadow-floating-large);
+  transition: opacity 150ms ease, transform 150ms ease;
+  user-select: none;
+}
+
+.trigger:hover {
+  transform: scale(1.05);
+}
+
+.trigger:active {
+  transform: scale(0.97);
+}
+
+.triggerIcon {
+  width: var(--base-size-16);
+  height: var(--base-size-16);
+}
+
+.shortcutHint {
+  padding: var(--base-size-8) var(--base-size-16); 
+}
+
+/* Scene info overlay panel */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: var(--base-size-16);
+  padding-bottom: calc(var(--base-size-64) + var(--base-size-16));
+}
+
+.overlayBackdrop {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+}
+
+.panel {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  max-height: 60vh;
+  background-color: var(--overlay-bgColor);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--borderColor-default);
+  border-radius: var(--borderRadius-large);
+  box-shadow: var(--shadow-floating-large);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--base-size-12) var(--base-size-16);
+  border-bottom: 1px solid var(--borderColor-muted);
+}
+
+.panelTitle {
+  font-size: var(--text-body-size-medium);
+  font-weight: var(--base-text-weight-semibold);
+  color: var(--fgColor-default);
+}
+
+.panelClose {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--base-size-28);
+  height: var(--base-size-28);
+  background: none;
+  border: none;
+  border-radius: var(--borderRadius-small);
+  color: var(--fgColor-muted);
+  cursor: pointer;
+}
+
+.panelClose:hover {
+  background-color: var(--control-transparent-bgColor-hover);
+  color: var(--fgColor-default);
+}
+
+.panelBody {
+  overflow: auto;
+  padding: var(--base-size-16);
+}
+
+.codeBlock {
+  padding: 0;
+  margin: 0;
+  background: none;
+  font-size: var(--text-body-size-small);
+  font-family: var(--fontStack-monospace);
+  line-height: var(--text-body-lineHeight-medium);
+  color: var(--fgColor-default);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.error {
+  color: var(--fgColor-danger);
+}
+
+.loading {
+  color: var(--fgColor-muted);
+  font-size: var(--text-body-size-small);
+}
+
+/* Keyboard shortcut hint */
+.shortcutHint {
+  font-size: var(--text-caption-size);
+  color: var(--fgColor-muted);
+  margin-left: auto;
+  font-family: var(--fontStack-monospace);
+}
