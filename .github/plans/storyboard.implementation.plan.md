@@ -4,54 +4,58 @@
 
 ---
 
-## Phase 1: Scene Loading & Debug Display
+## Phase 1: Scene Loading & Debug Display ✅
 
 ### Goal
-Fetch JSON scene data and display it visually to confirm the loader works.
+Load JSON scene data with object references and display it visually to confirm the loader works.
 
 ### Technical Concepts
 
 **Scene File Format**
-A scene is a single JSON file containing all prototype data:
-```
-/public/data/scenes/default.json
-```
+A scene is a single JSON/JSONC file in `src/data/scenes/` containing all prototype data. Supports two special reference keys:
 
-The file can import shared data using `$import`:
-```json
-{
-  "$import": ["shared/navigation.json"],
-  "user": { "name": "Jane", "role": "admin" },
-  "projects": [...]
-}
-```
+- **`$ref`** — Inline replacement at any nesting level:
+  ```json
+  { "user": { "$ref": "../objects/jane-doe" } }
+  ```
+  Gets replaced with the contents of the referenced file.
+
+- **`$global`** — Root-level merge from an array of paths:
+  ```json
+  { "$global": ["../objects/navigation"], "user": { ... } }
+  ```
+  Referenced files are deep-merged into the scene root (scene values win on conflicts).
 
 **Loader Behavior**
-1. Fetch the scene file (e.g., `/data/scenes/default.json`)
-2. If `$import` array exists, fetch each referenced file from `/data/shared/`
-3. Deep-merge imported data under the scene data (scene wins on conflicts)
-4. Return the merged object
+1. All files under `src/data/` are bundled at build time via `import.meta.glob` (eager, raw text)
+2. Files are parsed with JSONC parser (allows comments)
+3. `$global` references are resolved and deep-merged first
+4. `$ref` objects are recursively resolved throughout the tree
+5. Circular `$ref` chains are detected and throw errors
+6. Paths are resolved relative to the referring file's directory
 
 **Deep Merge Rules**
 - Objects are recursively merged
 - Arrays are replaced, not concatenated
 - Primitives are overwritten
-- Scene data takes priority over imported data
+- Scene data takes priority over imported/global data
 
 ### Deliverables
-- [x] Sample scene file: `/public/data/scenes/default.json`
-- [x] Sample shared file: `/public/data/shared/navigation.json`
+- [x] Scene files in `src/data/scenes/` (default.json, other-scene.json)
+- [x] Reusable data objects in `src/data/objects/` (jane-doe.json, navigation.json)
 - [x] Loader module: `src/storyboard/core/loader.js`
-- [x] Debug component that displays loaded JSON
-- [x] Object references: `$ref` (inline replacement) and `$global` (root-level merge) with relative path resolution — replaces `$import` (see `object-references.plan.md`)
-- [x] Reusable data objects directory: `src/data/objects/`
+- [x] JSONC parser integration via `jsonc-parser`
+- [x] `$ref` inline replacement with relative path resolution
+- [x] `$global` root-level merge
+- [x] Circular reference detection
+- [x] Debug component: `src/storyboard/components/SceneDebug.jsx`
 
 ### Visual Feedback
-A `<SceneDebug />` component renders the loaded scene data as formatted JSON on the page. Confirms loading and merging work correctly.
+A `<SceneDebug />` component renders the loaded scene data as formatted JSON on the page. Reads scene name from `?scene=` URL param, a `sceneName` prop, or defaults to `"default"`.
 
 ---
 
-## Phase 2: React Context & useSceneData Hook
+## Phase 2: React Context & useSceneData Hook ✅
 
 ### Goal
 Provide scene data to components via React context, with a clean hook API.
@@ -60,96 +64,105 @@ Provide scene data to components via React context, with a clean hook API.
 
 **StoryboardProvider**
 A React context provider that:
-1. Loads scene data on mount (using loader from Phase 1)
-2. Stores data in context state
-3. Provides loading/error states
-4. Makes data available to child components
+1. Reads scene name from `?scene=` search param, `sceneName` prop, or defaults to `"default"`
+2. Loads scene data on mount (using loader from Phase 1)
+3. Stores data in context state with loading/error states
+4. Blocks rendering children until data is loaded
+5. Shows fallback UI during loading and error states
 
 **useSceneData Hook**
 ```jsx
 const user = useSceneData('user')
 const userName = useSceneData('user.profile.name')
 const firstProject = useSceneData('projects.0')
+const allData = useSceneData()  // entire scene object
 ```
 
-Supports dot-notation paths to access nested data:
-- `'user'` → returns entire user object
-- `'user.profile.name'` → returns nested string
-- `'projects.0'` → returns first array item
-- `'projects.0.owner.name'` → deep nested access
+Supports dot-notation paths to access nested data. Returns `undefined` during loading, warns in console for missing paths.
+
+**useSceneLoading Hook**
+```jsx
+const loading = useSceneLoading()  // true while scene is loading
+```
 
 **Dot Path Resolution**
-A utility function that takes an object and a dot-notation path, returning the value at that path. Handles:
+`getByPath(obj, path)` utility handles:
 - Object property access (`user.name`)
 - Array index access (`projects.0`)
 - Mixed access (`projects.0.owner.name`)
 - Returns `undefined` for invalid paths (no errors thrown)
 
 ### Deliverables
-- [x] Context module: `src/storyboard/context.jsx`
+- [x] Context: `src/storyboard/StoryboardContext.js` + `src/storyboard/context.jsx`
 - [x] Dot path utility: `src/storyboard/core/dotPath.js`
 - [x] useSceneData hook: `src/storyboard/hooks/useSceneData.js`
-- [x] Wrap app in `<StoryboardProvider>`
+- [x] useSceneLoading hook (in same file)
+- [x] App wrapped in `<StoryboardProvider>`
 
 ### Visual Feedback
-Replace the debug JSON dump with a real component that uses `useSceneData()` to display user info, project list, etc. Data flows through hooks instead of being hardcoded.
+`<SceneDataDemo />` component uses `useSession()` (merged reads) to display user info, demonstrating data flowing through hooks.
 
 ---
 
-## Phase 3: Session State & useSession Hook
+## Phase 3: Session State & useSession Hook ✅
 
 ### Goal
-Enable read/write of runtime state via URL parameters, merged with scene defaults.
+Enable read/write of runtime state via URL hash parameters, merged with scene defaults.
 
 ### Technical Concepts
 
 **Session State Storage**
-URL search params store runtime state:
+URL **hash params** (after `#`) store runtime state:
 ```
-/settings?scene=default&settings.theme=dark&checkout.email=a@b.com
-           └─ scene      └─ user override    └─ form data
+/settings?scene=default#settings.theme=dark&checkout.email=a@b.com
+           ↑ scene        ↑ session state (hash params)
 ```
 
-**URL Param Utilities**
-- `getParam(key)` → read single param
-- `setParam(key, value)` → write single param (updates URL without navigation)
+Hash params are used instead of search params because React Router (via generouted) patches `history.replaceState/pushState`. Any search param change triggers a full route tree re-render. Hash changes only fire `hashchange` events, which React Router ignores.
+
+**URL Hash Utilities** (`src/storyboard/core/session.js`)
+- `getParam(key)` → read single hash param
+- `setParam(key, value)` → write single hash param
 - `getAllParams()` → read all as object
-- `removeParam(key)` → delete param
+- `removeParam(key)` → delete hash param
 
-Uses `URLSearchParams` and `history.replaceState()` to modify URL without page reload.
+Uses `URLSearchParams` to parse `window.location.hash` and native `window.location.hash =` assignment to write (avoids router interception).
 
 **useSession Hook**
 ```jsx
-const [theme, setTheme] = useSession('settings.theme')
+const [theme, setTheme, clearTheme] = useSession('settings.theme')
 ```
+
+Returns a 3-element tuple:
+- `[0]` — Current value (merged: hash param ?? scene default)
+- `[1]` — Setter function (writes to hash param)
+- `[2]` — Clear function (removes hash param, reverts to scene default)
 
 **Read behavior (merged):**
 ```
-URL param ?? Scene JSON value ?? undefined
+URL hash param  ??  Scene JSON value  ??  undefined
 ```
 
-The hook checks URL params first. If not found, falls back to scene data at the same path. This allows scene JSON to define defaults while URL params override them.
+Uses `useSyncExternalStore` subscribing to `hashchange` events for reactive updates without causing React Router re-renders.
 
 **Write behavior:**
-`setTheme('dark')` writes to URL params only (scene JSON is read-only).
+`setTheme('dark')` writes to URL hash only (scene JSON is read-only).
 
-**Why merged reads matter:**
-- User hasn't touched theme → reads `"light"` from scene JSON
-- User toggles to dark → URL gets `?settings.theme=dark`, reads `"dark"`
-- User shares URL → recipient sees `"dark"` (URL overrides their scene defaults)
-- User clears param → falls back to scene JSON default
+**Works with paths not in scene data:**
+Session state paths don't need to exist in scene JSON. For example, `useSession('checkout.email')` works even if there's no `checkout` object in the scene — the value will simply be `undefined` until the user writes to it.
 
 ### Deliverables
-- [ ] URL utilities: `src/storyboard/core/session.js`
-- [ ] useSession hook: `src/storyboard/hooks/useSession.js`
-- [ ] Update context to support merged reads
+- [x] URL hash utilities: `src/storyboard/core/session.js`
+- [x] useSession hook: `src/storyboard/hooks/useSession.js`
+- [x] Reactive updates via `useSyncExternalStore` + `hashchange`
+- [x] Scene data merge via StoryboardContext
 
 ### Visual Feedback
-Add a theme toggle or settings panel. Clicking it updates the URL in real-time. Refresh the page—state persists. Copy URL to new tab—state transfers.
+`<SceneDataDemo />` component demonstrates merged reads. Theme toggle or settings changes update the URL hash in real-time. Refresh the page—state persists. Copy URL to new tab—state transfers.
 
 ---
 
-## Phase 4: Scene Switching & useScene Hook
+## Phase 4: Scene Switching ✅
 
 ### Goal
 Allow switching between different scene files (scenarios) via URL parameter.
@@ -157,107 +170,116 @@ Allow switching between different scene files (scenarios) via URL parameter.
 ### Technical Concepts
 
 **Scene Parameter**
-The `?scene=` URL param determines which JSON file to load:
+The `?scene=` URL search param determines which JSON file to load:
 ```
-?scene=default      → /data/scenes/default.json
-?scene=empty-state  → /data/scenes/empty-state.json
-?scene=error-state  → /data/scenes/error-state.json
+?scene=default      → src/data/scenes/default.json
+?scene=other-scene  → src/data/scenes/other-scene.json
 ```
 
 If no `?scene=` param exists, defaults to `"default"`.
 
-**Scene Resolver**
-1. Read `?scene=` param from URL
-2. Construct path: `/data/scenes/${sceneName}.json`
-3. Pass to loader
-4. Handle missing scenes gracefully (fall back to default, show error)
-
-**useScene Hook**
-```jsx
-const { scene, switchScene, isLoading } = useScene()
-
-// scene = "default" | "empty-state" | etc.
-// switchScene('empty-state') → updates URL, triggers reload
-// isLoading = true while fetching new scene
-```
-
-**Switch Behavior**
-1. Update `?scene=` param in URL
-2. Clear other session params (they were for old scene)
-3. Trigger scene data reload
-4. Provider re-renders with new data
+**Current Implementation**
+Scene switching is handled directly in `StoryboardProvider`:
+1. Reads `?scene=` param from `window.location.search`
+2. Falls back to `sceneName` prop, then `"default"`
+3. Triggers scene reload when the active scene name changes
+4. Renders loading/error states appropriately
 
 ### Deliverables
-- [ ] Scene resolver logic in loader
-- [ ] useScene hook: `src/storyboard/hooks/useScene.js`
-- [ ] Update provider to handle scene changes
-- [ ] Create additional scene file: `/public/data/scenes/empty-state.json`
+- [x] Scene resolver logic in `StoryboardProvider` (`context.jsx`)
+- [x] `?scene=` param detection via `window.location.search`
+- [x] Additional scene file: `src/data/scenes/other-scene.json`
+- [x] `useScene()` hook: `src/storyboard/hooks/useScene.js`
 
 ### Visual Feedback
-Add a scene switcher dropdown. Selecting a different scene reloads data and UI updates. URL reflects current scene. Empty state scene shows different (minimal) data.
+Change `?scene=other-scene` in the URL → app reloads with different data. Use `useScene()` hook to read scene name or switch programmatically:
+```jsx
+const { sceneName, switchScene } = useScene()
+switchScene('other-scene')  // updates ?scene= param, clears hash, reloads
+```
 
 ---
 
-## Phase 5: StoryboardForm Component
+## Phase 5: Form Components
 
 ### Goal
-Automatically persist form inputs to URL session state.
+Provide designer-friendly form components that automatically persist to URL session state, requiring no hook or event handler knowledge.
 
 ### Technical Concepts
 
+**Design Principle**
+This framework is meant for designers. Manual `useSession` + `onChange` handlers are too complex. Designers should be able to use familiar Primer React components with minimal additional API.
+
 **StoryboardForm Component**
 ```jsx
-<StoryboardForm namespace="checkout">
-  <input name="email" />
-  <input name="quantity" type="number" />
+<StoryboardForm data="checkout">
+  <FormControl>
+    <FormControl.Label>Email</FormControl.Label>
+    <TextInput name="email" />
+  </FormControl>
+  <FormControl>
+    <FormControl.Label>Quantity</FormControl.Label>
+    <TextInput name="quantity" type="number" />
+  </FormControl>
+  <Button type="submit">Continue</Button>
 </StoryboardForm>
 ```
 
-Renders a `<form>` that:
-1. Intercepts input changes
-2. Writes values to URL params with namespace prefix
-3. Pre-fills inputs from existing URL params
+- Renders a native `<form>` element
+- `data` prop sets the root path for all fields (e.g., `data="checkout"`)
+- Provides a React context that child input components consume
+- `data="checkout"` + `name="email"` → hash param `#checkout.email=...`
 
-**Namespace Prefixing**
-The `namespace` prop prefixes all field names:
-```
-<input name="email" />  →  ?checkout.email=value
-<input name="quantity" />  →  ?checkout.quantity=5
-```
+**Scene data is optional** — forms work without a matching object in scene JSON. If `checkout` exists in the scene, its values serve as defaults. If not, fields start empty and write to hash params independently.
 
-Prevents collisions between different forms on the same page or across navigation.
-
-**Input Binding**
-For each input within the form:
-1. On mount: read `?{namespace}.{name}` from URL, set as `defaultValue`
-2. On change: write new value to URL param
-3. Support common input types: text, number, checkbox, select, textarea
-
-**Controlled vs Uncontrolled**
-Inputs remain uncontrolled (use `defaultValue`) but sync to URL on change. This avoids re-render loops while keeping URL as source of truth.
-
-**Form Submission**
+**Wrapped Primer Components**
+Storyboard provides wrapped versions of Primer React form components:
 ```jsx
-<StoryboardForm namespace="checkout" onSubmit={handleSubmit}>
+import { TextInput } from '../storyboard/components'
 ```
 
-On submit:
-- Prevents default
-- Collects all namespaced params into an object
-- Passes to `onSubmit` callback
-- Optionally navigates to next page (params persist in URL)
+Each wrapper:
+- Looks and behaves identically to the Primer original
+- Reads the `data` prefix from `StoryboardForm` context
+- Uses `useSession(prefix.name)` internally for auto-binding
+- Passes through all other Primer props unchanged
+
+**URL Hash Format**
+```
+/checkout?scene=default#checkout.email=user@example.com&checkout.quantity=5
+```
 
 ### Deliverables
+- [ ] Form context: `src/storyboard/context/FormContext.js`
 - [ ] StoryboardForm component: `src/storyboard/components/StoryboardForm.jsx`
-- [ ] Input change handlers with URL sync
-- [ ] Support for text, number, checkbox, select, textarea
+- [ ] Wrapped TextInput: `src/storyboard/components/TextInput.jsx`
+- [ ] Wrapped Checkbox: `src/storyboard/components/Checkbox.jsx`
+- [ ] Wrapped Select: `src/storyboard/components/Select.jsx`
+- [ ] Wrapped Textarea: `src/storyboard/components/Textarea.jsx`
+- [ ] Updated exports in `src/storyboard/index.js`
+- [ ] Example form page demonstrating the pattern
 
 ### Visual Feedback
-Create a multi-field form. Type in fields—URL updates live. Refresh page—values persist. Navigate away and back—values still there. Submit form—see collected data.
+Create a multi-field form using Primer components. Type in fields—URL hash updates live. Refresh page—values persist. Navigate away and back—values still there.
 
 ---
 
-## Phase 6: Persistence Layer (localStorage)
+## Phase 6: Rename useSession → useCue — Future
+
+### Goal
+Rename `useSession` to `useCue` across the codebase for a better cinematic metaphor. A "cue" is a signal to change something in the current scene — maps well to runtime overrides on top of scene defaults.
+
+### Deliverables
+- [ ] Rename hook: `useSession` → `useCue`
+- [ ] Rename file: `useSession.js` → `useCue.js`
+- [ ] Rename core utilities: `session.js` → consider `cue.js`
+- [ ] Update all imports and usages
+- [ ] Update exports in `src/storyboard/index.js`
+- [ ] Keep `useSession` as a deprecated re-export for backward compatibility (optional)
+
+---
+
+## Phase 7: Persistence Layer (localStorage) — Future
 
 ### Goal
 Allow certain session values to survive browser close via localStorage.
@@ -266,78 +288,48 @@ Allow certain session values to survive browser close via localStorage.
 
 **Persist Option**
 ```jsx
-// Ephemeral (default) - URL only, dies with tab
-const [email, setEmail] = useSession('checkout.email')
-
-// Persistent - survives browser close
 const [theme, setTheme] = useSession('settings.theme', { persist: true })
 ```
 
-**Write Behavior with Persistence**
-When `persist: true`:
-1. Write to URL param (always)
-2. Also write to localStorage under `storyboard:{key}`
-
 **Read Priority**
 ```
-URL param > localStorage > Scene JSON
+URL hash param > localStorage > Scene JSON
 ```
 
-- URL wins (for shareable links that override local prefs)
-- localStorage is fallback when URL param missing
-- Scene JSON is final fallback (defaults)
-
-**App Load Restoration**
-On StoryboardProvider mount:
-1. Read all `storyboard:*` keys from localStorage
-2. For each, if no URL param exists, restore to URL
-3. This makes localStorage values "sticky" across sessions
-
-**Shared Link Behavior**
-Someone sends `?theme=dark` but your localStorage has `light`:
-- You see dark (URL wins)
-- Navigate to page without param → you see light (your localStorage)
-- Shared links are temporary overrides, not permanent changes to your prefs
-
-**Storage Key Format**
-```
-localStorage key: "storyboard:settings.theme"
-localStorage value: "dark"
-```
-
-### Deliverables
-- [ ] localStorage utilities in `src/storyboard/core/session.js`
-- [ ] Update useSession to accept `{ persist: true }` option
-- [ ] Restoration logic in StoryboardProvider
-
-### Visual Feedback
-Add a "Remember my preference" toggle for theme. Enable it, change theme, close browser entirely. Reopen—theme persists. Disable persistence, change theme, close browser—reverts to default.
+**Not yet implemented.** Current session state is hash-only (ephemeral, dies with tab close).
 
 ---
 
-## File Structure (Final)
+## File Structure (Current + Planned)
 
 ```
-/public/data/
-  ├── shared/
+src/data/
+  ├── objects/
+  │   ├── jane-doe.json
   │   └── navigation.json
   └── scenes/
       ├── default.json
-      └── empty-state.json
+      └── other-scene.json
 
-/src/storyboard/
-  ├── index.js                  # public exports
-  ├── context.jsx               # StoryboardProvider
+src/storyboard/
+  ├── index.js                    # public exports
+  ├── context.jsx                 # StoryboardProvider
+  ├── StoryboardContext.js        # React context (createContext)
   ├── hooks/
-  │   ├── useSceneData.js
-  │   ├── useSession.js
-  │   └── useScene.js
+  │   ├── useSceneData.js         # ✅ read-only scene data
+  │   └── useSession.js           # ✅ merged read/write via hash
   ├── core/
-  │   ├── loader.js             # fetch + merge scene files
-  │   ├── session.js            # URL/localStorage helpers
-  │   └── dotPath.js            # dot notation accessor
+  │   ├── loader.js               # ✅ scene loader with $ref/$global
+  │   ├── session.js              # ✅ URL hash param utilities
+  │   └── dotPath.js              # ✅ dot-notation path resolver
   └── components/
-      └── StoryboardForm.jsx
+      ├── SceneDebug.jsx          # ✅ debug JSON viewer
+      ├── SceneDataDemo.jsx       # ✅ demo component
+      ├── StoryboardForm.jsx      # 🔜 Phase 5
+      ├── TextInput.jsx           # 🔜 Phase 5
+      ├── Checkbox.jsx            # 🔜 Phase 5
+      ├── Select.jsx              # 🔜 Phase 5
+      └── Textarea.jsx            # 🔜 Phase 5
 ```
 
 ---
@@ -345,17 +337,19 @@ Add a "Remember my preference" toggle for theme. Enable it, change theme, close 
 ## Phase Dependencies
 
 ```
-Phase 1 (Loading) 
+Phase 1 (Loading) ✅
     ↓
-Phase 2 (Context + useSceneData)
+Phase 2 (Context + useSceneData) ✅
     ↓
-Phase 3 (useSession) ←──────────┐
-    ↓                           │
-Phase 4 (Scene Switching)       │
-    ↓                           │
-Phase 5 (Forms) ────────────────┘
+Phase 3 (useSession + hash params) ✅
     ↓
-Phase 6 (Persistence)
+Phase 4 (Scene Switching) ✅
+    ↓
+Phase 5 (Form Components) ← NEXT
+    ↓
+Phase 6 (Rename useSession → useCue) — Future
+    ↓
+Phase 7 (localStorage Persistence) — Future
 ```
 
 Each phase builds on previous ones but remains independently testable with visual output.

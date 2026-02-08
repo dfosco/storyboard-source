@@ -8,36 +8,48 @@ A meta-framework for prototyping that treats JSON as a database, enabling design
 ## Core Concepts
 
 ### 1. JSON DB (Data Layer)
-Static JSON files served from the same web server as the app. These define:
-- **Initial state** — Default values for the entire prototype
-- **Entities** — Users, projects, settings, etc.
-- **Scenarios** — Pre-configured data sets (e.g., "empty state", "power user", "error state")
+Static JSON/JSONC files bundled with the app via Vite's `import.meta.glob`. These define:
+- **Objects** — Reusable data fragments (users, navigation, etc.) in `src/data/objects/`
+- **Scenes** — Complete data contexts that compose objects via `$ref` and `$global` in `src/data/scenes/`
 
 ```
-/public/data/
+src/data/
+  ├── objects/
+  │   ├── jane-doe.json          # reusable user data
+  │   └── navigation.json        # reusable nav data
   └── scenes/
-      ├── default/
-      │   ├── user.json
-      │   ├── projects.json
-      │   └── settings.json
-      ├── empty-state/
-      │   └── ...
-      └── error-state/
-          └── ...
+      ├── default.json           # main scene
+      └── other-scene.json       # alternative scenario
+```
+
+**Object References:**
+- `$ref` — Inline replacement: `{ "$ref": "../objects/jane-doe" }` is replaced with the file contents at any nesting level
+- `$global` — Root-level merge: an array of paths merged into the scene root (scene values win on conflicts)
+
+```json
+// src/data/scenes/default.json
+{
+  "user": { "$ref": "../objects/jane-doe" },
+  "navigation": { "$ref": "../objects/navigation" },
+  "projects": [ ... ],
+  "settings": { "theme": "dark_dimmed" }
+}
 ```
 
 ### 2. Session State (Runtime Layer)
-Temporary state that lives in **URL params** and/or **localStorage**:
-- Form submissions persist here, not to JSON files
+Temporary state that lives in **URL hash params** (`#key=value`):
+- Form submissions and user interactions persist here, not to JSON files
 - Enables multi-page flows (form step 1 → step 2 → confirmation)
 - Shareable via URL (copy link = copy state)
 - Inspectable in DevTools
 
-### 3. Scene Switcher
-A mechanism to load a different "scene" (JSON dataset):
-- Could be a query param: `?story=empty-state`
-- Or a dev UI overlay for designers
-- Reloads the JSON DB from a different folder
+Hash params are used instead of search params (`?`) to avoid triggering React Router re-renders (generouted patches `history.replaceState`).
+
+### 3. Scene Switching
+Load a different "scene" (JSON dataset) via the `?scene=` search param:
+- `?scene=default` → loads `src/data/scenes/default.json`
+- `?scene=other-scene` → loads `src/data/scenes/other-scene.json`
+- No param → defaults to `"default"`
 
 ---
 
@@ -45,34 +57,27 @@ A mechanism to load a different "scene" (JSON dataset):
 
 ### Reading Data
 ```jsx
-// Read from JSON DB
+// Read from Scene JSON (read-only defaults)
 const user = useSceneData('user')
 const projects = useSceneData('projects')
 
-// Read from session state (URL/localStorage)
-const formData = useSession('checkout-form')
+// Read merged value (hash param ?? scene default), write to hash
+const [theme, setTheme] = useSession('settings.theme')
 ```
 
 ### Writing Session State
 ```jsx
-// Persist to URL params or localStorage
-const [value, setValue] = useSession('field-name')
+// Read/write via URL hash params
+const [value, setValue, clearValue] = useSession('field-name')
 
-// Form helper that auto-serializes on submit
-<StoryboardForm persistTo="url" namespace="checkout">
-  <input name="email" />
-  <input name="quantity" />
-</StoryboardForm>
-// → URL becomes ?checkout.email=x&checkout.quantity=5
+// setValue('dark') → writes #field-name=dark to URL hash
+// clearValue() → removes hash param, reverts to scene default
 ```
 
 ### Scene Management
 ```jsx
-// Get current scene
-const scene = useScene() // "default" | "empty-state" | etc.
-
-// Switch scene (triggers reload of JSON DB)
-switchScene('error-state')
+// Scene is determined by ?scene= param, read in StoryboardProvider
+// Currently managed via URL directly
 ```
 
 ---
@@ -81,25 +86,25 @@ switchScene('error-state')
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                      JSON DB                            │
-│   /public/data/scenes/{story-name}/*.json              │
-│   (read-only, defines initial state)                    │
+│                    Scene JSON                           │
+│   src/data/scenes/{scene-name}.json                    │
+│   (read-only, defines defaults via $ref/$global)        │
 └─────────────────────────┬───────────────────────────────┘
-                          │ fetch on app load
+                          │ loaded on mount via import.meta.glob
                           ▼
 ┌─────────────────────────────────────────────────────────┐
 │                   Storyboard Context                    │
-│   - Holds fetched JSON data in memory                   │
-│   - Merges with session state for reads                 │
-│   - Provides hooks to components                        │
+│   - Holds resolved scene data in memory                 │
+│   - Provides useSceneData() for raw defaults            │
+│   - Provides useSession() for merged reads + writes     │
 └─────────────────────────┬───────────────────────────────┘
                           │
           ┌───────────────┴───────────────┐
           ▼                               ▼
 ┌──────────────────┐            ┌──────────────────┐
 │   Session State  │            │    Components    │
-│  (URL/localStorage)           │  useSceneData()       │
-│  - User inputs   │◄───────────│  useSession()
+│  (URL hash #)    │            │  useSceneData()  │
+│  - User inputs   │◄───────────│  useSession()    │
 │  - Form data     │  persist   │                  │
 │  - Temp state    │            │                  │
 └──────────────────┘            └──────────────────┘
@@ -109,331 +114,203 @@ switchScene('error-state')
 
 ## Key Design Decisions
 
-### 1. URL params vs localStorage
-**Decision: URL for session state, localStorage for cross-session persistence**
+### 1. Hash params for session state
+**Decision: URL hash fragment (`#`) for all session state**
 
-Two persistence modes:
-- **URL params** (default): Ephemeral, shareable, dies when tab closes
-- **localStorage**: Persists across sessions, survives browser restart
-
-Developers mark which fields persist:
-
-```jsx
-// Ephemeral (default) - lives in URL only
-const [email, setEmail] = useSession('checkout.email')
-
-// Persistent - synced to localStorage, survives browser close
-const [theme, setTheme] = useSession('settings.theme', { persist: true })
+Session params are stored in the URL hash (after `#`):
+```
+/settings?scene=default#settings.theme=dark&checkout.email=a@b.com
+           ↑ scene (search param)  ↑ session state (hash params)
 ```
 
-**How it works:**
-- `persist: true` → writes to both URL AND localStorage
-- On app load: localStorage values are restored to URL params (if not already set)
-- URL wins for reading, but doesn't overwrite localStorage
-- Only explicit `setTheme('dark')` calls persist to localStorage
+**Why hash instead of search params:**
+- React Router (via generouted) patches `history.replaceState/pushState`
+- Any search param change triggers a full route tree re-render
+- Hash changes only fire `hashchange` events, which React Router ignores
+- Native `window.location.hash` assignment avoids the router entirely
 
 ```
-Read priority:  URL param > localStorage > Scene JSON
-Write behavior: setX() → URL (always) + localStorage (if persist: true)
+Read priority:  URL hash param  ??  Scene JSON value  ??  undefined
+Write behavior: setValue() → URL hash only (scene JSON is read-only)
 ```
 
 **Shared link behavior:**
-- Someone sends you `?theme=dark` but your localStorage has `light`
-- You see dark (URL wins)
-- Navigate to another page without the param → you see light (your localStorage)
-- Shared links are temporary overrides, not permanent changes
-
-**Use cases:**
-- Theme preference → `persist: true`
-- Language setting → `persist: true`  
-- Form data in multi-step flow → default (URL only)
-- Temporary filters → default (URL only)
+- Copy URL → share → recipient sees exact same prototype state
+- Hash params persist across page navigation
+- Clearing a param reverts to scene JSON default
 
 ### 2. Layered Data Model
-**Decision: URL params override Scene JSON, accumulated across navigation**
+**Decision: Hash params override Scene JSON, accumulated across navigation**
 
 ```
-Final Value = URL param ?? Scene JSON value ?? undefined
-```
-
-**How it works in practice:**
-
-```
-Page 1: /settings?story=default
-├── Scene JSON defines: { theme: "light", notifications: true, language: "en" }
-├── URL params: (none yet)
-└── User sees: theme=light, notifications=true, language=en
-
-User changes theme → URL updates:
-/settings?story=default&theme=dark
-├── Scene JSON: { theme: "light", ... }
-├── URL params: { theme: "dark" }
-└── User sees: theme=dark (override), notifications=true, language=en
-
-User navigates to /dashboard?story=default&theme=dark
-├── Dashboard can read theme=dark from URL
-├── Dashboard reads its own data from Scene JSON
-└── State persists across pages
+Final Value = Hash param ?? Scene JSON value ?? undefined
 ```
 
 **Key behaviors:**
 - Scene JSON = base layer (read-only, defines defaults)
-- URL params = overlay (read-write, accumulates with interaction)
+- Hash params = overlay (read-write, accumulates with interaction)
 - Params persist across navigation (they're in the URL)
 - Any page can read any param (shared state)
-- `useSession()` = merged read (URL ?? Scene JSON) + write to URL
+- `useSession()` = merged read (hash ?? Scene JSON) + write to hash
 - `useSceneData()` = Scene JSON only (for "reset to defaults" use cases)
 
 ### 3. Loading strategy
-**Decision: Eager load current scene, lazy load on story switch**
+**Decision: Eager load via Vite bundling**
 
-On app boot:
-1. Determine current scene from `?story=` param (default: "default")
-2. Fetch manifest: `/data/scenes/{story}/manifest.json`
-3. Parallel fetch all files listed in manifest
-
-This gives:
-- Fast initial load (one round-trip for manifest, one for data)
-- No loading spinners mid-interaction
-- Story switching can show a brief loading state (acceptable)
+Scene and object files are loaded eagerly via `import.meta.glob` with the `eager: true` option. This means:
+- All JSON/JSONC files under `src/data/` are bundled at build time
+- No runtime fetching or manifest needed
+- JSONC parser allows comments in data files
+- Scene resolution and `$ref`/`$global` merging happen synchronously at load time
 
 ### 4. Framework coupling
 **Decision: React-first, extract vanilla core later**
 
-- Build for React now (your current stack)
-- Keep core logic in pure functions where possible
+- Built for React (current stack)
+- Core logic in pure functions where possible (`loader.js`, `session.js`, `dotPath.js`)
 - Extract to `@storyboard/core` + `@storyboard/react` when there's demand
 
 ---
 
-## Implementation Phases
+## v1 Scope
 
-### Phase 1: Foundation
-- [ ] JSON DB loader (fetch + cache JSON files)
-- [ ] Session state manager (URL param read/write)
-- [ ] Story resolver (which folder to load from)
+### Implemented ✅
+- Scene loading with `$ref` and `$global` object references
+- JSONC support (comments in JSON files)
+- `<StoryboardProvider>` context with `?scene=` param support
+- `useSceneData(path)` hook with dot-notation access
+- `useSceneLoading()` hook
+- `useSession(path)` hook with merged reads and hash-param writes
+- Session state utilities: `getParam`, `setParam`, `getAllParams`, `removeParam`
+- `getByPath()` dot-notation utility
+- `<SceneDebug>` debug component
 
-### Phase 2: React Bindings
-- [ ] `<StoryboardProvider>` context
-- [ ] `useSceneData()` hook
-- [ ] `useSession()` hook
-- [ ] `useScene()` hook
-
-### Phase 3: Form Helpers
-- [ ] `<StoryboardForm>` component
-- [ ] Auto-binding inputs to session state
-- [ ] Submit → navigate with state
-
-### Phase 4: Developer Experience
-- [ ] Story switcher overlay UI
-- [ ] DevTools panel (inspect current state)
-- [ ] CLI to scaffold new scenes
-
----
-
----
-
-## v1 Scope (What we're building now)
-
-### In scope
-- JSON DB with scene folders
-- Manifest-based eager loading
-- Session state (URL-first, localStorage overflow)
-- React hooks: `useSceneData()`, `useSession()`, `useScene()`
-- `<StoryboardProvider>` context
-- Form helpers for persisting to session state
+### Next: Form Components
+- `<StoryboardForm>` component for designer-friendly form binding
+- Wrapped Primer React components that auto-sync with session state
+- See implementation plan for details
 
 ### Out of scope (v2)
+- Rename `useSession` → `useCue` (better cinematic metaphor: a "cue" is a signal to change something in the current scene)
+- localStorage persistence layer (`{ persist: true }` option)
 - Simulation layer (delays, fake errors, outcomes)
 - `useAction()` hook
 - Non-React bindings
-- DevTools / story switcher UI
+- DevTools / scene switcher UI
 - TypeScript generation from JSON schemas
 
 ---
 
-## File Structure (v1)
+## File Structure (Current)
 
 ```
-/public/data/
-  ├── shared/
-  │   └── navigation.json       # reusable across scenes
+src/data/
+  ├── objects/
+  │   ├── jane-doe.json           # reusable user object
+  │   └── navigation.json         # reusable nav object
   └── scenes/
-      ├── default.json          # main scene file
-      └── empty-state.json      # alternative scenario
+      ├── default.json            # main scene (uses $ref)
+      └── other-scene.json        # alternative scenario
 
-/src/storyboard/
-  ├── index.js                  # public exports
-  ├── context.jsx               # StoryboardProvider
+src/storyboard/
+  ├── index.js                    # public exports
+  ├── context.jsx                 # StoryboardProvider
+  ├── StoryboardContext.js        # React context (createContext)
   ├── hooks/
-  │   ├── useSceneData.js
-  │   ├── useSession.js
-  │   └── useScene.js
+  │   ├── useSceneData.js         # read-only scene data access
+  │   └── useSession.js           # merged read/write via hash params
   ├── core/
-  │   ├── loader.js             # fetch + merge scene files
-  │   ├── session.js            # URL/localStorage helpers
-  │   └── dotPath.js            # dot notation accessor
+  │   ├── loader.js               # scene loader with $ref/$global resolution
+  │   ├── session.js              # URL hash param utilities
+  │   └── dotPath.js              # dot-notation path resolver
   └── components/
-      └── StoryboardForm.jsx
+      ├── SceneDebug.jsx          # debug JSON viewer
+      ├── SceneDebug.module.css
+      └── SceneDataDemo.jsx       # demo component using hooks
 ```
 
 ---
 
-## API Surface (v1)
+## API Surface (Current)
 
-### Hooks (Simplified)
+### Hooks
 
 ```jsx
-// PRIMARY: Read merged value, write to URL
-const [theme, setTheme] = useSession('settings.theme')
-// Read: URL param ?? localStorage ?? Scene JSON value
-// Write: setTheme('dark') → updates URL param
+// Read scene JSON defaults (read-only)
+const user = useSceneData('user')
+const userName = useSceneData('user.profile.name')
+const allData = useSceneData()  // entire scene object
 
-// WITH PERSISTENCE: Also saves to localStorage (survives browser close)
-const [theme, setTheme] = useSession('settings.theme', { persist: true })
-// Write: setTheme('dark') → updates URL param AND localStorage
+// Check loading state
+const loading = useSceneLoading()
 
-// SECONDARY: Read Scene JSON defaults only (for "reset" features)
-const defaults = useSceneData('settings')
-// Returns raw Scene JSON, ignores URL params and localStorage
-// Use case: "Reset to defaults" button
-
-// STORY: Check/switch current scene
-const { story, switchScene } = useScene()
+// Read merged value + write to hash
+const [theme, setTheme, clearTheme] = useSession('settings.theme')
+// Read: hash param ?? scene JSON ?? undefined
+// setTheme('dark') → writes to hash
+// clearTheme() → removes hash param, reverts to scene default
 ```
 
-### Why merged-by-default is correct
+### Provider
 
 ```jsx
-// Settings page
-const [theme, setTheme] = useSession('settings.theme')
-
-// User hasn't touched it yet:
-//   URL: ?story=default (no theme param)
-//   Scene JSON: { theme: "light" }
-//   → theme = "light" (from Scene JSON)
-
-// User toggles to dark:
-//   setTheme('dark')
-//   URL: ?story=default&settings.theme=dark
-//   → theme = "dark" (from URL override)
-
-// "Reset to defaults" button:
-const defaults = useSceneData('settings')
-const handleReset = () => setTheme(defaults.theme)  // writes Scene JSON value back to URL
-```
-
-### Provider & Forms
-
-```jsx
-// Provider wraps app (reads ?story= param automatically)
+// Provider wraps app, reads ?scene= param automatically
 <StoryboardProvider>
   <App />
 </StoryboardProvider>
 
-// Form that auto-persists fields to URL params
-<StoryboardForm namespace="checkout" onSubmit={handleSubmit}>
-  <input name="email" />      {/* → ?checkout.email=... */}
-  <input name="quantity" />   {/* → ?checkout.quantity=... */}
-</StoryboardForm>
+// Or pass scene name as prop
+<StoryboardProvider sceneName="other-scene">
+  <App />
+</StoryboardProvider>
 ```
 
 ### URL = Complete Session State
 
 ```
-/checkout?story=default&settings.theme=dark&checkout.email=a@b.com
-          └─ base data  └─ override         └─ form state
+/checkout?scene=default#settings.theme=dark&checkout.email=a@b.com
+          ↑ scene        ↑ session state (hash params)
 ```
 
 Copy URL → share → recipient sees exact same prototype state.
 
 ---
 
-## Implementation Phases (v1)
-
-### Phase 1: Core
-- [ ] JSON DB loader (fetch scene files)
-- [ ] Session state manager (read/write URL params)
-- [ ] Scene resolver (parse `?scene=` param)
-
-### Phase 2: React Integration
-- [ ] `<StoryboardProvider>` with context
-- [ ] `useSceneData()` hook
-- [ ] `useSession()` hook  
-- [ ] `useScene()` hook
-
-### Phase 3: Forms
-- [ ] `<StoryboardForm>` component
-- [ ] Auto-bind inputs to session state
-- [ ] Handle submit → persist → navigate
-
-### Phase 4: Polish
-- [ ] Error boundaries for failed fetches
-- [ ] Default/fallback story handling
-- [ ] localStorage overflow for large payloads
-
----
-
-## Open Questions — RESOLVED
+## Resolved Decisions
 
 ### 1. Nested data access
-**Decision: Yes, dot notation with simple DX**
+**Yes, dot notation with simple DX**
 
 ```jsx
-// Access top-level
 const user = useSceneData('user')
-
-// Access nested with dot notation
 const userName = useSceneData('user.profile.name')
 const firstProject = useSceneData('projects.0')
-const projectOwner = useSceneData('projects.0.owner.name')
 
-// Same for useSession
-const [theme, setTheme] = useSession('settings.appearance.theme')
+const [theme, setTheme] = useSession('settings.theme')
 ```
 
 ### 2. Scene file format
-**Decision: Single file per scene, with imports for shared data**
-
-```
-/public/data/
-  ├── shared/
-  │   └── navigation.json      ← reusable across scenes
-  └── scenes/
-      ├── default.json
-      └── empty-state.json
-```
+**Single file per scene, with `$ref` and `$global` for shared data**
 
 ```json
-// /data/scenes/default.json
 {
-  "$import": ["shared/navigation.json"],
-  "user": {
-    "name": "Jane",
-    "role": "admin"
-  },
+  "$global": ["../objects/navigation"],
+  "user": { "$ref": "../objects/jane-doe" },
   "projects": [ ... ],
   "settings": { ... }
 }
 ```
 
-- One file = one scene (simple)
-- `$import` pulls in shared data files (merged at load time)
-- No manifest needed
+- `$ref` replaced inline with referenced file contents
+- `$global` array merged into scene root (scene wins conflicts)
+- Circular `$ref` chains detected and throw errors
+- Replaces original `$import` design
 
 ### 3. URL param name
-**Decision: `?scene=`**
+**`?scene=` for scene selection, `#` for session state**
 
 ```
-/dashboard?scene=default&settings.theme=dark
+/dashboard?scene=default#settings.theme=dark
 ```
 
-Avoids Storybook conflict, fits the cinematic "storyboard" metaphor.
-
----
-
-## Next Steps
-
-1. Validate this architecture with your use cases
-2. Decide on the open questions above
-3. Start with Phase 1 implementation
+Avoids Storybook conflict (not `story`), fits the cinematic "storyboard" metaphor.
