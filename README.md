@@ -209,55 +209,43 @@ Clicking a button updates the URL to something like:
 
 Refresh the page — the override persists. Remove the hash params from the URL — it reverts to the scene JSON defaults.
 
-### Example: Form with controlled inputs
+### Example: Form with StoryboardForm
+
+Storyboard provides form components that automatically persist to URL session state. No hooks or event handlers needed — just use a `name` prop.
 
 ```jsx
-import { useState } from 'react'
-import { useSession } from '../storyboard'
-import { FormControl, TextInput, Button } from '@primer/react'
+import { FormControl, Button } from '@primer/react'
+import { StoryboardForm, TextInput, Textarea } from '../storyboard'
 
 function ProfileForm() {
-  const [name, setName] = useSession('user.name')
-  const [bio, setBio] = useSession('user.profile.bio')
-
-  // Local form state
-  const [formName, setFormName] = useState(name || '')
-  const [formBio, setFormBio] = useState(bio || '')
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    setName(formName)
-    setBio(formBio)
-  }
-
   return (
-    <form onSubmit={handleSubmit}>
+    <StoryboardForm data="user" onSubmit={(e) => e.preventDefault()}>
       <FormControl>
         <FormControl.Label>Name</FormControl.Label>
-        <TextInput
-          value={formName}
-          onChange={(e) => setFormName(e.target.value)}
-        />
+        <TextInput name="name" />
       </FormControl>
 
       <FormControl>
         <FormControl.Label>Bio</FormControl.Label>
-        <TextInput
-          value={formBio}
-          onChange={(e) => setFormBio(e.target.value)}
-        />
+        <Textarea name="profile.bio" />
       </FormControl>
 
       <Button type="submit">Save</Button>
-    </form>
+    </StoryboardForm>
   )
 }
 ```
 
-Clicking **Save** updates the URL hash:
+The `data` prop sets a root path. Each input's `name` is appended to it:
+- `data="user"` + `name="name"` → session path `user.name`
+- `data="user"` + `name="profile.bio"` → session path `user.profile.bio`
+
+Values are buffered locally while typing. On submit, they flush to the URL hash:
 ```
 #user.name=Alice&user.profile.bio=Hello%20world
 ```
+
+Available form components: `TextInput`, `Textarea`, `Select`, `Checkbox`. They look and behave identically to Primer React originals — just import from `'../storyboard'` instead of `'@primer/react'`.
 
 ---
 
@@ -327,6 +315,11 @@ To create a new page, add a `.jsx` file to `src/pages/`.
 |-----------|-------------|
 | `<StoryboardProvider>` | Wraps the app. Loads scene from `?scene=` param. Already configured in `src/index.jsx`. |
 | `<SceneDebug>` | Renders resolved scene data as formatted JSON. Useful for debugging. |
+| `<StoryboardForm>` | Form wrapper. `data` prop sets root path for child inputs (e.g. `data="checkout"`). |
+| `<TextInput>` | Wrapped Primer TextInput. `name` prop auto-syncs with session state. |
+| `<Textarea>` | Wrapped Primer Textarea. `name` prop auto-syncs with session state. |
+| `<Select>` | Wrapped Primer Select. `name` prop auto-syncs with session state. |
+| `<Checkbox>` | Wrapped Primer Checkbox. `name` prop auto-syncs with session state. |
 
 ### Utilities
 
