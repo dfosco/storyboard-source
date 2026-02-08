@@ -8,13 +8,16 @@ import './globals.css'
 
 import ColorModeSwitcher from './components/ColorModeSwitcher'
 import DevTools from './storyboard/components/DevTools/DevTools.jsx'
-
-const rootElement = document.getElementById('root')
-const root = createRoot(rootElement)
+import { installHashPreserver } from './storyboard/core/hashPreserver.js'
 
 const router = createBrowserRouter(routes, {
     basename: import.meta.env.BASE_URL,
 })
+
+installHashPreserver(router, import.meta.env.BASE_URL)
+
+const rootElement = document.getElementById('root')
+const root = createRoot(rootElement)
 
 root.render(
     <StrictMode>

@@ -1,37 +1,25 @@
-import { useState } from 'react'
-import { Text, Button, ButtonGroup, TextInput, FormControl } from '@primer/react'
+import { Text, Button, ButtonGroup, FormControl } from '@primer/react'
 import { useSession } from '../hooks/useSession.js'
 import { useScene } from '../hooks/useScene.js'
+import StoryboardForm from './StoryboardForm.jsx'
+import TextInput from './TextInput.jsx'
+import Textarea from './Textarea.jsx'
 import styles from './SceneDebug.module.css'
 
 /**
  * Demo component that renders scene data via useSession().
  * Every value can be overridden by adding a URL param, e.g.:
- *   ?user.name=Alice&user.profile.bio=Hello
+ *   #user.name=Alice&user.profile.bio=Hello
  * Refresh the page — overrides persist. Remove the param — scene default returns.
  */
 export default function SceneDataDemo() {
   const [name, setName, clearName] = useSession('user.name')
   const [username, setUsername, clearUsername] = useSession('user.username')
-  const [bio, setBio, clearBio] = useSession('user.profile.bio')
-  const [location, setLocation, clearLocation] = useSession('user.profile.location')
+  const [bio, , clearBio] = useSession('user.profile.bio')
+  const [location, , clearLocation] = useSession('user.profile.location')
   const { sceneName, switchScene } = useScene()
 
   const nextScene = (sceneName === 'default') ? 'other-scene' : 'default'
-
-  // Local form state
-  const [formName, setFormName] = useState(name || '')
-  const [formUsername, setFormUsername] = useState(username || '')
-  const [formBio, setFormBio] = useState(bio || '')
-  const [formLocation, setFormLocation] = useState(location || '')
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    setName(formName)
-    setUsername(formUsername)
-    setBio(formBio)
-    setLocation(formLocation)
-  }
 
   const resetUser = () => {
     clearName()
@@ -43,7 +31,7 @@ export default function SceneDataDemo() {
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>useSession Demo</h2>
-      <p>Add <code>?user.name=Alice</code> to the URL to override any value.</p>
+      <p>Add <code>#user.name=Alice</code> to the URL hash to override any value.</p>
 
       <section>
         <Text as="h3" fontWeight="bold">Scene</Text>
@@ -67,55 +55,35 @@ export default function SceneDataDemo() {
         <ButtonGroup>
           <Button size="small" onClick={() => setName('Alice Chen')}>Update name</Button>
           <Button size="small" onClick={() => setUsername('alice123')}>Update username</Button>
-          <Button size="small" onClick={() => setBio('Product manager working at Memex')}>Update bio</Button>
-          <Button size="small" onClick={() => setLocation('Seattle, WA')}>Update location</Button>
         </ButtonGroup>
         <Button size="small" variant="danger" onClick={resetUser} style={{ marginLeft: '8px' }}>
           Reset
         </Button>
       </section>
 
+      <a href="/storyboard/Overview">hello</a>
+
       <section>
         <Text as="h3" fontWeight="bold">Edit User</Text>
-        <form onSubmit={handleSubmit} className={styles.form}>
+        <StoryboardForm data="user" className={styles.form}>
           <FormControl>
             <FormControl.Label>Name</FormControl.Label>
-            <TextInput
-              value={formName}
-              onChange={(e) => setFormName(e.target.value)}
-              placeholder="Name"
-              size="small"
-            />
+            <TextInput name="name" placeholder="Name" size="small" />
           </FormControl>
           <FormControl>
             <FormControl.Label>Username</FormControl.Label>
-            <TextInput
-              value={formUsername}
-              onChange={(e) => setFormUsername(e.target.value)}
-              placeholder="Username"
-              size="small"
-            />
+            <TextInput name="username" placeholder="Username" size="small" />
           </FormControl>
           <FormControl>
             <FormControl.Label>Bio</FormControl.Label>
-            <TextInput
-              value={formBio}
-              onChange={(e) => setFormBio(e.target.value)}
-              placeholder="Bio"
-              size="small"
-            />
+            <Textarea name="profile.bio" placeholder="Bio" />
           </FormControl>
           <FormControl>
             <FormControl.Label>Location</FormControl.Label>
-            <TextInput
-              value={formLocation}
-              onChange={(e) => setFormLocation(e.target.value)}
-              placeholder="Location"
-              size="small"
-            />
+            <TextInput name="profile.location" placeholder="Location" size="small" />
           </FormControl>
           <Button type="submit" size="small">Save</Button>
-        </form>
+        </StoryboardForm>
       </section>
     </div>
   )

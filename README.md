@@ -209,55 +209,43 @@ Clicking a button updates the URL to something like:
 
 Refresh the page — the override persists. Remove the hash params from the URL — it reverts to the scene JSON defaults.
 
-### Example: Form with controlled inputs
+### Example: Form with StoryboardForm
+
+Storyboard provides form components that automatically persist to URL session state on submit. No hooks or event handlers needed — just use a `name` prop.
 
 ```jsx
-import { useState } from 'react'
-import { useSession } from '../storyboard'
-import { FormControl, TextInput, Button } from '@primer/react'
+import { FormControl, Button } from '@primer/react'
+import { StoryboardForm, TextInput, Textarea } from '../storyboard'
 
 function ProfileForm() {
-  const [name, setName] = useSession('user.name')
-  const [bio, setBio] = useSession('user.profile.bio')
-
-  // Local form state
-  const [formName, setFormName] = useState(name || '')
-  const [formBio, setFormBio] = useState(bio || '')
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    setName(formName)
-    setBio(formBio)
-  }
-
   return (
-    <form onSubmit={handleSubmit}>
+    <StoryboardForm data="user">
       <FormControl>
         <FormControl.Label>Name</FormControl.Label>
-        <TextInput
-          value={formName}
-          onChange={(e) => setFormName(e.target.value)}
-        />
+        <TextInput name="name" />
       </FormControl>
 
       <FormControl>
         <FormControl.Label>Bio</FormControl.Label>
-        <TextInput
-          value={formBio}
-          onChange={(e) => setFormBio(e.target.value)}
-        />
+        <Textarea name="profile.bio" />
       </FormControl>
 
       <Button type="submit">Save</Button>
-    </form>
+    </StoryboardForm>
   )
 }
 ```
 
-Clicking **Save** updates the URL hash:
+The `data` prop sets a root path. Each input's `name` is appended to it:
+- `data="user"` + `name="name"` → session path `user.name`
+- `data="user"` + `name="profile.bio"` → session path `user.profile.bio`
+
+Values are buffered locally while typing. On submit, they flush to the URL hash:
 ```
 #user.name=Alice&user.profile.bio=Hello%20world
 ```
+
+Available form components: `TextInput`, `Textarea`, `Select`, `Checkbox`. They look and behave identically to Primer React originals — just import from `'../storyboard'` instead of `'@primer/react'`.
 
 ---
 
@@ -308,6 +296,15 @@ Routes are auto-generated from the file structure in `src/pages/` via [@generout
 
 To create a new page, add a `.jsx` file to `src/pages/`.
 
+### Hash Preservation
+
+URL hash params (session state) are automatically preserved across all page navigations. A document-level interceptor converts `<a href>` clicks into client-side React Router navigations, carrying the current hash forward. This works with any link component — Primer's `UnderlineNav`, `NavList`, plain `<a>` tags, etc.
+
+Hash is **not** preserved when:
+- The link already defines its own hash fragment
+- The link points to an external origin
+- `switchScene()` is called (intentionally clears hash since it belongs to the previous scene)
+
 ---
 
 ## API Reference
@@ -327,6 +324,11 @@ To create a new page, add a `.jsx` file to `src/pages/`.
 |-----------|-------------|
 | `<StoryboardProvider>` | Wraps the app. Loads scene from `?scene=` param. Already configured in `src/index.jsx`. |
 | `<SceneDebug>` | Renders resolved scene data as formatted JSON. Useful for debugging. |
+| `<StoryboardForm>` | Form wrapper. `data` prop sets root path for child inputs. Buffers values locally; flushes to URL hash on submit. |
+| `<TextInput>` | Wrapped Primer TextInput. `name` prop auto-binds to session state via form context. |
+| `<Textarea>` | Wrapped Primer Textarea. `name` prop auto-binds to session state via form context. |
+| `<Select>` | Wrapped Primer Select. `name` prop auto-binds to session state via form context. |
+| `<Checkbox>` | Wrapped Primer Checkbox. `name` prop auto-binds to session state via form context. |
 
 ### Utilities
 
@@ -338,6 +340,7 @@ To create a new page, add a `.jsx` file to `src/pages/`.
 | `setParam(key, value)` | Write a URL hash param. |
 | `getAllParams()` | Get all hash params as an object. |
 | `removeParam(key)` | Remove a URL hash param. |
+| `installHashPreserver(router, basename)` | Intercepts internal link clicks for client-side navigation with hash preservation. |
 
 ### Special JSON keys
 
