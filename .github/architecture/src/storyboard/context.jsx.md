@@ -78,3 +78,4 @@ Also re-exports [`StoryboardContext`](./StoryboardContext.js.md) as a named expo
 ## Notes
 
 - **React Router interaction** — The provider no longer uses `react-router-dom`'s `useSearchParams()` because React Router (via `generouted`) patches `history.replaceState/pushState`. This means any query param change triggers a full route tree re-render, even if only the hash changed. By reading the search param directly from `window.location.search`, the provider only responds to actual scene changes.
+- **No loading flash on navigation** — The provider only shows the loading fallback on initial mount (when `data` is `null`). On subsequent navigations within the same scene, children continue rendering with the existing data while the effect re-runs. Since `loadScene` resolves near-instantly (all data is eagerly bundled via `import.meta.glob`), there is no visible gap.
