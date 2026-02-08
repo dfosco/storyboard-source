@@ -30,7 +30,10 @@ export default function StoryboardProvider({ sceneName, fallback, children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    setLoading(true)
+    // Only show loading state on initial mount or when scene actually changes
+    if (data === null) {
+      setLoading(true)
+    }
     setError(null)
 
     loadScene(activeSceneName)
@@ -42,7 +45,7 @@ export default function StoryboardProvider({ sceneName, fallback, children }) {
         setError(err.message)
         setLoading(false)
       })
-  }, [activeSceneName])
+  }, [activeSceneName]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const value = {
     data,
