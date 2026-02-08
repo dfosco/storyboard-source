@@ -1,182 +1,360 @@
-# Primer React Template ⚡⚛️
+# Storyboard
 
-The easiest way to build a prototype from scratch with [Primer React](https://primer.style/react/) and deploy with GitHub Pages. 
+A small framework to create stateful prototypes. Storyboard lets you use JSON as a simple database for your prototype, creating **scenes** to prototype flows of your app and saving data to URLs. This means:
 
-Perfect for quick prototyping with code, and setup to be visible only for signed-in Hubbers. Works (mostly) out of the box!
+- Create `scenes` to represent different flows in your app
+- Set up interactions that create and edit data in your UI with ease
+- Every single change is saved to a unique URL — share *any* state of your prototype!
+- Work with data structures that mirror your production app - without the complexity of connecting to APIs or using complex frameworks like NextJS
 
-*Built using [vite.dev](https://vite.dev/guide/), see their docs if you want to customize any configuration (you shouldn't have to).*
+Built with [Vite](https://vite.dev) and [generouted](https://github.com/oedotme/generouted). Uses [GitHub Primer](https://primer.style) for layout -- more design system support coming soon!
 
-## Get Started (Quick setup - Codespaces)
-
-<details>
-<summary>
-See instructions
-</summary>
-
-### Create a codespace
-
-1. Create a codespace for your prototype by clicking **Use this template** > **Open in a codespace**
-
-2. In the codespaces terminal, run:
+## Quick Start
 
 ```bash
 npm install
-```
-```bash
-npm run dev
+npm run dev     # http://localhost:1234
 ```
 
-Once `npm run dev` is running, go to the **PORTS tab** in the terminal and open the URL for your prototype:
+## How It Works
 
-![Screenshot showing the ports tab and Port URL](.readme/image-ports-1.png)
+Storyboard separates **data** from **UI**. Your components read from JSON scene files instead of hardcoding content. 
 
-If the **PORTS tab** is not visible for you, right-click next to the other tabs and enable it in the dropdown menu:
+You can switch between different scenes (flows) via a URL parameter, and override any value at runtime through the URL. 
 
-![Screenshot showing how to enable the ports tab](.readme/image-ports.png)
+Every interaction on your UI get saved to the URL and persist during a user session. That also means any session and user state can be recovered just by sharing a URL! 
 
-### Sharing your prototype
-
-This is a temporary URL that's only live while `npm run dev` is running in your Codespace. 
-
-To make the URL accessible for others, change its visibility: 
-
-1. Go to **PORTS** tab
-2. On the Visibility column, right click on **🔒 Private** 
-3. Choose **Port visibility** on the dropdown
-4. Change it to **Private to Organization**
-
-![Screenshot matching the description above](.readme/image-ports-3.png)
-
-To share a permanent URL, see [Get Started (Local development)](#get-started-local-development) below.
-
-### Saving your codespace into a repository
-
-If you try to `git push` from your codespace terminal, you will notice there is no repository associated with it.
-
-To save your work, create a new empty repository owned by **@github** and set your codespace to it by running:
-
-```bash
-git remote add origin git@github.com:github/YOUR_REPO_NAME.git
-git branch -M main
-git push -u origin main
+```
+┌──────────────────────────────┐
+│  Scene JSON (read-only)      │  ← Your data files define defaults
+│  src/data/scenes/default.json│
+└──────────────┬───────────────┘
+               │
+               ▼
+┌──────────────────────────────┐
+│  Storyboard Context          │  ← Loaded into React context
+│  useSceneData() / useSession │
+└──────────────┬───────────────┘
+               │
+       ┌───────┴───────┐
+       ▼               ▼
+┌────────────┐  ┌────────────┐
+│ Components │  │ URL Hash   │  ← Runtime overrides (#key=value)
+│            │◄─│ Session    │
+└────────────┘  └────────────┘
 ```
 
-Once you have a repository saved, you should finish the configuration under [Deploying your prototype](#deploying-your-prototype).
+---
 
-You don't need to develop locally, however. You can always keep building in the browser, just choose the Coodespaces tab under the Code button:
+## Data Structure
 
-![Code button and Codespaces tab opened in the dialog below](.readme/image-codespace.png)
-
-</details>
-
-## Get Started (Local development)
-
-<details>
-<summary>See instructions</summary>
-
-### Start your repository
-1. Create a repository for your prototype by clicking **Use this template** > **Create a new repository**
-
-2. Set the repository Owner as **github** so that the deployment is only enabled for Hubbers. Choose whatever name you want.
-
-3. Clone your new repo locally
-
-### Developing
-
-You need to have nodejs installed on your machine. If you don't, [head here](https://nodejs.org/en/download) and choose macOS installer.
-
-Once you have the repository cloned on your machine, open the folder on VSCode or the terminal and run:
-
-```bash
-npm install
+```
+src/data/
+  ├── objects/              # Reusable data fragments
+  │   ├── jane-doe.json     # A user object
+  │   └── navigation.json   # Nav links
+  └── scenes/               # Complete scenarios
+      ├── default.json      # Main scene
+      └── other-scene.json  # Alternative data
 ```
 
-```bash
-npm run dev
+### Objects
+
+Objects are standalone JSON files representing a single entity. They live in `src/data/objects/` and can be referenced by any scene.
+
+```json
+// src/data/objects/jane-doe.json
+{
+  "name": "Jane Doe",
+  "username": "janedoe",
+  "role": "admin",
+  "avatar": "https://avatars.githubusercontent.com/u/1?v=4",
+  "profile": {
+    "bio": "Designer & developer",
+    "location": "San Francisco, CA"
+  }
+}
 ```
 
-You will see the site running on http://localhost:1234
+### Scenes
 
-## Deploying your prototype
+Scenes compose objects into a full data context. They support two special keys:
 
-You need to change a few settings on GitHub.com for your prototype to be deployed & visible. This cannot be automated at the moment unfortunately!
+- **`$ref`** — Replaced inline with the contents of the referenced file
+- **`$global`** — An array of paths merged into the scene root (scene values win on conflicts)
 
-1. Go to your repository, then **Settings > Pages**:
-   - Set GitHub Pages visibility to **Private**
-   - Set Build and deployment source to **GitHub Actions**
+```json
+// src/data/scenes/default.json
+{
+  "user": { "$ref": "../objects/jane-doe" },
+  "navigation": { "$ref": "../objects/navigation" },
+  "projects": [
+    { "id": 1, "name": "primer-react", "stars": 2500 },
+    { "id": 2, "name": "storyboard", "stars": 128 }
+  ],
+  "settings": {
+    "theme": "dark_dimmed",
+    "notifications": true,
+    "language": "en"
+  }
+}
+```
 
-![Screenshot showing the UI with the descriptions above](.readme/image.png)
+After loading, all `$ref` and `$global` references are resolved — the final data is a flat object with everything inlined.
 
-2. Go to your repository, then **Settings > Collaborators and teams**:
-   - Click "Add teams"
-   - Add **github/employees** with at least "Read" permission
+JSONC is supported — you can use `//` and `/* */` comments in your data files.
 
-![Manage access UI showing "Add teams" and the @github/employees team already added](.readme/image-2.png)
+### Creating a new scene
 
-3. Push your first commit after setting this up, and you will see your prototype available on an auto-generated URL under **Settings > Pages**. Share this URL with any Hubber and they will see it too!
+Add a new `.json` file to `src/data/scenes/`:
 
-![Interface written: GitHub Pages - Your site is live at https://refactored-guacamole-6kolnpq.pages.github.io/](.readme/image-1.png)
+```json
+// src/data/scenes/empty-state.json
+{
+  "user": { "$ref": "../objects/jane-doe" },
+  "projects": [],
+  "settings": { "theme": "light" }
+}
+```
 
-  <details>
-  <summary>Extra options</summary>
+Then load it by visiting `?scene=empty-state` in your browser.
 
-  - Add your Pages URL to the repository description:
-    - On your repository homepage, click the gear (⚙️) icon next to **About** to edit the description
-    - On the modal check **Use your GitHub Pages website**
-    - Save changes, and your URL will be visible
-  </details>
+---
 
-</details>
+## Reading Scene Data
 
-## 10 reasons why this is great
-
--   🧑🏻‍💻 Get used to using Codespaces
--   🥺 You're a new Hubber, you have enough to learn already
--   👁 Color mode test your layout quickly
--   🧖‍♀️ Prototype layouts outside the main platform
--   🗑 No clutter on your local computer
--   🥴 No local problems
--   🪄 No linter or formatter issues
--   ▶️ Send over a preview link while working live on your code, no waiting for deploy previews needed.
--   🚀 No need to set up a new react project, just instantly start prototyping
--   🧪 You want to learn React
-
-## Storyboard Data System
-
-This app includes a data system for driving prototypes with JSON scene files.
-
-- **Scene files** (`src/data/scenes/`) define the data context for each prototype state
-- **Object files** (`src/data/objects/`) contain reusable data fragments
-- Scenes reference objects using `$ref` (inline replacement) and `$global` (root-level merge)
-- Data files support JSONC (comments allowed with `//` and `/* */`)
-
-### Usage
-
-Wrap your app in `<StoryboardProvider>` (already configured), then access data in any component:
+Use `useSceneData()` to read data from the current scene. Supports dot-notation for nested access.
 
 ```jsx
 import { useSceneData } from '../storyboard'
 
-const user = useSceneData('user')
-const userName = useSceneData('user.profile.name')
+function UserCard() {
+  const user = useSceneData('user')
+  const name = useSceneData('user.profile.name')
+  const firstProject = useSceneData('projects.0')
+  const allData = useSceneData() // entire scene object
+
+  return (
+    <div>
+      <Text>{name}</Text>
+      <Text>{user.profile.bio}</Text>
+      <Text>First project: {firstProject.name}</Text>
+    </div>
+  )
+}
 ```
 
-Switch scenes via the `?scene=` URL parameter (e.g., `?scene=other-scene`).
+`useSceneData()` is **read-only** — it always returns the scene JSON defaults, ignoring any runtime overrides.
 
-See `.github/plans/storyboard.implementation.plan.md` for full architecture details.
+---
 
-## Tips and Tricks
+## Session State (Runtime Overrides)
 
-- Use [Primer React](https://primer.style/components) components to build your layouts, or check [Primer Templates](https://ui.githubapp.com/storybook/?path=/docs/templates-readme--docs&globals=viewport:narrow) (staff only) to get a starting point.
-- To create new pages, duplicate any file in the `/pages` folder and rename it to `whatever.jsx`. Now head to `localhost:1234/whatever` and you will see your new page loaded
-- Also check out [this talk](https://www.youtube.com/watch?v=XroAmpITjsI) from [@heyamie](https://github.com/heyamie) for more tips on prototyping. Some parts are only relevant for NextJS projects, but a lot still applies!
+Use `useSession()` to read and write runtime state. Values are stored in the **URL hash** (`#key=value`) so they persist across page refreshes and can be shared by copying the URL.
 
-## Dealing with errors
+```jsx
+import { useSession } from '../storyboard'
 
-#### `npm: command not found`
+const [value, setValue, clearValue] = useSession('path.to.value')
+```
 
-If you try to run `npm install` and get an error similar to the one described above, that means you don't have Node/npm installed on your machine. In that case, [head here to download it](https://nodejs.org/en/download). Choose macOS installer for the simplest option.
+The hook returns a 3-element array:
 
-#### Any other error
+| Index | What it does |
+|-------|-------------|
+| `value` | Current value — reads from URL hash first, falls back to scene JSON default |
+| `setValue` | Writes a new value to the URL hash |
+| `clearValue` | Removes the hash param, reverting to the scene default |
 
-Please open an issue or send a message on `#primer` in Slack (staff only). This repository is built to be a simple prototyping experience for designers and other non-developers. If it doesn't work out of the box, **the template is wrong, not you** -- please reach and the Primer team will help!
+### Read priority
+
+```
+URL hash param  →  Scene JSON default  →  undefined
+```
+
+If the user hasn't overridden anything, they see the scene default. Once they interact, the URL hash takes over. Clearing the override reverts to the default.
+
+### Example: Updating user info with buttons
+
+```jsx
+import { useSession } from '../storyboard'
+import { Button, ButtonGroup } from '@primer/react'
+
+function UserSwitcher() {
+  const [name, setName] = useSession('user.name')
+  const [role, setRole] = useSession('user.role')
+
+  return (
+    <div>
+      <Text>Current user: {name} ({role})</Text>
+      <ButtonGroup>
+        <Button onClick={() => { setName('Alice'); setRole('admin') }}>
+          Switch to Alice
+        </Button>
+        <Button onClick={() => { setName('Bob'); setRole('viewer') }}>
+          Switch to Bob
+        </Button>
+      </ButtonGroup>
+    </div>
+  )
+}
+```
+
+Clicking a button updates the URL to something like:
+```
+/?scene=default#user.name=Alice&user.role=admin
+```
+
+Refresh the page — the override persists. Remove the hash params from the URL — it reverts to the scene JSON defaults.
+
+### Example: Form with controlled inputs
+
+```jsx
+import { useState } from 'react'
+import { useSession } from '../storyboard'
+import { FormControl, TextInput, Button } from '@primer/react'
+
+function ProfileForm() {
+  const [name, setName] = useSession('user.name')
+  const [bio, setBio] = useSession('user.profile.bio')
+
+  // Local form state
+  const [formName, setFormName] = useState(name || '')
+  const [formBio, setFormBio] = useState(bio || '')
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    setName(formName)
+    setBio(formBio)
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <FormControl>
+        <FormControl.Label>Name</FormControl.Label>
+        <TextInput
+          value={formName}
+          onChange={(e) => setFormName(e.target.value)}
+        />
+      </FormControl>
+
+      <FormControl>
+        <FormControl.Label>Bio</FormControl.Label>
+        <TextInput
+          value={formBio}
+          onChange={(e) => setFormBio(e.target.value)}
+        />
+      </FormControl>
+
+      <Button type="submit">Save</Button>
+    </form>
+  )
+}
+```
+
+Clicking **Save** updates the URL hash:
+```
+#user.name=Alice&user.profile.bio=Hello%20world
+```
+
+---
+
+## Scene Switching
+
+### Via URL
+
+Change the `?scene=` search parameter:
+
+```
+http://localhost:1234/?scene=other-scene
+http://localhost:1234/?scene=empty-state
+```
+
+No parameter defaults to `?scene=default`.
+
+### Programmatically
+
+```jsx
+import { useScene } from '../storyboard'
+import { Button } from '@primer/react'
+
+function ScenePicker() {
+  const { sceneName, switchScene } = useScene()
+
+  return (
+    <div>
+      <Text>Current scene: {sceneName}</Text>
+      <Button onClick={() => switchScene('other-scene')}>
+        Switch to other-scene
+      </Button>
+    </div>
+  )
+}
+```
+
+`switchScene()` updates the `?scene=` param and clears all hash overrides (since they belonged to the previous scene).
+
+---
+
+## Routing
+
+Routes are auto-generated from the file structure in `src/pages/` via [@generouted/react-router](https://github.com/oedotme/generouted):
+
+- `src/pages/index.jsx` → `/`
+- `src/pages/Overview.jsx` → `/Overview`
+- `src/pages/Issues.jsx` → `/Issues`
+
+To create a new page, add a `.jsx` file to `src/pages/`.
+
+---
+
+## API Reference
+
+### Hooks
+
+| Hook | Returns | Description |
+|------|---------|-------------|
+| `useSceneData(path?)` | `any` | Read-only scene data. Dot-notation path. Omit path for entire scene. |
+| `useSceneLoading()` | `boolean` | `true` while scene is loading |
+| `useSession(path)` | `[value, setValue, clearValue]` | Read/write session state. Merged with scene defaults. |
+| `useScene()` | `{ sceneName, switchScene }` | Current scene name + switch function |
+
+### Components
+
+| Component | Description |
+|-----------|-------------|
+| `<StoryboardProvider>` | Wraps the app. Loads scene from `?scene=` param. Already configured in `src/index.jsx`. |
+| `<SceneDebug>` | Renders resolved scene data as formatted JSON. Useful for debugging. |
+
+### Utilities
+
+| Function | Description |
+|----------|-------------|
+| `loadScene(name)` | Low-level scene loader. Returns resolved scene data. |
+| `getByPath(obj, path)` | Dot-notation path accessor. |
+| `getParam(key)` | Read a URL hash param. |
+| `setParam(key, value)` | Write a URL hash param. |
+| `getAllParams()` | Get all hash params as an object. |
+| `removeParam(key)` | Remove a URL hash param. |
+
+### Special JSON keys
+
+| Key | Where | What it does |
+|-----|-------|-------------|
+| `$ref` | Any value in a scene or object | Replaced with the contents of the referenced file. Path is relative to the current file. |
+| `$global` | Top-level array in a scene | Each path is loaded and deep-merged into the scene root. Scene values win on conflicts. |
+
+---
+
+## Build & Deploy
+
+```bash
+npm run build    # Production build → dist/
+npm run lint     # ESLint
+```
+
+---
+
+## Architecture
+
+Detailed architecture docs live in `.github/architecture/`. Implementation plan and phase history in `.github/plans/`.
