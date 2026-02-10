@@ -10,16 +10,18 @@ const defaultNav = [
 
 export default function SidebarNavigation({ items = defaultNav }) {
   return (
-    <NavList aria-label="Issues">
+    <NavList aria-label="Navigation">
       {items.map((item) => (
         <NavList.Item 
           key={item.label}
           href={item.url}
           aria-current={item.current ? 'page' : undefined}
         >
-          <NavList.LeadingVisual>
-            <item.icon />
-          </NavList.LeadingVisual>
+          {item.icon && (
+            <NavList.LeadingVisual>
+              <item.icon />
+            </NavList.LeadingVisual>
+          )}
           {item.label}
         </NavList.Item>
       ))}

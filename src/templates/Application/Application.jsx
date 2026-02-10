@@ -10,7 +10,7 @@ function Application({ children, title, subtitle, topnav, sidenav }) {
         <div className={styles.wrapper}>
         {sidenav &&
           <aside className={styles.navigation}>
-            <SidebarNavigation sidenav={sidenav} />
+            <SidebarNavigation items={sidenav} />
           </aside>
         }
           <main className={styles.main}>

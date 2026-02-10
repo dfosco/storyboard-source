@@ -12,7 +12,7 @@ import {
   MarkGithubIcon,
 } from '@primer/octicons-react'
 
-import styles from './globalNavigation.module.css'
+import styles from './GlobalNavigation.module.css'
 
 const defaultNav = [
   { icon: CodeIcon, label: 'Code', current: true },
