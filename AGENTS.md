@@ -11,6 +11,8 @@
 
 - **Primer Primitives** (`.github/skills/primer-primitives/primer-primitives.md`) — Complete reference of all `@primer/primitives` CSS design tokens (sizes, typography, borders, breakpoints, controls, motion). **Always consult this skill when writing CSS or any component that imports `@primer/react`.**
 
+- **Storyboard Data** (`.github/skills/storyboard-data/storyboard-data.md`) — Guides data structuring for prototype pages. Determines what goes into data objects/scenes (navigation, entity lists, profiles) vs. what stays hardcoded (button labels, placeholders, headings). **Invoked by primer-builder Step 4.**
+
 - **Architecture Scanner** (`.github/skills/architecture-scanner/architecture-scanner.md`) — Scans the codebase and generates architecture documentation in `.github/architecture/`. Invoke with: "scan the codebase architecture", "update the architecture", "update arch".
 
 ---
