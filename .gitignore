@@ -22,3 +22,12 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.playwright-profile
+
+.github/skills/primer-components-catalog
+.github/skills/primer-screenshot-builder
+.github/skills/primer-screenshot-patterns
+.github/skills/primer-url-builder
+.github/skills/playwright-cli
+AGENTS_.md
+.screenshots
