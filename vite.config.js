@@ -8,7 +8,24 @@ import { globSync } from 'glob'
 
 export default defineConfig({
     base: '/storyboard/',
-    plugins: [react(), generouted()],
+    plugins: [
+        react(),
+        generouted(),
+        {
+            name: 'base-redirect',
+            configureServer(server) {
+                server.middlewares.use((req, res, next) => {
+                    if (req.url && !req.url.startsWith('/storyboard/') && !req.url.startsWith('/@') && !req.url.startsWith('/node_modules/')) {
+                        const newUrl = '/storyboard' + req.url
+                        res.writeHead(302, { Location: newUrl })
+                        res.end()
+                        return
+                    }
+                    next()
+                })
+            },
+        },
+    ],
     server: { port: 1234 },
     css: {
         postcss: {
