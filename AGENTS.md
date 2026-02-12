@@ -9,11 +9,15 @@
 
 ## Skills
 
-- **Primer Primitives** (`.github/skills/primer-primitives/primer-primitives.md`) — Complete reference of all `@primer/primitives` CSS design tokens (sizes, typography, borders, breakpoints, controls, motion). **Always consult this skill when writing CSS or any component that imports `@primer/react`.**
+- **Primer Builder** (`.github/skills/primer-screenshot-builder/primer-screenshot-builder.md`) — Self-contained skill for converting screenshots or UI descriptions into working Primer React pages. Includes page archetypes with JSX scaffolding, build rules, inline component and token references, scene data structuring, and visual fidelity checklist. **This is the primary skill for screenshot-to-code workflows.**
 
-- **Storyboard Data** (`.github/skills/storyboard-data/storyboard-data.md`) — Guides data structuring for prototype pages. Determines what goes into data objects/scenes (navigation, entity lists, profiles) vs. what stays hardcoded (button labels, placeholders, headings). **Invoked by primer-builder Step 4.**
+- **Primer Primitives** (`.github/skills/primer-primitives/primer-primitives.md`) — Complete reference of all `@primer/primitives` CSS design tokens. **Only consult when you need tokens not covered by the Primer Builder's inline token tables** (e.g., motion, controls, overlays, breakpoints, component-specific colors).
 
-- **Architecture Scanner** (`.github/skills/architecture-scanner/architecture-scanner.md`) — Scans the codebase and generates architecture documentation in `.github/architecture/`. Invoke with: "scan the codebase architecture", "update the architecture", "update arch".
+- **Primer Components Catalog** (`.github/skills/primer-components-catalog/primer-components-catalog.md`) — Full catalog of all `@primer/react` components with props and sub-components. **Only consult when you need details on a component not covered by the Primer Builder's inline quick reference.**
+
+- **Storyboard Data** (`.github/skills/storyboard-data/storyboard-data.md`) — Detailed guide for data structuring. **Only consult for standalone data tasks** (refactoring, creating scenes outside the builder flow). The Primer Builder skill has inline data structuring guidance.
+
+- **Architecture Scanner** (`.github/skills/architecture-scanner/architecture-scanner.md`) Scans the codebase and generates architecture documentation in `.github/architecture/`. Invoke with: "scan the codebase architecture", "update the architecture", "update arch".
 
 ---
 
@@ -149,9 +153,12 @@ const loading = useSceneLoading() // true while loading
 
 The provider reads the scene name from `?scene=` URL param, a `sceneName` prop, or defaults to `"default"`.
 
+**Page-scene matching:** If no `?scene=` param or `sceneName` prop is provided, the provider checks whether a scene file exists whose name matches the current page (e.g. `scenes/Overview.json` for the `/Overview` route). If it does, that scene is loaded automatically — no `?scene=` param needed. Otherwise it falls back to `"default"`.
+
 **Public exports** from `src/storyboard/index.js`:
 - `StoryboardProvider` — React context provider
 - `useSceneData(path?)` — Access scene data by dot-notation path
 - `useSceneLoading()` — Returns true while scene is loading
 - `getByPath(obj, path)` — Dot-notation path utility
 - `loadScene(sceneName)` — Low-level scene loader
+- `sceneExists(sceneName)` — Check if a scene file exists

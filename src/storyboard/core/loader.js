@@ -121,6 +121,17 @@ async function resolveRefs(node, baseDir, seen = new Set()) {
  * @param {string} sceneName - Name of the scene (e.g., "default")
  * @returns {Promise<object>} Resolved scene data
  */
+/**
+ * Checks whether a scene file exists for the given name.
+ * @param {string} sceneName - e.g., "Overview"
+ * @returns {boolean}
+ */
+export function sceneExists(sceneName) {
+  const jsoncKey = `../../data/scenes/${sceneName}.jsonc`
+  const jsonKey = `../../data/scenes/${sceneName}.json`
+  return (dataModules[jsoncKey] ?? dataModules[jsonKey]) != null
+}
+
 export async function loadScene(sceneName = 'default') {
   const scenePath = `scenes/${sceneName}`
   let sceneData

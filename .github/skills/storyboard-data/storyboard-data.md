@@ -106,6 +106,7 @@ Create a scene file in `src/data/scenes/` that composes the objects:
 - Use `$ref` for entity objects — keeps them reusable across scenes
 - Inline small, scene-specific data directly (org name, settings, filter state)
 - Name the scene after the page/flow: `org-repos.json`, `issue-detail.json`, `settings-general.json`
+- Rule of thumb, a scene can be named after it's corresponding page 
 
 ### Step 4: Wire up the component
 
@@ -230,15 +231,18 @@ Before finishing data structuring, verify:
 
 ## Final Step: Provide the URL
 
-After creating the scene and wiring up the component, **always provide the full dev URL with the scene parameter** so the user can immediately preview the page:
+After creating the scene and wiring up the component, **always provide the full dev URL** so the user can immediately preview the page.
+
+**Page-scene matching:** If the scene file name matches the page file name exactly (e.g. `scenes/Repositories.json` for `pages/Repositories.jsx`), the scene loads automatically — no `?scene=` param needed:
 
 ```
-http://localhost:1234/storyboard/{PageName}?scene={scene-name}
+http://localhost:1234/Repositories
 ```
 
-For example:
+If the scene name differs from the page name, add the `?scene=` parameter:
+
 ```
-http://localhost:1234/storyboard/Repositories?scene=heron-silver
+http://localhost:1234/Repositories?scene=heron-silver
 ```
 
-Use the port from the running dev server (default `1234`), the route path matching the page file name, and the `?scene=` parameter matching the scene JSON file name (without `.json`).
+Use the port from the running dev server (default `1234`) and the route path matching the page file name.

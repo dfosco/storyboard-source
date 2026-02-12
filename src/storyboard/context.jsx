@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react'
 import { Text } from '@primer/react'
-import { loadScene } from './core/loader.js'
+import { loadScene, sceneExists } from './core/loader.js'
 import { StoryboardContext } from './StoryboardContext.js'
 
 export { StoryboardContext }
@@ -16,14 +16,30 @@ function getSceneParam() {
 }
 
 /**
+ * Derives a scene name from the current page pathname.
+ * "/Overview" → "Overview", "/" → "index", "/nested/Page" → "Page"
+ */
+function getPageSceneName() {
+  const path = window.location.pathname.replace(/\/+$/, '') || '/'
+  if (path === '/') return 'index'
+  const last = path.split('/').pop()
+  return last || 'index'
+}
+
+/**
  * Provides loaded scene data to the component tree.
  * Reads the scene name from the ?scene= URL param, the sceneName prop,
- * or defaults to "default".
+ * a matching scene file for the current page, or defaults to "default".
+ *
+ * Page-matching: if a scene file exists whose name matches the current
+ * page (e.g. scenes/Overview.json for the /Overview route), it is used
+ * automatically — no ?scene= param needed.
  * 
  * Blocks rendering children until scene data is loaded.
  */
 export default function StoryboardProvider({ sceneName, fallback, children }) {
-  const activeSceneName = getSceneParam() || sceneName || 'default'
+  const pageScene = getPageSceneName()
+  const activeSceneName = getSceneParam() || sceneName || (sceneExists(pageScene) ? pageScene : 'default')
 
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
