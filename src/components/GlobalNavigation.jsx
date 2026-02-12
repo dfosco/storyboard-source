@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import {UnderlineNav, Stack, IconButton, Text} from '@primer/react'
 import {
   IssueOpenedIcon,
@@ -60,4 +61,18 @@ export default function GlobalNavigation({ items = defaultNav, title, subtitle }
       </UnderlineNav>
     </Stack>
   )
+}
+
+GlobalNavigation.propTypes = {
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      icon: PropTypes.elementType,
+      label: PropTypes.string.isRequired,
+      current: PropTypes.bool,
+      counter: PropTypes.number,
+      url: PropTypes.string,
+    })
+  ),
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
 }
