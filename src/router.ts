@@ -8,7 +8,6 @@ export type Path =
   | `/Forms`
   | `/Issues`
   | `/Overview`
-  | `/Repositories`
 
 export type Params = {
   
