@@ -23,5 +23,21 @@
     "theme": "dark_dimmed",
     "notifications": true,
     "language": "en"
+  },
+  "signup": {
+    "fullName": "",
+    "email": "",
+    "password": "",
+    "organization": {
+      "name": "",
+      "size": "",
+      "role": ""
+    },
+    "workspace": {
+      "region": "",
+      "plan": "starter",
+      "newsletter": false,
+      "agreeTerms": false
+    }
   }
 }
