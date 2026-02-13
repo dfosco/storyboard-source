@@ -70,6 +70,7 @@
     { "path": "src/storyboard/core/dotPath.js", "category": "storyboard", "importance": "high" },
     { "path": "src/storyboard/core/hashPreserver.js", "category": "storyboard", "importance": "high" },
     { "path": "src/storyboard/core/session.js", "category": "storyboard", "importance": "high" },
+    { "path": "src/storyboard/hooks/useOverride.js", "category": "storyboard", "importance": "high" },
     { "path": "src/storyboard/hooks/useScene.js", "category": "storyboard", "importance": "high" },
     { "path": "src/storyboard/hooks/useSceneData.js", "category": "storyboard", "importance": "high" },
     { "path": "src/storyboard/hooks/useSession.js", "category": "storyboard", "importance": "high" },

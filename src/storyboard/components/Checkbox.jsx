@@ -2,7 +2,7 @@
 import { useContext, useState, useEffect } from 'react'
 import { Checkbox as PrimerCheckbox } from '@primer/react'
 import { FormContext } from '../context/FormContext.js'
-import { useSession } from '../hooks/useSession.js'
+import { useOverride } from '../hooks/useOverride.js'
 
 /**
  * Wrapped Primer Checkbox that integrates with StoryboardForm.
@@ -15,7 +15,7 @@ import { useSession } from '../hooks/useSession.js'
 export default function Checkbox({ name, onChange, checked: controlledChecked, ...props }) {
   const form = useContext(FormContext)
   const path = form?.prefix && name ? `${form.prefix}.${name}` : name
-  const [sessionValue] = useSession(path || '')
+  const [sessionValue] = useOverride(path || '')
 
   const initialChecked = sessionValue === 'true' || sessionValue === true
   const [draft, setDraftState] = useState(initialChecked)

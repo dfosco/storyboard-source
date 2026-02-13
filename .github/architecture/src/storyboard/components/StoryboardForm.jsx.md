@@ -10,7 +10,7 @@ importance: high
 
 ## Goal
 
-A form wrapper that buffers input values locally and only persists them to session state (URL hash params) on submit. This is the designer-friendly alternative to manually wiring `useSession()` + `onChange` handlers for every field.
+A form wrapper that buffers input values locally and only persists them to the URL hash (overrides) on submit. This is the designer-friendly alternative to manually wiring `useOverride()` + `onChange` handlers for every field.
 
 ## Composition
 

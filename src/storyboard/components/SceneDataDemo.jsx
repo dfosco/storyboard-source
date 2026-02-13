@@ -1,5 +1,5 @@
 import { Text, Button, ButtonGroup, FormControl } from '@primer/react'
-import { useSession } from '../hooks/useSession.js'
+import { useOverride } from '../hooks/useOverride.js'
 import { useScene } from '../hooks/useScene.js'
 import StoryboardForm from './StoryboardForm.jsx'
 import TextInput from './TextInput.jsx'
@@ -7,16 +7,16 @@ import Textarea from './Textarea.jsx'
 import styles from './SceneDebug.module.css'
 
 /**
- * Demo component that renders scene data via useSession().
+ * Demo component that renders scene data via useOverride().
  * Every value can be overridden by adding a URL param, e.g.:
  *   #user.name=Alice&user.profile.bio=Hello
  * Refresh the page — overrides persist. Remove the param — scene default returns.
  */
 export default function SceneDataDemo() {
-  const [name, setName, clearName] = useSession('user.name')
-  const [username, setUsername, clearUsername] = useSession('user.username')
-  const [bio, , clearBio] = useSession('user.profile.bio')
-  const [location, , clearLocation] = useSession('user.profile.location')
+  const [name, setName, clearName] = useOverride('user.name')
+  const [username, setUsername, clearUsername] = useOverride('user.username')
+  const [bio, , clearBio] = useOverride('user.profile.bio')
+  const [location, , clearLocation] = useOverride('user.profile.location')
   const { sceneName, switchScene } = useScene()
 
   const nextScene = (sceneName === 'default') ? 'other-scene' : 'default'
@@ -30,7 +30,7 @@ export default function SceneDataDemo() {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>useSession Demo</h2>
+      <h2 className={styles.title}>useOverride Demo</h2>
       <p>Add <code>#user.name=Alice</code> to the URL hash to override any value.</p>
 
       <section>

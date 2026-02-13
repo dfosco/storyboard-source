@@ -42,7 +42,7 @@ const handleChange = (e) => {
 - `react` — `useContext`, `useState`, `useEffect`
 - `@primer/react` — `Textarea` (as `PrimerTextarea`)
 - [`src/storyboard/context/FormContext.js`](../context/FormContext.js) — `FormContext`
-- [`src/storyboard/hooks/useSession.js`](../hooks/useSession.js.md) — `useSession`
+- [`src/storyboard/hooks/useOverride.js`](../hooks/useOverride.js.md) — `useOverride`
 
 ## Dependents
 

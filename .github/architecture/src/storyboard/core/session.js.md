@@ -12,7 +12,7 @@ importance: high
 
 URL hash-based utilities for storyboard session state management. Session params are stored in the URL hash fragment (after `#`) to avoid triggering React Router re-renders. React Router (used by `generouted`) patches `history.replaceState/pushState`, so any search param change causes a full route tree re-render. The hash is invisible to the router and only fires `hashchange` events that React Router ignores.
 
-This module provides the low-level primitives for reading and writing hash parameters. Most code should use the [`useSession`](../hooks/useSession.js.md) hook instead of calling these functions directly.
+This module provides the low-level primitives for reading and writing hash parameters. Most code should use the [`useOverride`](../hooks/useOverride.js.md) hook instead of calling these functions directly.
 
 ## Composition
 
@@ -99,7 +99,7 @@ None — pure browser API (`window.location`, `URLSearchParams`)
 
 ## Dependents
 
-- [`src/storyboard/hooks/useSession.js`](../hooks/useSession.js.md) — Uses `getParam`, `setParam`, `removeParam`
+- [`src/storyboard/hooks/useOverride.js`](../hooks/useOverride.js.md) — Uses `getParam`, `setParam`, `removeParam`
 - [`src/storyboard/index.js`](../index.js.md) — Re-exports all four public functions
 
 ## Notes

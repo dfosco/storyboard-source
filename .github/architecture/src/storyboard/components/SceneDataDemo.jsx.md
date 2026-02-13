@@ -10,20 +10,20 @@ importance: high
 
 ## Goal
 
-A demo component that showcases the storyboard system. It demonstrates `useSession()` for button-based overrides, `useScene()` for scene switching, and `StoryboardForm` with wrapped Primer inputs for form-based editing. URL hash params serve as overrides over scene defaults — they persist across refreshes and can be shared via URL.
+A demo component that showcases the storyboard system. It demonstrates `useOverride()` for button-based overrides, `useScene()` for scene switching, and `StoryboardForm` with wrapped Primer inputs for form-based editing. URL hash params serve as overrides over scene defaults — they persist across refreshes and can be shared via URL.
 
 ## Composition
 
 The component has three sections:
 
 1. **Scene** — Displays current scene name with a button to switch scenes via `useScene().switchScene()`
-2. **User** — Shows user data from session state with buttons that call `setName()` / `setUsername()` directly via `useSession()`
+2. **User** — Shows user data from override state with buttons that call `setName()` / `setUsername()` directly via `useOverride()`
 3. **Edit User** — A `StoryboardForm` with wrapped `TextInput` and `Textarea` components that buffer values locally and flush to URL hash on submit
 
 ```jsx
 export default function SceneDataDemo() {
-  const [name, setName, clearName] = useSession('user.name')
-  const [username, setUsername, clearUsername] = useSession('user.username')
+  const [name, setName, clearName] = useOverride('user.name')
+  const [username, setUsername, clearUsername] = useOverride('user.username')
   const { sceneName, switchScene } = useScene()
 
   return (
@@ -48,7 +48,7 @@ The form uses `data="user"` so each input's `name` maps to `user.{name}` in the 
 ## Dependencies
 
 - `@primer/react` — `Text`, `Button`, `ButtonGroup`, `FormControl`
-- [`src/storyboard/hooks/useSession.js`](../hooks/useSession.js.md) — `useSession`
+- [`src/storyboard/hooks/useOverride.js`](../hooks/useOverride.js.md) — `useOverride`
 - [`src/storyboard/hooks/useScene.js`](../hooks/useScene.js.md) — `useScene`
 - [`src/storyboard/components/StoryboardForm.jsx`](./StoryboardForm.jsx.md) — `StoryboardForm`
 - [`src/storyboard/components/TextInput.jsx`](./TextInput.jsx.md) — wrapped `TextInput`

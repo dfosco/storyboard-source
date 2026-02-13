@@ -35,14 +35,14 @@ Every interaction on your UI get saved to the URL and persist during a user sess
                ▼
 ┌──────────────────────────────┐
 │  Storyboard Context          │  ← Loaded into React context
-│  useSceneData() / useSession │
+│  useSceneData() / useOverride │
 └──────────────┬───────────────┘
                │
        ┌───────┴───────┐
        ▼               ▼
 ┌────────────┐  ┌────────────┐
 │ Components │  │ URL Hash   │  ← Runtime overrides (#key=value)
-│            │◄─│ Session    │
+│            │◄─│ Overrides  │
 └────────────┘  └────────────┘
 ```
 
@@ -146,18 +146,18 @@ function UserCard() {
 }
 ```
 
-`useSceneData()` is **read-only** — it always returns the scene JSON defaults, ignoring any runtime overrides.
+`useSceneData()` is **read-only** — it returns scene data with any hash overrides applied transparently. Use it by default for reading data.
 
 ---
 
-## Session State (Runtime Overrides)
+## Overrides (Read/Write)
 
-Use `useSession()` to read and write runtime state. Values are stored in the **URL hash** (`#key=value`) so they persist across page refreshes and can be shared by copying the URL.
+Use `useOverride()` when you need to **write** an override. Values are stored in the **URL hash** (`#key=value`) so they persist across page refreshes and can be shared by copying the URL.
 
 ```jsx
-import { useSession } from '../storyboard'
+import { useOverride } from '../storyboard'
 
-const [value, setValue, clearValue] = useSession('path.to.value')
+const [value, setValue, clearValue] = useOverride('path.to.value')
 ```
 
 The hook returns a 3-element array:
@@ -179,12 +179,12 @@ If the user hasn't overridden anything, they see the scene default. Once they in
 ### Example: Updating user info with buttons
 
 ```jsx
-import { useSession } from '../storyboard'
+import { useOverride } from '../storyboard'
 import { Button, ButtonGroup } from '@primer/react'
 
 function UserSwitcher() {
-  const [name, setName] = useSession('user.name')
-  const [role, setRole] = useSession('user.role')
+  const [name, setName] = useOverride('user.name')
+  const [role, setRole] = useOverride('user.role')
 
   return (
     <div>
@@ -313,9 +313,9 @@ Hash is **not** preserved when:
 
 | Hook | Returns | Description |
 |------|---------|-------------|
-| `useSceneData(path?)` | `any` | Read-only scene data. Dot-notation path. Omit path for entire scene. |
+| `useSceneData(path?)` | `any` | Read scene data (overrides applied transparently). Dot-notation path. Omit path for entire scene. |
 | `useSceneLoading()` | `boolean` | `true` while scene is loading |
-| `useSession(path)` | `[value, setValue, clearValue]` | Read/write session state. Merged with scene defaults. |
+| `useOverride(path)` | `[value, setValue, clearValue]` | Read/write hash overrides on scene data. Use when you need to set or clear a value. |
 | `useScene()` | `{ sceneName, switchScene }` | Current scene name + switch function |
 
 ### Components

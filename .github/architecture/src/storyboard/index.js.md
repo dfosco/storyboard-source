@@ -17,7 +17,8 @@ The public barrel file for the storyboard system. All external imports of storyb
 ```js
 export { default as StoryboardProvider } from './context.jsx'
 export { useSceneData, useSceneLoading } from './hooks/useSceneData.js'
-export { useSession } from './hooks/useSession.js'
+export { useOverride } from './hooks/useOverride.js'
+export { useOverride as useSession } from './hooks/useOverride.js' // deprecated alias
 export { useScene } from './hooks/useScene.js'
 export { getByPath } from './core/dotPath.js'
 export { loadScene, sceneExists } from './core/loader.js'
@@ -33,7 +34,7 @@ export { default as Textarea } from './components/Textarea.jsx'
 
 The module exports four main categories:
 1. **Scene data access** — `StoryboardProvider`, `useSceneData`, `useSceneLoading`, `useScene` for read-only scene data and scene switching
-2. **Session state** — `useSession` hook and direct utilities (`getParam`, `setParam`, etc.) for URL hash-based state management
+2. **Overrides** — `useOverride` hook and direct utilities (`getParam`, `setParam`, etc.) for URL hash-based state overrides
 3. **Form components** — `StoryboardForm`, `TextInput`, `Textarea`, `Select`, `Checkbox` for designer-friendly form binding with submit-based persistence
 4. **Navigation** — `installHashPreserver` for client-side navigation with hash preservation
 
@@ -41,7 +42,8 @@ The module exports four main categories:
 
 - [`src/storyboard/context.jsx`](./context.jsx.md) — Provider component
 - [`src/storyboard/hooks/useSceneData.js`](./hooks/useSceneData.js.md) — Scene data access hooks
-- [`src/storyboard/hooks/useSession.js`](./hooks/useSession.js.md) — Session state hook
+- [`src/storyboard/hooks/useOverride.js`](./hooks/useOverride.js.md) — Override read/write hook
+- [`src/storyboard/hooks/useSession.js`](./hooks/useSession.js.md) — Deprecated re-export of useOverride
 - [`src/storyboard/hooks/useScene.js`](./hooks/useScene.js.md) — Scene switching hook
 - [`src/storyboard/core/dotPath.js`](./core/dotPath.js.md) — Path utility
 - [`src/storyboard/core/loader.js`](./core/loader.js.md) — Scene loader

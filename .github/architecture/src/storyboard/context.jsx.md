@@ -12,7 +12,7 @@ importance: high
 
 The `StoryboardProvider` component that loads scene data and provides it to the component tree via React context. It determines which scene to load from four sources (in priority order): the `?scene=` URL parameter, the `sceneName` prop, a matching scene file for the current page (e.g., `scenes/Overview.json` for `/Overview`), or the default `"default"`. It blocks rendering children until the scene is fully loaded, showing a loading fallback or error message as needed.
 
-This is the runtime core of the storyboard system — it calls [`loadScene()`](./core/loader.js.md) on mount, stores the result in state, and exposes it through [`StoryboardContext`](./StoryboardContext.js.md) so any descendant can call [`useSceneData()`](./hooks/useSceneData.js.md) or [`useSession()`](./hooks/useSession.js.md).
+This is the runtime core of the storyboard system — it calls [`loadScene()`](./core/loader.js.md) on mount, stores the result in state, and exposes it through [`StoryboardContext`](./StoryboardContext.js.md) so any descendant can call [`useSceneData()`](./hooks/useSceneData.js.md) or [`useOverride()`](./hooks/useOverride.js.md).
 
 ## Composition
 

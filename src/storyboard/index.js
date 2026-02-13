@@ -1,6 +1,7 @@
 export { default as StoryboardProvider } from './context.jsx'
 export { useSceneData, useSceneLoading } from './hooks/useSceneData.js'
-export { useSession } from './hooks/useSession.js'
+export { useOverride } from './hooks/useOverride.js'
+export { useOverride as useSession } from './hooks/useOverride.js' // deprecated alias
 export { useScene } from './hooks/useScene.js'
 export { getByPath } from './core/dotPath.js'
 export { loadScene, sceneExists } from './core/loader.js'

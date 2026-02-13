@@ -6,7 +6,7 @@ import {
   Checkbox,
   Select,
   Textarea,
-  useSession,
+  useOverride,
 } from '../storyboard'
 import {
   HomeIcon,
@@ -19,7 +19,7 @@ const topnav = [
 ]
 
 function Forms() {
-  const [, , clearAll] = useSession('checkout')
+  const [, , clearAll] = useOverride('checkout')
 
   return (
     <Application title="Storyboard" subtitle="Forms" topnav={topnav}>
