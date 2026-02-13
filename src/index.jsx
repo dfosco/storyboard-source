@@ -3,6 +3,9 @@ import { createRoot } from 'react-dom/client'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { routes } from '@generouted/react-router'
 import { ThemeProvider, BaseStyles } from '@primer/react'
+import { Reshaped } from 'reshaped'
+import 'reshaped/themes/reshaped/theme.css'
+import 'reshaped/themes/reshaped/media.css'
 import './reset.css'
 import './globals.css'
 
@@ -21,12 +24,14 @@ const root = createRoot(rootElement)
 
 root.render(
     <StrictMode>
-        <ThemeProvider colorMode="auto">
-            <BaseStyles>
-                <ColorModeSwitcher />
-                <RouterProvider router={router} />
-                {import.meta.env.DEV && <DevTools />}
-            </BaseStyles>
-        </ThemeProvider>
+        <Reshaped defaultTheme="reshaped">
+            <ThemeProvider colorMode="auto">
+                <BaseStyles>
+                    <ColorModeSwitcher />
+                    <RouterProvider router={router} />
+                    {import.meta.env.DEV && <DevTools />}
+                </BaseStyles>
+            </ThemeProvider>
+        </Reshaped>
     </StrictMode>
 )
