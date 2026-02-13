@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Button,
@@ -24,6 +24,23 @@ function asString(value) {
 
 function asBoolean(value) {
   return value === true || value === 'true'
+}
+
+/**
+ * Uncontrolled text field that only persists to the hash on blur.
+ * Uses key={defaultValue} to reset when navigating back to a step.
+ */
+function BlurTextField({ name, defaultValue, onCommit, ...props }) {
+  const ref = useRef(defaultValue)
+  return (
+    <TextField
+      name={name}
+      defaultValue={defaultValue}
+      onChange={({ value }) => { ref.current = value }}
+      onBlur={() => onCommit(ref.current)}
+      {...props}
+    />
+  )
 }
 
 export default function Signup() {
@@ -127,32 +144,32 @@ export default function Signup() {
             <>
               <FormControl hasError={!!errors.fullName}>
                 <FormControl.Label>Full name</FormControl.Label>
-                <TextField
+                <BlurTextField
                   name="fullName"
-                  value={values.fullName}
+                  defaultValue={values.fullName}
                   placeholder="Jane Doe"
-                  onChange={({ value }) => setFullName(value)}
+                  onCommit={setFullName}
                 />
                 {errors.fullName && <FormControl.Error>{errors.fullName}</FormControl.Error>}
               </FormControl>
 
               <FormControl hasError={!!errors.email}>
                 <FormControl.Label>Email</FormControl.Label>
-                <TextField
+                <BlurTextField
                   name="email"
-                  value={values.email}
+                  defaultValue={values.email}
                   placeholder="jane@acme.cloud"
-                  onChange={({ value }) => setEmail(value)}
+                  onCommit={setEmail}
                 />
                 {errors.email && <FormControl.Error>{errors.email}</FormControl.Error>}
               </FormControl>
 
               <FormControl hasError={!!errors.password}>
                 <FormControl.Label>Password</FormControl.Label>
-                <TextField
+                <BlurTextField
                   name="password"
-                  value={values.password}
-                  onChange={({ value }) => setPassword(value)}
+                  defaultValue={values.password}
+                  onCommit={setPassword}
                   inputAttributes={{ type: 'password' }}
                 />
                 {errors.password && <FormControl.Error>{errors.password}</FormControl.Error>}
@@ -164,11 +181,11 @@ export default function Signup() {
             <>
               <FormControl hasError={!!errors.orgName}>
                 <FormControl.Label>Organization name</FormControl.Label>
-                <TextField
+                <BlurTextField
                   name="orgName"
-                  value={values.orgName}
+                  defaultValue={values.orgName}
                   placeholder="Acme Cloud"
-                  onChange={({ value }) => setOrgName(value)}
+                  onCommit={setOrgName}
                 />
                 {errors.orgName && <FormControl.Error>{errors.orgName}</FormControl.Error>}
               </FormControl>
