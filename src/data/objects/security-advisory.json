@@ -1,0 +1,53 @@
+{
+  "id": 10,
+  "title": "Remote code injection in Log4j",
+  "breadcrumb": "Dependabot alerts",
+  "state": "fixed",
+  "openedAgo": "4 years ago",
+  "fixedAgo": "3 years ago",
+  "package": {
+    "name": "org.apache.logging.log4j:log4j-core",
+    "ecosystem": "Maven",
+    "affectedVersions": ">= 2.13.0, < 2.15.0",
+    "patchedVersion": "2.15.0"
+  },
+  "severity": {
+    "level": "Critical",
+    "score": "10.0 / 10",
+    "cvssMetrics": [
+      { "label": "Attack vector", "value": "Network" },
+      { "label": "Attack complexity", "value": "Low" },
+      { "label": "Privileges required", "value": "None" },
+      { "label": "User interaction", "value": "None" },
+      { "label": "Scope", "value": "Changed" },
+      { "label": "Confidentiality", "value": "High" },
+      { "label": "Integrity", "value": "High" },
+      { "label": "Availability", "value": "High" }
+    ],
+    "cvssVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H/E:H"
+  },
+  "epss": {
+    "score": "94.358%",
+    "percentile": "100th percentile"
+  },
+  "tags": ["Patch available"],
+  "weaknesses": ["CWE-20", "CWE-400", "CWE-502", "CWE-917"],
+  "cveId": "CVE-2021-44228",
+  "ghsaId": "GHSA-jfh8-c2jp-5v3q",
+  "timeline": [
+    {
+      "actor": "dependabot",
+      "actorAvatar": "https://avatars.githubusercontent.com/in/29110?v=4",
+      "isBot": true,
+      "action": "opened this",
+      "timeAgo": "4 years ago"
+    },
+    {
+      "actor": "dependabot",
+      "actorAvatar": "https://avatars.githubusercontent.com/in/29110?v=4",
+      "isBot": true,
+      "action": "closed this as completed",
+      "timeAgo": "3 years ago"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "topnav": [
+    { "icon": "code", "label": "Code", "url": "#" },
+    { "icon": "issue-opened", "label": "Issues", "url": "#" },
+    { "icon": "git-pull-request", "label": "Pull requests", "url": "#" },
+    { "icon": "people", "label": "Agents", "url": "#" },
+    { "icon": "play", "label": "Actions", "url": "#" },
+    { "icon": "project", "label": "Projects", "url": "#" },
+    { "icon": "star", "label": "Models", "url": "#" },
+    { "icon": "book", "label": "Wiki", "url": "#" },
+    { "icon": "shield", "label": "Security", "url": "#", "counter": 95, "current": true },
+    { "icon": "graph", "label": "Insights", "url": "#" },
+    { "icon": "gear", "label": "Settings", "url": "#" }
+  ]
+}

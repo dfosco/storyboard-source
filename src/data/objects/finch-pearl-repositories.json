@@ -1,0 +1,50 @@
+[
+  {
+    "name": "test-webdriverio-update-copilot-issue",
+    "description": "",
+    "language": null,
+    "forks": 0,
+    "stars": 0,
+    "url": "#"
+  },
+  {
+    "name": "dependabot-copilot-autofix",
+    "description": "Testing Autofix using Copilot Workspaces",
+    "language": "JavaScript",
+    "forks": 0,
+    "stars": 0,
+    "url": "#"
+  },
+  {
+    "name": "alona-copilot",
+    "description": "",
+    "language": null,
+    "forks": 0,
+    "stars": 0,
+    "url": "#"
+  },
+  {
+    "name": "spike-dependabot-snapshot-action",
+    "description": "Copilot-driven spike into using Dependabot as a dependency detector",
+    "language": "JavaScript",
+    "forks": 0,
+    "stars": 0,
+    "url": "#"
+  },
+  {
+    "name": "ghas-copilot-geekmasher",
+    "description": "",
+    "language": "JavaScript",
+    "forks": 0,
+    "stars": 0,
+    "url": "#"
+  },
+  {
+    "name": "copilot-autofix-demo-by-ot",
+    "description": "",
+    "language": "JavaScript",
+    "forks": 0,
+    "stars": 0,
+    "url": "#"
+  }
+]

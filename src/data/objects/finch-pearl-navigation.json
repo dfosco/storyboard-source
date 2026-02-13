@@ -1,0 +1,25 @@
+{
+  "topnav": [
+    { "icon": "home", "label": "Overview", "url": "/Overview" },
+    { "icon": "repo", "label": "Repositories", "url": "/Repositories", "counter": "5k+", "current": true },
+    { "icon": "project", "label": "Projects", "url": "#", "counter": 25 },
+    { "icon": "package", "label": "Packages", "url": "#", "counter": 21 },
+    { "icon": "people", "label": "Teams", "url": "#", "counter": 132 },
+    { "icon": "person", "label": "People", "url": "#", "counter": 571 },
+    { "icon": "shield", "label": "Security", "url": "#" },
+    { "icon": "graph", "label": "Insights", "url": "#" },
+    { "icon": "gear", "label": "Settings", "url": "#" }
+  ],
+  "sidenav": [
+    { "label": "All", "url": "#", "icon": "repo", "current": true },
+    { "label": "Contributed by me", "url": "#", "icon": "git-pull-request" },
+    { "label": "Adminable by me", "url": "#", "icon": "person" },
+    { "label": "Public", "url": "#", "icon": "eye" },
+    { "label": "Internal", "url": "#", "icon": "lock" },
+    { "label": "Private", "url": "#", "icon": "lock" },
+    { "label": "Sources", "url": "#", "icon": "code" },
+    { "label": "Forks", "url": "#", "icon": "repo-forked" },
+    { "label": "Archived", "url": "#", "icon": "archive" },
+    { "label": "Templates", "url": "#", "icon": "repo-template" }
+  ]
+}

@@ -1,0 +1,4 @@
+{
+  "$global": ["../objects/security-advisory-navigation"],
+  "advisory": { "$ref": "../objects/security-advisory" }
+}

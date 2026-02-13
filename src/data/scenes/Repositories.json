@@ -1,0 +1,4 @@
+{
+  "$global": ["../objects/finch-pearl-navigation"],
+  "repositories": { "$ref": "../objects/finch-pearl-repositories" }
+}
