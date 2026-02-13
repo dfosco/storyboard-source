@@ -80,6 +80,8 @@ Create one object file per logical entity. Follow existing naming conventions:
 | Org/team | `src/data/objects/{org-name}.json` | `primer-org.json` |
 
 **Object structure rules:**
+- **The object file's top-level structure IS the value that `$ref` resolves to.** If the scene has `"repositories": { "$ref": "../objects/repositories" }`, the object file should be a bare array `[...]`, not `{ "repositories": [...] }` — otherwise the data double-nests as `repositories.repositories`.
+- Same rule for single-entity objects: if the scene has `"user": { "$ref": "../objects/jane-doe" }`, the object file should contain the user fields directly at root (`{ "name": "Jane", ... }`), not wrapped in `{ "user": { "name": "Jane", ... } }`.
 - Keep objects flat where possible — avoid deep nesting
 - Use arrays for lists of items
 - Include all fields that the UI needs — don't make the component compute derived data
@@ -175,29 +177,27 @@ function ReposPage() {
 ### Entity list object
 
 ```json
-// src/data/objects/repositories.json
-{
-  "repositories": [
-    {
-      "name": "primer-react",
-      "description": "React components for the Primer Design System",
-      "language": "TypeScript",
-      "stars": 2500,
-      "forks": 380,
-      "updatedAt": "2024-01-15T10:30:00Z",
-      "url": "/primer/primer-react"
-    },
-    {
-      "name": "design-tokens",
-      "description": "Design tokens for Primer",
-      "language": "JavaScript",
-      "stars": 890,
-      "forks": 120,
-      "updatedAt": "2024-01-10T08:00:00Z",
-      "url": "/primer/design-tokens"
-    }
-  ]
-}
+// src/data/objects/repositories.json — top-level array, NOT wrapped in { "repositories": [...] }
+[
+  {
+    "name": "primer-react",
+    "description": "React components for the Primer Design System",
+    "language": "TypeScript",
+    "stars": 2500,
+    "forks": 380,
+    "updatedAt": "2024-01-15T10:30:00Z",
+    "url": "/primer/primer-react"
+  },
+  {
+    "name": "design-tokens",
+    "description": "Design tokens for Primer",
+    "language": "JavaScript",
+    "stars": 890,
+    "forks": 120,
+    "updatedAt": "2024-01-10T08:00:00Z",
+    "url": "/primer/design-tokens"
+  }
+]
 ```
 
 ### Scene composing both
@@ -216,10 +216,40 @@ function ReposPage() {
 }
 ```
 
+## Common Pitfall: Double-Nesting with `$ref`
+
+The most frequent data bug is double-nesting. This happens when an object file wraps its data in a key that matches the scene's `$ref` key:
+
+```
+// ❌ WRONG — causes double-nesting (advisory.advisory)
+
+// scene: { "advisory": { "$ref": "../objects/advisory" } }
+// objects/advisory.json:
+{ "advisory": { "title": "Bug", "severity": "High" } }
+// Result: scene.advisory = { "advisory": { "title": "Bug", ... } }
+
+// ✅ CORRECT — object file is the raw value
+
+// scene: { "advisory": { "$ref": "../objects/advisory" } }
+// objects/advisory.json:
+{ "title": "Bug", "severity": "High" }
+// Result: scene.advisory = { "title": "Bug", "severity": "High" }
+```
+
+The same applies to arrays:
+
+```
+❌ WRONG: { "repositories": [ ... ] }   ← wrapped in key
+✅ CORRECT: [ ... ]                      ← bare array
+```
+
+**Rule of thumb:** The `$ref` key in the scene IS the namespace. The object file provides the value.
+
 ## Checklist
 
 Before finishing data structuring, verify:
 
+- [ ] **No double-nesting:** Object files referenced via `$ref` contain raw values, not wrapped in a key matching the scene key (e.g., `repositories.json` is `[...]`, not `{ "repositories": [...] }`)
 - [ ] Every navigation array is in a data object (not hardcoded in the component)
 - [ ] Every list of content items is in a data object
 - [ ] User/org profile data is in a data object

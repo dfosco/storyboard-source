@@ -69,7 +69,13 @@ function resolveRefPath(ref, baseDir) {
 function loadDataFile(dataPath) {
   const jsoncKey = `../../data/${dataPath}.jsonc`
   const jsonKey = `../../data/${dataPath}.json`
-  const raw = dataModules[jsoncKey] ?? dataModules[jsonKey]
+  let raw = dataModules[jsoncKey] ?? dataModules[jsonKey]
+  // Case-insensitive fallback for scene files
+  if (raw == null && dataPath.startsWith('scenes/')) {
+    const sceneName = dataPath.slice('scenes/'.length)
+    const match = findSceneKey(sceneName)
+    if (match) raw = dataModules[match]
+  }
   if (raw == null) {
     throw new Error(`Data file not found: ${dataPath}.json(c)`)
   }
@@ -129,7 +135,23 @@ async function resolveRefs(node, baseDir, seen = new Set()) {
 export function sceneExists(sceneName) {
   const jsoncKey = `../../data/scenes/${sceneName}.jsonc`
   const jsonKey = `../../data/scenes/${sceneName}.json`
-  return (dataModules[jsoncKey] ?? dataModules[jsonKey]) != null
+  if ((dataModules[jsoncKey] ?? dataModules[jsonKey]) != null) return true
+  // Case-insensitive fallback
+  const match = findSceneKey(sceneName)
+  return match != null
+}
+
+/**
+ * Case-insensitive lookup for a scene module key.
+ * Returns the matching module key or null.
+ */
+function findSceneKey(sceneName) {
+  const lower = sceneName.toLowerCase()
+  for (const key of Object.keys(dataModules)) {
+    const match = key.match(/^\.\.\/\.\.\/data\/scenes\/(.+)\.(jsonc?)$/)
+    if (match && match[1].toLowerCase() === lower) return key
+  }
+  return null
 }
 
 export async function loadScene(sceneName = 'default') {
