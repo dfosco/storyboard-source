@@ -268,39 +268,41 @@ export default function Signup() {
             )}
 
             {stepIndex === 3 && (
-              <View direction="column" gap={3} divided>
+              <View direction="column" gap={4}>
                 <Text variant="featured-3" weight="bold">Review your configuration</Text>
-                <View direction="row" gap={2}>
-                  <Text variant="body-3" color="neutral-faded" weight="medium">Name</Text>
-                  <Text variant="body-2">{values.fullName}</Text>
-                </View>
-                <View direction="row" gap={2}>
-                  <Text variant="body-3" color="neutral-faded" weight="medium">Email</Text>
-                  <Text variant="body-2">{values.email}</Text>
-                </View>
-                <View direction="row" gap={2}>
-                  <Text variant="body-3" color="neutral-faded" weight="medium">Organization</Text>
-                  <Text variant="body-2">{values.orgName}</Text>
-                </View>
-                <View direction="row" gap={2}>
-                  <Text variant="body-3" color="neutral-faded" weight="medium">Team size</Text>
-                  <Text variant="body-2">{values.orgSize}</Text>
-                </View>
-                <View direction="row" gap={2}>
-                  <Text variant="body-3" color="neutral-faded" weight="medium">Role</Text>
-                  <Text variant="body-2">{values.role}</Text>
-                </View>
-                <View direction="row" gap={2}>
-                  <Text variant="body-3" color="neutral-faded" weight="medium">Region</Text>
-                  <Text variant="body-2">{values.region}</Text>
-                </View>
-                <View direction="row" gap={2}>
-                  <Text variant="body-3" color="neutral-faded" weight="medium">Plan</Text>
-                  <Text variant="body-2">{values.plan}</Text>
-                </View>
-                <View direction="row" gap={2}>
-                  <Text variant="body-3" color="neutral-faded" weight="medium">Newsletter</Text>
-                  <Text variant="body-2">{values.newsletter ? 'Yes' : 'No'}</Text>
+                <View direction="column" gap={3}>
+                  <View direction="row" align="center">
+                    <View.Item columns={4}><Text variant="body-3" color="neutral-faded">Name</Text></View.Item>
+                    <View.Item grow><Text variant="body-2">{values.fullName}</Text></View.Item>
+                  </View>
+                  <View direction="row" align="center">
+                    <View.Item columns={4}><Text variant="body-3" color="neutral-faded">Email</Text></View.Item>
+                    <View.Item grow><Text variant="body-2">{values.email}</Text></View.Item>
+                  </View>
+                  <View direction="row" align="center">
+                    <View.Item columns={4}><Text variant="body-3" color="neutral-faded">Organization</Text></View.Item>
+                    <View.Item grow><Text variant="body-2">{values.orgName}</Text></View.Item>
+                  </View>
+                  <View direction="row" align="center">
+                    <View.Item columns={4}><Text variant="body-3" color="neutral-faded">Team size</Text></View.Item>
+                    <View.Item grow><Text variant="body-2">{values.orgSize}</Text></View.Item>
+                  </View>
+                  <View direction="row" align="center">
+                    <View.Item columns={4}><Text variant="body-3" color="neutral-faded">Role</Text></View.Item>
+                    <View.Item grow><Text variant="body-2">{values.role}</Text></View.Item>
+                  </View>
+                  <View direction="row" align="center">
+                    <View.Item columns={4}><Text variant="body-3" color="neutral-faded">Region</Text></View.Item>
+                    <View.Item grow><Text variant="body-2">{values.region}</Text></View.Item>
+                  </View>
+                  <View direction="row" align="center">
+                    <View.Item columns={4}><Text variant="body-3" color="neutral-faded">Plan</Text></View.Item>
+                    <View.Item grow><Text variant="body-2">{values.plan}</Text></View.Item>
+                  </View>
+                  <View direction="row" align="center">
+                    <View.Item columns={4}><Text variant="body-3" color="neutral-faded">Newsletter</Text></View.Item>
+                    <View.Item grow><Text variant="body-2">{values.newsletter ? 'Yes' : 'No'}</Text></View.Item>
+                  </View>
                 </View>
               </View>
             )}
