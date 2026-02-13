@@ -201,24 +201,22 @@ export default function Signup() {
 
                 <FormControl hasError={!!errors.orgSize}>
                   <FormControl.Label>Organization size</FormControl.Label>
-                  <Select name="orgSize" value={values.orgSize} onChange={({ value }) => setOrgSize(value)}>
-                    <Select.Option value="">Select size</Select.Option>
-                    <Select.Option value="1-10">1–10 employees</Select.Option>
-                    <Select.Option value="11-50">11–50 employees</Select.Option>
-                    <Select.Option value="51-250">51–250 employees</Select.Option>
-                    <Select.Option value="251+">251+ employees</Select.Option>
+                  <Select name="orgSize" value={values.orgSize} placeholder="Select size" onChange={({ value }) => setOrgSize(value)}>
+                    <option value="1-10">1–10 employees</option>
+                    <option value="11-50">11–50 employees</option>
+                    <option value="51-250">51–250 employees</option>
+                    <option value="251+">251+ employees</option>
                   </Select>
                   {errors.orgSize && <FormControl.Error>{errors.orgSize}</FormControl.Error>}
                 </FormControl>
 
                 <FormControl hasError={!!errors.role}>
                   <FormControl.Label>Your role</FormControl.Label>
-                  <Select name="role" value={values.role} onChange={({ value }) => setRole(value)}>
-                    <Select.Option value="">Select role</Select.Option>
-                    <Select.Option value="founder">Founder</Select.Option>
-                    <Select.Option value="engineering-manager">Engineering Manager</Select.Option>
-                    <Select.Option value="developer">Developer</Select.Option>
-                    <Select.Option value="platform-admin">Platform Admin</Select.Option>
+                  <Select name="role" value={values.role} placeholder="Select role" onChange={({ value }) => setRole(value)}>
+                    <option value="founder">Founder</option>
+                    <option value="engineering-manager">Engineering Manager</option>
+                    <option value="developer">Developer</option>
+                    <option value="platform-admin">Platform Admin</option>
                   </Select>
                   {errors.role && <FormControl.Error>{errors.role}</FormControl.Error>}
                 </FormControl>
@@ -229,12 +227,11 @@ export default function Signup() {
               <>
                 <FormControl hasError={!!errors.region}>
                   <FormControl.Label>Primary region</FormControl.Label>
-                  <Select name="region" value={values.region} onChange={({ value }) => setRegion(value)}>
-                    <Select.Option value="">Select region</Select.Option>
-                    <Select.Option value="us-east-1">US East</Select.Option>
-                    <Select.Option value="us-west-2">US West</Select.Option>
-                    <Select.Option value="eu-west-1">EU West</Select.Option>
-                    <Select.Option value="ap-southeast-1">AP Southeast</Select.Option>
+                  <Select name="region" value={values.region} placeholder="Select region" onChange={({ value }) => setRegion(value)}>
+                    <option value="us-east-1">US East</option>
+                    <option value="us-west-2">US West</option>
+                    <option value="eu-west-1">EU West</option>
+                    <option value="ap-southeast-1">AP Southeast</option>
                   </Select>
                   {errors.region && <FormControl.Error>{errors.region}</FormControl.Error>}
                 </FormControl>
@@ -242,9 +239,9 @@ export default function Signup() {
                 <FormControl hasError={!!errors.plan}>
                   <FormControl.Label>Starting plan</FormControl.Label>
                   <Select name="plan" value={values.plan} onChange={({ value }) => setPlan(value)}>
-                    <Select.Option value="starter">Starter</Select.Option>
-                    <Select.Option value="growth">Growth</Select.Option>
-                    <Select.Option value="enterprise">Enterprise</Select.Option>
+                    <option value="starter">Starter</option>
+                    <option value="growth">Growth</option>
+                    <option value="enterprise">Enterprise</option>
                   </Select>
                   {errors.plan && <FormControl.Error>{errors.plan}</FormControl.Error>}
                 </FormControl>
