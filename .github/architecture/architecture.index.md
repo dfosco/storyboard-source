@@ -5,55 +5,67 @@
 
 ## Storyboard System
 
-The storyboard system is the data architecture of this prototype app. It provides two layers of state management: **scene data** (read-only JSON loaded from files) and **session state** (read-write URL hash-based overrides).
+The storyboard system is the runtime data layer that powers this prototyping app. It loads JSON scene files, resolves `$global` and `$ref` directives, and provides the resulting data to React components via context. The system is designed so designers and developers can iterate on UI prototypes without hard-coding data — instead, data lives in composable JSON files under `src/data/`, and components read it through hooks.
 
-Scene data lives in [`src/data/scenes/`](./src/data/scenes/default.json.md) as JSON/JSONC files. Each scene is a standalone data context for a flow or variant in the prototype. The [`loader`](./src/storyboard/core/loader.js.md) module resolves `$global` and `$ref` directives to merge reusable objects from `src/data/objects/` into the scene root. At runtime, [`StoryboardProvider`](./src/storyboard/context.jsx.md) loads the active scene (determined by `?scene=` URL param) and provides it to the component tree via [`StoryboardContext`](./src/storyboard/StoryboardContext.js.md). Components access scene data using the [`useSceneData`](./src/storyboard/hooks/useSceneData.js.md) hook with dot-notation paths.
+The data flow starts with [`src/storyboard/core/loader.js`](./src/storyboard/core/loader.js.md), which eagerly bundles all data files at build time via `import.meta.glob` and resolves scene composition directives (`$global` for root-level merging, `$ref` for inline replacement). The [`StoryboardProvider`](./src/storyboard/context.jsx.md) in [`src/storyboard/context.jsx`](./src/storyboard/context.jsx.md) wraps the app, calls the loader on mount, and exposes the resolved data through [`StoryboardContext`](./src/storyboard/StoryboardContext.js.md). Components access this data via [`useSceneData()`](./src/storyboard/hooks/useSceneData.js.md) with dot-notation paths and optional URL hash overrides, or use [`useSession()`](./src/storyboard/hooks/useSession.js.md) for direct hash parameter access.
 
-Session state uses URL hash params (`#key=value`) to store transient UI state that shouldn't trigger React Router re-renders. React Router (via `generouted`) patches `history.replaceState/pushState`, so any search param change causes a full route tree re-render. The hash is invisible to the router. The [`session.js`](./src/storyboard/core/session.js.md) module provides low-level utilities (`getParam`, `setParam`, `removeParam`) for reading and writing hash params. The [`useSession`](./src/storyboard/hooks/useSession.js.md) hook wraps these utilities with `useSyncExternalStore` to reactively subscribe to `hashchange` events. Values from hash params override scene defaults, enabling URL-based state that persists across refreshes without mutating scene JSON.
+The form component subsystem ([`StoryboardForm`](./src/storyboard/components/StoryboardForm.jsx.md), [`TextInput`](./src/storyboard/components/TextInput.jsx.md), [`Select`](./src/storyboard/components/Select.jsx.md), [`Checkbox`](./src/storyboard/components/Checkbox.jsx.md), [`Textarea`](./src/storyboard/components/Textarea.jsx.md)) provides form inputs that buffer values locally and persist to session on submit. The public API is exposed through the barrel file [`src/storyboard/index.js`](./src/storyboard/index.js.md), which re-exports all hooks, components, and utilities.
 
-**Form components** ([`StoryboardForm`](./src/storyboard/components/StoryboardForm.jsx.md), [`TextInput`](./src/storyboard/components/TextInput.jsx.md), `Textarea`, `Select`, `Checkbox`) provide a designer-friendly API for forms. They wrap Primer React components and integrate with the session system via [`FormContext`](./src/storyboard/context/FormContext.js.md). Values are buffered locally while typing and only flushed to URL hash on form submit.
+Scene switching is handled by [`useScene()`](./src/storyboard/hooks/useScene.js.md), and client-side navigation preserves hash parameters via [`installHashPreserver()`](./src/storyboard/core/hashPreserver.js.md). The session state system in [`src/storyboard/core/session.js`](./src/storyboard/core/session.js.md) reads and writes URL hash parameters as key-value pairs, enabling shareable prototype states via URL.
 
-**Hash preservation** is handled by [`hashPreserver.js`](./src/storyboard/core/hashPreserver.js.md), a document-level click interceptor installed in [`src/index.jsx`](./src/index.jsx.md). It converts plain `<a>` clicks into client-side React Router navigations, carrying the current hash forward. This ensures session state is never lost during page navigation.
-
-All public exports are re-exported through the barrel file [`src/storyboard/index.js`](./src/storyboard/index.js.md). This separation of scene data (immutable, file-backed) and session state (ephemeral, URL-backed) lets prototypes use JSON for fixture data while keeping transient UI state (filters, form inputs, selected tabs, etc.) out of the data layer.
-
-- [`src/storyboard/components/SceneDataDemo.jsx`](./src/storyboard/components/SceneDataDemo.jsx.md) — Demo component showcasing `useSession`, `useScene`, and `StoryboardForm`
-- [`src/storyboard/components/SceneDebug.jsx`](./src/storyboard/components/SceneDebug.jsx.md) — Debug component that renders raw resolved scene JSON
-- [`src/storyboard/components/StoryboardForm.jsx`](./src/storyboard/components/StoryboardForm.jsx.md) — Form wrapper that buffers values locally, flushes to URL hash on submit
-- [`src/storyboard/components/TextInput.jsx`](./src/storyboard/components/TextInput.jsx.md) — Wrapped Primer TextInput with form context integration (Textarea, Select, Checkbox follow the same pattern)
-- [`src/storyboard/context.jsx`](./src/storyboard/context.jsx.md) — Provider component that loads scene data and exposes it via React context
-- [`src/storyboard/context/FormContext.js`](./src/storyboard/context/FormContext.js.md) — React context connecting StoryboardForm to wrapped input components
-- [`src/storyboard/core/dotPath.js`](./src/storyboard/core/dotPath.js.md) — Utility for reading nested values with dot-notation paths
-- [`src/storyboard/core/hashPreserver.js`](./src/storyboard/core/hashPreserver.js.md) — Document-level interceptor for client-side navigation with hash preservation
-- [`src/storyboard/core/loader.js`](./src/storyboard/core/loader.js.md) — Scene loader that resolves `$global` and `$ref` directives
-- [`src/storyboard/core/session.js`](./src/storyboard/core/session.js.md) — Low-level URL hash utilities for session state
-- [`src/storyboard/hooks/useSceneData.js`](./src/storyboard/hooks/useSceneData.js.md) — Hook for accessing read-only scene data
-- [`src/storyboard/hooks/useSession.js`](./src/storyboard/hooks/useSession.js.md) — Hook for read/write session state with hash-based storage
-- [`src/storyboard/index.js`](./src/storyboard/index.js.md) — Public barrel file exporting all storyboard APIs
-- [`src/storyboard/StoryboardContext.js`](./src/storyboard/StoryboardContext.js.md) — React context object shared by provider and hooks
+- [`src/storyboard/components/Checkbox.jsx`](./src/storyboard/components/Checkbox.jsx.md) — Wrapped Primer Checkbox with form integration and boolean session persistence
+- [`src/storyboard/components/SceneDataDemo.jsx`](./src/storyboard/components/SceneDataDemo.jsx.md) — Demo component showing scene data access and scene switching
+- [`src/storyboard/components/SceneDebug.jsx`](./src/storyboard/components/SceneDebug.jsx.md) — Debug component that renders resolved scene data as formatted JSON
+- [`src/storyboard/components/Select.jsx`](./src/storyboard/components/Select.jsx.md) — Wrapped Primer Select with form integration and session persistence
+- [`src/storyboard/components/StoryboardForm.jsx`](./src/storyboard/components/StoryboardForm.jsx.md) — Form wrapper that buffers input values and persists to session on submit
+- [`src/storyboard/components/Textarea.jsx`](./src/storyboard/components/Textarea.jsx.md) — Wrapped Primer Textarea with form integration and session persistence
+- [`src/storyboard/components/TextInput.jsx`](./src/storyboard/components/TextInput.jsx.md) — Wrapped Primer TextInput with form integration and session persistence
+- [`src/storyboard/context.jsx`](./src/storyboard/context.jsx.md) — StoryboardProvider that loads scene data and provides it via React context
+- [`src/storyboard/core/dotPath.js`](./src/storyboard/core/dotPath.js.md) — Dot-notation path resolution utility for nested data access
+- [`src/storyboard/core/hashPreserver.js`](./src/storyboard/core/hashPreserver.js.md) — Intercepts client-side navigation to preserve URL hash parameters
+- [`src/storyboard/core/loader.js`](./src/storyboard/core/loader.js.md) — Scene loader that resolves $global and $ref directives from JSON data files
+- [`src/storyboard/core/session.js`](./src/storyboard/core/session.js.md) — URL hash parameter read/write utilities for session state
+- [`src/storyboard/hooks/useScene.js`](./src/storyboard/hooks/useScene.js.md) — Hook for reading current scene name and switching scenes
+- [`src/storyboard/hooks/useSceneData.js`](./src/storyboard/hooks/useSceneData.js.md) — Primary hook for accessing scene data with hash param overrides
+- [`src/storyboard/hooks/useSession.js`](./src/storyboard/hooks/useSession.js.md) — Hook for reading/writing individual session parameters
+- [`src/storyboard/index.js`](./src/storyboard/index.js.md) — Public barrel file re-exporting all storyboard APIs
+- [`src/storyboard/StoryboardContext.js`](./src/storyboard/StoryboardContext.js.md) — React context definition for storyboard data
 
 ## Data Files
 
-Scene data files define the fixture data for different prototype flows. Each scene is a complete data context loaded by the storyboard system. Scenes use `$global` arrays to merge shared objects from `src/data/objects/` and `$ref` objects for inline references.
+Scene files and data objects form the content layer of the storyboard system. Scenes in `src/data/scenes/` define the complete data context for a page or flow, composing reusable objects from `src/data/objects/` via `$global` (root merge) and `$ref` (inline replacement) directives. The loader resolves these at runtime, producing a flat data object that components consume.
 
-- [`src/data/scenes/default.json`](./src/data/scenes/default.json.md) — Default scene loaded when no `?scene=` param is present
-- [`src/data/scenes/other-scene.json`](./src/data/scenes/other-scene.json.md) — Example alternative scene
+Page-scene matching enables automatic scene loading: when a scene file name matches the current page route (e.g., `Repositories.json` for `/Repositories`), the [`StoryboardProvider`](./src/storyboard/context.jsx.md) loads it without requiring a `?scene=` URL parameter. Scenes can also be loaded explicitly via `?scene=name` or the `sceneName` prop.
+
+Object files in `src/data/objects/` are standalone data fragments (users, navigation, entity data) with no special keys — they are referenced by scenes and composed into the final data shape by the loader.
+
+- [`src/data/scenes/default.json`](./src/data/scenes/default.json.md) — Default scene loaded when no scene is specified
+- [`src/data/scenes/other-scene.json`](./src/data/scenes/other-scene.json.md) — Alternative scene for testing scene switching
+- [`src/data/scenes/Repositories.json`](./src/data/scenes/Repositories.json.md) — Scene for the Repositories page with Finch Pearl design data
+- [`src/data/scenes/SecurityAdvisory.json`](./src/data/scenes/SecurityAdvisory.json.md) — Scene for the Security Advisory page with advisory detail data
 
 ## Entry Points
 
-- [`src/index.jsx`](./src/index.jsx.md) — Application entry point that mounts React, creates the router, and installs the hash-preserving navigation interceptor
+The app entry point bootstraps React, applies the Primer theme, and sets up the router.
+
+- [`src/index.jsx`](./src/index.jsx.md) — App root: React DOM render, Primer ThemeProvider, and router mounting
 
 ## Routing
 
-- [`src/pages/_app.jsx`](./src/pages/_app.jsx.md) — Root layout wrapping all routes with `StoryboardProvider`
+File-based routing is handled by `@generouted/react-router`, which auto-generates routes from `src/pages/`. The app layout wraps all routes with the [`StoryboardProvider`](./src/storyboard/context.jsx.md).
+
+- [`src/pages/_app.jsx`](./src/pages/_app.jsx.md) — Root layout component wrapping routes with StoryboardProvider and hash preserver
 
 ## Configuration
 
-- [`package.json`](./package.json.md) — Project dependencies and scripts
-- [`vite.config.js`](./vite.config.js.md) — Vite build config with React, Generouted routing, and Primer CSS pipeline
+Build tooling and project metadata. The Vite config wires together React, file-based routing, and the PostCSS pipeline for Primer design tokens.
+
+- [`package.json`](./package.json.md) — Project manifest with scripts, dependencies, and ESM configuration
+- [`vite.config.js`](./vite.config.js.md) — Vite build config with React, Generouted, and PostCSS for Primer tokens
 
 ## Pages
 
-- [`src/pages/index.jsx`](./src/pages/index.jsx.md) — Home page route
-- `src/pages/Forms.jsx` — Form components demo page using `StoryboardForm`, `TextInput`, `Textarea`, `Select`, `Checkbox`
+Page components live in `src/pages/` and are auto-discovered by the Generouted routing plugin. Each file becomes a route.
+
+- [`src/pages/index.jsx`](./src/pages/index.jsx.md) — Home page at `/`
 

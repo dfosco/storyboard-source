@@ -10,7 +10,7 @@ importance: high
 
 ## Goal
 
-The `StoryboardProvider` component that loads scene data and provides it to the component tree via React context. It determines which scene to load from three sources (in priority order): the `?scene=` URL parameter, the `sceneName` prop, or the default `"default"`. It blocks rendering children until the scene is fully loaded, showing a loading fallback or error message as needed.
+The `StoryboardProvider` component that loads scene data and provides it to the component tree via React context. It determines which scene to load from four sources (in priority order): the `?scene=` URL parameter, the `sceneName` prop, a matching scene file for the current page (e.g., `scenes/Overview.json` for `/Overview`), or the default `"default"`. It blocks rendering children until the scene is fully loaded, showing a loading fallback or error message as needed.
 
 This is the runtime core of the storyboard system — it calls [`loadScene()`](./core/loader.js.md) on mount, stores the result in state, and exposes it through [`StoryboardContext`](./StoryboardContext.js.md) so any descendant can call [`useSceneData()`](./hooks/useSceneData.js.md) or [`useSession()`](./hooks/useSession.js.md).
 
@@ -22,17 +22,25 @@ The component accepts three props:
 export default function StoryboardProvider({ sceneName, fallback, children })
 ```
 
-**Scene name resolution** — Reads directly from `window.location.search` to avoid React Router re-renders:
+**Scene name resolution** — Reads directly from `window.location.search` to avoid React Router re-renders, and uses page-scene matching as a fallback:
 
 ```js
 function getSceneParam() {
   return new URLSearchParams(window.location.search).get('scene')
 }
 
-const activeSceneName = getSceneParam() || sceneName || 'default'
+function getPageSceneName() {
+  const path = window.location.pathname.replace(/\/+$/, '') || '/'
+  if (path === '/') return 'index'
+  const last = path.split('/').pop()
+  return last || 'index'
+}
+
+const pageScene = getPageSceneName()
+const activeSceneName = getSceneParam() || sceneName || (sceneExists(pageScene) ? pageScene : 'default')
 ```
 
-This bypasses React Router's `useSearchParams()` hook, which would cause a full re-render on every navigation event including hash changes. The provider only re-loads the scene when the `activeSceneName` changes, which is stable across hash-only updates.
+This bypasses React Router's `useSearchParams()` hook, which would cause a full re-render on every navigation event including hash changes. The `getPageSceneName()` helper derives a scene name from the current pathname (e.g., `/Overview` → `"Overview"`, `/` → `"index"`), and if a matching scene file exists (checked via [`sceneExists()`](./core/loader.js.md)), it is loaded automatically.
 
 The context value shape provided to descendants:
 
@@ -67,7 +75,7 @@ Also re-exports [`StoryboardContext`](./StoryboardContext.js.md) as a named expo
 
 - `react` — `useState`, `useEffect`
 - `@primer/react` — `Text`
-- [`src/storyboard/core/loader.js`](./core/loader.js.md) — `loadScene`
+- [`src/storyboard/core/loader.js`](./core/loader.js.md) — `loadScene`, `sceneExists`
 - [`src/storyboard/StoryboardContext.js`](./StoryboardContext.js.md) — `StoryboardContext`
 
 ## Dependents

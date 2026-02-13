@@ -29,7 +29,7 @@ Key runtime dependencies:
 
 | Package | Purpose |
 |---------|---------|
-| `react@^19`, `react-dom@^19` | React runtime |
+| `react@^19.2`, `react-dom@^19.2` | React runtime |
 | `@primer/react@^38` | Primer UI component library |
 | `@primer/primitives@^11` | Design tokens (CSS custom properties) |
 | `@primer/octicons-react@^19` | Icon library |
@@ -37,7 +37,7 @@ Key runtime dependencies:
 | `jsonc-parser@^3.3` | JSON with comments parser (for scene data) |
 | `styled-components@^6` | CSS-in-JS (required by Primer React) |
 
-Key dev dependencies: `vite@^7`, `@vitejs/plugin-react@^5`, `eslint@^9`, `postcss-preset-env@^10`, `@github/browserslist-config`.
+Key dev dependencies: `vite@^7.3`, `@vitejs/plugin-react@^5`, `eslint@^9`, `postcss-preset-env@^10`, `glob@^13`, `@github/browserslist-config`.
 
 ## Dependencies
 

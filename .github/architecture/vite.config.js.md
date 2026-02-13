@@ -16,12 +16,24 @@ This file controls how routes are auto-generated from `src/pages/`, how CSS cust
 
 ## Composition
 
-Exports a single Vite config via `defineConfig`. The two plugins handle React JSX transforms and automatic route generation:
+Exports a single Vite config via `defineConfig` with a base path of `/storyboard/`. Three plugins handle React transforms, automatic route generation, and dev-server URL rewriting:
 
 ```js
-plugins: [react(), generouted()],
+base: '/storyboard/',
+plugins: [
+    react(),
+    generouted(),
+    {
+        name: 'base-redirect',
+        configureServer(server) {
+            // Redirects requests not starting with /storyboard/ to /storyboard/...
+        },
+    },
+],
 server: { port: 1234 },
 ```
+
+The custom `base-redirect` plugin ensures the dev server redirects bare URLs (e.g., `/Overview`) to the base-prefixed path (`/storyboard/Overview`), keeping the dev experience consistent with the production deployment path.
 
 The PostCSS pipeline has two stages. First, `postcssGlobalData` injects all Primer Primitives CSS files so their custom media queries are resolvable in any stylesheet:
 

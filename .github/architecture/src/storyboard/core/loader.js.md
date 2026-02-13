@@ -74,7 +74,21 @@ if (node.$ref && typeof node.$ref === 'string') {
 }
 ```
 
-**`loadDataFile(dataPath)`** — loads a data file by path (without extension), trying `.jsonc` then `.json`, parsing with JSONC parser.
+**`sceneExists(sceneName)`** — checks whether a scene file exists for the given name, with case-insensitive fallback:
+
+```js
+export function sceneExists(sceneName) {
+  const jsoncKey = `../../data/scenes/${sceneName}.jsonc`
+  const jsonKey = `../../data/scenes/${sceneName}.json`
+  if ((dataModules[jsoncKey] ?? dataModules[jsonKey]) != null) return true
+  const match = findSceneKey(sceneName)
+  return match != null
+}
+```
+
+**`findSceneKey(sceneName)`** — case-insensitive lookup for a scene module key in `dataModules`. Returns the matching key or `null`.
+
+**`loadDataFile(dataPath)`** — loads a data file by path (without extension), trying `.jsonc` then `.json`, parsing with JSONC parser. Includes a case-insensitive fallback for scene files.
 
 **`dataModules`** — all data files eagerly loaded at build time via:
 
@@ -93,9 +107,9 @@ const dataModules = import.meta.glob('../../data/**/*.{json,jsonc}', {
 
 ## Dependents
 
-- [`src/storyboard/context.jsx`](../context.jsx.md) — calls `loadScene()` in the provider
+- [`src/storyboard/context.jsx`](../context.jsx.md) — calls `loadScene()` and `sceneExists()` in the provider
 - [`src/storyboard/components/SceneDebug.jsx`](../components/SceneDebug.jsx.md) — calls `loadScene()` directly for debug display
-- [`src/storyboard/index.js`](../index.js.md) — re-exports `loadScene`
+- [`src/storyboard/index.js`](../index.js.md) — re-exports `loadScene` and `sceneExists`
 
 ## Notes
 
@@ -103,3 +117,5 @@ const dataModules = import.meta.glob('../../data/**/*.{json,jsonc}', {
 - The `$global` directive is processed before `$ref` resolution, so global objects can themselves contain `$ref` entries that will be resolved.
 - Circular `$ref` detection uses a shared `Set` within a single `resolveRefs` call tree. Each `$global` reference is resolved independently (no cross-global cycle detection).
 - Scene files like [`src/data/scenes/default.json`](../../data/scenes/default.json.md) use `$ref` to compose reusable objects from `src/data/objects/`.
+- Scene name lookup includes a case-insensitive fallback: `findSceneKey()` scans all module keys to find a case-insensitive match, enabling page-scene matching regardless of file name casing.
+- `deepMerge` is also exported for use by other modules.
