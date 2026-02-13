@@ -45,7 +45,12 @@ function BlurTextField({ name, defaultValue, onCommit, ...props }) {
 
 export default function Signup() {
   const navigate = useNavigate()
-  const [stepIndex, setStepIndex] = useState(0)
+  const [stepParam, setStepParam] = useOverride('signup.step')
+  const stepIndex = Math.min(Math.max(parseInt(stepParam, 10) || 0, 0), steps.length - 1)
+  const setStepIndex = (valOrFn) => {
+    const next = typeof valOrFn === 'function' ? valOrFn(stepIndex) : valOrFn
+    setStepParam(String(next))
+  }
   const [errors, setErrors] = useState({})
 
   const [fullName, setFullName] = useOverride('signup.fullName')
