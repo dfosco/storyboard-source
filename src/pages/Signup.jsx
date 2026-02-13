@@ -131,7 +131,7 @@ export default function Signup() {
                   name="fullName"
                   value={values.fullName}
                   placeholder="Jane Doe"
-                  onChange={(value) => setFullName(value)}
+                  onChange={({ value }) => setFullName(value)}
                 />
                 {errors.fullName && <FormControl.Error>{errors.fullName}</FormControl.Error>}
               </FormControl>
@@ -142,7 +142,7 @@ export default function Signup() {
                   name="email"
                   value={values.email}
                   placeholder="jane@acme.cloud"
-                  onChange={(value) => setEmail(value)}
+                  onChange={({ value }) => setEmail(value)}
                 />
                 {errors.email && <FormControl.Error>{errors.email}</FormControl.Error>}
               </FormControl>
@@ -152,7 +152,7 @@ export default function Signup() {
                 <TextField
                   name="password"
                   value={values.password}
-                  onChange={(value) => setPassword(value)}
+                  onChange={({ value }) => setPassword(value)}
                   inputAttributes={{ type: 'password' }}
                 />
                 {errors.password && <FormControl.Error>{errors.password}</FormControl.Error>}
@@ -168,14 +168,14 @@ export default function Signup() {
                   name="orgName"
                   value={values.orgName}
                   placeholder="Acme Cloud"
-                  onChange={(value) => setOrgName(value)}
+                  onChange={({ value }) => setOrgName(value)}
                 />
                 {errors.orgName && <FormControl.Error>{errors.orgName}</FormControl.Error>}
               </FormControl>
 
               <FormControl hasError={!!errors.orgSize}>
                 <FormControl.Label>Organization size</FormControl.Label>
-                <Select name="orgSize" value={values.orgSize} onChange={(value) => setOrgSize(value)}>
+                <Select name="orgSize" value={values.orgSize} onChange={({ value }) => setOrgSize(value)}>
                   <Select.Option value="">Select size</Select.Option>
                   <Select.Option value="1-10">1-10 employees</Select.Option>
                   <Select.Option value="11-50">11-50 employees</Select.Option>
@@ -187,7 +187,7 @@ export default function Signup() {
 
               <FormControl hasError={!!errors.role}>
                 <FormControl.Label>Your role</FormControl.Label>
-                <Select name="role" value={values.role} onChange={(value) => setRole(value)}>
+                <Select name="role" value={values.role} onChange={({ value }) => setRole(value)}>
                   <Select.Option value="">Select role</Select.Option>
                   <Select.Option value="founder">Founder</Select.Option>
                   <Select.Option value="engineering-manager">Engineering Manager</Select.Option>
@@ -203,7 +203,7 @@ export default function Signup() {
             <>
               <FormControl hasError={!!errors.region}>
                 <FormControl.Label>Primary region</FormControl.Label>
-                <Select name="region" value={values.region} onChange={(value) => setRegion(value)}>
+                <Select name="region" value={values.region} onChange={({ value }) => setRegion(value)}>
                   <Select.Option value="">Select region</Select.Option>
                   <Select.Option value="us-east-1">US East</Select.Option>
                   <Select.Option value="us-west-2">US West</Select.Option>
@@ -215,7 +215,7 @@ export default function Signup() {
 
               <FormControl hasError={!!errors.plan}>
                 <FormControl.Label>Starting plan</FormControl.Label>
-                <Select name="plan" value={values.plan} onChange={(value) => setPlan(value)}>
+                <Select name="plan" value={values.plan} onChange={({ value }) => setPlan(value)}>
                   <Select.Option value="starter">Starter</Select.Option>
                   <Select.Option value="growth">Growth</Select.Option>
                   <Select.Option value="enterprise">Enterprise</Select.Option>
@@ -226,7 +226,7 @@ export default function Signup() {
               <Checkbox
                 name="newsletter"
                 checked={values.newsletter}
-                onChange={(value) => setNewsletter(value ? 'true' : 'false')}
+                onChange={({ checked }) => setNewsletter(checked ? 'true' : 'false')}
               >
                 Email me product updates and onboarding tips
               </Checkbox>
@@ -235,7 +235,7 @@ export default function Signup() {
                 <Checkbox
                   name="agreeTerms"
                   checked={values.agreeTerms}
-                  onChange={(value) => setAgreeTerms(value ? 'true' : 'false')}
+                  onChange={({ checked }) => setAgreeTerms(checked ? 'true' : 'false')}
                 >
                   I agree to the Terms of Service and Privacy Policy
                 </Checkbox>
