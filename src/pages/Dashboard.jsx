@@ -26,45 +26,84 @@ export default function Dashboard() {
   const newsletter = useSceneData('signup.workspace.newsletter')
 
   return (
-    <Reshaped defaultTheme="reshaped">
-    <View padding={8} gap={6} direction="column" maxWidth={100} attributes={{ style: { margin: '0 auto' } }}>
-      <View direction="row" justify="space-between" align="center">
-        <View direction="column" gap={1}>
-          <Text variant="title-3" weight="bold">Cloud dashboard</Text>
-          <Text variant="body-2" color="neutral-faded">
-            Provisioned from your sign-up flow values.
-          </Text>
+    <Reshaped defaultTheme="reshaped" defaultColorMode="dark">
+    <View
+      backgroundColor="page"
+      minHeight="100vh"
+      padding={6}
+      align="center"
+    >
+      <View maxWidth="720px" width="100%" direction="column" gap={6} paddingBlock={10}>
+        <View direction="row" justify="space-between" align="center">
+          <View direction="column" gap={1}>
+            <Text variant="featured-1" weight="bold">Cloud dashboard</Text>
+            <Text variant="body-2" color="neutral-faded">
+              Provisioned from your sign-up flow values.
+            </Text>
+          </View>
+          <Button variant="outline" onClick={() => navigate('/Signup')}>Edit sign-up data</Button>
         </View>
-        <Button variant="outline" onClick={() => navigate('/Signup')}>Edit sign-up data</Button>
-      </View>
 
-      <View direction="row" gap={3}>
-        <Card padding={6} grow>
-          <View direction="column" gap={2}>
-            <Text variant="title-6" weight="medium">Account</Text>
-            <Text variant="body-2"><strong>Name:</strong> {display(fullName)}</Text>
-            <Text variant="body-2"><strong>Email:</strong> {display(email)}</Text>
-            <Text variant="body-2"><strong>Role:</strong> {display(role)}</Text>
-          </View>
-        </Card>
+        <View direction="row" gap={4}>
+          <View.Item columns={4}>
+            <Card padding={5}>
+              <View direction="column" gap={3}>
+                <Text variant="body-2" weight="bold">Account</Text>
+                <View direction="column" gap={1}>
+                  <Text variant="caption-1" color="neutral-faded">Name</Text>
+                  <Text variant="body-2">{display(fullName)}</Text>
+                </View>
+                <View direction="column" gap={1}>
+                  <Text variant="caption-1" color="neutral-faded">Email</Text>
+                  <Text variant="body-2">{display(email)}</Text>
+                </View>
+                <View direction="column" gap={1}>
+                  <Text variant="caption-1" color="neutral-faded">Role</Text>
+                  <Text variant="body-2">{display(role)}</Text>
+                </View>
+              </View>
+            </Card>
+          </View.Item>
 
-        <Card padding={6} grow>
-          <View direction="column" gap={2}>
-            <Text variant="title-6" weight="medium">Organization</Text>
-            <Text variant="body-2"><strong>Name:</strong> {display(organizationName)}</Text>
-            <Text variant="body-2"><strong>Size:</strong> {display(organizationSize)}</Text>
-            <Text variant="body-2"><strong>Region:</strong> {display(region)}</Text>
-          </View>
-        </Card>
+          <View.Item columns={4}>
+            <Card padding={5}>
+              <View direction="column" gap={3}>
+                <Text variant="body-2" weight="bold">Organization</Text>
+                <View direction="column" gap={1}>
+                  <Text variant="caption-1" color="neutral-faded">Name</Text>
+                  <Text variant="body-2">{display(organizationName)}</Text>
+                </View>
+                <View direction="column" gap={1}>
+                  <Text variant="caption-1" color="neutral-faded">Size</Text>
+                  <Text variant="body-2">{display(organizationSize)}</Text>
+                </View>
+                <View direction="column" gap={1}>
+                  <Text variant="caption-1" color="neutral-faded">Region</Text>
+                  <Text variant="body-2">{display(region)}</Text>
+                </View>
+              </View>
+            </Card>
+          </View.Item>
 
-        <Card padding={6} grow>
-          <View direction="column" gap={2}>
-            <Text variant="title-6" weight="medium">Plan & notifications</Text>
-            <Text variant="body-2"><strong>Plan:</strong> {display(plan)}</Text>
-            <Text variant="body-2"><strong>Newsletter:</strong> {boolLabel(newsletter)}</Text>
-            <Badge color="primary">Onboarding Complete</Badge>
-          </View>
-        </Card>
+          <View.Item columns={4}>
+            <Card padding={5}>
+              <View direction="column" gap={3}>
+                <Text variant="body-2" weight="bold">Plan & notifications</Text>
+                <View direction="column" gap={1}>
+                  <Text variant="caption-1" color="neutral-faded">Plan</Text>
+                  <Text variant="body-2">{display(plan)}</Text>
+                </View>
+                <View direction="column" gap={1}>
+                  <Text variant="caption-1" color="neutral-faded">Newsletter</Text>
+                  <Text variant="body-2">{boolLabel(newsletter)}</Text>
+                </View>
+                <View paddingTop={2}>
+                  <Badge color="positive">Onboarding Complete</Badge>
+                </View>
+              </View>
+            </Card>
+          </View.Item>
+        </View>
       </View>
     </View>
     </Reshaped>
