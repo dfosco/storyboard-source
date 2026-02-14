@@ -1,0 +1,26 @@
+[
+  {
+    "id": "welcome-to-storyboard",
+    "title": "Welcome to Storyboard",
+    "date": "2026-02-14",
+    "author": "Jane Doe",
+    "summary": "An introduction to building prototypes with Storyboard — the meta-framework for design system exploration.",
+    "body": "Storyboard is a prototyping meta-framework that lets you build interactive UI prototypes powered by real data. Instead of hard-coding sample content, you define data files that feed into your pages automatically.\n\nEach page can load a scene (its data context), reference shared objects, and even render parameterized content from record collections — like this very blog post.\n\nGet started by creating a `.scene.json` file and a page component. The data flows in, and you focus on the design."
+  },
+  {
+    "id": "data-driven-prototyping",
+    "title": "Data-Driven Prototyping",
+    "date": "2026-02-13",
+    "author": "Jane Doe",
+    "summary": "How scenes, objects, and records work together to power realistic prototypes.",
+    "body": "Traditional prototyping tools force you to duplicate content across screens. Storyboard takes a different approach: your data lives in JSON files, and pages consume it through hooks.\n\n**Scenes** provide the full data context for a page. **Objects** are reusable fragments — a user profile, a navigation config — that scenes reference via `$ref`. **Records** are collections that power parameterized pages, like blog posts or product listings.\n\nThis separation means you can swap data without touching UI code, test edge cases by editing JSON, and share data fragments across multiple pages."
+  },
+  {
+    "id": "design-system-exploration",
+    "title": "Exploring Design Systems",
+    "date": "2026-02-12",
+    "author": "Jane Doe",
+    "summary": "Using Storyboard to explore and compare design systems like Primer and Reshaped.",
+    "body": "One of Storyboard's strengths is its design system agnosticism. While it ships with Primer React as the default, you can bring any design system — Reshaped, Radix, Chakra, or your own.\n\nEach page is independent: one page can use Primer components while another uses Reshaped. This makes Storyboard ideal for comparing design systems side by side, exploring component APIs, and building proof-of-concept pages before committing to a system.\n\nThe key is that the data layer stays the same regardless of which components render it."
+  }
+]
