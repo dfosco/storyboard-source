@@ -27,171 +27,163 @@ function deepMerge(target, source) {
 }
 
 import { parse as parseJsonc } from 'jsonc-parser'
+import dataIndex from 'virtual:storyboard-data-index'
 
 /**
- * All known data modules, keyed by path relative to src/data/.
- * Loaded as raw text so we can parse with JSONC support (comments allowed).
- * Supports both .json and .jsonc extensions.
+ * Parses a raw JSON/JSONC string.
  */
-const dataModules = import.meta.glob('../../data/**/*.{json,jsonc}', {
-  eager: true,
-  query: '?raw',
-  import: 'default',
-})
-
-/**
- * Resolves a relative reference path against a base directory path.
- * @param {string} ref - Relative path (e.g., "../objects/navigation")
- * @param {string} baseDir - Directory of the referring file (e.g., "scenes")
- * @returns {string} Normalized path relative to data root (e.g., "objects/navigation")
- */
-function resolveRefPath(ref, baseDir) {
-  const segments = baseDir.split('/').filter(Boolean)
-  const refParts = ref.split('/')
-  
-  for (const part of refParts) {
-    if (part === '..') {
-      segments.pop()
-    } else if (part !== '.') {
-      segments.push(part)
-    }
-  }
-  
-  return segments.join('/')
-}
-
-/**
- * Loads a data file by its path relative to src/data/ (without extension).
- * Tries .jsonc first, then .json. Parses with JSONC parser to allow comments.
- * @param {string} dataPath - e.g., "objects/navigation"
- * @returns {object} Parsed file contents
- */
-function loadDataFile(dataPath) {
-  const jsoncKey = `../../data/${dataPath}.jsonc`
-  const jsonKey = `../../data/${dataPath}.json`
-  let raw = dataModules[jsoncKey] ?? dataModules[jsonKey]
-  // Case-insensitive fallback for scene files
-  if (raw == null && dataPath.startsWith('scenes/')) {
-    const sceneName = dataPath.slice('scenes/'.length)
-    const match = findSceneKey(sceneName)
-    if (match) raw = dataModules[match]
-  }
-  if (raw == null) {
-    throw new Error(`Data file not found: ${dataPath}.json(c)`)
-  }
+function parseRaw(raw) {
   return parseJsonc(raw)
 }
 
 /**
+ * Loads a data file by name and type from the data index.
+ * @param {string} name - Data file name (e.g., "jane-doe", "default")
+ * @param {string} [type] - Data type: "scenes", "objects", or "records". If omitted, searches all types.
+ * @returns {object} Parsed file contents
+ */
+function loadDataFile(name, type) {
+  if (type && dataIndex[type]?.[name] != null) {
+    return parseRaw(dataIndex[type][name])
+  }
+
+  // Search all types if no specific type given
+  if (!type) {
+    for (const t of ['scenes', 'objects', 'records']) {
+      if (dataIndex[t]?.[name] != null) {
+        return parseRaw(dataIndex[t][name])
+      }
+    }
+  }
+
+  // Case-insensitive fallback for scenes
+  if (type === 'scenes' || !type) {
+    const lower = name.toLowerCase()
+    for (const key of Object.keys(dataIndex.scenes)) {
+      if (key.toLowerCase() === lower) {
+        return parseRaw(dataIndex.scenes[key])
+      }
+    }
+  }
+
+  throw new Error(`Data file not found: ${name}${type ? ` (type: ${type})` : ''}`)
+}
+
+/**
  * Recursively resolves $ref objects within data.
- * A $ref object is `{ "$ref": "<relative-path>" }` — it gets replaced
- * with the contents of the referenced file.
+ * A $ref is a name resolved from the data index (objects first, then any type).
  *
  * @param {*} node - Current data node
- * @param {string} baseDir - Directory of the file containing this node
- * @param {Set} seen - Tracks visited paths to prevent circular refs
+ * @param {Set} seen - Tracks visited names to prevent circular refs
  * @returns {Promise<*>} Resolved data
  */
-async function resolveRefs(node, baseDir, seen = new Set()) {
+async function resolveRefs(node, seen = new Set()) {
   if (node === null || typeof node !== 'object') return node
   if (Array.isArray(node)) {
-    return Promise.all(node.map((item) => resolveRefs(item, baseDir, seen)))
+    return Promise.all(node.map((item) => resolveRefs(item, seen)))
   }
 
   // Handle $ref replacement
   if (node.$ref && typeof node.$ref === 'string') {
-    const resolved = resolveRefPath(node.$ref, baseDir)
-    if (seen.has(resolved)) {
-      throw new Error(`Circular $ref detected: ${resolved}`)
+    const refName = node.$ref
+    if (seen.has(refName)) {
+      throw new Error(`Circular $ref detected: ${refName}`)
     }
-    seen.add(resolved)
-    const refData = loadDataFile(resolved)
-    const refDir = resolved.substring(0, resolved.lastIndexOf('/')) || ''
-    return resolveRefs(refData, refDir, seen)
+    seen.add(refName)
+    const refData = loadDataFile(refName, 'objects')
+    return resolveRefs(refData, seen)
   }
 
   // Recurse into object values
   const result = {}
   for (const [key, value] of Object.entries(node)) {
-    result[key] = await resolveRefs(value, baseDir, seen)
+    result[key] = await resolveRefs(value, seen)
   }
   return result
 }
 
-/**
- * Loads a scene file and resolves $global and $ref references.
- *
- * - $global: array of relative paths merged into root (scene wins on conflicts)
- * - $ref: inline object replacement at any nesting level
- *
- * @param {string} sceneName - Name of the scene (e.g., "default")
- * @returns {Promise<object>} Resolved scene data
- */
 /**
  * Checks whether a scene file exists for the given name.
  * @param {string} sceneName - e.g., "Overview"
  * @returns {boolean}
  */
 export function sceneExists(sceneName) {
-  const jsoncKey = `../../data/scenes/${sceneName}.jsonc`
-  const jsonKey = `../../data/scenes/${sceneName}.json`
-  if ((dataModules[jsoncKey] ?? dataModules[jsonKey]) != null) return true
-  // Case-insensitive fallback
-  const match = findSceneKey(sceneName)
-  return match != null
+  if (dataIndex.scenes[sceneName] != null) return true
+  const lower = sceneName.toLowerCase()
+  for (const key of Object.keys(dataIndex.scenes)) {
+    if (key.toLowerCase() === lower) return true
+  }
+  return false
 }
 
 /**
- * Case-insensitive lookup for a scene module key.
- * Returns the matching module key or null.
+ * Loads a scene file and resolves $global and $ref references.
+ *
+ * - $global: array of data names merged into root (scene wins on conflicts)
+ * - $ref: inline object replacement at any nesting level
+ *
+ * @param {string} sceneName - Name of the scene (e.g., "default")
+ * @returns {Promise<object>} Resolved scene data
  */
-function findSceneKey(sceneName) {
-  const lower = sceneName.toLowerCase()
-  for (const key of Object.keys(dataModules)) {
-    const match = key.match(/^\.\.\/\.\.\/data\/scenes\/(.+)\.(jsonc?)$/)
-    if (match && match[1].toLowerCase() === lower) return key
-  }
-  return null
-}
-
 export async function loadScene(sceneName = 'default') {
-  const scenePath = `scenes/${sceneName}`
   let sceneData
 
   try {
-    sceneData = loadDataFile(scenePath)
+    sceneData = loadDataFile(sceneName, 'scenes')
   } catch (err) {
     throw new Error(`Failed to load scene: ${sceneName}`)
   }
 
-  const baseDir = 'scenes'
-
-  // Handle $global: root-level merge from referenced files
+  // Handle $global: root-level merge from referenced data files
   if (Array.isArray(sceneData.$global)) {
-    const globalPaths = sceneData.$global
+    const globalNames = sceneData.$global
     delete sceneData.$global
 
     let mergedGlobals = {}
-    for (const ref of globalPaths) {
-      const resolved = resolveRefPath(ref, baseDir)
+    for (const name of globalNames) {
       try {
-        let globalData = loadDataFile(resolved)
-        const refDir = resolved.substring(0, resolved.lastIndexOf('/')) || ''
-        globalData = await resolveRefs(globalData, refDir)
+        let globalData = loadDataFile(name)
+        globalData = await resolveRefs(globalData)
         mergedGlobals = deepMerge(mergedGlobals, globalData)
       } catch (err) {
-        console.warn(`Failed to load $global: ${ref}`, err)
+        console.warn(`Failed to load $global: ${name}`, err)
       }
     }
 
-    // Scene data takes priority over globals
     sceneData = deepMerge(mergedGlobals, sceneData)
   }
 
-  // Resolve any $ref objects throughout the tree
-  sceneData = await resolveRefs(sceneData, baseDir)
+  sceneData = await resolveRefs(sceneData)
 
   return sceneData
+}
+
+/**
+ * Loads a record collection by name.
+ * @param {string} recordName - Name of the record file (e.g., "posts")
+ * @returns {Array} Parsed record collection
+ */
+export function loadRecord(recordName) {
+  const raw = dataIndex.records[recordName]
+  if (raw == null) {
+    throw new Error(`Record not found: ${recordName}`)
+  }
+  const data = parseRaw(raw)
+  if (!Array.isArray(data)) {
+    throw new Error(`Record "${recordName}" must be an array, got ${typeof data}`)
+  }
+  return data
+}
+
+/**
+ * Finds a single record entry by id within a collection.
+ * @param {string} recordName - Record collection name (e.g., "posts")
+ * @param {string} id - The id to match
+ * @returns {object|null} The matched entry, or null
+ */
+export function findRecord(recordName, id) {
+  const records = loadRecord(recordName)
+  return records.find((entry) => entry.id === id) ?? null
 }
 
 export { deepMerge }
