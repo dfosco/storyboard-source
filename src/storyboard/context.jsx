@@ -1,7 +1,9 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import { Text } from '@primer/react'
-import { loadScene, sceneExists } from './core/loader.js'
+import { loadScene, sceneExists, findRecord } from './core/loader.js'
+import { deepMerge } from './core/loader.js'
 import { StoryboardContext } from './StoryboardContext.js'
 
 export { StoryboardContext }
@@ -31,22 +33,19 @@ function getPageSceneName() {
  * Reads the scene name from the ?scene= URL param, the sceneName prop,
  * a matching scene file for the current page, or defaults to "default".
  *
- * Page-matching: if a scene file exists whose name matches the current
- * page (e.g. scenes/Overview.json for the /Overview route), it is used
- * automatically — no ?scene= param needed.
- * 
- * Blocks rendering children until scene data is loaded.
+ * Optionally merges record data when `recordName` and `recordParam` are provided.
+ * The matched record entry is injected under the "record" key in scene data.
  */
-export default function StoryboardProvider({ sceneName, fallback, children }) {
+export default function StoryboardProvider({ sceneName, recordName, recordParam, fallback, children }) {
   const pageScene = getPageSceneName()
   const activeSceneName = getSceneParam() || sceneName || (sceneExists(pageScene) ? pageScene : 'default')
+  const params = useParams()
 
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Only show loading state on initial mount or when scene actually changes
     if (data === null) {
       setLoading(true)
     }
@@ -54,6 +53,13 @@ export default function StoryboardProvider({ sceneName, fallback, children }) {
 
     loadScene(activeSceneName)
       .then((sceneData) => {
+        // Merge record data if configured
+        if (recordName && recordParam && params[recordParam]) {
+          const entry = findRecord(recordName, params[recordParam])
+          if (entry) {
+            sceneData = deepMerge(sceneData, { record: entry })
+          }
+        }
         setData(sceneData)
         setLoading(false)
       })
@@ -61,7 +67,7 @@ export default function StoryboardProvider({ sceneName, fallback, children }) {
         setError(err.message)
         setLoading(false)
       })
-  }, [activeSceneName]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [activeSceneName, recordName, recordParam, params]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const value = {
     data,
@@ -70,7 +76,6 @@ export default function StoryboardProvider({ sceneName, fallback, children }) {
     sceneName: activeSceneName,
   }
 
-  // Block children until loaded
   if (loading) {
     return fallback ?? <Text>Loading scene…</Text>
   }
