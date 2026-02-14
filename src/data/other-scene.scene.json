@@ -1,6 +1,15 @@
 {
-  "user": { "$ref": "../objects/jane-doe" },
-  "navigation": { "$ref": "../objects/navigation" },
+  "navigation": { "$ref": "navigation" },
+  "user": {
+    "name": "John Doe",
+    "username": "johndoe",
+    "role": "admin",
+    "avatar": "https://avatars.githubusercontent.com/u/1?v=4",
+    "profile": {
+      "bio": "Designer & developer",
+      "location": "San Francisco, CA"
+    }
+  },
   "projects": [
     {
       "id": 1,
@@ -23,21 +32,5 @@
     "theme": "dark_dimmed",
     "notifications": true,
     "language": "en"
-  },
-  "signup": {
-    "fullName": "",
-    "email": "",
-    "password": "",
-    "organization": {
-      "name": "",
-      "size": "",
-      "role": ""
-    },
-    "workspace": {
-      "region": "",
-      "plan": "starter",
-      "newsletter": false,
-      "agreeTerms": false
-    }
   }
 }

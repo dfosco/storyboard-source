@@ -1,0 +1,4 @@
+{
+  "$global": ["security-advisory-navigation"],
+  "advisory": { "$ref": "security-advisory" }
+}
