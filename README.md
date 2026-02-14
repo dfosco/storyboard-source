@@ -433,3 +433,44 @@ npm run lint     # ESLint
 ## Architecture
 
 Detailed architecture docs live in `.github/architecture/`. Implementation plan and phase history in `.github/plans/`.
+
+### Core / React Split
+
+The storyboard system is split into framework-agnostic and framework-specific layers:
+
+```
+storyboard/
+├── core/     ← Framework-agnostic (pure JS, zero dependencies)
+├── vite/     ← Vite data plugin (works with any Vite frontend)
+├── internals/ ← Framework-specific plumbing (React hooks, context, Primer components)
+└── index.js  ← Barrel re-exporting from core + react
+```
+
+**For non-React frontends** (Alpine.js, Vue, Svelte, vanilla JS), import only from `core/`:
+
+```js
+import {
+  init, loadScene, sceneExists, loadRecord, findRecord,
+  getByPath, setByPath, deepClone,
+  getParam, setParam, getAllParams, removeParam,
+  subscribeToHash, getHashSnapshot,
+} from './storyboard/core/index.js'
+
+// 1. Seed the data index (the Vite plugin does this automatically)
+init({ scenes: { ... }, objects: { ... }, records: { ... } })
+
+// 2. Load a scene
+const data = await loadScene('default')
+
+// 3. Read scene values
+const userName = getByPath(data, 'user.name')
+
+// 4. Override values via URL hash
+setParam('user.name', 'Alice')
+
+// 5. React to hash changes (for reactive frameworks)
+subscribeToHash(() => {
+  const overriddenName = getParam('user.name') ?? getByPath(data, 'user.name')
+  // update your UI
+})
+```

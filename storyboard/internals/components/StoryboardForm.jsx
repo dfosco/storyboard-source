@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useRef, useCallback } from 'react'
 import { FormContext } from '../context/FormContext.js'
-import { setParam } from '../core/session.js'
+import { setParam } from '../../core/session.js'
 
 /**
  * A form wrapper that buffers input values locally and only
