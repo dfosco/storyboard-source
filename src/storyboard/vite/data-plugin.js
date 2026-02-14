@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { globSync } from 'glob'
+import { parse as parseJsonc } from 'jsonc-parser'
 
 const VIRTUAL_MODULE_ID = 'virtual:storyboard-data-index'
 const RESOLVED_ID = '\0' + VIRTUAL_MODULE_ID
@@ -55,23 +56,26 @@ function buildIndex(root) {
 
 /**
  * Generate the virtual module source code.
- * Emits raw imports for each data file so Vite can track them as dependencies.
+ * Reads each data file, parses JSONC at build time, and emits pre-parsed
+ * JavaScript objects — no runtime parsing needed.
  */
 function generateModule(index) {
-  const imports = []
+  const declarations = []
   const entries = { scene: [], object: [], record: [] }
   let i = 0
 
   for (const suffix of SUFFIXES) {
     for (const [name, absPath] of Object.entries(index[suffix])) {
       const varName = `_d${i++}`
-      imports.push(`import ${varName} from '${absPath}?raw'`)
+      const raw = fs.readFileSync(absPath, 'utf-8')
+      const parsed = parseJsonc(raw)
+      declarations.push(`const ${varName} = ${JSON.stringify(parsed)}`)
       entries[suffix].push(`  ${JSON.stringify(name)}: ${varName}`)
     }
   }
 
   return [
-    imports.join('\n'),
+    declarations.join('\n'),
     '',
     `export const scenes = {\n${entries.scene.join(',\n')}\n}`,
     `export const objects = {\n${entries.object.join(',\n')}\n}`,
@@ -131,6 +135,7 @@ export default function storyboardDataPlugin() {
 
       watcher.on('add', invalidate)
       watcher.on('unlink', invalidate)
+      watcher.on('change', invalidate)
     },
 
     // Rebuild index on each build start

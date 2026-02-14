@@ -26,32 +26,25 @@ function deepMerge(target, source) {
   return result
 }
 
-import { parse as parseJsonc } from 'jsonc-parser'
 import dataIndex from 'virtual:storyboard-data-index'
 
 /**
- * Parses a raw JSON/JSONC string.
- */
-function parseRaw(raw) {
-  return parseJsonc(raw)
-}
-
-/**
  * Loads a data file by name and type from the data index.
+ * Data is pre-parsed at build time — returns a deep clone to prevent mutation.
  * @param {string} name - Data file name (e.g., "jane-doe", "default")
  * @param {string} [type] - Data type: "scenes", "objects", or "records". If omitted, searches all types.
  * @returns {object} Parsed file contents
  */
 function loadDataFile(name, type) {
   if (type && dataIndex[type]?.[name] != null) {
-    return parseRaw(dataIndex[type][name])
+    return structuredClone(dataIndex[type][name])
   }
 
   // Search all types if no specific type given
   if (!type) {
     for (const t of ['scenes', 'objects', 'records']) {
       if (dataIndex[t]?.[name] != null) {
-        return parseRaw(dataIndex[t][name])
+        return structuredClone(dataIndex[t][name])
       }
     }
   }
@@ -61,7 +54,7 @@ function loadDataFile(name, type) {
     const lower = name.toLowerCase()
     for (const key of Object.keys(dataIndex.scenes)) {
       if (key.toLowerCase() === lower) {
-        return parseRaw(dataIndex.scenes[key])
+        return structuredClone(dataIndex.scenes[key])
       }
     }
   }
@@ -164,15 +157,14 @@ export async function loadScene(sceneName = 'default') {
  * @returns {Array} Parsed record collection
  */
 export function loadRecord(recordName) {
-  const raw = dataIndex.records[recordName]
-  if (raw == null) {
+  const data = dataIndex.records[recordName]
+  if (data == null) {
     throw new Error(`Record not found: ${recordName}`)
   }
-  const data = parseRaw(raw)
   if (!Array.isArray(data)) {
     throw new Error(`Record "${recordName}" must be an array, got ${typeof data}`)
   }
-  return data
+  return structuredClone(data)
 }
 
 /**

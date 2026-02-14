@@ -29,6 +29,16 @@ export default defineConfig({
         },
     ],
     server: { port: 1234 },
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+                    'vendor-primer': ['@primer/react', '@primer/octicons-react'],
+                },
+            },
+        },
+    },
     css: {
         postcss: {
             plugins: [
