@@ -12,9 +12,11 @@ export type Path =
   | `/Repositories`
   | `/SecurityAdvisory`
   | `/Signup`
+  | `/posts`
+  | `/posts/:slug`
 
 export type Params = {
-  
+  '/posts/:slug': { slug: string }
 }
 
 export type ModalPath = never
