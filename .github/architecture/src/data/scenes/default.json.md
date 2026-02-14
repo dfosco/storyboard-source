@@ -35,6 +35,13 @@ This scene demonstrates the core data patterns: `$ref` for reusable objects, inl
     "theme": "dark_dimmed",
     "notifications": true,
     "language": "en"
+  },
+  "signup": {
+    "fullName": "",
+    "email": "",
+    "password": "",
+    "organization": { "name": "", "size": "", "role": "" },
+    "workspace": { "region": "", "plan": "starter", "newsletter": false, "agreeTerms": false }
   }
 }
 ```
@@ -42,6 +49,7 @@ This scene demonstrates the core data patterns: `$ref` for reusable objects, inl
 - **`user`** and **`navigation`** use `$ref` to pull from shared objects in `src/data/objects/`
 - **`projects`** is an inline array of project objects with id, name, description, owner, stars, issues
 - **`settings`** is inline with theme, notifications, and language preferences
+- **`signup`** provides empty defaults for the cloud signup flow. These values are overridden at runtime via `useOverride()` in the Signup page and read by the Dashboard page via `useSceneData()`. The `plan` field defaults to `"starter"` — all other fields start empty.
 
 These `$ref` directives are resolved at load time by [`src/storyboard/core/loader.js`](../../storyboard/core/loader.js.md).
 
