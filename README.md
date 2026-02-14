@@ -9,7 +9,7 @@ A small framework to create stateful prototypes. Create `scenes` with JSON to pr
 
 Built with [Vite](https://vite.dev) and [generouted](https://github.com/oedotme/generouted). 
 
-Uses [GitHub Primer](https://primer.style) for layout – support for more design systems coming soon!
+Uses [GitHub Primer](https://primer.style) as the default design system, with per-page support for other systems like [Reshaped](https://www.reshaped.so).
 
 ## Quick Start
 
@@ -288,20 +288,22 @@ function ScenePicker() {
 
 ## Routing
 
-Routes are auto-generated from the file structure in `src/pages/` via [@generouted/react-router](https://github.com/oedotme/generouted):
+Routes are auto-generated from the file structure in `src/pages/` via [@generouted/react-router](https://github.com/oedotme/generouted) with lazy loading for automatic route-level code splitting:
 
 - `src/pages/index.jsx` → `/`
 - `src/pages/Overview.jsx` → `/Overview`
-- `src/pages/Issues.jsx` → `/Issues`
+- `src/pages/Signup.jsx` → `/Signup`
 
-To create a new page, add a `.jsx` file to `src/pages/`.
+To create a new page, add a `.jsx` file to `src/pages/`. Each page is loaded on-demand — pages using different design systems (e.g., Reshaped) don't affect the initial bundle size.
 
 ### Hash Preservation
 
-URL hash params (session state) are automatically preserved across all page navigations. A document-level interceptor converts `<a href>` clicks into client-side React Router navigations, carrying the current hash forward. This works with any link component — Primer's `UnderlineNav`, `NavList`, plain `<a>` tags, etc.
+URL hash params (session state) are automatically preserved across **all** page navigations — both `<a>` link clicks and programmatic `navigate()` calls. A global interceptor installed in `src/index.jsx` wraps both the document-level click handler and `router.navigate()` to carry the current hash forward automatically.
+
+No page needs to manually append `window.location.hash` — just use `navigate('/Page')` or any link component and the hash carries forward.
 
 Hash is **not** preserved when:
-- The link already defines its own hash fragment
+- The target path already defines its own hash fragment
 - The link points to an external origin
 - `switchScene()` is called (intentionally clears hash since it belongs to the previous scene)
 
@@ -340,7 +342,7 @@ Hash is **not** preserved when:
 | `setParam(key, value)` | Write a URL hash param. |
 | `getAllParams()` | Get all hash params as an object. |
 | `removeParam(key)` | Remove a URL hash param. |
-| `installHashPreserver(router, basename)` | Intercepts internal link clicks for client-side navigation with hash preservation. |
+| `installHashPreserver(router, basename)` | Intercepts both `<a>` link clicks and programmatic `router.navigate()` calls for client-side navigation with hash preservation. |
 
 ### Special JSON keys
 
