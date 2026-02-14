@@ -20,8 +20,9 @@ export { useSceneData, useSceneLoading } from './hooks/useSceneData.js'
 export { useOverride } from './hooks/useOverride.js'
 export { useOverride as useSession } from './hooks/useOverride.js' // deprecated alias
 export { useScene } from './hooks/useScene.js'
+export { useRecord, useRecords } from './hooks/useRecord.js'
 export { getByPath } from './core/dotPath.js'
-export { loadScene, sceneExists } from './core/loader.js'
+export { loadScene, sceneExists, loadRecord, findRecord } from './core/loader.js'
 export { getParam, setParam, getAllParams, removeParam } from './core/session.js'
 export { installHashPreserver } from './core/hashPreserver.js'
 export { default as DevTools } from './components/DevTools/DevTools.jsx'
@@ -32,21 +33,22 @@ export { default as Select } from './components/Select.jsx'
 export { default as Textarea } from './components/Textarea.jsx'
 ```
 
-The module exports four main categories:
+The module exports five main categories:
 1. **Scene data access** — `StoryboardProvider`, `useSceneData`, `useSceneLoading`, `useScene` for read-only scene data and scene switching
-2. **Overrides** — `useOverride` hook and direct utilities (`getParam`, `setParam`, etc.) for URL hash-based state overrides
-3. **Form components** — `StoryboardForm`, `TextInput`, `Textarea`, `Select`, `Checkbox` for designer-friendly form binding with submit-based persistence
-4. **Navigation** — `installHashPreserver` for client-side navigation with hash preservation
+2. **Record data access** — `useRecord`, `useRecords`, `loadRecord`, `findRecord` for record collection lookups (new in the suffix-based data system)
+3. **Overrides** — `useOverride` hook and direct utilities (`getParam`, `setParam`, etc.) for URL hash-based state overrides
+4. **Form components** — `StoryboardForm`, `TextInput`, `Textarea`, `Select`, `Checkbox` for designer-friendly form binding with submit-based persistence
+5. **Navigation** — `installHashPreserver` for client-side navigation with hash preservation
 
 ## Dependencies
 
 - [`src/storyboard/context.jsx`](./context.jsx.md) — Provider component
 - [`src/storyboard/hooks/useSceneData.js`](./hooks/useSceneData.js.md) — Scene data access hooks
 - [`src/storyboard/hooks/useOverride.js`](./hooks/useOverride.js.md) — Override read/write hook
-- [`src/storyboard/hooks/useSession.js`](./hooks/useSession.js.md) — Deprecated re-export of useOverride
 - [`src/storyboard/hooks/useScene.js`](./hooks/useScene.js.md) — Scene switching hook
+- [`src/storyboard/hooks/useRecord.js`](./hooks/useRecord.js.md) — Record lookup hooks
 - [`src/storyboard/core/dotPath.js`](./core/dotPath.js.md) — Path utility
-- [`src/storyboard/core/loader.js`](./core/loader.js.md) — Scene loader
+- [`src/storyboard/core/loader.js`](./core/loader.js.md) — Scene and record loader
 - [`src/storyboard/core/session.js`](./core/session.js.md) — Session utilities
 - [`src/storyboard/core/hashPreserver.js`](./core/hashPreserver.js.md) — Navigation interceptor
 - [`src/storyboard/components/StoryboardForm.jsx`](./components/StoryboardForm.jsx.md) — Form wrapper
