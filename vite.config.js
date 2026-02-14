@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import generouted from '@generouted/react-router/plugin'
+import storyboardData from './src/storyboard/vite/data-plugin.js'
 import postcssGlobalData from '@csstools/postcss-global-data'
 import postcssPresetEnv from 'postcss-preset-env'
 import browsers from '@github/browserslist-config'
@@ -9,6 +10,7 @@ import { globSync } from 'glob'
 export default defineConfig({
     base: '/storyboard/',
     plugins: [
+        storyboardData(),
         react(),
         generouted(),
         {
