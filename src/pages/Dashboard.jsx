@@ -110,9 +110,6 @@ export default function Dashboard() {
                 <View direction="row" gap={2} align="center">
                   <Badge color="positive">{display(plan)} plan</Badge>
                   <Badge variant="faded">{display(region)}</Badge>
-                  <Button variant="outline" size="small" onClick={() => navigate('/Signup')}>
-                    Edit signup
-                  </Button>
                 </View>
               </View>
 
