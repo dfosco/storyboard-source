@@ -38,7 +38,7 @@ export default function Post() {
           )}
         </header>
         <Text as="div" sx={{ mt: 3, lineHeight: 1.6 }}>
-          {post.body.split('\n\n').map((paragraph, i) => (
+          {(post.body || '').split('\n\n').map((paragraph, i) => (
             <p key={i}>{paragraph}</p>
           ))}
         </Text>

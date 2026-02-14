@@ -1,51 +1,8 @@
-import { useCallback, useContext, useMemo, useSyncExternalStore } from 'react'
+import { useContext, useMemo, useSyncExternalStore } from 'react'
 import { StoryboardContext } from '../StoryboardContext.js'
-import { getByPath } from '../core/dotPath.js'
+import { getByPath, deepClone, setByPath } from '../core/dotPath.js'
 import { getParam, getAllParams } from '../core/session.js'
-
-/**
- * Subscribe to hash changes so React re-renders when the hash updates.
- */
-function subscribeToHash(callback) {
-  window.addEventListener('hashchange', callback)
-  return () => window.removeEventListener('hashchange', callback)
-}
-
-/**
- * Deep-clone a value (arrays and plain objects only).
- */
-function deepClone(val) {
-  if (Array.isArray(val)) return val.map(deepClone)
-  if (val !== null && typeof val === 'object') {
-    const out = {}
-    for (const k of Object.keys(val)) out[k] = deepClone(val[k])
-    return out
-  }
-  return val
-}
-
-/**
- * Set a value at a dot-notation path inside an object, mutating it.
- */
-function setByPath(obj, path, value) {
-  const segments = path.split('.')
-  let current = obj
-  for (let i = 0; i < segments.length - 1; i++) {
-    const seg = segments[i]
-    if (current[seg] == null || typeof current[seg] !== 'object') {
-      current[seg] = /^\d+$/.test(segments[i + 1]) ? [] : {}
-    }
-    current = current[seg]
-  }
-  current[segments[segments.length - 1]] = value
-}
-
-/**
- * Snapshot of all hash params as a stable string for useSyncExternalStore.
- */
-function getHashSnapshot() {
-  return window.location.hash
-}
+import { subscribeToHash, getHashSnapshot } from '../core/hashSubscribe.js'
 
 /**
  * Access scene data by dot-notation path.
