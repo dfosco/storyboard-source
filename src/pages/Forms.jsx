@@ -7,7 +7,7 @@ import {
   Select,
   Textarea,
   useOverride,
-} from '../storyboard'
+} from '../../storyboard'
 import {
   HomeIcon,
   GearIcon,

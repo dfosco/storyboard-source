@@ -2,8 +2,10 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { Text } from '@primer/react'
-import { loadScene, sceneExists, findRecord } from './core/loader.js'
-import { deepMerge } from './core/loader.js'
+// Side-effect import: seeds the core data index via init()
+import 'virtual:storyboard-data-index'
+import { loadScene, sceneExists, findRecord } from '../core/loader.js'
+import { deepMerge } from '../core/loader.js'
 import { StoryboardContext } from './StoryboardContext.js'
 
 export { StoryboardContext }
