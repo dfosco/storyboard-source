@@ -30,11 +30,18 @@ export default defineConfig({
     ],
     server: { port: 1234 },
     build: {
+        // @primer/react barrel export can't be tree-shaken below ~664 KB.
+        // Raised from 500 KB default to suppress the warning for that chunk.
+        chunkSizeWarningLimit: 700,
         rollupOptions: {
             output: {
+                // Split heavy vendor deps into separate, long-lived cacheable chunks.
+                // Page code stays in small per-route chunks via generouted lazy routes.
                 manualChunks: {
                     'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-                    'vendor-primer': ['@primer/react', '@primer/octicons-react'],
+                    'vendor-primer': ['@primer/react'],
+                    'vendor-octicons': ['@primer/octicons-react'],
+                    'vendor-reshaped': ['reshaped'],
                 },
             },
         },
