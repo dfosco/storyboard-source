@@ -70,8 +70,8 @@ export default function Dashboard() {
 
   return (
     <Reshaped defaultTheme="reshaped" defaultColorMode="dark">
-      <View backgroundColor="page" minHeight="100vh" padding={4}>
-        <View direction="row" gap={4}>
+      <View backgroundColor="page" minHeight="100vh" padding={12}>
+        <View direction="row" align="start" gap={8} wrap="no-wrap">
 
           {/* Sidebar */}
           <View.Item columns={2}>
@@ -101,8 +101,8 @@ export default function Dashboard() {
           </View.Item>
 
           {/* Main content */}
-          <View.Item grow>
-            <View direction="column" gap={4}>
+          <View.Item columns={10} direction="column" align="center" justify="center">
+            <View direction="column" maxWidth="80%" gap={4}>
 
               {/* Top bar */}
               <View direction="row" justify="space-between" align="center">
@@ -119,13 +119,13 @@ export default function Dashboard() {
               {/* Stat cards row */}
               <View direction="row" gap={3}>
                 <View.Item columns={3}>
-                  <StatCard label="Active Users" value="854" change="+32% since last week" />
+                  <StatCard label="Active Users" value="0" change="No data yet" color="neutral-faded" />
                 </View.Item>
                 <View.Item columns={3}>
-                  <StatCard label="Deployments" value="126" change="+54% since last week" />
+                  <StatCard label="Deployments" value="0" change="No data yet" color="neutral-faded" />
                 </View.Item>
                 <View.Item columns={3}>
-                  <StatCard label="New Members" value="278" change="+42% since last week" />
+                  <StatCard label="New Members" value="1" change="That's you!" color="primary" />
                 </View.Item>
                 <View.Item columns={3}>
                   <StatCard
@@ -170,11 +170,11 @@ export default function Dashboard() {
                     <Card padding={5}>
                       <View direction="column" gap={4}>
                         <Text variant="body-2" weight="bold">Metrics</Text>
-                        <MetricRow label="Performance" value="95" max={100} color="positive" />
-                        <MetricRow label="Monthly revenue goal" value="62" max={100} color="warning" />
-                        <MetricRow label="Error rate" value="12" max={100} color="critical" />
-                        <MetricRow label="User acquisition" value="78" max={100} color="positive" />
-                        <MetricRow label="Releases shipped" value="100" max={100} color="primary" />
+                        <MetricRow label="Performance" value="0" max={100} color="neutral-faded" />
+                        <MetricRow label="Monthly revenue goal" value="0" max={100} color="neutral-faded" />
+                        <MetricRow label="Error rate" value="0" max={100} color="neutral-faded" />
+                        <MetricRow label="User acquisition" value="0" max={100} color="neutral-faded" />
+                        <MetricRow label="Releases shipped" value="0" max={100} color="neutral-faded" />
                       </View>
                     </Card>
 
@@ -182,38 +182,11 @@ export default function Dashboard() {
                       <View direction="column" gap={3}>
                         <Text variant="body-2" weight="bold">Recent activity</Text>
                         <Divider />
-                        <View direction="column" gap={3}>
-                          <View direction="row" justify="space-between" align="center">
-                            <View direction="column">
-                              <Text variant="body-3">Production deploy v2.4.1</Text>
-                              <Text variant="caption-1" color="neutral-faded">{display(region)} · 2 hours ago</Text>
-                            </View>
-                            <Badge color="positive" size="small">Success</Badge>
-                          </View>
-                          <Divider />
-                          <View direction="row" justify="space-between" align="center">
-                            <View direction="column">
-                              <Text variant="body-3">Database migration #847</Text>
-                              <Text variant="caption-1" color="neutral-faded">{display(region)} · 5 hours ago</Text>
-                            </View>
-                            <Badge color="positive" size="small">Complete</Badge>
-                          </View>
-                          <Divider />
-                          <View direction="row" justify="space-between" align="center">
-                            <View direction="column">
-                              <Text variant="body-3">SSL certificate renewal</Text>
-                              <Text variant="caption-1" color="neutral-faded">{display(region)} · 1 day ago</Text>
-                            </View>
-                            <Badge color="warning" size="small">Pending</Badge>
-                          </View>
-                          <Divider />
-                          <View direction="row" justify="space-between" align="center">
-                            <View direction="column">
-                              <Text variant="body-3">New team member added</Text>
-                              <Text variant="caption-1" color="neutral-faded">{display(fullName)} · 1 day ago</Text>
-                            </View>
-                            <Badge variant="faded" size="small">Info</Badge>
-                          </View>
+                        <View direction="column" gap={4} align="center" paddingBlock={6}>
+                          <Text variant="body-3" color="neutral-faded">No activity yet</Text>
+                          <Text variant="caption-1" color="neutral-faded">
+                            Deployments and events will appear here once your workspace is active.
+                          </Text>
                         </View>
                       </View>
                     </Card>
