@@ -28,14 +28,16 @@ Every interaction on your UI get saved to the URL and persist during a user sess
 
 ```
 ┌──────────────────────────────┐
-│  Scene JSON (read-only)      │  ← Your data files define defaults
-│  src/data/scenes/default.json│
+│  Data Files (read-only)      │  ← Discovered by Vite plugin
+│  *.scene.json / *.object.json│
+│  *.record.json               │
 └──────────────┬───────────────┘
                │
                ▼
 ┌──────────────────────────────┐
 │  Storyboard Context          │  ← Loaded into React context
 │  useSceneData() / useOverride │
+│  useRecord()                  │
 └──────────────┬───────────────┘
                │
        ┌───────┴───────┐
@@ -50,22 +52,31 @@ Every interaction on your UI get saved to the URL and persist during a user sess
 
 ## Data Structure
 
+Data files use a **suffix-based naming convention** and can live anywhere in the repo. A Vite plugin discovers them automatically at dev/build time.
+
+| Suffix | Purpose | Example |
+|--------|---------|---------|
+| `.scene.json` | Page data context | `default.scene.json` |
+| `.object.json` | Reusable data fragment | `jane-doe.object.json` |
+| `.record.json` | Parameterized collection | `posts.record.json` |
+
 ```
 src/data/
-  ├── objects/              # Reusable data fragments
-  │   ├── jane-doe.json     # A user object
-  │   └── navigation.json   # Nav links
-  └── scenes/               # Complete scenarios
-      ├── default.json      # Main scene
-      └── other-scene.json  # Alternative data
+  ├── default.scene.json         # Main scene
+  ├── other-scene.scene.json     # Alternative scene
+  ├── jane-doe.object.json       # A user object
+  ├── navigation.object.json     # Nav links
+  └── posts.record.json          # Blog post collection
 ```
+
+Files can be organized into subdirectories if desired — the plugin finds them regardless. Every name+suffix must be **unique** across the repo (the build fails with a clear error on duplicates).
 
 ### Objects
 
-Objects are standalone JSON files representing a single entity. They live in `src/data/objects/` and can be referenced by any scene.
+Objects are standalone JSON files representing a single entity. They can be referenced by any scene via `$ref`.
 
 ```json
-// src/data/objects/jane-doe.json
+// jane-doe.object.json
 {
   "name": "Jane Doe",
   "username": "janedoe",
@@ -82,14 +93,14 @@ Objects are standalone JSON files representing a single entity. They live in `sr
 
 Scenes compose objects into a full data context. They support two special keys:
 
-- **`$ref`** — Replaced inline with the contents of the referenced file
-- **`$global`** — An array of paths merged into the scene root (scene values win on conflicts)
+- **`$ref`** — Replaced inline with the contents of the referenced object (by name)
+- **`$global`** — An array of object names merged into the scene root (scene values win on conflicts)
 
 ```json
-// src/data/scenes/default.json
+// default.scene.json
 {
-  "user": { "$ref": "../objects/jane-doe" },
-  "navigation": { "$ref": "../objects/navigation" },
+  "user": { "$ref": "jane-doe" },
+  "navigation": { "$ref": "navigation" },
   "projects": [
     { "id": 1, "name": "primer-react", "stars": 2500 },
     { "id": 2, "name": "storyboard", "stars": 128 }
@@ -102,18 +113,57 @@ Scenes compose objects into a full data context. They support two special keys:
 }
 ```
 
+References are resolved by **name** — no relative paths needed. `{ "$ref": "jane-doe" }` finds `jane-doe.object.json` anywhere in the repo.
+
 After loading, all `$ref` and `$global` references are resolved — the final data is a flat object with everything inlined.
 
 JSONC is supported — you can use `//` and `/* */` comments in your data files.
 
-### Creating a new scene
+### Records
 
-Add a new `.json` file to `src/data/scenes/`:
+Records are collections — arrays of entries, each with a unique `id` field. They power **dynamic routes** where the same page template renders different content based on the URL.
 
 ```json
-// src/data/scenes/empty-state.json
+// posts.record.json
+[
+  {
+    "id": "welcome-to-storyboard",
+    "title": "Welcome to Storyboard",
+    "date": "2026-02-14",
+    "author": "Jane Doe",
+    "body": "Storyboard is a prototyping meta-framework..."
+  },
+  {
+    "id": "data-driven-prototyping",
+    "title": "Data-Driven Prototyping",
+    "date": "2026-02-13",
+    "author": "Jane Doe",
+    "body": "Traditional prototyping tools force you..."
+  }
+]
+```
+
+Access them with the `useRecord` hook:
+
+```jsx
+// src/pages/posts/[slug].jsx
+import { useRecord } from '../../storyboard'
+
+function BlogPost() {
+  const post = useRecord('posts', 'slug')
+  // URL /posts/welcome-to-storyboard → entry with id "welcome-to-storyboard"
+  return <h1>{post.title}</h1>
+}
+```
+
+### Creating a new scene
+
+Add a new `.scene.json` file anywhere in `src/data/`:
+
+```json
+// empty-state.scene.json
 {
-  "user": { "$ref": "../objects/jane-doe" },
+  "user": { "$ref": "jane-doe" },
   "projects": [],
   "settings": { "theme": "light" }
 }
@@ -293,8 +343,21 @@ Routes are auto-generated from the file structure in `src/pages/` via [@generout
 - `src/pages/index.jsx` → `/`
 - `src/pages/Overview.jsx` → `/Overview`
 - `src/pages/Signup.jsx` → `/Signup`
+- `src/pages/posts/index.jsx` → `/posts`
+- `src/pages/posts/[slug].jsx` → `/posts/:slug` (dynamic route)
 
 To create a new page, add a `.jsx` file to `src/pages/`. Each page is loaded on-demand — pages using different design systems (e.g., Reshaped) don't affect the initial bundle size.
+
+### Dynamic Routes
+
+Use `[paramName]` brackets in filenames for dynamic segments. The param value is available via `useParams()` or the `useRecord()` hook:
+
+```
+src/pages/posts/[slug].jsx    → /posts/:slug
+src/pages/users/[id].jsx      → /users/:id
+```
+
+Pair dynamic routes with `.record.json` files to create data-driven parameterized pages. See [Records](#records) above.
 
 ### Hash Preservation
 
@@ -319,6 +382,8 @@ Hash is **not** preserved when:
 | `useSceneLoading()` | `boolean` | `true` while scene is loading |
 | `useOverride(path)` | `[value, setValue, clearValue]` | Read/write hash overrides on scene data. Use when you need to set or clear a value. |
 | `useScene()` | `{ sceneName, switchScene }` | Current scene name + switch function |
+| `useRecord(name, param)` | `object \| null` | Load a single record entry. `name` = record file name, `param` = route param matched against `id`. |
+| `useRecords(name)` | `Array` | Load all entries from a record collection. |
 
 ### Components
 
@@ -337,6 +402,9 @@ Hash is **not** preserved when:
 | Function | Description |
 |----------|-------------|
 | `loadScene(name)` | Low-level scene loader. Returns resolved scene data. |
+| `loadRecord(name)` | Low-level record loader. Returns full array. |
+| `findRecord(name, id)` | Find a single entry in a record collection by id. |
+| `sceneExists(name)` | Check if a scene file exists. |
 | `getByPath(obj, path)` | Dot-notation path accessor. |
 | `getParam(key)` | Read a URL hash param. |
 | `setParam(key, value)` | Write a URL hash param. |
@@ -348,8 +416,8 @@ Hash is **not** preserved when:
 
 | Key | Where | What it does |
 |-----|-------|-------------|
-| `$ref` | Any value in a scene or object | Replaced with the contents of the referenced file. Path is relative to the current file. |
-| `$global` | Top-level array in a scene | Each path is loaded and deep-merged into the scene root. Scene values win on conflicts. |
+| `$ref` | Any value in a scene or object | Replaced with the contents of the referenced object, by **name** (e.g., `"jane-doe"` finds `jane-doe.object.json`). |
+| `$global` | Top-level array in a scene | Each name is loaded and deep-merged into the scene root. Scene values win on conflicts. |
 
 ---
 
