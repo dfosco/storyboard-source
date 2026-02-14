@@ -1,8 +1,8 @@
 import { useCallback, useContext, useSyncExternalStore } from 'react'
 import { StoryboardContext } from '../StoryboardContext.js'
-import { getByPath } from '../core/dotPath.js'
-import { getParam, setParam, removeParam } from '../core/session.js'
-import { subscribeToHash } from '../core/hashSubscribe.js'
+import { getByPath } from '../../core/dotPath.js'
+import { getParam, setParam, removeParam } from '../../core/session.js'
+import { subscribeToHash } from '../../core/hashSubscribe.js'
 
 /**
  * Read/write hash-param overrides on top of scene data.

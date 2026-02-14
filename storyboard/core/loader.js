@@ -26,7 +26,28 @@ function deepMerge(target, source) {
   return result
 }
 
-import dataIndex from 'virtual:storyboard-data-index'
+/**
+ * Module-level data index, seeded by init().
+ * Shape: { scenes: {}, objects: {}, records: {} }
+ */
+let dataIndex = { scenes: {}, objects: {}, records: {} }
+
+/**
+ * Seed the data index. Call once at app startup before any load functions.
+ * The Vite data plugin calls this automatically via the generated virtual module.
+ *
+ * @param {{ scenes: object, objects: object, records: object }} index
+ */
+export function init(index) {
+  if (!index || typeof index !== 'object') {
+    throw new Error('[storyboard-core] init() requires { scenes, objects, records }')
+  }
+  dataIndex = {
+    scenes: index.scenes || {},
+    objects: index.objects || {},
+    records: index.records || {},
+  }
+}
 
 /**
  * Loads a data file by name and type from the data index.

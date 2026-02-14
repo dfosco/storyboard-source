@@ -1,8 +1,8 @@
 import { useContext, useMemo, useSyncExternalStore } from 'react'
 import { StoryboardContext } from '../StoryboardContext.js'
-import { getByPath, deepClone, setByPath } from '../core/dotPath.js'
-import { getParam, getAllParams } from '../core/session.js'
-import { subscribeToHash, getHashSnapshot } from '../core/hashSubscribe.js'
+import { getByPath, deepClone, setByPath } from '../../core/dotPath.js'
+import { getParam, getAllParams } from '../../core/session.js'
+import { subscribeToHash, getHashSnapshot } from '../../core/hashSubscribe.js'
 
 /**
  * Access scene data by dot-notation path.
