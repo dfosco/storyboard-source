@@ -2,37 +2,60 @@
 
 > Auto-generated documentation of architecturally significant files.
 > Run `scan the codebase architecture` to regenerate.
+>
+> **Note:** The storyboard system was restructured into `core/` (framework-agnostic) and `internals/` (framework-specific) layers. Some linked docs below may reference old paths until the architecture scanner is re-run.
 
 ## Storyboard System
 
-The storyboard system is the core engine that separates data from UI. It provides a layered data pipeline: **data files** (`.scene.json`, `.object.json`, `.record.json`) are discovered at build time by a Vite plugin, loaded and resolved by the scene loader, and exposed to components via React context and hooks.
+The storyboard system is the core engine that separates data from UI. It is split into two layers:
 
-The system has three data tiers. **Objects** are reusable fragments (a user profile, navigation config). **Scenes** compose objects into a full page data context using `$ref` (inline replacement) and `$global` (root-level merge). **Records** are collections (arrays with `id` per entry) that power dynamic routes — the same page template renders different content based on the URL slug.
+### Core Layer (`storyboard/core/`) — Framework-agnostic
 
-Data flows through a clear pipeline: the [`storyboardData()`](./src/storyboard/vite/data-plugin.js.md) Vite plugin scans the repo and generates a virtual module → [`loader.js`](./src/storyboard/core/loader.js.md) consumes the index, resolves references, and returns flat data → [`StoryboardProvider`](./src/storyboard/context.jsx.md) loads scenes into React context → hooks like [`useSceneData()`](./src/storyboard/hooks/useSceneData.js.md), [`useRecord()`](./src/storyboard/hooks/useRecord.js.md), and [`useOverride()`](./src/storyboard/hooks/useOverride.js.md) give components read and write access to the data. URL hash parameters provide a runtime override layer — every value can be overridden via the URL, enabling shareable prototype states.
+Pure JavaScript with zero framework dependencies. Any frontend (React, Vue, Svelte, Alpine, vanilla JS) can use these directly. The core provides:
+- **Data initialization** via `init({ scenes, objects, records })` — called once at app startup to seed the data index
+- **Scene/record loading** — resolves `$ref` and `$global` references
+- **URL hash session state** — read/write override params stored in the URL hash
+- **Hash change subscription** — `subscribeToHash()` for reactive frameworks
+- **Dot-notation utilities** — `getByPath`, `setByPath`, `deepClone`
 
-The hash preservation system ([`hashPreserver.js`](./src/storyboard/core/hashPreserver.js.md)) patches both `<a>` click handling and `router.navigate()` to automatically carry hash params across page navigations. This means overrides persist without any per-page wiring — a critical architectural invariant.
+### Vite Plugin (`storyboard/vite/`) — Build tool layer
 
-- [`src/storyboard/index.js`](./src/storyboard/index.js.md) — Public barrel: all exports for external consumers
-- [`src/storyboard/context.jsx`](./src/storyboard/context.jsx.md) — StoryboardProvider: loads scenes, optional record merging
-- [`src/storyboard/StoryboardContext.js`](./src/storyboard/StoryboardContext.js.md) — React context object
-- [`src/storyboard/vite/data-plugin.js`](./src/storyboard/vite/data-plugin.js.md) — Vite plugin: suffix-based data discovery, uniqueness validation, virtual module generation
-- [`src/storyboard/core/loader.js`](./src/storyboard/core/loader.js.md) — Scene/record loader: name-based $ref/$global resolution
-- [`src/storyboard/core/dotPath.js`](./src/storyboard/core/dotPath.js.md) — Dot-notation path accessor utility
-- [`src/storyboard/core/hashPreserver.js`](./src/storyboard/core/hashPreserver.js.md) — URL hash preservation across navigations
-- [`src/storyboard/core/session.js`](./src/storyboard/core/session.js.md) — Low-level hash param read/write utilities
-- [`src/storyboard/hooks/useSceneData.js`](./src/storyboard/hooks/useSceneData.js.md) — Read scene data with hash override merging
-- [`src/storyboard/hooks/useOverride.js`](./src/storyboard/hooks/useOverride.js.md) — Read/write hash overrides
-- [`src/storyboard/hooks/useRecord.js`](./src/storyboard/hooks/useRecord.js.md) — Load record entries by URL param
-- [`src/storyboard/hooks/useScene.js`](./src/storyboard/hooks/useScene.js.md) — Scene name and switching
-- [`src/storyboard/hooks/useSession.js`](./src/storyboard/hooks/useSession.js.md) — Legacy session hook
-- [`src/storyboard/components/StoryboardForm.jsx`](./src/storyboard/components/StoryboardForm.jsx.md) — Form wrapper with submit-based hash persistence
-- [`src/storyboard/components/TextInput.jsx`](./src/storyboard/components/TextInput.jsx.md) — Wrapped Primer TextInput for forms
-- [`src/storyboard/components/Textarea.jsx`](./src/storyboard/components/Textarea.jsx.md) — Wrapped Primer Textarea for forms
-- [`src/storyboard/components/Select.jsx`](./src/storyboard/components/Select.jsx.md) — Wrapped Primer Select for forms
-- [`src/storyboard/components/Checkbox.jsx`](./src/storyboard/components/Checkbox.jsx.md) — Wrapped Primer Checkbox for forms
-- [`src/storyboard/components/SceneDebug.jsx`](./src/storyboard/components/SceneDebug.jsx.md) — Debug component showing resolved scene JSON
-- [`src/storyboard/components/SceneDataDemo.jsx`](./src/storyboard/components/SceneDataDemo.jsx.md) — Demo component for scene data
+Framework-agnostic Vite plugin that discovers data files and calls `core.init()` at import time. Works with any Vite-based frontend.
+
+### Internals (`storyboard/internals/`) — Framework-specific (currently React)
+
+Everything that depends on React, React Router, or Primer React: context providers, hooks, form components, and DevTools. When building a non-React frontend, this entire layer gets replaced — including routing (generouted → vue-router, SvelteKit, etc.).
+
+Data flows through a clear pipeline: the [`storyboardData()`](./storyboard/vite/data-plugin.js.md) Vite plugin scans the repo and generates a virtual module that calls `init()` → [`loader.js`](./storyboard/core/loader.js.md) resolves references and returns flat data → [`StoryboardProvider`](./storyboard/internals/context.jsx.md) loads scenes into React context → hooks like [`useSceneData()`](./storyboard/internals/hooks/useSceneData.js.md), [`useRecord()`](./storyboard/internals/hooks/useRecord.js.md), and [`useOverride()`](./storyboard/internals/hooks/useOverride.js.md) give components read and write access to the data. URL hash parameters provide a runtime override layer.
+
+#### Core
+- [`storyboard/core/index.js`](./storyboard/core/index.js.md) — Core barrel: all framework-agnostic exports
+- [`storyboard/core/loader.js`](./storyboard/core/loader.js.md) — Scene/record loader: init(), name-based $ref/$global resolution
+- [`storyboard/core/dotPath.js`](./storyboard/core/dotPath.js.md) — Dot-notation path accessor utility
+- [`storyboard/core/session.js`](./storyboard/core/session.js.md) — Low-level hash param read/write utilities
+- [`storyboard/core/hashSubscribe.js`](./storyboard/core/hashSubscribe.js.md) — Hash change subscription for reactive frameworks
+
+#### Vite Plugin
+- [`storyboard/vite/data-plugin.js`](./storyboard/vite/data-plugin.js.md) — Vite plugin: suffix-based data discovery, uniqueness validation, virtual module generation
+
+#### Internals
+- [`storyboard/index.js`](./storyboard/index.js.md) — Public barrel: re-exports from core + react
+- [`storyboard/internals/index.js`](./storyboard/internals/index.js.md) — React barrel: all React-specific exports
+- [`storyboard/internals/context.jsx`](./storyboard/internals/context.jsx.md) — StoryboardProvider: loads scenes, optional record merging
+- [`storyboard/internals/StoryboardContext.js`](./storyboard/internals/StoryboardContext.js.md) — React context object
+- [`storyboard/internals/hashPreserver.js`](./storyboard/internals/hashPreserver.js.md) — URL hash preservation across React Router navigations
+- [`storyboard/internals/hooks/useSceneData.js`](./storyboard/internals/hooks/useSceneData.js.md) — Read scene data with hash override merging
+- [`storyboard/internals/hooks/useOverride.js`](./storyboard/internals/hooks/useOverride.js.md) — Read/write hash overrides
+- [`storyboard/internals/hooks/useRecord.js`](./storyboard/internals/hooks/useRecord.js.md) — Load record entries by URL param
+- [`storyboard/internals/hooks/useScene.js`](./storyboard/internals/hooks/useScene.js.md) — Scene name and switching
+- [`storyboard/internals/hooks/useSession.js`](./storyboard/internals/hooks/useSession.js.md) — Legacy session hook (deprecated alias)
+- [`storyboard/internals/components/StoryboardForm.jsx`](./storyboard/internals/components/StoryboardForm.jsx.md) — Form wrapper with submit-based hash persistence
+- [`storyboard/internals/components/TextInput.jsx`](./storyboard/internals/components/TextInput.jsx.md) — Wrapped Primer TextInput for forms
+- [`storyboard/internals/components/Textarea.jsx`](./storyboard/internals/components/Textarea.jsx.md) — Wrapped Primer Textarea for forms
+- [`storyboard/internals/components/Select.jsx`](./storyboard/internals/components/Select.jsx.md) — Wrapped Primer Select for forms
+- [`storyboard/internals/components/Checkbox.jsx`](./storyboard/internals/components/Checkbox.jsx.md) — Wrapped Primer Checkbox for forms
+- [`storyboard/internals/components/SceneDebug.jsx`](./storyboard/internals/components/SceneDebug.jsx.md) — Debug component showing resolved scene JSON
+- [`storyboard/internals/components/SceneDataDemo.jsx`](./storyboard/internals/components/SceneDataDemo.jsx.md) — Demo component for scene data
 
 ## Entry Points
 

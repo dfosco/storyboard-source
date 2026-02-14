@@ -14,7 +14,7 @@ import {
 } from 'reshaped'
 import 'reshaped/themes/reshaped/theme.css'
 import 'reshaped/themes/reshaped/media.css'
-import { useSceneData } from '../storyboard'
+import { useSceneData } from '../../storyboard'
 
 function display(v) {
   if (v == null || v === '') return '—'
