@@ -4,6 +4,7 @@ export { useOverride } from './hooks/useOverride.js'
 export { useOverride as useSession } from './hooks/useOverride.js' // deprecated alias
 export { useScene } from './hooks/useScene.js'
 export { useRecord, useRecords } from './hooks/useRecord.js'
+export { useRecordOverride } from './hooks/useRecordOverride.js'
 export { getByPath } from './core/dotPath.js'
 export { loadScene, sceneExists, loadRecord, findRecord } from './core/loader.js'
 export { getParam, setParam, getAllParams, removeParam } from './core/session.js'

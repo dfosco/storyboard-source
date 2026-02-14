@@ -1,9 +1,69 @@
-import { useMemo } from 'react'
+import { useMemo, useSyncExternalStore } from 'react'
 import { useParams } from 'react-router-dom'
-import { findRecord, loadRecord } from '../core/loader.js'
+import { loadRecord } from '../core/loader.js'
+import { deepClone, setByPath } from '../core/dotPath.js'
+import { getAllParams } from '../core/session.js'
+import { subscribeToHash, getHashSnapshot } from '../core/hashSubscribe.js'
+
+/**
+ * Collect hash overrides for a record and merge them into the base array.
+ *
+ * Hash convention: record.{recordName}.{entryId}.{field}=value
+ *
+ * - Existing entries (matched by id) get fields merged on top.
+ * - Unknown ids create new entries appended to the array.
+ *
+ * @param {Array} baseRecords - The original record array (will be deep-cloned)
+ * @param {string} recordName - Record collection name (e.g. "posts")
+ * @returns {Array} Merged array
+ */
+function applyRecordOverrides(baseRecords, recordName) {
+  const allParams = getAllParams()
+  const prefix = `record.${recordName}.`
+
+  // Collect only the params that target this record
+  const overrideKeys = Object.keys(allParams).filter(k => k.startsWith(prefix))
+  if (overrideKeys.length === 0) return baseRecords
+
+  const records = deepClone(baseRecords)
+
+  // Group overrides by entry id
+  // key format: record.{name}.{entryId}.{field...}
+  const byEntryId = {}
+  for (const key of overrideKeys) {
+    const rest = key.slice(prefix.length) // "{entryId}.{field...}"
+    const dotIdx = rest.indexOf('.')
+    if (dotIdx === -1) continue // no field path — skip
+    const entryId = rest.slice(0, dotIdx)
+    const fieldPath = rest.slice(dotIdx + 1)
+    if (!byEntryId[entryId]) byEntryId[entryId] = {}
+    byEntryId[entryId][fieldPath] = allParams[key]
+  }
+
+  for (const [entryId, fields] of Object.entries(byEntryId)) {
+    const existing = records.find(e => e.id === entryId)
+    if (existing) {
+      // Merge fields into existing entry
+      for (const [fieldPath, value] of Object.entries(fields)) {
+        setByPath(existing, fieldPath, value)
+      }
+    } else {
+      // Create new entry and append
+      const newEntry = { id: entryId }
+      for (const [fieldPath, value] of Object.entries(fields)) {
+        setByPath(newEntry, fieldPath, value)
+      }
+      records.push(newEntry)
+    }
+  }
+
+  return records
+}
 
 /**
  * Loads a single record entry from a record collection, matched by URL param.
+ * Hash overrides are applied before lookup — both field overrides on existing
+ * entries and entirely new entries added via the URL are supported.
  *
  * @param {string} recordName - Name of the record file (e.g., "posts")
  * @param {string} paramName - Route param whose value is matched against entry `id`
@@ -18,33 +78,44 @@ export function useRecord(recordName, paramName) {
   const params = useParams()
   const paramValue = params[paramName]
 
+  // Re-render on hash changes so overrides are reactive
+  const hashString = useSyncExternalStore(subscribeToHash, getHashSnapshot)
+
   return useMemo(() => {
     if (!paramValue) return null
     try {
-      return findRecord(recordName, paramValue)
+      const base = loadRecord(recordName)
+      const merged = applyRecordOverrides(base, recordName)
+      return merged.find(e => e.id === paramValue) ?? null
     } catch (err) {
       console.error(`[useRecord] ${err.message}`)
       return null
     }
-  }, [recordName, paramValue])
+  }, [recordName, paramValue, hashString]) // eslint-disable-line react-hooks/exhaustive-deps
 }
 
 /**
  * Loads all entries from a record collection.
+ * Hash overrides are applied — existing entries can be modified and
+ * new entries can be created entirely from URL hash params.
  *
  * @param {string} recordName - Name of the record file (e.g., "posts")
- * @returns {Array} All record entries
+ * @returns {Array} All record entries (with overrides applied)
  *
  * @example
  * const allPosts = useRecords('posts')
  */
 export function useRecords(recordName) {
+  // Re-render on hash changes so overrides are reactive
+  const hashString = useSyncExternalStore(subscribeToHash, getHashSnapshot)
+
   return useMemo(() => {
     try {
-      return loadRecord(recordName)
+      const base = loadRecord(recordName)
+      return applyRecordOverrides(base, recordName)
     } catch (err) {
       console.error(`[useRecords] ${err.message}`)
       return []
     }
-  }, [recordName])
+  }, [recordName, hashString]) // eslint-disable-line react-hooks/exhaustive-deps
 }

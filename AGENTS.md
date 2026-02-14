@@ -50,6 +50,7 @@ After any meaningful refactor, ask the user if the architecture documents should
 - Use **Primer Octicons** from `@primer/octicons-react` for icons
 - Use **CSS Modules** (`*.module.css`) for component-specific styles
   - If you find any `sx` styled-components styling, migrate them to CSS Modules
+- **Every piece of data consumed in a page must gracefully handle `null` or `undefined` without crashing.** Since scene data, records, and overrides can all be partial, incomplete, or missing, components must never assume a field exists. Use optional chaining, fallback values, or conditional rendering for every data access.
 
 ---
 
