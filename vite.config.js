@@ -21,6 +21,11 @@ export default defineConfig(({ command }) => {
             configureServer(server) {
                 const baseNoTrail = base.replace(/\/$/, '')
                 server.middlewares.use((req, res, next) => {
+                    if (req.url === baseNoTrail) {
+                        res.writeHead(302, { Location: base })
+                        res.end()
+                        return
+                    }
                     if (req.url && req.url !== baseNoTrail && !req.url.startsWith(base) && !req.url.startsWith('/@') && !req.url.startsWith('/node_modules/')) {
                         const newUrl = baseNoTrail + req.url
                         res.writeHead(302, { Location: newUrl })
