@@ -17,8 +17,7 @@ export function useScene() {
   const switchScene = useCallback((name) => {
     const url = new URL(window.location.href)
     url.searchParams.set('scene', name)
-    // Clear hash params (they belonged to the old scene)
-    url.hash = ''
+    // Preserve hash params across scene switches
     window.location.href = url.toString()
   }, [])
 

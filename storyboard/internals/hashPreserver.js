@@ -1,6 +1,10 @@
+import { interceptHideParams } from '../core/interceptHideParams.js'
+
 /**
  * Preserve URL hash params across all navigations — both <a> clicks
  * and programmatic router.navigate() calls.
+ *
+ * Also intercepts ?hide and ?show params on every navigation.
  *
  * Hash is NOT preserved when:
  * - The target path already has its own hash fragment
@@ -45,6 +49,9 @@ export function installHashPreserver(router, basename = '') {
     // Prevent full page reload — navigate client-side
     e.preventDefault()
     router.navigate(pathname + targetUrl.search + hash)
+
+    // Check for ?hide/?show after client-side navigation
+    setTimeout(interceptHideParams, 0)
   })
 
   // --- 2. Intercept programmatic router.navigate() ---
@@ -57,6 +64,10 @@ export function installHashPreserver(router, basename = '') {
       to = to + currentHash
     }
 
-    return originalNavigate(to, opts)
+    return originalNavigate(to, opts).then((result) => {
+      // Check for ?hide/?show after programmatic navigation
+      interceptHideParams()
+      return result
+    })
   }
 }

@@ -9,12 +9,16 @@ import './globals.css'
 import ColorModeSwitcher from './components/ColorModeSwitcher'
 import DevTools from '../storyboard/internals/components/DevTools/DevTools.jsx'
 import { installHashPreserver } from '../storyboard/internals/hashPreserver.js'
+import { installHideParamListener } from '../storyboard/core/interceptHideParams.js'
+import { installHistorySync } from '../storyboard/core/hideMode.js'
 
 const router = createBrowserRouter(routes, {
     basename: import.meta.env.BASE_URL,
 })
 
 installHashPreserver(router, import.meta.env.BASE_URL)
+installHideParamListener()
+installHistorySync()
 
 const rootElement = document.getElementById('root')
 const root = createRoot(rootElement)

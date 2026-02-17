@@ -3,21 +3,27 @@ import { StoryboardContext } from '../StoryboardContext.js'
 import { getByPath } from '../../core/dotPath.js'
 import { getParam, setParam, removeParam } from '../../core/session.js'
 import { subscribeToHash } from '../../core/hashSubscribe.js'
+import { isHideMode, getShadow, setShadow, removeShadow } from '../../core/hideMode.js'
+import { subscribeToStorage, getStorageSnapshot } from '../../core/localStorage.js'
 
 /**
- * Read/write hash-param overrides on top of scene data.
+ * Read/write overrides on top of scene data.
  *
- * Read priority:  URL hash param  →  Scene JSON value  →  undefined
- * Write target:   URL hash only (scene JSON is read-only)
+ * **Normal mode:**
+ *   Read priority:  URL hash param → Scene JSON value → undefined
+ *   Write target:   URL hash + shadow copy to localStorage
  *
- * Use this hook when you need to **write** an override (e.g. form inputs,
- * toggle buttons). For read-only access to scene data (with overrides
- * applied transparently), prefer `useSceneData()`.
+ * **Hide mode** (activated by `?hide`):
+ *   Read priority:  shadow localStorage → Scene JSON value → undefined
+ *   Write target:   shadow localStorage only (URL stays clean)
+ *
+ * Every write also mirrors to localStorage shadow keys, so hide mode
+ * can hot-swap without data loss.
  *
  * @param {string} path - Dot-notation key (e.g. 'settings.theme')
  * @returns {[any, function, function]}
  *   [0] current value (override ?? scene default)
- *   [1] setValue(newValue)  – write an override to the URL hash
+ *   [1] setValue(newValue)  – write an override
  *   [2] clearValue()       – remove the override, reverting to scene default
  */
 export function useOverride(path) {
@@ -27,28 +33,47 @@ export function useOverride(path) {
   }
 
   const { data } = context
+  const hidden = isHideMode()
 
   // Scene default for this path (fallback when no override exists)
   const sceneDefault = data != null ? getByPath(data, path) : undefined
 
-  // Read the hash param reactively via useSyncExternalStore
-  const getSnapshot = useCallback(() => getParam(path), [path])
-  const hashValue = useSyncExternalStore(subscribeToHash, getSnapshot)
+  // Subscribe to both sources for reactivity
+  const getHashSnap = useCallback(() => getParam(path), [path])
+  const hashValue = useSyncExternalStore(subscribeToHash, getHashSnap)
+  useSyncExternalStore(subscribeToStorage, getStorageSnapshot)
 
-  // Resolved value: hash param wins, then scene default
-  const value = hashValue !== null ? hashValue : sceneDefault
+  // Resolved value depends on mode
+  let value
+  if (hidden) {
+    const shadowValue = getShadow(path)
+    value = shadowValue !== null ? shadowValue : sceneDefault
+  } else {
+    value = hashValue !== null ? hashValue : sceneDefault
+  }
 
-  /** Write a value to the hash param */
+  /** Write a value — targets hash or shadow depending on mode */
   const setValue = useCallback(
     (newValue) => {
-      setParam(path, newValue)
+      if (isHideMode()) {
+        setShadow(path, newValue)
+      } else {
+        setParam(path, newValue)
+        // Always mirror to shadow so hide mode can hot-swap
+        setShadow(path, newValue)
+      }
     },
     [path],
   )
 
-  /** Remove the hash param, reverting to scene default */
+  /** Remove the override, reverting to scene default */
   const clearValue = useCallback(() => {
-    removeParam(path)
+    if (isHideMode()) {
+      removeShadow(path)
+    } else {
+      removeParam(path)
+      removeShadow(path)
+    }
   }, [path])
 
   return [value, setValue, clearValue]

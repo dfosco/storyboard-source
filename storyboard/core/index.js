@@ -17,5 +17,12 @@ export { getByPath, setByPath, deepClone } from './dotPath.js'
 // URL hash session state (read/write)
 export { getParam, setParam, getAllParams, removeParam } from './session.js'
 
+// localStorage persistence
+export { getLocal, setLocal, removeLocal, getAllLocal, subscribeToStorage, getStorageSnapshot } from './localStorage.js'
+
+// Hide mode (clean URLs)
+export { isHideMode, activateHideMode, deactivateHideMode, getShadow, setShadow, removeShadow, getAllShadows, pushSnapshot, getOverrideHistory, getCurrentSnapshot, getCurrentRoute, getCurrentIndex, getNextIndex, canUndo, canRedo, undo, redo, syncHashToHistory, installHistorySync } from './hideMode.js'
+export { interceptHideParams, installHideParamListener } from './interceptHideParams.js'
+
 // Hash change subscription (for reactive frameworks)
 export { subscribeToHash, getHashSnapshot } from './hashSubscribe.js'

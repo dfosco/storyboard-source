@@ -3,6 +3,8 @@ import { StoryboardContext } from '../StoryboardContext.js'
 import { getByPath, deepClone, setByPath } from '../../core/dotPath.js'
 import { getParam, getAllParams } from '../../core/session.js'
 import { subscribeToHash, getHashSnapshot } from '../../core/hashSubscribe.js'
+import { isHideMode, getShadow, getAllShadows } from '../../core/hideMode.js'
+import { subscribeToStorage, getStorageSnapshot } from '../../core/localStorage.js'
 
 /**
  * Access scene data by dot-notation path.
@@ -27,16 +29,22 @@ export function useSceneData(path) {
 
   const { data, loading, error } = context
 
-  // Re-render on any hash change
+  // Re-render on any hash or localStorage change
   const hashString = useSyncExternalStore(subscribeToHash, getHashSnapshot)
+  const storageString = useSyncExternalStore(subscribeToStorage, getStorageSnapshot)
 
   // Collect overrides relevant to this path
   const result = useMemo(() => {
     if (loading || error || data == null) return undefined
 
+    const hidden = isHideMode()
+    // In hide mode, read from shadow localStorage; otherwise from URL hash
+    const readParam = hidden ? getShadow : getParam
+    const readAllParams = hidden ? getAllShadows : getAllParams
+
     if (!path) {
-      // No path → return full scene data with all hash overrides applied
-      const allParams = getAllParams()
+      // No path → return full scene data with all overrides applied
+      const allParams = readAllParams()
       const keys = Object.keys(allParams)
       if (keys.length === 0) return data
       const merged = deepClone(data)
@@ -44,13 +52,13 @@ export function useSceneData(path) {
       return merged
     }
 
-    // Exact match: hash param directly for this path
-    const exact = getParam(path)
+    // Exact match: param directly for this path
+    const exact = readParam(path)
     if (exact !== null) return exact
 
-    // Child overrides: hash params that are nested under this path
+    // Child overrides: params that are nested under this path
     const prefix = path + '.'
-    const allParams = getAllParams()
+    const allParams = readAllParams()
     const childKeys = Object.keys(allParams).filter(k => k.startsWith(prefix))
 
     const sceneValue = getByPath(data, path)
@@ -70,7 +78,7 @@ export function useSceneData(path) {
     }
 
     return sceneValue
-  }, [data, loading, error, path, hashString]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [data, loading, error, path, hashString, storageString]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return result
 }
