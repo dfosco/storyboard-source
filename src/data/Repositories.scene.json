@@ -1,4 +1,0 @@
-{
-  "$global": ["finch-pearl-navigation"],
-  "repositories": { "$ref": "finch-pearl-repositories" }
-}

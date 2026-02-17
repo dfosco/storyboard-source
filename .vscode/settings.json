@@ -1,7 +1,0 @@
-{
-  // Hide git ignored files
-  "explorer.excludeGitIgnore": false,
-  "files.associations": {
-    "**/src/data/**/*.json": "jsonc"
-  }
-}
