@@ -7,8 +7,11 @@ import postcssPresetEnv from 'postcss-preset-env'
 import browsers from '@github/browserslist-config'
 import { globSync } from 'glob'
 
-export default defineConfig({
-    base: '/storyboard/',
+export default defineConfig(({ command }) => {
+    const base = '/storyboard/'
+
+    return {
+    base,
     plugins: [
         storyboardData(),
         react(),
@@ -16,9 +19,10 @@ export default defineConfig({
         {
             name: 'base-redirect',
             configureServer(server) {
+                const baseNoTrail = base.replace(/\/$/, '')
                 server.middlewares.use((req, res, next) => {
-                    if (req.url && !req.url.startsWith('/storyboard/') && !req.url.startsWith('/@') && !req.url.startsWith('/node_modules/')) {
-                        const newUrl = '/storyboard' + req.url
+                    if (req.url && req.url !== baseNoTrail && !req.url.startsWith(base) && !req.url.startsWith('/@') && !req.url.startsWith('/node_modules/')) {
+                        const newUrl = baseNoTrail + req.url
                         res.writeHead(302, { Location: newUrl })
                         res.end()
                         return
@@ -29,6 +33,9 @@ export default defineConfig({
         },
     ],
     server: { port: 1234 },
+    optimizeDeps: {
+        include: ['reshaped', '@primer/react', '@primer/octicons-react'],
+    },
     build: {
         // @primer/react barrel export can't be tree-shaken below ~664 KB.
         // Raised from 500 KB default to suppress the warning for that chunk.
@@ -69,4 +76,4 @@ export default defineConfig({
             ],
         },
     },
-})
+}})
