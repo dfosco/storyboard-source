@@ -1,11 +1,9 @@
 /* eslint-disable react/prop-types */
 import { useMemo } from 'react'
 import { useParams } from 'react-router-dom'
-import { Text } from '@primer/react'
 // Side-effect import: seeds the core data index via init()
 import 'virtual:storyboard-data-index'
-import { loadScene, sceneExists, findRecord } from '../core/loader.js'
-import { deepMerge } from '../core/loader.js'
+import { loadScene, sceneExists, findRecord, deepMerge } from '@storyboard/core'
 import { StoryboardContext } from './StoryboardContext.js'
 
 export { StoryboardContext }
@@ -69,7 +67,7 @@ export default function StoryboardProvider({ sceneName, recordName, recordParam,
   }
 
   if (error) {
-    return <Text color="danger.fg">Error loading scene: {error}</Text>
+    return <span style={{ color: 'var(--fgColor-danger, #f85149)' }}>Error loading scene: {error}</span>
   }
 
   return (

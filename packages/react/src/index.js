@@ -1,8 +1,8 @@
 /**
- * storyboard-react — React-specific layer.
+ * @storyboard/react — React framework binding for Storyboard.
  *
- * Re-exports all React hooks, components, and context providers
- * that depend on React, React Router, or Primer React.
+ * Provides hooks, context, and provider for React apps.
+ * Design-system-agnostic — no Primer, Reshaped, or other UI library deps.
  */
 
 // Context & Provider
@@ -23,10 +23,5 @@ export { useUndoRedo } from './hooks/useUndoRedo.js'
 // React Router integration
 export { installHashPreserver } from './hashPreserver.js'
 
-// Components (Primer React wrappers)
-export { default as DevTools } from './components/DevTools/DevTools.jsx'
-export { default as StoryboardForm } from './components/StoryboardForm.jsx'
-export { default as TextInput } from './components/TextInput.jsx'
-export { default as Checkbox } from './components/Checkbox.jsx'
-export { default as Select } from './components/Select.jsx'
-export { default as Textarea } from './components/Textarea.jsx'
+// Form context (for design system packages to use)
+export { FormContext } from './context/FormContext.js'

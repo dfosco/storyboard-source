@@ -1,6 +1,6 @@
 import { Text, Button, ButtonGroup, FormControl } from '@primer/react'
-import { useOverride } from '../hooks/useOverride.js'
-import { useScene } from '../hooks/useScene.js'
+import { useOverride } from '@storyboard/react'
+import { useScene } from '@storyboard/react'
 import StoryboardForm from './StoryboardForm.jsx'
 import TextInput from './TextInput.jsx'
 import Textarea from './Textarea.jsx'

@@ -1,7 +1,7 @@
 import { useCallback, useSyncExternalStore } from 'react'
-import { undo, redo, canUndo, canRedo } from '../../core/hideMode.js'
-import { subscribeToStorage, getStorageSnapshot } from '../../core/localStorage.js'
-import { subscribeToHash, getHashSnapshot } from '../../core/hashSubscribe.js'
+import { undo, redo, canUndo, canRedo } from '@storyboard/core'
+import { subscribeToStorage, getStorageSnapshot } from '@storyboard/core'
+import { subscribeToHash, getHashSnapshot } from '@storyboard/core'
 
 /**
  * Undo/redo controls for override history.

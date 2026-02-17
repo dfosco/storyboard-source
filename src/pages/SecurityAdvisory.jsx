@@ -19,7 +19,7 @@ import {
   CopyIcon,
 } from '@primer/octicons-react'
 import Application from '../templates/Application/Application.jsx'
-import { useSceneData } from '../../storyboard'
+import { useSceneData } from '@storyboard/react'
 import styles from './securityAdvisory.module.css'
 
 const iconMap = {

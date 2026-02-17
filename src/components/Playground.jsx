@@ -8,7 +8,7 @@ import {
 
 import MonaLoadingImage from '../images/mona-loading.gif'
 import styles from './playground.module.css'
-import SceneDataDemo from '../../storyboard/internals/components/SceneDataDemo'
+import { SceneDataDemo } from '@storyboard/primer'
 
 function Playground() {
     /*

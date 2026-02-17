@@ -1,9 +1,9 @@
 import { useCallback, useContext, useSyncExternalStore } from 'react'
 import { StoryboardContext } from '../StoryboardContext.js'
-import { getByPath } from '../../core/dotPath.js'
-import { getParam } from '../../core/session.js'
-import { getLocal, setLocal, removeLocal, subscribeToStorage, getStorageSnapshot } from '../../core/localStorage.js'
-import { subscribeToHash, getHashSnapshot } from '../../core/hashSubscribe.js'
+import { getByPath } from '@storyboard/core'
+import { getParam } from '@storyboard/core'
+import { getLocal, setLocal, removeLocal, subscribeToStorage, getStorageSnapshot } from '@storyboard/core'
+import { subscribeToHash, getHashSnapshot } from '@storyboard/core'
 
 /**
  * Persistent localStorage override on top of scene data.

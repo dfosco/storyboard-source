@@ -4,7 +4,7 @@ import {
   TextField,
   View,
 } from 'reshaped'
-import { useOverride } from '../../../storyboard'
+import { useOverride } from '@storyboard/react'
 
 const statusLabels = {
   todo: 'Todo',

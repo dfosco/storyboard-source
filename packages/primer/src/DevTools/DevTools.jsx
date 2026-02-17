@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { ActionMenu, ActionList } from '@primer/react'
-import { loadScene } from '../../../core/loader.js'
+import { loadScene } from '@storyboard/core'
 import { BeakerIcon, InfoIcon, SyncIcon, XIcon } from '@primer/octicons-react'
 import styles from './DevTools.module.css'
 

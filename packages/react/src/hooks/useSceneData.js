@@ -1,10 +1,10 @@
 import { useContext, useMemo, useSyncExternalStore } from 'react'
 import { StoryboardContext } from '../StoryboardContext.js'
-import { getByPath, deepClone, setByPath } from '../../core/dotPath.js'
-import { getParam, getAllParams } from '../../core/session.js'
-import { subscribeToHash, getHashSnapshot } from '../../core/hashSubscribe.js'
-import { isHideMode, getShadow, getAllShadows } from '../../core/hideMode.js'
-import { subscribeToStorage, getStorageSnapshot } from '../../core/localStorage.js'
+import { getByPath, deepClone, setByPath } from '@storyboard/core'
+import { getParam, getAllParams } from '@storyboard/core'
+import { subscribeToHash, getHashSnapshot } from '@storyboard/core'
+import { isHideMode, getShadow, getAllShadows } from '@storyboard/core'
+import { subscribeToStorage, getStorageSnapshot } from '@storyboard/core'
 
 /**
  * Access scene data by dot-notation path.

@@ -9,7 +9,7 @@ import {
   LockIcon, CodeIcon, ArchiveIcon, RepoTemplateIcon
 } from '@primer/octicons-react'
 import Application from '../templates/Application/Application.jsx'
-import { useSceneData } from '../../storyboard'
+import { useSceneData } from '@storyboard/react'
 import styles from './repositories.module.css'
 
 const iconMap = {

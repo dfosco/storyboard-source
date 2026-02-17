@@ -12,10 +12,8 @@ import {
 } from 'reshaped'
 import 'reshaped/themes/reshaped/theme.css'
 import 'reshaped/themes/reshaped/media.css'
-import { useSceneData, useOverride } from '../../../storyboard'
-import { useRecord } from '../../../storyboard/index.js'
-import { useRecordOverride } from '../../../storyboard/internals/hooks/useRecordOverride.js'
-import { setParam, removeParam } from '../../../storyboard/core/session.js'
+import { useSceneData, useOverride, useRecord, useRecordOverride } from '@storyboard/react'
+import { setParam, removeParam } from '@storyboard/core'
 import AppSidebar from '../../components/AppSidebar/AppSidebar.jsx'
 import IssueFormFields, { statusLabels, priorityLabels } from '../../components/IssueFormFields/IssueFormFields.jsx'
 

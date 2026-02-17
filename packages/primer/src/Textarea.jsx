@@ -1,18 +1,18 @@
 /* eslint-disable react/prop-types */
 import { useContext, useState, useEffect } from 'react'
-import { Select as PrimerSelect } from '@primer/react'
-import { FormContext } from '../context/FormContext.js'
-import { useOverride } from '../hooks/useOverride.js'
+import { Textarea as PrimerTextarea } from '@primer/react'
+import { FormContext } from '@storyboard/react'
+import { useOverride } from '@storyboard/react'
 
 /**
- * Wrapped Primer Select that integrates with StoryboardForm.
+ * Wrapped Primer Textarea that integrates with StoryboardForm.
  *
  * Inside a <StoryboardForm>, values are buffered locally and only
  * written to session on form submit.
  *
- * Outside a form, behaves as a normal controlled Primer Select.
+ * Outside a form, behaves as a normal controlled Primer Textarea.
  */
-export default function Select({ name, onChange, value: controlledValue, children, ...props }) {
+export default function Textarea({ name, onChange, value: controlledValue, ...props }) {
   const form = useContext(FormContext)
   const path = form?.prefix && name ? `${form.prefix}.${name}` : name
   const [sessionValue] = useOverride(path || '')
@@ -45,16 +45,11 @@ export default function Select({ name, onChange, value: controlledValue, childre
   const resolvedValue = isConnected ? draft : controlledValue
 
   return (
-    <PrimerSelect
+    <PrimerTextarea
       name={name}
       value={resolvedValue}
       onChange={handleChange}
       {...props}
-    >
-      {children}
-    </PrimerSelect>
+    />
   )
 }
-
-// Forward Primer's static sub-components (e.g. Select.Option)
-Select.Option = PrimerSelect.Option

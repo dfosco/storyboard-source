@@ -1,0 +1,14 @@
+{
+  "name": "@storyboard/primer",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@storyboard/react": "*",
+    "@primer/react": "^38.5.0",
+    "@primer/octicons-react": "^19.21.1"
+  },
+  "exports": {
+    ".": "./src/index.js"
+  }
+}

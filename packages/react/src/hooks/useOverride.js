@@ -1,10 +1,10 @@
 import { useCallback, useContext, useSyncExternalStore } from 'react'
 import { StoryboardContext } from '../StoryboardContext.js'
-import { getByPath } from '../../core/dotPath.js'
-import { getParam, setParam, removeParam } from '../../core/session.js'
-import { subscribeToHash } from '../../core/hashSubscribe.js'
-import { isHideMode, getShadow, setShadow, removeShadow } from '../../core/hideMode.js'
-import { subscribeToStorage, getStorageSnapshot } from '../../core/localStorage.js'
+import { getByPath } from '@storyboard/core'
+import { getParam, setParam, removeParam } from '@storyboard/core'
+import { subscribeToHash } from '@storyboard/core'
+import { isHideMode, getShadow, setShadow, removeShadow } from '@storyboard/core'
+import { subscribeToStorage, getStorageSnapshot } from '@storyboard/core'
 
 /**
  * Read/write overrides on top of scene data.

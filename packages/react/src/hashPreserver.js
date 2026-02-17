@@ -1,4 +1,4 @@
-import { interceptHideParams } from '../core/interceptHideParams.js'
+import { interceptHideParams } from '@storyboard/core'
 
 /**
  * Preserve URL hash params across all navigations — both <a> clicks

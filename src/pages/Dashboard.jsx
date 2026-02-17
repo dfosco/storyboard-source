@@ -11,7 +11,7 @@ import {
 } from 'reshaped'
 import 'reshaped/themes/reshaped/theme.css'
 import 'reshaped/themes/reshaped/media.css'
-import { useSceneData } from '../../storyboard'
+import { useSceneData } from '@storyboard/react'
 import AppSidebar from '../components/AppSidebar/AppSidebar.jsx'
 
 function display(v) {

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Text, Label } from '@primer/react'
 import Application from '../../templates/Application/Application.jsx'
-import { useRecord } from '../../../storyboard/index.js'
+import { useRecord } from '@storyboard/react'
 
 /**
  * Dynamic blog post page.

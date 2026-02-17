@@ -1,0 +1,13 @@
+{
+  "name": "@storyboard/reshaped",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@storyboard/react": "*",
+    "reshaped": "^3.9.0"
+  },
+  "exports": {
+    ".": "./src/index.js"
+  }
+}

@@ -1,11 +1,10 @@
 /* eslint-disable react/prop-types */
 import { useContext, useState, useEffect } from 'react'
-import { Checkbox as PrimerCheckbox } from '@primer/react'
-import { FormContext } from '../context/FormContext.js'
-import { useOverride } from '../hooks/useOverride.js'
+import { Checkbox as ReshapedCheckbox } from 'reshaped'
+import { FormContext, useOverride } from '@storyboard/react'
 
 /**
- * Wrapped Primer Checkbox that integrates with StoryboardForm.
+ * Wrapped Reshaped Checkbox that integrates with StoryboardForm.
  *
  * Inside a <StoryboardForm>, values are buffered locally and only
  * written to session on form submit.
@@ -36,18 +35,19 @@ export default function Checkbox({ name, onChange, checked: controlledChecked, .
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const handleChange = (e) => {
+  const handleChange = ({ value }) => {
+    const checked = !!value
     if (isConnected) {
-      setDraftState(e.target.checked)
-      form.setDraft(name, e.target.checked ? 'true' : 'false')
+      setDraftState(checked)
+      form.setDraft(name, checked ? 'true' : 'false')
     }
-    if (onChange) onChange(e)
+    if (onChange) onChange({ value })
   }
 
   const resolvedChecked = isConnected ? draft : controlledChecked
 
   return (
-    <PrimerCheckbox
+    <ReshapedCheckbox
       name={name}
       checked={resolvedChecked}
       onChange={handleChange}

@@ -1,0 +1,19 @@
+{
+  "name": "@storyboard/react",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@storyboard/core": "*"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-router-dom": ">=6",
+    "vite": ">=5"
+  },
+  "exports": {
+    ".": "./src/index.js",
+    "./vite": "./src/vite/data-plugin.js",
+    "./hash-preserver": "./src/hashPreserver.js"
+  }
+}

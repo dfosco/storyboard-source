@@ -59,7 +59,7 @@ function buildIndex(root) {
  * Reads each data file, parses JSONC at build time, and emits pre-parsed
  * JavaScript objects — no runtime parsing needed.
  */
-function generateModule(index, root) {
+function generateModule(index) {
   const declarations = []
   const entries = { scene: [], object: [], record: [] }
   let i = 0
@@ -75,7 +75,7 @@ function generateModule(index, root) {
   }
 
   return [
-    `import { init } from '${root}/storyboard/core/loader.js'`,
+    `import { init } from '@storyboard/core'`,
     '',
     declarations.join('\n'),
     '',
@@ -118,7 +118,7 @@ export default function storyboardDataPlugin() {
     load(id) {
       if (id !== RESOLVED_ID) return null
       if (!index) index = buildIndex(root)
-      return generateModule(index, root)
+      return generateModule(index)
     },
 
     configureServer(server) {
