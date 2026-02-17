@@ -31,3 +31,5 @@ yarn-error.log*
 .github/skills/primer-url-builder
 .github/skills/playwright-cli
 AGENTS_.md
+
+_*.md
