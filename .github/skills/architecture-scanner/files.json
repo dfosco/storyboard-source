@@ -1,275 +1,81 @@
 {
   "categories": [
     {
-      "id": "storyboard",
-      "name": "Storyboard System",
-      "priority": "critical",
-      "order": 1
+        "id": "storyboard",
+        "name": "Storyboard System",
+        "priority": "critical",
+        "order": 1
     },
     {
-      "id": "data",
-      "name": "Data Files",
-      "priority": "critical",
-      "order": 2
+        "id": "data",
+        "name": "Data Files",
+        "priority": "critical",
+        "order": 2
     },
     {
-      "id": "entry",
-      "name": "Entry Points",
-      "priority": "medium",
-      "order": 3
+        "id": "entry",
+        "name": "Entry Points",
+        "priority": "medium",
+        "order": 3
     },
     {
-      "id": "routing",
-      "name": "Routing",
-      "priority": "high",
-      "order": 4
+        "id": "routing",
+        "name": "Routing",
+        "priority": "high",
+        "order": 4
     },
     {
-      "id": "config",
-      "name": "Configuration",
-      "priority": "medium",
-      "order": 5
+        "id": "config",
+        "name": "Configuration",
+        "priority": "medium",
+        "order": 5
     },
     {
-      "id": "page",
-      "name": "Pages",
-      "priority": "medium",
-      "order": 6
+        "id": "page",
+        "name": "Pages",
+        "priority": "medium",
+        "order": 6
     },
     {
-      "id": "template",
-      "name": "Templates",
-      "priority": "medium",
-      "order": 7
+        "id": "template",
+        "name": "Templates",
+        "priority": "medium",
+        "order": 7
     },
     {
-      "id": "component",
-      "name": "Shared Components",
-      "priority": "medium",
-      "order": 8
+        "id": "component",
+        "name": "Shared Components",
+        "priority": "medium",
+        "order": 8
     },
     {
-      "id": "style",
-      "name": "Global Styles",
-      "priority": "medium",
-      "order": 9
+        "id": "style",
+        "name": "Global Styles",
+        "priority": "medium",
+        "order": 9
     }
-  ],
+],
   "files": [
-    {
-      "path": "vite.config.js",
-      "category": "config",
-      "importance": "high"
-    },
-    {
-      "path": "eslint.config.js",
-      "category": "config",
-      "importance": "low"
-    },
-    {
-      "path": "package.json",
-      "category": "config",
-      "importance": "high"
-    },
-    {
-      "path": "src/index.jsx",
-      "category": "entry",
-      "importance": "high"
-    },
-    {
-      "path": "index.html",
-      "category": "entry",
-      "importance": "low"
-    },
-    {
-      "path": "src/pages/_app.jsx",
-      "category": "routing",
-      "importance": "high"
-    },
-    {
-      "path": "src/templates/Application/Application.jsx",
-      "category": "template",
-      "importance": "low"
-    },
-    {
-      "path": "src/storyboard/index.js",
-      "category": "storyboard",
-      "importance": "medium"
-    },
-    {
-      "path": "src/storyboard/context.jsx",
-      "category": "storyboard",
-      "importance": "high"
-    },
-    {
-      "path": "src/storyboard/StoryboardContext.js",
-      "category": "storyboard",
-      "importance": "high"
-    },
-    {
-      "path": "src/storyboard/core/loader.js",
-      "category": "storyboard",
-      "importance": "high"
-    },
-    {
-      "path": "src/storyboard/core/dotPath.js",
-      "category": "storyboard",
-      "importance": "high"
-    },
-    {
-      "path": "src/storyboard/core/hashPreserver.js",
-      "category": "storyboard",
-      "importance": "high"
-    },
-    {
-      "path": "src/storyboard/core/session.js",
-      "category": "storyboard",
-      "importance": "high"
-    },
-    {
-      "path": "src/storyboard/hooks/useOverride.js",
-      "category": "storyboard",
-      "importance": "high"
-    },
-    {
-      "path": "src/storyboard/hooks/useRecord.js",
-      "category": "storyboard",
-      "importance": "high"
-    },
-    {
-      "path": "src/storyboard/hooks/useScene.js",
-      "category": "storyboard",
-      "importance": "high"
-    },
-    {
-      "path": "src/storyboard/vite/data-plugin.js",
-      "category": "storyboard",
-      "importance": "high"
-    },
-    {
-      "path": "src/storyboard/hooks/useSceneData.js",
-      "category": "storyboard",
-      "importance": "high"
-    },
-    {
-      "path": "src/storyboard/hooks/useSession.js",
-      "category": "storyboard",
-      "importance": "high"
-    },
-    {
-      "path": "src/storyboard/components/Checkbox.jsx",
-      "category": "storyboard",
-      "importance": "high"
-    },
-    {
-      "path": "src/storyboard/components/SceneDataDemo.jsx",
-      "category": "storyboard",
-      "importance": "high"
-    },
-    {
-      "path": "src/storyboard/components/SceneDebug.jsx",
-      "category": "storyboard",
-      "importance": "high"
-    },
-    {
-      "path": "src/storyboard/components/Select.jsx",
-      "category": "storyboard",
-      "importance": "high"
-    },
-    {
-      "path": "src/storyboard/components/StoryboardForm.jsx",
-      "category": "storyboard",
-      "importance": "high"
-    },
-    {
-      "path": "src/storyboard/components/Textarea.jsx",
-      "category": "storyboard",
-      "importance": "high"
-    },
-    {
-      "path": "src/storyboard/components/TextInput.jsx",
-      "category": "storyboard",
-      "importance": "high"
-    },
-    {
-      "path": "src/components/ColorModeSwitcher.jsx",
-      "category": "component",
-      "importance": "low"
-    },
-    {
-      "path": "src/components/GlobalNavigation.jsx",
-      "category": "component",
-      "importance": "low"
-    },
-    {
-      "path": "src/components/Playground.jsx",
-      "category": "component",
-      "importance": "low"
-    },
-    {
-      "path": "src/components/SidebarNavigation.jsx",
-      "category": "component",
-      "importance": "low"
-    },
-    {
-      "path": "src/pages/Dashboard.jsx",
-      "category": "page",
-      "importance": "low"
-    },
-    {
-      "path": "src/pages/Forms.jsx",
-      "category": "page",
-      "importance": "low"
-    },
-    {
-      "path": "src/pages/Issues.jsx",
-      "category": "page",
-      "importance": "low"
-    },
-    {
-      "path": "src/pages/Overview.jsx",
-      "category": "page",
-      "importance": "low"
-    },
-    {
-      "path": "src/pages/Repositories.jsx",
-      "category": "page",
-      "importance": "low"
-    },
-    {
-      "path": "src/pages/SecurityAdvisory.jsx",
-      "category": "page",
-      "importance": "low"
-    },
-    {
-      "path": "src/pages/Signup.jsx",
-      "category": "page",
-      "importance": "low"
-    },
-    {
-      "path": "src/pages/index.jsx",
-      "category": "page",
-      "importance": "medium"
-    },
-    {
-      "path": "src/globals.css",
-      "category": "style",
-      "importance": "low"
-    },
-    {
-      "path": "src/reset.css",
-      "category": "style",
-      "importance": "low"
-    },
-    {
-      "path": "src/pages/posts/index.jsx",
-      "category": "page",
-      "importance": "low"
-    },
-    {
-      "path": "src/pages/posts/[slug].jsx",
-      "category": "page",
-      "importance": "low"
-    }
+    { "path": "vite.config.js", "category": "config", "importance": "high" },
+    { "path": "eslint.config.js", "category": "config", "importance": "low" },
+    { "path": "package.json", "category": "config", "importance": "high" },
+    { "path": "src/index.jsx", "category": "entry", "importance": "high" },
+    { "path": "index.html", "category": "entry", "importance": "low" },
+    { "path": "src/pages/_app.jsx", "category": "routing", "importance": "high" },
+    { "path": "src/templates/Application/Application.jsx", "category": "template", "importance": "low" },
+    { "path": "src/components/ColorModeSwitcher.jsx", "category": "component", "importance": "low" },
+    { "path": "src/components/GlobalNavigation.jsx", "category": "component", "importance": "low" },
+    { "path": "src/components/Playground.jsx", "category": "component", "importance": "low" },
+    { "path": "src/components/SidebarNavigation.jsx", "category": "component", "importance": "low" },
+    { "path": "src/pages/Dashboard.jsx", "category": "page", "importance": "low" },
+    { "path": "src/pages/Forms.jsx", "category": "page", "importance": "low" },
+    { "path": "src/pages/Issues.jsx", "category": "page", "importance": "low" },
+    { "path": "src/pages/Overview.jsx", "category": "page", "importance": "low" },
+    { "path": "src/pages/Repositories.jsx", "category": "page", "importance": "low" },
+    { "path": "src/pages/SecurityAdvisory.jsx", "category": "page", "importance": "low" },
+    { "path": "src/pages/Signup.jsx", "category": "page", "importance": "low" },
+    { "path": "src/pages/index.jsx", "category": "page", "importance": "medium" },
+    { "path": "src/globals.css", "category": "style", "importance": "low" },
+    { "path": "src/reset.css", "category": "style", "importance": "low" }
   ]
 }
