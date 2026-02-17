@@ -1,23 +1,26 @@
-name: Deploy
+name: Deploy (main)
 
 on:
   push:
     branches:
       - main
 
+concurrency:
+  group: gh-pages-deploy
+  cancel-in-progress: false
+
 jobs:
-  build:
-    name: Build
+  deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
 
     steps:
-      - name: Checkout repo
+      - name: Checkout source
         uses: actions/checkout@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
 
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
@@ -25,29 +28,33 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Upload static files as artifact
-        id: deployment
-        uses: actions/upload-pages-artifact@v3 # or specific "vX.X.X" version tag for this action
-        with:
-          path: dist/
-          
-  deploy:
-    # Add a dependency to the build job
-    needs: build
+      - name: Deploy to gh-pages (root)
+        run: |
+          set -e
 
-    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
-    permissions:
-      pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-    # Deploy to the github-pages environment
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+          # Clone gh-pages branch (or create it)
+          git fetch origin gh-pages:gh-pages 2>/dev/null || true
+          DEPLOY_DIR=$(mktemp -d)
+          if git show-ref --verify --quiet refs/heads/gh-pages; then
+            git worktree add "$DEPLOY_DIR" gh-pages
+          else
+            git worktree add --orphan "$DEPLOY_DIR" gh-pages
+            rm -rf "$DEPLOY_DIR"/*
+          fi
 
-    # Specify runner + deployment step
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4 # or specific "vX.X.X" version tag for this action
+          # Remove root-level files only (preserve branch--* folders)
+          cd "$DEPLOY_DIR"
+          find . -maxdepth 1 ! -name '.' ! -name '.git' ! -name 'branch--*' -exec rm -rf {} +
+
+          # Copy new build output
+          cp -r "$GITHUB_WORKSPACE/dist/." .
+
+          # Commit and push
+          git add -A
+          git diff --cached --quiet && echo "No changes to deploy" && exit 0
+          git commit -m "Deploy main @ $(echo $GITHUB_SHA | head -c 7)"
+          git push origin gh-pages

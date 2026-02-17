@@ -8,7 +8,7 @@ import browsers from '@github/browserslist-config'
 import { globSync } from 'glob'
 
 export default defineConfig(({ command }) => {
-    const base = '/storyboard/'
+    const base = process.env.VITE_BASE_PATH || '/storyboard/' // eslint-disable-line no-undef
 
     return {
     base,
