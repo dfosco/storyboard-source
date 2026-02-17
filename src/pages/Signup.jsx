@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Button,
@@ -51,7 +51,36 @@ export default function Signup() {
     const next = typeof valOrFn === 'function' ? valOrFn(stepIndex) : valOrFn
     setStepParam(String(next))
   }
-  const [errors, setErrors] = useState({})
+  const [errFullName, setErrFullName, clearErrFullName] = useOverride('signup.errors.fullName')
+  const [errEmail, setErrEmail, clearErrEmail] = useOverride('signup.errors.email')
+  const [errPassword, setErrPassword, clearErrPassword] = useOverride('signup.errors.password')
+  const [errOrgName, setErrOrgName, clearErrOrgName] = useOverride('signup.errors.orgName')
+  const [errOrgSize, setErrOrgSize, clearErrOrgSize] = useOverride('signup.errors.orgSize')
+  const [errRole, setErrRole, clearErrRole] = useOverride('signup.errors.role')
+  const [errRegion, setErrRegion, clearErrRegion] = useOverride('signup.errors.region')
+  const [errPlan, setErrPlan, clearErrPlan] = useOverride('signup.errors.plan')
+  const [errAgreeTerms, setErrAgreeTerms, clearErrAgreeTerms] = useOverride('signup.errors.agreeTerms')
+
+  const errors = {
+    fullName: errFullName, email: errEmail, password: errPassword,
+    orgName: errOrgName, orgSize: errOrgSize, role: errRole,
+    region: errRegion, plan: errPlan, agreeTerms: errAgreeTerms,
+  }
+  const errorSetters = {
+    fullName: setErrFullName, email: setErrEmail, password: setErrPassword,
+    orgName: setErrOrgName, orgSize: setErrOrgSize, role: setErrRole,
+    region: setErrRegion, plan: setErrPlan, agreeTerms: setErrAgreeTerms,
+  }
+  const errorClears = {
+    fullName: clearErrFullName, email: clearErrEmail, password: clearErrPassword,
+    orgName: clearErrOrgName, orgSize: clearErrOrgSize, role: clearErrRole,
+    region: clearErrRegion, plan: clearErrPlan, agreeTerms: clearErrAgreeTerms,
+  }
+  const clearAllErrors = () => Object.values(errorClears).forEach((fn) => fn())
+  const setErrors = (nextErrors) => {
+    clearAllErrors()
+    Object.entries(nextErrors).forEach(([key, msg]) => errorSetters[key]?.(msg))
+  }
 
   const [fullName, setFullName] = useOverride('signup.fullName')
   const [email, setEmail] = useOverride('signup.email')
