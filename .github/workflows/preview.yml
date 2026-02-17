@@ -1,0 +1,111 @@
+name: Deploy branch preview
+
+on:
+  push:
+    branches-ignore:
+      - main
+      - gh-pages
+  delete:
+
+concurrency:
+  group: gh-pages-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy-preview:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+
+      - name: Derive branch folder name
+        id: branch
+        run: |
+          # Sanitize branch name: replace non-alphanumeric chars with hyphens
+          BRANCH_NAME="${GITHUB_REF_NAME}"
+          SAFE_NAME=$(echo "$BRANCH_NAME" | sed 's/[^a-zA-Z0-9._-]/-/g' | sed 's/--*/-/g' | sed 's/^-//;s/-$//')
+          FOLDER="branch--${SAFE_NAME}"
+          echo "folder=$FOLDER" >> "$GITHUB_OUTPUT"
+          echo "base=/storyboard/${FOLDER}/" >> "$GITHUB_OUTPUT"
+          echo "Preview folder: $FOLDER"
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Build with custom base path
+        run: npm run build
+        env:
+          VITE_BASE_PATH: ${{ steps.branch.outputs.base }}
+
+      - name: Deploy preview to gh-pages
+        run: |
+          set -e
+          FOLDER="${{ steps.branch.outputs.folder }}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git fetch origin gh-pages:gh-pages 2>/dev/null || true
+          DEPLOY_DIR=$(mktemp -d)
+          if git show-ref --verify --quiet refs/heads/gh-pages; then
+            git worktree add "$DEPLOY_DIR" gh-pages
+          else
+            git worktree add --orphan "$DEPLOY_DIR" gh-pages
+            rm -rf "$DEPLOY_DIR"/*
+          fi
+
+          # Replace only this branch's folder
+          cd "$DEPLOY_DIR"
+          rm -rf "$FOLDER"
+          mkdir -p "$FOLDER"
+          cp -r "$GITHUB_WORKSPACE/dist/." "$FOLDER/"
+
+          git add -A
+          git diff --cached --quiet && echo "No changes to deploy" && exit 0
+          git commit -m "Deploy preview: $FOLDER @ $(echo $GITHUB_SHA | head -c 7)"
+          git push origin gh-pages
+
+      - name: Print preview URL
+        run: |
+          echo "## 🔗 Branch Preview" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "https://dfosco.github.io/storyboard/${{ steps.branch.outputs.folder }}/" >> "$GITHUB_STEP_SUMMARY"
+
+  cleanup-preview:
+    if: github.event_name == 'delete' && github.event.ref_type == 'branch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+
+      - name: Remove branch preview folder
+        run: |
+          set -e
+          BRANCH_NAME="${{ github.event.ref }}"
+          SAFE_NAME=$(echo "$BRANCH_NAME" | sed 's/[^a-zA-Z0-9._-]/-/g' | sed 's/--*/-/g' | sed 's/^-//;s/-$//')
+          FOLDER="branch--${SAFE_NAME}"
+
+          if [ -d "$FOLDER" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+
+            rm -rf "$FOLDER"
+            git add -A
+            git commit -m "Remove preview: $FOLDER"
+            git push origin gh-pages
+            echo "Removed preview: $FOLDER"
+          else
+            echo "No preview folder found for: $FOLDER"
+          fi

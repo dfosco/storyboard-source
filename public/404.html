@@ -22,7 +22,12 @@
       // https://username.github.io/repo-name/one/two?a=b&c=d#qwe becomes
       // https://username.github.io/repo-name/?/one/two&a=b~and~c=d#qwe
       // Otherwise, leave pathSegmentsToKeep as 0.
+      // Detect branch preview deploys: /storyboard/branch--X/ needs 2 segments kept
       var pathSegmentsToKeep = 1;
+      var pathParts = window.location.pathname.split('/');
+      if (pathParts.length > 2 && pathParts[2] && pathParts[2].indexOf('branch--') === 0) {
+        pathSegmentsToKeep = 2;
+      }
 
       var l = window.location;
       l.replace(
