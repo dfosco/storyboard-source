@@ -58,6 +58,7 @@ After any meaningful refactor, ask the user if the architecture documents should
 
 - **DO NOT EVER USE** `<Box>` components
 - **DO NOT EVER USE** `sx` styled-components
+- **DO NOT USE `useState` in pages or components.** All state management must happen through storyboard hooks (`useSceneData`, `useOverride`, `useRecord`, `useRecordOverride`, etc.). Storyboard state lives in the URL hash — not in React component state.
 
 ---
 
@@ -141,7 +142,7 @@ Records are collections — arrays of entries, each with a unique `id`. They pow
 ]
 ```
 
-Access with `useRecord('posts', 'slug')` in a `pages/posts/[slug].jsx` dynamic route page.
+Access with `useRecord('posts')` in a `pages/posts/[id].jsx` dynamic route page. The second argument defaults to `'id'` and determines which record field to match against the URL param — name the file `[field].jsx` to match a different field (e.g. `[permalink].jsx` matches `entry.permalink`).
 
 ---
 
@@ -181,8 +182,9 @@ const userName = useSceneData('user.profile.name')
 const allData = useSceneData() // entire scene object
 
 // Records (dynamic routes)
-const post = useRecord('posts', 'slug')    // single entry by URL param
-const allPosts = useRecords('posts')        // all entries
+const post = useRecord('posts')             // single entry by URL param (defaults to 'id')
+const post = useRecord('posts', 'permalink') // match by a different field
+const allPosts = useRecords('posts')         // all entries
 
 const loading = useSceneLoading()
 ```
@@ -194,7 +196,7 @@ const loading = useSceneLoading()
 - `StoryboardProvider` — React context provider
 - `useSceneData(path?)` — Access scene data by dot-notation path
 - `useSceneLoading()` — Returns true while scene is loading
-- `useRecord(name, param)` — Load single record entry by URL param
+- `useRecord(name, param?)` — Load single record entry by URL param (defaults to `'id'`)
 - `useRecords(name)` — Load all entries from a record collection
 - `loadScene(name)` — Low-level scene loader
 - `loadRecord(name)` — Low-level record loader

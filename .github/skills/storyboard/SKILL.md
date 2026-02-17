@@ -1,6 +1,6 @@
 # Storyboard Data Structuring
 
-> Triggered by: when building a new page using the primer-builder workflow, "create scene data", "set up storyboard data", "create data objects", "create new page", "create new route", when structuring data for a prototype page
+> Triggered by: when building a new page or route in storyboard, "create scene data", "set up storyboard data", "create data objects", "create new page", "create new route", when structuring data for a prototype page
 
 ## What This Does
 
