@@ -65,16 +65,25 @@ function applyRecordOverrides(baseRecords, recordName) {
  * Hash overrides are applied before lookup — both field overrides on existing
  * entries and entirely new entries added via the URL are supported.
  *
+ * The `paramName` serves double duty: it's both the route param to read from
+ * the URL and the record field to match against. This maps naturally to the
+ * file-based routing convention — `[id].jsx` matches entry.id,
+ * `[permalink].jsx` would match entry.permalink, etc.
+ *
  * @param {string} recordName - Name of the record file (e.g., "posts")
- * @param {string} paramName - Route param whose value is matched against entry `id`
+ * @param {string} paramName - Route param name, also used as the entry field to match
  * @returns {object|null} The matched record entry, or null if not found
  *
  * @example
- * // In pages/posts/[slug].jsx:
- * const post = useRecord('posts', 'slug')
- * // URL /posts/welcome → finds entry with id "welcome" in posts.record.json
+ * // In pages/issues/[id].jsx:
+ * const issue = useRecord('issues', 'id')
+ * // URL /issues/refactor-auth-sso → finds entry where entry.id === 'refactor-auth-sso'
+ *
+ * // In pages/posts/[permalink].jsx:
+ * const post = useRecord('posts', 'permalink')
+ * // URL /posts/hello-world → finds entry where entry.permalink === 'hello-world'
  */
-export function useRecord(recordName, paramName) {
+export function useRecord(recordName, paramName = 'id') {
   const params = useParams()
   const paramValue = params[paramName]
 
@@ -86,12 +95,12 @@ export function useRecord(recordName, paramName) {
     try {
       const base = loadRecord(recordName)
       const merged = applyRecordOverrides(base, recordName)
-      return merged.find(e => e.id === paramValue) ?? null
+      return merged.find(e => e[paramName] === paramValue) ?? null
     } catch (err) {
       console.error(`[useRecord] ${err.message}`)
       return null
     }
-  }, [recordName, paramValue, hashString]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [recordName, paramName, paramValue, hashString]) // eslint-disable-line react-hooks/exhaustive-deps
 }
 
 /**

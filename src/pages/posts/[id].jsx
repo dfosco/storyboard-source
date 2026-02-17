@@ -9,7 +9,7 @@ import { useRecord } from '../../../storyboard/index.js'
  * URL: /posts/:slug → finds entry where entry.id === slug
  */
 export default function Post() {
-  const post = useRecord('posts', 'slug')
+  const post = useRecord('posts', 'id')
 
   if (!post) {
     return (
