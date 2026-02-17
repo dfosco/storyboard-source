@@ -1,20 +1,18 @@
-import { useNavigate } from 'react-router-dom'
 import {
   Badge,
-  Button,
   Calendar,
   Card,
   Checkbox,
   Divider,
   Progress,
   Reshaped,
-  Tabs,
   Text,
   View,
 } from 'reshaped'
 import 'reshaped/themes/reshaped/theme.css'
 import 'reshaped/themes/reshaped/media.css'
 import { useSceneData } from '../../storyboard'
+import AppSidebar from '../components/AppSidebar/AppSidebar.jsx'
 
 function display(v) {
   if (v == null || v === '') return '—'
@@ -59,8 +57,6 @@ const schedule = [
 ]
 
 export default function Dashboard() {
-  const navigate = useNavigate()
-
   const fullName = useSceneData('signup.fullName')
   const orgName = useSceneData('signup.organization.name')
   const orgSize = useSceneData('signup.organization.size')
@@ -75,29 +71,11 @@ export default function Dashboard() {
 
           {/* Sidebar */}
           <View.Item columns={2}>
-            <Card padding={4}>
-              <View direction="column" gap={2}>
-                <Text variant="featured-3" weight="bold">
-                  {display(orgName)}
-                </Text>
-                <Divider />
-                <Tabs direction="column" defaultValue="overview" variant="pills">
-                  <Tabs.List>
-                    <Tabs.Item value="overview">Overview</Tabs.Item>
-                    <Tabs.Item value="analytics">Analytics</Tabs.Item>
-                    <Tabs.Item value="team">Team</Tabs.Item>
-                    <Tabs.Item value="deployments">Deployments</Tabs.Item>
-                    <Tabs.Item value="billing">Billing</Tabs.Item>
-                    <Tabs.Item value="settings">Settings</Tabs.Item>
-                  </Tabs.List>
-                </Tabs>
-                <Divider />
-                <View direction="column" gap={1} paddingTop={1}>
-                  <Text variant="caption-1" color="neutral-faded">{display(fullName)}</Text>
-                  <Text variant="caption-1" color="neutral-faded">{display(role)}</Text>
-                </View>
-              </View>
-            </Card>
+            <AppSidebar
+              orgName={display(orgName)}
+              activePage="Overview"
+              userInfo={{ name: display(fullName), role: display(role) }}
+            />
           </View.Item>
 
           {/* Main content */}
