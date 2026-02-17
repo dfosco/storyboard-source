@@ -58,14 +58,14 @@ export function init(index) {
  */
 function loadDataFile(name, type) {
   if (type && dataIndex[type]?.[name] != null) {
-    return structuredClone(dataIndex[type][name])
+    return dataIndex[type][name]
   }
 
   // Search all types if no specific type given
   if (!type) {
     for (const t of ['scenes', 'objects', 'records']) {
       if (dataIndex[t]?.[name] != null) {
-        return structuredClone(dataIndex[t][name])
+        return dataIndex[t][name]
       }
     }
   }
@@ -75,7 +75,7 @@ function loadDataFile(name, type) {
     const lower = name.toLowerCase()
     for (const key of Object.keys(dataIndex.scenes)) {
       if (key.toLowerCase() === lower) {
-        return structuredClone(dataIndex.scenes[key])
+        return dataIndex.scenes[key]
       }
     }
   }
@@ -89,12 +89,12 @@ function loadDataFile(name, type) {
  *
  * @param {*} node - Current data node
  * @param {Set} seen - Tracks visited names to prevent circular refs
- * @returns {Promise<*>} Resolved data
+ * @returns {*} Resolved data
  */
-async function resolveRefs(node, seen = new Set()) {
+function resolveRefs(node, seen = new Set()) {
   if (node === null || typeof node !== 'object') return node
   if (Array.isArray(node)) {
-    return Promise.all(node.map((item) => resolveRefs(item, seen)))
+    return node.map((item) => resolveRefs(item, seen))
   }
 
   // Handle $ref replacement
@@ -111,7 +111,7 @@ async function resolveRefs(node, seen = new Set()) {
   // Recurse into object values
   const result = {}
   for (const [key, value] of Object.entries(node)) {
-    result[key] = await resolveRefs(value, seen)
+    result[key] = resolveRefs(value, seen)
   }
   return result
 }
@@ -137,14 +137,14 @@ export function sceneExists(sceneName) {
  * - $ref: inline object replacement at any nesting level
  *
  * @param {string} sceneName - Name of the scene (e.g., "default")
- * @returns {Promise<object>} Resolved scene data
+ * @returns {object} Resolved scene data
  */
-export async function loadScene(sceneName = 'default') {
+export function loadScene(sceneName = 'default') {
   let sceneData
 
   try {
     sceneData = loadDataFile(sceneName, 'scenes')
-  } catch (err) {
+  } catch {
     throw new Error(`Failed to load scene: ${sceneName}`)
   }
 
@@ -157,7 +157,7 @@ export async function loadScene(sceneName = 'default') {
     for (const name of globalNames) {
       try {
         let globalData = loadDataFile(name)
-        globalData = await resolveRefs(globalData)
+        globalData = resolveRefs(globalData)
         mergedGlobals = deepMerge(mergedGlobals, globalData)
       } catch (err) {
         console.warn(`Failed to load $global: ${name}`, err)
@@ -167,9 +167,11 @@ export async function loadScene(sceneName = 'default') {
     sceneData = deepMerge(mergedGlobals, sceneData)
   }
 
-  sceneData = await resolveRefs(sceneData)
+  sceneData = resolveRefs(sceneData)
 
-  return sceneData
+  // Single clone at the boundary — resolveRefs builds new objects internally,
+  // so the index data is safe. Clone here to prevent consumer mutation.
+  return structuredClone(sceneData)
 }
 
 /**

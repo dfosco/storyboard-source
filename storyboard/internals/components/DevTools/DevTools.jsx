@@ -22,7 +22,6 @@ export default function DevTools() {
   const [panelOpen, setPanelOpen] = useState(false)
   const [sceneData, setSceneData] = useState(null)
   const [sceneError, setSceneError] = useState(null)
-  const [sceneLoading, setSceneLoading] = useState(false)
 
   // Cmd+. keyboard shortcut to toggle toolbar
   useEffect(() => {
@@ -42,18 +41,13 @@ export default function DevTools() {
   const handleShowSceneInfo = useCallback(() => {
     const sceneName = getSceneName()
     setPanelOpen(true)
-    setSceneLoading(true)
     setSceneError(null)
 
-    loadScene(sceneName)
-      .then((data) => {
-        setSceneData(data)
-        setSceneLoading(false)
-      })
-      .catch((err) => {
-        setSceneError(err.message)
-        setSceneLoading(false)
-      })
+    try {
+      setSceneData(loadScene(sceneName))
+    } catch (err) {
+      setSceneError(err.message)
+    }
   }, [])
 
   const handleResetParams = useCallback(() => {
@@ -85,13 +79,10 @@ export default function DevTools() {
               </button>
             </div>
             <div className={styles.panelBody}>
-              {sceneLoading && (
-                <span className={styles.loading}>Loading…</span>
-              )}
               {sceneError && (
                 <span className={styles.error}>{sceneError}</span>
               )}
-              {!sceneLoading && !sceneError && sceneData && (
+              {!sceneError && sceneData && (
                 <pre className={styles.codeBlock}>
                   {JSON.stringify(sceneData, null, 2)}
                 </pre>

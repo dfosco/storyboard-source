@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { useSearchParams } from 'react-router-dom'
 import { Text } from '@primer/react'
@@ -14,33 +14,14 @@ export default function SceneDebug({ sceneName } = {}) {
   const [searchParams] = useSearchParams()
   const sceneFromUrl = searchParams.get('scene')
   const activeSceneName = sceneName || sceneFromUrl || 'default'
-  
-  const [data, setData] = useState(null)
-  const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    setLoading(true)
-    setError(null)
-    
-    loadScene(activeSceneName)
-      .then((sceneData) => {
-        setData(sceneData)
-        setLoading(false)
-      })
-      .catch((err) => {
-        setError(err.message)
-        setLoading(false)
-      })
+  const { data, error } = useMemo(() => {
+    try {
+      return { data: loadScene(activeSceneName), error: null }
+    } catch (err) {
+      return { data: null, error: err.message }
+    }
   }, [activeSceneName])
-
-  if (loading) {
-    return (
-      <div className={styles.container}>
-        <Text>Loading scene: {activeSceneName}...</Text>
-      </div>
-    )
-  }
 
   if (error) {
     return (

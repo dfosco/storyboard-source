@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from 'react'
+import { useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { Text } from '@primer/react'
 // Side-effect import: seeds the core data index via init()
@@ -38,48 +38,34 @@ function getPageSceneName() {
  * Optionally merges record data when `recordName` and `recordParam` are provided.
  * The matched record entry is injected under the "record" key in scene data.
  */
-export default function StoryboardProvider({ sceneName, recordName, recordParam, fallback, children }) {
+export default function StoryboardProvider({ sceneName, recordName, recordParam, children }) {
   const pageScene = getPageSceneName()
   const activeSceneName = getSceneParam() || sceneName || (sceneExists(pageScene) ? pageScene : 'default')
   const params = useParams()
 
-  const [data, setData] = useState(null)
-  const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const { data, error } = useMemo(() => {
+    try {
+      let sceneData = loadScene(activeSceneName)
 
-  useEffect(() => {
-    if (data === null) {
-      setLoading(true)
-    }
-    setError(null)
-
-    loadScene(activeSceneName)
-      .then((sceneData) => {
-        // Merge record data if configured
-        if (recordName && recordParam && params[recordParam]) {
-          const entry = findRecord(recordName, params[recordParam])
-          if (entry) {
-            sceneData = deepMerge(sceneData, { record: entry })
-          }
+      // Merge record data if configured
+      if (recordName && recordParam && params[recordParam]) {
+        const entry = findRecord(recordName, params[recordParam])
+        if (entry) {
+          sceneData = deepMerge(sceneData, { record: entry })
         }
-        setData(sceneData)
-        setLoading(false)
-      })
-      .catch((err) => {
-        setError(err.message)
-        setLoading(false)
-      })
-  }, [activeSceneName, recordName, recordParam, params]) // eslint-disable-line react-hooks/exhaustive-deps
+      }
+
+      return { data: sceneData, error: null }
+    } catch (err) {
+      return { data: null, error: err.message }
+    }
+  }, [activeSceneName, recordName, recordParam, params])
 
   const value = {
     data,
     error,
-    loading,
+    loading: false,
     sceneName: activeSceneName,
-  }
-
-  if (loading) {
-    return fallback ?? <Text>Loading scene…</Text>
   }
 
   if (error) {
