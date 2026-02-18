@@ -1,5 +1,11 @@
 # @dfosco/storyboard-core
 
+## 1.7.0
+
+### Minor Changes
+
+-   Extract Viewfinder into reusable component, add sceneMeta support (route, author), auto-populate author via pre-commit hook
+
 ## 1.6.0
 
 ### Minor Changes
