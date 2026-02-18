@@ -172,6 +172,7 @@ function getSceneName() {
  */
 export function mountDevTools(options = {}) {
   const container = options.container || document.body
+  const basePath = options.basePath || '/'
 
   // Prevent double-mount
   if (container.querySelector('.sb-devtools-wrapper')) return
@@ -331,7 +332,7 @@ export function mountDevTools(options = {}) {
   viewfinderBtn.addEventListener('click', () => {
     menuOpen = false
     menu.classList.remove('open')
-    window.location.href = (document.querySelector('base')?.href || '/') + 'viewfinder'
+    window.location.href = basePath + 'viewfinder'
   })
 
   resetBtn.addEventListener('click', () => {
