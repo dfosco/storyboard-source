@@ -42,8 +42,10 @@ describe('useRecord', () => {
 
   it('returns null gracefully when record collection does not exist', () => {
     useParams.mockReturnValue({ id: 'post-1' })
+    vi.spyOn(console, 'error').mockImplementation(() => {})
     const { result } = renderHook(() => useRecord('nonexistent'))
     expect(result.current).toBeNull()
+    console.error.mockRestore()
   })
 })
 
@@ -56,8 +58,10 @@ describe('useRecords', () => {
   })
 
   it('returns empty array when record does not exist', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
     const { result } = renderHook(() => useRecords('nonexistent'))
     expect(result.current).toEqual([])
+    console.error.mockRestore()
   })
 
   it('applies hash overrides to existing entries', () => {
