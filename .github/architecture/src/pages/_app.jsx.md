@@ -10,31 +10,37 @@ importance: high
 
 ## Goal
 
-The root layout component for all routes, following Generouted's `_app.jsx` convention. It wraps the entire route tree in a `<StoryboardProvider>`, making scene data available to every page via React context. The `<Outlet />` renders the matched child route.
+The root layout component for all routes, following Generouted's `_app.jsx` convention. It wraps the entire route tree in a `<StoryboardProvider>`, making scene data available to every page via React context. A `<Suspense>` boundary with a spinner fallback handles lazy-loaded route transitions. The `<Outlet />` renders the matched child route.
 
 This is the bridge between the routing system and the storyboard data system — by placing the provider here, all pages automatically have access to scene data without needing to set up their own loading logic.
 
 ## Composition
 
 ```jsx
+import { Suspense } from 'react'
 import { Outlet } from 'react-router-dom'
-import StoryboardProvider from '../storyboard/context.jsx'
+import { StoryboardProvider } from '@dfosco/storyboard-react'
 
 export default function App() {
   return (
     <StoryboardProvider>
-      <Outlet />
+      <Suspense fallback={<PageLoading />}>
+        <Outlet />
+      </Suspense>
     </StoryboardProvider>
   )
 }
 ```
 
-No props — the [`StoryboardProvider`](../storyboard/context.jsx.md) reads the scene name from the URL's `?scene=` param or defaults to `"default"`. Every page component rendered via `<Outlet />` can call `useSceneData()` to access the loaded scene.
+A local `PageLoading` component renders a centered CSS spinner on a dark background as the `<Suspense>` fallback while lazy-loaded route chunks are fetched.
+
+No props — the [`StoryboardProvider`](../../packages/react/src/context.jsx.md) reads the scene name from the URL's `?scene=` param or defaults to `"default"`. Every page component rendered via `<Outlet />` can call `useSceneData()` to access the loaded scene.
 
 ## Dependencies
 
+- `react` — `Suspense` for lazy-loaded route transitions
 - `react-router-dom` — `Outlet` for nested route rendering
-- [`src/storyboard/context.jsx`](../storyboard/context.jsx.md) — `StoryboardProvider`
+- [`@dfosco/storyboard-react`](../../packages/react/src/index.js.md) — `StoryboardProvider` (from `packages/react`)
 
 ## Dependents
 
