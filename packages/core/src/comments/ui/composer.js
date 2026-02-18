@@ -142,7 +142,7 @@ function injectStyles() {
       margin-top: -14px;
       border-radius: 50%;
       background: #238636;
-      border: 2px solid #fff;
+      border: 2px solid rgba(255, 255, 255, 0.2);
       color: #fff;
       font-size: 11px;
       font-weight: 700;
