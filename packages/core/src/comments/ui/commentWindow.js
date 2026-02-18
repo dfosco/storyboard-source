@@ -1,8 +1,9 @@
 /**
- * Comment window — vanilla JS popup that shows a comment thread with replies and reactions.
+ * Comment window — Alpine.js popup that shows a comment thread with replies and reactions.
  *
  * Opens when clicking a comment pin. Shows comment body, author, replies,
  * reply input, reactions, and supports drag-to-move.
+ * Themed with Primer CSS custom properties for light/dark mode support.
  */
 
 import { replyToComment, addReaction, removeReaction, moveComment, resolveComment, fetchRouteDiscussion } from '../api.js'
@@ -33,10 +34,10 @@ function injectStyles() {
       max-height: 480px;
       display: flex;
       flex-direction: column;
-      background: #161b22;
-      border: 1px solid #30363d;
+      background: var(--overlay-bgColor, var(--bgColor-default));
+      border: 1px solid var(--borderColor-default);
       border-radius: 10px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      box-shadow: var(--shadow-overlay, 0 8px 24px rgba(0, 0, 0, 0.3));
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
       overflow: hidden;
     }
@@ -46,7 +47,7 @@ function injectStyles() {
       align-items: center;
       justify-content: space-between;
       padding: 10px 12px;
-      border-bottom: 1px solid #21262d;
+      border-bottom: 1px solid var(--borderColor-muted);
       cursor: grab;
       user-select: none;
     }
@@ -64,19 +65,19 @@ function injectStyles() {
       width: 24px;
       height: 24px;
       border-radius: 50%;
-      border: 1px solid #30363d;
+      border: 1px solid var(--borderColor-default);
       flex-shrink: 0;
     }
 
     .sb-comment-window-author {
       font-size: 12px;
       font-weight: 600;
-      color: #f0f6fc;
+      color: var(--fgColor-default);
     }
 
     .sb-comment-window-time {
       font-size: 11px;
-      color: #484f58;
+      color: var(--fgColor-muted);
       margin-left: 4px;
     }
 
@@ -89,15 +90,15 @@ function injectStyles() {
       background: none;
       border: none;
       border-radius: 6px;
-      color: #8b949e;
+      color: var(--fgColor-muted);
       cursor: pointer;
       font-size: 16px;
       line-height: 1;
       flex-shrink: 0;
     }
     .sb-comment-window-close:hover {
-      background: #21262d;
-      color: #c9d1d9;
+      background: var(--bgColor-muted);
+      color: var(--fgColor-default);
     }
 
     .sb-comment-window-header-actions {
@@ -115,7 +116,7 @@ function injectStyles() {
       background: none;
       border: none;
       border-radius: 6px;
-      color: #8b949e;
+      color: var(--fgColor-muted);
       cursor: pointer;
       font-size: 11px;
       font-weight: 500;
@@ -125,14 +126,14 @@ function injectStyles() {
       white-space: nowrap;
     }
     .sb-comment-window-action-btn:hover {
-      background: #21262d;
-      color: #c9d1d9;
+      background: var(--bgColor-muted);
+      color: var(--fgColor-default);
     }
     .sb-comment-window-action-btn[data-resolved="true"] {
-      color: #3fb950;
+      color: var(--fgColor-success);
     }
     .sb-comment-window-action-btn[data-copied="true"] {
-      color: #3fb950;
+      color: var(--fgColor-success);
     }
 
     .sb-comment-window-body {
@@ -144,7 +145,7 @@ function injectStyles() {
     .sb-comment-window-text {
       font-size: 13px;
       line-height: 1.5;
-      color: #c9d1d9;
+      color: var(--fgColor-default);
       margin: 0 0 8px;
       word-break: break-word;
     }
@@ -163,24 +164,20 @@ function injectStyles() {
       gap: 6px;
       padding: 2px 8px;
       border-radius: 999px;
-      border: 1px solid #30363d;
+      border: 1px solid var(--borderColor-default);
       background: none;
-      color: #8b949e;
+      color: var(--fgColor-muted);
       cursor: pointer;
-      // font-size: 12px;
       font-family: inherit;
       transition: border-color 100ms, background 100ms;
     }
-    .sb-reaction-pill span {
-      // font-size: 12px;
-   }
     .sb-reaction-pill:hover {
-      border-color: #8b949e;
+      border-color: var(--fgColor-muted);
     }
     .sb-reaction-pill[data-active="true"] {
-      border-color: rgba(88, 166, 255, 0.4);
-      background: rgba(88, 166, 255, 0.1);
-      color: #58a6ff;
+      border-color: var(--borderColor-accent-emphasis, var(--fgColor-accent));
+      background: var(--bgColor-accent-muted, rgba(88, 166, 255, 0.1));
+      color: var(--fgColor-accent);
     }
 
     .sb-reaction-add-btn {
@@ -189,19 +186,17 @@ function injectStyles() {
       padding: 2px 6px;
       gap: 4px;
       border-radius: 999px;
-      border: 1px solid transparent;
-      background: none;
-      color: #8b949e;
+      border: 1px solid var(--borderColor-default);
+      background: var(--bgColor-muted);
+      color: var(--fgColor-muted);
       font-size: 12px;
       cursor: pointer;
       font-family: inherit;
       position: relative;
-      border-color: #30363d;
-      background: #21262d;
     }
     .sb-reaction-add-btn:hover {
-      border: 1px solid rgba(88, 166, 255, 0.4);
-      background: rgba(88, 166, 255, 0.1);
+      border: 1px solid var(--borderColor-accent-emphasis, var(--fgColor-accent));
+      background: var(--bgColor-accent-muted, rgba(88, 166, 255, 0.1));
     }
 
     .sb-reaction-picker {
@@ -213,10 +208,10 @@ function injectStyles() {
       display: flex;
       gap: 2px;
       padding: 4px;
-      background: #161b22;
-      border: 1px solid #30363d;
+      background: var(--overlay-bgColor, var(--bgColor-default));
+      border: 1px solid var(--borderColor-default);
       border-radius: 10px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      box-shadow: var(--shadow-overlay, 0 8px 24px rgba(0, 0, 0, 0.3));
     }
 
     .sb-reaction-picker-btn {
@@ -233,15 +228,15 @@ function injectStyles() {
       transition: background 100ms;
     }
     .sb-reaction-picker-btn:hover {
-      background: #21262d;
+      background: var(--bgColor-muted);
     }
     .sb-reaction-picker-btn[data-active="true"] {
-      background: rgba(88, 166, 255, 0.15);
-      box-shadow: inset 0 0 0 1px rgba(88, 166, 255, 0.4);
+      background: var(--bgColor-accent-muted, rgba(88, 166, 255, 0.15));
+      box-shadow: inset 0 0 0 1px var(--borderColor-accent-emphasis, var(--fgColor-accent));
     }
 
     .sb-comment-window-replies {
-      border-top: 1px solid #21262d;
+      border-top: 1px solid var(--borderColor-muted);
       padding-top: 10px;
       margin-top: 4px;
     }
@@ -249,7 +244,7 @@ function injectStyles() {
     .sb-comment-window-replies-label {
       font-size: 11px;
       font-weight: 600;
-      color: #8b949e;
+      color: var(--fgColor-muted);
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 8px;
@@ -265,7 +260,7 @@ function injectStyles() {
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      border: 1px solid #30363d;
+      border: 1px solid var(--borderColor-default);
       flex-shrink: 0;
     }
 
@@ -284,18 +279,18 @@ function injectStyles() {
     .sb-reply-author {
       font-size: 12px;
       font-weight: 600;
-      color: #f0f6fc;
+      color: var(--fgColor-default);
     }
 
     .sb-reply-time {
       font-size: 11px;
-      color: #484f58;
+      color: var(--fgColor-muted);
     }
 
     .sb-reply-text {
       font-size: 13px;
       line-height: 1.4;
-      color: #c9d1d9;
+      color: var(--fgColor-default);
       margin: 0;
       word-break: break-word;
     }
@@ -309,7 +304,7 @@ function injectStyles() {
     }
 
     .sb-comment-window-reply-form {
-      border-top: 1px solid #21262d;
+      border-top: 1px solid var(--borderColor-muted);
       padding: 10px 12px;
       display: flex;
       flex-direction: column;
@@ -321,10 +316,10 @@ function injectStyles() {
       min-height: 40px;
       max-height: 100px;
       padding: 6px 8px;
-      background: #0d1117;
-      border: 1px solid #30363d;
+      background: var(--bgColor-inset, var(--bgColor-default));
+      border: 1px solid var(--borderColor-default);
       border-radius: 6px;
-      color: #c9d1d9;
+      color: var(--fgColor-default);
       font-size: 12px;
       font-family: inherit;
       line-height: 1.4;
@@ -333,11 +328,11 @@ function injectStyles() {
       box-sizing: border-box;
     }
     .sb-reply-textarea:focus {
-      border-color: #58a6ff;
-      box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+      border-color: var(--fgColor-accent);
+      box-shadow: 0 0 0 3px var(--borderColor-accent-muted, rgba(88, 166, 255, 0.15));
     }
     .sb-reply-textarea::placeholder {
-      color: #484f58;
+      color: var(--fgColor-muted);
     }
 
     .sb-reply-form-actions {
@@ -353,11 +348,11 @@ function injectStyles() {
       font-family: inherit;
       cursor: pointer;
       border: none;
-      background: #238636;
-      color: #fff;
+      background: var(--bgColor-success-emphasis);
+      color: var(--fgColor-onEmphasis);
     }
     .sb-reply-submit-btn:hover {
-      background: #2ea043;
+      filter: brightness(1.1);
     }
     .sb-reply-submit-btn:disabled {
       opacity: 0.5;
@@ -417,7 +412,6 @@ function buildReactionBar(item) {
 }
 
 function showPicker(anchorBtn, item, rerenderBar) {
-  // Remove any existing picker
   const existing = anchorBtn.querySelector('.sb-reaction-picker')
   if (existing) { existing.remove(); return }
 
@@ -443,7 +437,6 @@ function showPicker(anchorBtn, item, rerenderBar) {
 
   anchorBtn.appendChild(picker)
 
-  // Close picker on next click outside
   function onClickOutside(e) {
     if (!picker.contains(e.target) && e.target !== anchorBtn) {
       picker.remove()
@@ -456,7 +449,6 @@ function showPicker(anchorBtn, item, rerenderBar) {
 async function toggleReaction(item, content, existingGroup, rerenderBar) {
   const wasReacted = existingGroup?.viewerHasReacted ?? false
 
-  // Optimistic update
   if (!item.reactionGroups) item.reactionGroups = []
 
   if (wasReacted && existingGroup) {
@@ -596,7 +588,6 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
         shareBtn.title = 'Copy link'
       }, 2000)
     }).catch(() => {
-      // Fallback: select text in a temp input
       const input = document.createElement('input')
       input.value = url.toString()
       document.body.appendChild(input)
@@ -726,7 +717,6 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
         await replyToComment(discussion.id, comment.id, text)
         textarea.value = ''
         submitBtn.textContent = 'Reply'
-        // Refresh the window with new data
         callbacks.onMove?.()
       } catch (err) {
         console.error('[storyboard] Failed to post reply:', err)
@@ -761,14 +751,12 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
   let winStartTop = 0
 
   function onMouseDown(e) {
-    // Only drag from header, not action buttons
     if (e.target.closest('.sb-comment-window-header-actions')) return
     isDragging = true
     dragStartX = e.clientX
     dragStartY = e.clientY
 
     const containerRect = container.getBoundingClientRect()
-    // Parse current position from percentage
     winStartLeft = (parseFloat(win.style.left) / 100) * containerRect.width
     winStartTop = (parseFloat(win.style.top) / 100) * containerRect.height
 
@@ -799,7 +787,6 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
     document.removeEventListener('mousemove', onMouseMove)
     document.removeEventListener('mouseup', onMouseUp)
 
-    // Calculate final position percentage
     const containerRect = container.getBoundingClientRect()
     const dx = e.clientX - dragStartX
     const dy = e.clientY - dragStartY
@@ -808,12 +795,9 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
     const xPct = Math.round((newLeft / containerRect.width) * 1000) / 10
     const yPct = Math.round((newTop / containerRect.height) * 1000) / 10
 
-    // Only update if actually moved
     if (Math.abs(dx) > 2 || Math.abs(dy) > 2) {
-      // Update the pin position
       comment.meta = { ...comment.meta, x: xPct, y: yPct }
 
-      // Move the corresponding pin element without re-rendering everything
       const pins = container.querySelectorAll('.sb-comment-pin')
       for (const pin of pins) {
         if (pin._commentId === comment.id) {
@@ -825,8 +809,7 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
 
       try {
         await moveComment(comment.id, comment._rawBody ?? '', xPct, yPct)
-        // Update raw body with new metadata for future moves
-        comment._rawBody = null // force re-fetch on next move
+        comment._rawBody = null
       } catch (err) {
         console.error('[storyboard] Failed to move comment:', err)
       }
@@ -850,7 +833,6 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
     document.removeEventListener('mouseup', onMouseUp)
     win.remove()
     if (activeWindow?.el === win) activeWindow = null
-    // Clear URL param
     const currentUrl = new URL(window.location.href)
     currentUrl.searchParams.delete('comment')
     window.history.replaceState(null, '', currentUrl.toString())

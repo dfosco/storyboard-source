@@ -1,14 +1,16 @@
 /**
- * Comments drawer — a right-side panel listing all comments across all routes.
+ * Comments drawer — Alpine.js right-side panel listing all comments across all routes.
  *
  * Opened from the DevTools "See all comments" menu item.
  * Clicking a comment navigates to its route and opens it.
+ * Themed with Primer CSS custom properties for light/dark mode support.
  */
 
 import { listDiscussions, fetchRouteDiscussion } from '../api.js'
 import { parseMetadata } from '../metadata.js'
 import { isAuthenticated } from '../auth.js'
 import { setCommentMode } from '../commentMode.js'
+import { applyTheme } from './themeBridge.js'
 
 const STYLE_ID = 'sb-comments-drawer-style'
 
@@ -21,7 +23,7 @@ function injectStyles() {
       position: fixed;
       inset: 0;
       z-index: 99997;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.1);
     }
 
     .sb-comments-drawer {
@@ -30,11 +32,11 @@ function injectStyles() {
       right: 0;
       bottom: 0;
       z-index: 99998;
-      width: 380px;
+      width: 420px;
       max-width: 90vw;
-      background: #161b22;
-      border-left: 1px solid #30363d;
-      box-shadow: -8px 0 24px rgba(0, 0, 0, 0.4);
+      background: var(--bgColor-default);
+      border-left: 1px solid var(--borderColor-default);
+      box-shadow: var(--shadow-overlay, -8px 0 24px rgba(0, 0, 0, 0.3));
       display: flex;
       flex-direction: column;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
@@ -51,14 +53,14 @@ function injectStyles() {
       align-items: center;
       justify-content: space-between;
       padding: 16px 20px;
-      border-bottom: 1px solid #21262d;
+      border-bottom: 1px solid var(--borderColor-muted);
       flex-shrink: 0;
     }
 
     .sb-comments-drawer-title {
       font-size: 16px;
       font-weight: 600;
-      color: #f0f6fc;
+      color: var(--fgColor-default);
       margin: 0;
     }
 
@@ -71,14 +73,14 @@ function injectStyles() {
       background: none;
       border: none;
       border-radius: 6px;
-      color: #8b949e;
+      color: var(--fgColor-muted);
       cursor: pointer;
       font-size: 18px;
       line-height: 1;
     }
     .sb-comments-drawer-close:hover {
-      background: #21262d;
-      color: #c9d1d9;
+      background: var(--bgColor-muted);
+      color: var(--fgColor-default);
     }
 
     .sb-comments-drawer-body {
@@ -90,19 +92,19 @@ function injectStyles() {
     .sb-comments-drawer-loading {
       padding: 32px 20px;
       text-align: center;
-      color: #8b949e;
+      color: var(--fgColor-muted);
       font-size: 13px;
     }
 
     .sb-comments-drawer-empty {
       padding: 32px 20px;
       text-align: center;
-      color: #484f58;
+      color: var(--fgColor-muted);
       font-size: 13px;
     }
 
     .sb-comments-drawer-route-group {
-      border-bottom: 1px solid #21262d;
+      border-bottom: 1px solid var(--borderColor-muted);
     }
 
     .sb-comments-drawer-route-header {
@@ -110,23 +112,26 @@ function injectStyles() {
       align-items: center;
       gap: 6px;
       padding: 10px 20px;
-      background: #0d1117;
+      background: var(--bgColor-inset, var(--bgColor-default));
       font-size: 12px;
       font-weight: 600;
-      color: #8b949e;
+      color: var(--fgColor-muted);
       text-transform: none;
     }
 
     .sb-comments-drawer-route-path {
       font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
-      color: #58a6ff;
+      color: var(--fgColor-accent);
     }
 
     .sb-comments-drawer-route-count {
       margin-left: auto;
       font-size: 11px;
-      color: #484f58;
+      color: var(--fgColor-muted);
       font-weight: 400;
+      display: flex;
+      flex-wrap: nowrap;
+      min-width: max-content;
     }
 
     .sb-comments-drawer-comment {
@@ -142,14 +147,14 @@ function injectStyles() {
       font-family: inherit;
     }
     .sb-comments-drawer-comment:hover {
-      background: #21262d;
+      background: var(--bgColor-muted);
     }
 
     .sb-comments-drawer-comment-avatar {
       width: 24px;
       height: 24px;
       border-radius: 50%;
-      border: 1px solid #30363d;
+      border: 1px solid var(--borderColor-default);
       flex-shrink: 0;
     }
 
@@ -168,18 +173,18 @@ function injectStyles() {
     .sb-comments-drawer-comment-author {
       font-size: 12px;
       font-weight: 600;
-      color: #f0f6fc;
+      color: var(--fgColor-default);
     }
 
     .sb-comments-drawer-comment-time {
       font-size: 11px;
-      color: #484f58;
+      color: var(--fgColor-muted);
     }
 
     .sb-comments-drawer-comment-resolved {
       font-size: 10px;
-      color: #3fb950;
-      background: rgba(63, 185, 80, 0.1);
+      color: var(--fgColor-success);
+      background: var(--bgColor-success-muted, rgba(63, 185, 80, 0.1));
       border-radius: 999px;
       padding: 0 6px;
     }
@@ -187,7 +192,7 @@ function injectStyles() {
     .sb-comments-drawer-comment-text {
       font-size: 13px;
       line-height: 1.4;
-      color: #c9d1d9;
+      color: var(--fgColor-default);
       margin: 0;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -196,7 +201,7 @@ function injectStyles() {
 
     .sb-comments-drawer-comment-replies {
       font-size: 11px;
-      color: #8b949e;
+      color: var(--fgColor-muted);
       margin-top: 2px;
     }
   `
@@ -258,7 +263,10 @@ export async function openCommentsDrawer() {
   document.body.appendChild(backdrop)
   document.body.appendChild(drawer)
 
-  activeDrawer = { backdrop, drawer }
+  const cleanupBackdropTheme = applyTheme(backdrop)
+  const cleanupDrawerTheme = applyTheme(drawer)
+
+  activeDrawer = { backdrop, drawer, cleanupBackdropTheme, cleanupDrawerTheme }
 
   // Escape to close
   function onKeyDown(e) {
@@ -383,6 +391,8 @@ export function closeCommentsDrawer() {
   if (activeDrawer.onKeyDown) {
     window.removeEventListener('keydown', activeDrawer.onKeyDown, true)
   }
+  activeDrawer.cleanupBackdropTheme?.()
+  activeDrawer.cleanupDrawerTheme?.()
   activeDrawer.backdrop.remove()
   activeDrawer.drawer.remove()
   activeDrawer = null

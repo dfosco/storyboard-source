@@ -1,8 +1,8 @@
 /**
- * Comment composer — vanilla JS inline text input that appears at click position.
+ * Comment composer — Alpine.js inline text input that appears at click position.
  *
  * Positioned absolutely within the comment overlay. Submits to the comments API.
- * Coordinates are %-based relative to the content container.
+ * Themed with Primer CSS custom properties for light/dark mode support.
  */
 
 import { createComment } from '../api.js'
@@ -21,10 +21,10 @@ function injectStyles() {
       display: flex;
       flex-direction: column;
       width: 280px;
-      background: #161b22;
-      border: 1px solid #30363d;
+      background: var(--overlay-bgColor, var(--bgColor-default));
+      border: 1px solid var(--borderColor-default);
       border-radius: 10px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      box-shadow: var(--shadow-overlay, 0 8px 24px rgba(0, 0, 0, 0.3));
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
       overflow: hidden;
     }
@@ -40,13 +40,13 @@ function injectStyles() {
       width: 24px;
       height: 24px;
       border-radius: 50%;
-      border: 1px solid #30363d;
+      border: 1px solid var(--borderColor-default);
       flex-shrink: 0;
     }
 
     .sb-composer-username {
       font-size: 12px;
-      color: #8b949e;
+      color: var(--fgColor-muted);
       font-weight: 500;
     }
 
@@ -59,10 +59,10 @@ function injectStyles() {
       min-height: 60px;
       max-height: 160px;
       padding: 8px 10px;
-      background: #0d1117;
-      border: 1px solid #30363d;
+      background: var(--bgColor-inset, var(--bgColor-default));
+      border: 1px solid var(--borderColor-default);
       border-radius: 6px;
-      color: #c9d1d9;
+      color: var(--fgColor-default);
       font-size: 13px;
       font-family: inherit;
       line-height: 1.5;
@@ -71,11 +71,11 @@ function injectStyles() {
       box-sizing: border-box;
     }
     .sb-composer-textarea:focus {
-      border-color: #58a6ff;
-      box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+      border-color: var(--fgColor-accent);
+      box-shadow: 0 0 0 3px var(--borderColor-accent-muted, rgba(88, 166, 255, 0.15));
     }
     .sb-composer-textarea::placeholder {
-      color: #484f58;
+      color: var(--fgColor-muted);
     }
 
     .sb-composer-footer {
@@ -98,39 +98,30 @@ function injectStyles() {
 
     .sb-composer-btn-cancel {
       background: none;
-      color: #8b949e;
-      border-color: #30363d;
+      color: var(--fgColor-muted);
+      border-color: var(--borderColor-default);
     }
     .sb-composer-btn-cancel:hover {
-      background: #21262d;
-      color: #c9d1d9;
+      background: var(--bgColor-muted);
+      color: var(--fgColor-default);
     }
 
     .sb-composer-btn-submit {
-      background: #238636;
-      color: #fff;
+      background: var(--bgColor-success-emphasis);
+      color: var(--fgColor-onEmphasis);
     }
     .sb-composer-btn-submit:hover {
-      background: #2ea043;
+      filter: brightness(1.1);
     }
     .sb-composer-btn-submit:disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
 
-    .sb-composer-hint {
-      padding: 0 12px 8px;
-      font-size: 11px;
-      color: #484f58;
-    }
-    .sb-composer-hint kbd {
-      display: inline-block;
-      padding: 0 4px;
-      font-size: 10px;
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 3px;
-      background: rgba(255,255,255,0.06);
-      font-family: inherit;
+    .sb-composer-error {
+      padding: 4px 12px 8px;
+      font-size: 12px;
+      color: var(--fgColor-danger);
     }
   `
   document.head.appendChild(style)
@@ -155,94 +146,95 @@ export function showComposer(container, xPct, yPct, route, callbacks = {}) {
   composer.className = 'sb-composer'
   composer.style.left = `${xPct}%`
   composer.style.top = `${yPct}%`
-
-  // Offset so it doesn't cover the click point
   composer.style.transform = 'translate(12px, -50%)'
 
   composer.innerHTML = `
-    ${user ? `
-      <div class="sb-composer-header">
-        <img class="sb-composer-avatar" src="${user.avatarUrl}" alt="${user.login}" />
-        <span class="sb-composer-username">${user.login}</span>
+    <div x-data="sbComposer" @keydown.escape.prevent.stop="cancel()">
+      ${user ? `
+        <div class="sb-composer-header">
+          <img class="sb-composer-avatar" src="${user.avatarUrl}" alt="${user.login}" />
+          <span class="sb-composer-username">${user.login}</span>
+        </div>
+      ` : ''}
+      <div class="sb-composer-body">
+        <textarea class="sb-composer-textarea" placeholder="Leave a comment…"
+                  x-model="text"
+                  @keydown.meta.enter="submit()"
+                  @keydown.ctrl.enter="submit()"></textarea>
       </div>
-    ` : ''}
-    <div class="sb-composer-body">
-      <textarea class="sb-composer-textarea" placeholder="Leave a comment…" autofocus></textarea>
-    </div>
-    <div class="sb-composer-footer">
-      <button class="sb-composer-btn sb-composer-btn-cancel" data-action="cancel">Cancel</button>
-      <button class="sb-composer-btn sb-composer-btn-submit" data-action="submit">Comment</button>
+      <template x-if="error">
+        <div class="sb-composer-error" x-text="error"></div>
+      </template>
+      <div class="sb-composer-footer">
+        <button class="sb-composer-btn sb-composer-btn-cancel" @click="cancel()">Cancel</button>
+        <button class="sb-composer-btn sb-composer-btn-submit" :disabled="submitting"
+                @click="submit()" x-text="submitting ? 'Posting…' : 'Comment'">Comment</button>
+      </div>
     </div>
   `
 
   container.appendChild(composer)
 
-  const textarea = composer.querySelector('.sb-composer-textarea')
-  const submitBtn = composer.querySelector('[data-action="submit"]')
-
-  function destroy() {
-    composer.remove()
-  }
-
-  function cancel() {
-    destroy()
-    callbacks.onCancel?.()
-  }
-
-  async function submit() {
-    const text = textarea.value.trim()
-    if (!text) {
-      textarea.focus()
-      return
-    }
-
-    submitBtn.disabled = true
-    submitBtn.textContent = 'Posting…'
-
-    try {
-      const comment = await createComment(route, xPct, yPct, text)
-      destroy()
-      callbacks.onSubmit?.(comment)
-    } catch (err) {
-      submitBtn.disabled = false
-      submitBtn.textContent = 'Comment'
-      console.error('[storyboard] Failed to post comment:', err)
-      // Show inline error
-      let errEl = composer.querySelector('.sb-composer-error')
-      if (!errEl) {
-        errEl = document.createElement('div')
-        errEl.className = 'sb-composer-error'
-        errEl.style.cssText = 'padding: 4px 12px 8px; font-size: 12px; color: #f85149;'
-        composer.querySelector('.sb-composer-footer').before(errEl)
-      }
-      errEl.textContent = err.message
-    }
-  }
-
-  // Cancel button
-  composer.querySelector('[data-action="cancel"]').addEventListener('click', cancel)
-
-  // Submit button
-  submitBtn.addEventListener('click', submit)
-
-  // Keyboard: Cmd/Ctrl+Enter to submit, Escape to cancel
-  textarea.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-      e.preventDefault()
-      submit()
-    }
-    if (e.key === 'Escape') {
-      e.preventDefault()
-      e.stopPropagation()
-      cancel()
-    }
-  })
-
   // Stop click from propagating (prevents placing another composer)
   composer.addEventListener('click', (e) => e.stopPropagation())
 
+  function destroy() {
+    window.removeEventListener('keydown', onEscape, true)
+    composer.remove()
+  }
+
+  // Global Escape handler for when focus is outside the composer
+  function onEscape(e) {
+    if (e.key === 'Escape') {
+      e.preventDefault()
+      e.stopPropagation()
+      destroy()
+      callbacks.onCancel?.()
+    }
+  }
+  window.addEventListener('keydown', onEscape, true)
+
+  // Register Alpine component
+  if (!window.Alpine._sbComposerRegistered) {
+    window.Alpine.data('sbComposer', () => ({
+      text: '',
+      submitting: false,
+      error: null,
+
+      async submit() {
+        const val = this.text.trim()
+        if (!val) return
+
+        this.submitting = true
+        this.error = null
+
+        try {
+          const comment = await createComment(route, xPct, yPct, val)
+          destroy()
+          callbacks.onSubmit?.(comment)
+        } catch (err) {
+          this.error = err.message
+          this.submitting = false
+          console.error('[storyboard] Failed to post comment:', err)
+        }
+      },
+
+      cancel() {
+        destroy()
+        callbacks.onCancel?.()
+      },
+    }))
+    window.Alpine._sbComposerRegistered = true
+  }
+
+  // Initialize Alpine on the new DOM
+  window.Alpine.initTree(composer)
+
   // Focus textarea
-  requestAnimationFrame(() => textarea.focus())
+  requestAnimationFrame(() => {
+    const textarea = composer.querySelector('.sb-composer-textarea')
+    if (textarea) textarea.focus()
+  })
 
   return { el: composer, destroy }
 }

@@ -1,10 +1,11 @@
 /**
- * Auth modal — vanilla JS modal for entering a GitHub PAT.
+ * Auth modal — Alpine.js modal for entering a GitHub PAT.
  *
- * Styled to match the devtools dark theme. Uses the native <dialog> element.
+ * Themed with Primer CSS custom properties for light/dark mode support.
  */
 
 import { setToken, validateToken, clearToken, getCachedUser } from '../auth.js'
+import { applyTheme } from './themeBridge.js'
 
 const MODAL_ID = 'sb-auth-modal'
 const STYLE_ID = 'sb-auth-modal-style'
@@ -18,7 +19,7 @@ function injectStyles() {
       position: fixed;
       inset: 0;
       z-index: 100000;
-      background: rgba(0, 0, 0, 0.6);
+      background: var(--overlay-bgColor, rgba(0, 0, 0, 0.5));
       backdrop-filter: blur(4px);
       display: flex;
       align-items: center;
@@ -29,11 +30,11 @@ function injectStyles() {
     .sb-auth-modal {
       width: 420px;
       max-width: calc(100vw - 32px);
-      background: #161b22;
-      border: 1px solid #30363d;
+      background: var(--overlay-bgColor, var(--bgColor-default));
+      border: 1px solid var(--borderColor-default);
       border-radius: 12px;
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
-      color: #c9d1d9;
+      box-shadow: var(--shadow-overlay, 0 16px 48px rgba(0, 0, 0, 0.3));
+      color: var(--fgColor-default);
       overflow: hidden;
     }
 
@@ -42,14 +43,14 @@ function injectStyles() {
       align-items: center;
       justify-content: space-between;
       padding: 16px 20px;
-      border-bottom: 1px solid #21262d;
+      border-bottom: 1px solid var(--borderColor-muted);
     }
 
     .sb-auth-header h2 {
       margin: 0;
       font-size: 16px;
       font-weight: 600;
-      color: #f0f6fc;
+      color: var(--fgColor-default);
     }
 
     .sb-auth-close {
@@ -61,14 +62,14 @@ function injectStyles() {
       background: none;
       border: none;
       border-radius: 6px;
-      color: #8b949e;
+      color: var(--fgColor-muted);
       cursor: pointer;
       font-size: 18px;
       line-height: 1;
     }
     .sb-auth-close:hover {
-      background: #21262d;
-      color: #c9d1d9;
+      background: var(--bgColor-muted);
+      color: var(--fgColor-default);
     }
 
     .sb-auth-body {
@@ -78,12 +79,12 @@ function injectStyles() {
     .sb-auth-description {
       margin: 0 0 16px;
       font-size: 13px;
-      color: #8b949e;
+      color: var(--fgColor-muted);
       line-height: 1.5;
     }
 
     .sb-auth-description a {
-      color: #58a6ff;
+      color: var(--fgColor-accent);
       text-decoration: none;
     }
     .sb-auth-description a:hover {
@@ -95,47 +96,47 @@ function injectStyles() {
       margin-bottom: 6px;
       font-size: 13px;
       font-weight: 500;
-      color: #c9d1d9;
+      color: var(--fgColor-default);
     }
 
     .sb-auth-input {
       width: 100%;
       padding: 8px 12px;
-      background: #0d1117;
-      border: 1px solid #30363d;
+      background: var(--bgColor-inset, var(--bgColor-default));
+      border: 1px solid var(--borderColor-default);
       border-radius: 6px;
-      color: #c9d1d9;
+      color: var(--fgColor-default);
       font-size: 14px;
       font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
       outline: none;
       box-sizing: border-box;
     }
     .sb-auth-input:focus {
-      border-color: #58a6ff;
-      box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+      border-color: var(--fgColor-accent);
+      box-shadow: 0 0 0 3px var(--borderColor-accent-muted, rgba(88, 166, 255, 0.15));
     }
     .sb-auth-input::placeholder {
-      color: #484f58;
+      color: var(--fgColor-muted);
     }
 
     .sb-auth-scopes {
       margin: 12px 0 0;
       padding: 10px 12px;
-      background: #0d1117;
-      border: 1px solid #21262d;
+      background: var(--bgColor-inset, var(--bgColor-default));
+      border: 1px solid var(--borderColor-muted);
       border-radius: 6px;
       font-size: 12px;
-      color: #8b949e;
+      color: var(--fgColor-muted);
       line-height: 1.6;
     }
     .sb-auth-scopes code {
       display: inline-block;
       padding: 1px 5px;
-      background: rgba(110, 118, 129, 0.15);
+      background: var(--bgColor-muted);
       border-radius: 4px;
       font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
       font-size: 11px;
-      color: #c9d1d9;
+      color: var(--fgColor-default);
     }
 
     .sb-auth-footer {
@@ -144,7 +145,7 @@ function injectStyles() {
       justify-content: flex-end;
       gap: 8px;
       padding: 16px 20px;
-      border-top: 1px solid #21262d;
+      border-top: 1px solid var(--borderColor-muted);
     }
 
     .sb-auth-btn {
@@ -159,20 +160,20 @@ function injectStyles() {
     }
 
     .sb-auth-btn-cancel {
-      background: #21262d;
-      border-color: #30363d;
-      color: #c9d1d9;
+      background: var(--bgColor-muted);
+      border-color: var(--borderColor-default);
+      color: var(--fgColor-default);
     }
     .sb-auth-btn-cancel:hover {
-      background: #30363d;
+      background: var(--bgColor-neutral-muted, var(--bgColor-muted));
     }
 
     .sb-auth-btn-submit {
-      background: #238636;
-      color: #fff;
+      background: var(--bgColor-success-emphasis);
+      color: var(--fgColor-onEmphasis);
     }
     .sb-auth-btn-submit:hover {
-      background: #2ea043;
+      filter: brightness(1.1);
     }
     .sb-auth-btn-submit:disabled {
       opacity: 0.5;
@@ -182,11 +183,11 @@ function injectStyles() {
     .sb-auth-error {
       margin: 10px 0 0;
       padding: 8px 12px;
-      background: rgba(248, 81, 73, 0.1);
-      border: 1px solid rgba(248, 81, 73, 0.3);
+      background: var(--bgColor-danger-muted, rgba(248, 81, 73, 0.1));
+      border: 1px solid var(--borderColor-danger-muted, rgba(248, 81, 73, 0.3));
       border-radius: 6px;
       font-size: 13px;
-      color: #f85149;
+      color: var(--fgColor-danger);
     }
 
     .sb-auth-success {
@@ -200,17 +201,17 @@ function injectStyles() {
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      border: 2px solid #30363d;
+      border: 2px solid var(--borderColor-default);
     }
 
     .sb-auth-user-info {
       font-size: 14px;
-      color: #f0f6fc;
+      color: var(--fgColor-default);
     }
     .sb-auth-user-info span {
       display: block;
       font-size: 12px;
-      color: #3fb950;
+      color: var(--fgColor-success);
       margin-top: 2px;
     }
   `
@@ -226,7 +227,6 @@ export function openAuthModal() {
   injectStyles()
 
   return new Promise((resolve) => {
-    // Remove any existing modal
     const existing = document.getElementById(MODAL_ID)
     if (existing) existing.remove()
 
@@ -234,50 +234,56 @@ export function openAuthModal() {
     backdrop.id = MODAL_ID
     backdrop.className = 'sb-auth-backdrop'
 
-    const modal = document.createElement('div')
-    modal.className = 'sb-auth-modal'
-
-    modal.innerHTML = `
-      <div class="sb-auth-header">
-        <h2>Sign in for comments</h2>
-        <button class="sb-auth-close" data-action="close" aria-label="Close">×</button>
-      </div>
-      <div class="sb-auth-body">
-        <p class="sb-auth-description">
-          Enter a <a href="https://github.com/settings/tokens/new" target="_blank" rel="noopener">GitHub Personal Access Token</a>
-          to leave comments on this prototype. Your token is stored locally in your browser.
-        </p>
-        <label class="sb-auth-label" for="sb-auth-token-input">Personal Access Token</label>
-        <input class="sb-auth-input" id="sb-auth-token-input" type="password" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off" spellcheck="false" />
-        <div class="sb-auth-scopes">Required scopes: <code>repo</code> <code>read:user</code></div>
-        <div data-slot="feedback"></div>
-      </div>
-      <div class="sb-auth-footer">
-        <button class="sb-auth-btn sb-auth-btn-cancel" data-action="close">Cancel</button>
-        <button class="sb-auth-btn sb-auth-btn-submit" data-action="submit">Sign in</button>
+    backdrop.innerHTML = `
+      <div class="sb-auth-modal" x-data="sbAuthModal">
+        <div class="sb-auth-header">
+          <h2>Sign in for comments</h2>
+          <button class="sb-auth-close" @click="close()" aria-label="Close">×</button>
+        </div>
+        <div class="sb-auth-body">
+          <p class="sb-auth-description">
+            Enter a <a href="https://github.com/settings/tokens/new" target="_blank" rel="noopener">GitHub Personal Access Token</a>
+            to leave comments on this prototype. Your token is stored locally in your browser.
+          </p>
+          <label class="sb-auth-label" for="sb-auth-token-input">Personal Access Token</label>
+          <input class="sb-auth-input" id="sb-auth-token-input" type="password"
+                 placeholder="ghp_xxxxxxxxxxxx" autocomplete="off" spellcheck="false"
+                 x-model="token" @keydown.enter="submit()" />
+          <div class="sb-auth-scopes">Required scopes: <code>repo</code> <code>read:user</code></div>
+          <template x-if="error">
+            <div class="sb-auth-error" x-text="error"></div>
+          </template>
+          <template x-if="user">
+            <div class="sb-auth-success">
+              <img class="sb-auth-avatar" :src="user.avatarUrl" :alt="user.login" />
+              <div class="sb-auth-user-info">
+                <span x-text="user.login"></span>
+                <span>✓ Signed in</span>
+              </div>
+            </div>
+          </template>
+        </div>
+        <div class="sb-auth-footer">
+          <button class="sb-auth-btn sb-auth-btn-cancel" @click="close()">Cancel</button>
+          <button class="sb-auth-btn sb-auth-btn-submit" :disabled="submitting"
+                  @click="user ? done() : submit()" x-text="user ? 'Done' : (submitting ? 'Validating…' : 'Sign in')">
+            Sign in
+          </button>
+        </div>
       </div>
     `
 
-    backdrop.appendChild(modal)
     document.body.appendChild(backdrop)
 
-    const input = modal.querySelector('#sb-auth-token-input')
-    const submitBtn = modal.querySelector('[data-action="submit"]')
-    const feedbackSlot = modal.querySelector('[data-slot="feedback"]')
-
-    function close(result) {
-      backdrop.remove()
-      resolve(result)
-    }
+    const cleanupTheme = applyTheme(backdrop)
 
     // Close on backdrop click
     backdrop.addEventListener('click', (e) => {
-      if (e.target === backdrop) close(null)
-    })
-
-    // Close buttons
-    modal.querySelectorAll('[data-action="close"]').forEach((btn) => {
-      btn.addEventListener('click', () => close(null))
+      if (e.target === backdrop) {
+        cleanupTheme()
+        backdrop.remove()
+        resolve(null)
+      }
     })
 
     // Escape key
@@ -286,56 +292,65 @@ export function openAuthModal() {
         e.preventDefault()
         e.stopPropagation()
         window.removeEventListener('keydown', onKeyDown, true)
-        close(null)
+        cleanupTheme()
+        backdrop.remove()
+        resolve(null)
       }
     }
     window.addEventListener('keydown', onKeyDown, true)
 
-    // Submit
-    async function submit() {
-      const token = input.value.trim()
-      if (!token) {
-        input.focus()
-        return
-      }
+    // Register Alpine component
+    if (!window.Alpine._sbAuthRegistered) {
+      window.Alpine.data('sbAuthModal', () => ({
+        token: '',
+        submitting: false,
+        error: null,
+        user: null,
 
-      submitBtn.disabled = true
-      submitBtn.textContent = 'Validating…'
-      feedbackSlot.innerHTML = ''
+        async submit() {
+          const val = this.token.trim()
+          if (!val) return
 
-      try {
-        const user = await validateToken(token)
-        setToken(token)
+          this.submitting = true
+          this.error = null
 
-        feedbackSlot.innerHTML = `
-          <div class="sb-auth-success">
-            <img class="sb-auth-avatar" src="${user.avatarUrl}" alt="${user.login}" />
-            <div class="sb-auth-user-info">
-              ${user.login}
-              <span>✓ Signed in</span>
-            </div>
-          </div>
-        `
-        submitBtn.textContent = 'Done'
-        submitBtn.disabled = false
-        submitBtn.onclick = () => {
+          try {
+            const user = await validateToken(val)
+            setToken(val)
+            this.user = user
+          } catch (err) {
+            this.error = err.message
+          } finally {
+            this.submitting = false
+          }
+        },
+
+        done() {
           window.removeEventListener('keydown', onKeyDown, true)
-          close(user)
-        }
-      } catch (err) {
-        feedbackSlot.innerHTML = `<div class="sb-auth-error">${err.message}</div>`
-        submitBtn.disabled = false
-        submitBtn.textContent = 'Sign in'
-      }
+          cleanupTheme()
+          const user = this.user
+          backdrop.remove()
+          resolve(user)
+        },
+
+        close() {
+          window.removeEventListener('keydown', onKeyDown, true)
+          cleanupTheme()
+          backdrop.remove()
+          resolve(null)
+        },
+      }))
+      window.Alpine._sbAuthRegistered = true
     }
 
-    submitBtn.addEventListener('click', submit)
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') submit()
-    })
+    // Initialize Alpine on the new DOM
+    window.Alpine.initTree(backdrop)
 
-    // Auto-focus
-    requestAnimationFrame(() => input.focus())
+    // Auto-focus the input
+    requestAnimationFrame(() => {
+      const input = backdrop.querySelector('#sb-auth-token-input')
+      if (input) input.focus()
+    })
   })
 }
 

@@ -14,5 +14,8 @@
   "exports": {
     ".": "./src/index.js",
     "./comments": "./src/comments/index.js"
+  },
+  "dependencies": {
+    "alpinejs": "^3.15.8"
   }
 }
