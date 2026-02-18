@@ -1,4 +1,4 @@
-import { init, loadScene, sceneExists, loadRecord, findRecord, deepMerge } from './loader.js'
+import { init, loadScene, listScenes, sceneExists, loadRecord, findRecord, deepMerge } from './loader.js'
 
 const makeIndex = () => ({
   scenes: {
@@ -142,6 +142,24 @@ describe('sceneExists', () => {
   it('is case-insensitive', () => {
     expect(sceneExists('dashboard')).toBe(true)
     expect(sceneExists('DASHBOARD')).toBe(true)
+  })
+})
+
+describe('listScenes', () => {
+  it('returns all scene names', () => {
+    const names = listScenes()
+    expect(names).toContain('default')
+    expect(names).toContain('Dashboard')
+    expect(names).toContain('empty')
+  })
+
+  it('returns an array', () => {
+    expect(Array.isArray(listScenes())).toBe(true)
+  })
+
+  it('returns empty array when no scenes registered', () => {
+    init({ scenes: {}, objects: {}, records: {} })
+    expect(listScenes()).toEqual([])
   })
 })
 

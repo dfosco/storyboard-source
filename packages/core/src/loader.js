@@ -117,6 +117,14 @@ function resolveRefs(node, seen = new Set()) {
 }
 
 /**
+ * Returns the names of all registered scenes.
+ * @returns {string[]}
+ */
+export function listScenes() {
+  return Object.keys(dataIndex.scenes)
+}
+
+/**
  * Checks whether a scene file exists for the given name.
  * @param {string} sceneName - e.g., "Overview"
  * @returns {boolean}

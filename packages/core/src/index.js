@@ -9,7 +9,7 @@
 export { init } from './loader.js'
 
 // Scene & record loading
-export { loadScene, sceneExists, loadRecord, findRecord, deepMerge } from './loader.js'
+export { loadScene, listScenes, sceneExists, loadRecord, findRecord, deepMerge } from './loader.js'
 
 // Dot-notation path utilities
 export { getByPath, setByPath, deepClone } from './dotPath.js'
@@ -30,3 +30,6 @@ export { subscribeToHash, getHashSnapshot } from './hashSubscribe.js'
 // Dev tools (vanilla JS, framework-agnostic)
 export { mountDevTools } from './devtools.js'
 export { mountSceneDebug } from './sceneDebug.js'
+
+// Viewfinder utilities
+export { hash, resolveSceneRoute } from './viewfinder.js'

@@ -37,7 +37,7 @@ export default defineConfig(({ command }) => {
             },
         },
     ],
-    server: { port: 1234 },
+    server: { port: 1234, fs: { allow: ['..'] } },
     optimizeDeps: {
         include: ['reshaped', '@primer/react', '@primer/octicons-react'],
     },

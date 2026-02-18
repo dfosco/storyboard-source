@@ -72,6 +72,38 @@ jobs:
           git commit -m "Deploy preview: $FOLDER @ $(echo $GITHUB_SHA | head -c 7)"
           git push origin gh-pages
 
+      - name: Generate branch manifest
+        run: |
+          set -e
+          git fetch origin gh-pages:gh-pages 2>/dev/null || true
+          DEPLOY_DIR=$(mktemp -d)
+          git worktree add "$DEPLOY_DIR" gh-pages
+
+          cd "$DEPLOY_DIR"
+
+          echo '[' > branches.json
+          FIRST=true
+          for dir in branch--*/; do
+            [ -d "$dir" ] || continue
+            FOLDER="${dir%/}"
+            BRANCH="${FOLDER#branch--}"
+            if [ "$FIRST" = true ]; then
+              FIRST=false
+            else
+              echo ',' >> branches.json
+            fi
+            printf '  {"folder":"%s","branch":"%s"}' "$FOLDER" "$BRANCH" >> branches.json
+          done
+          echo '' >> branches.json
+          echo ']' >> branches.json
+
+          git add branches.json
+          git diff --cached --quiet && echo "Manifest unchanged" && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update branch manifest"
+          git push origin gh-pages
+
       - name: Print preview URL
         run: |
           echo "## 🔗 Branch Preview" >> "$GITHUB_STEP_SUMMARY"
@@ -109,3 +141,30 @@ jobs:
           else
             echo "No preview folder found for: $FOLDER"
           fi
+
+      - name: Generate branch manifest
+        run: |
+          set -e
+
+          echo '[' > branches.json
+          FIRST=true
+          for dir in branch--*/; do
+            [ -d "$dir" ] || continue
+            FOLDER="${dir%/}"
+            BRANCH="${FOLDER#branch--}"
+            if [ "$FIRST" = true ]; then
+              FIRST=false
+            else
+              echo ',' >> branches.json
+            fi
+            printf '  {"folder":"%s","branch":"%s"}' "$FOLDER" "$BRANCH" >> branches.json
+          done
+          echo '' >> branches.json
+          echo ']' >> branches.json
+
+          git add branches.json
+          git diff --cached --quiet && echo "Manifest unchanged" && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update branch manifest"
+          git push origin gh-pages

@@ -155,6 +155,7 @@ const STYLES = `
 const BEAKER_ICON = '<svg viewBox="0 0 16 16"><path d="M5 5.782V2.5h-.25a.75.75 0 010-1.5h6.5a.75.75 0 010 1.5H11v3.282l3.666 5.86C15.619 13.04 14.552 15 12.46 15H3.54c-2.092 0-3.159-1.96-2.206-3.358zM6.5 2.5v3.782a.75.75 0 01-.107.384L3.2 12.5h9.6l-3.193-5.834A.75.75 0 019.5 6.282V2.5z"/></svg>'
 const INFO_ICON = '<svg viewBox="0 0 16 16"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/></svg>'
 const SYNC_ICON = '<svg viewBox="0 0 16 16"><path d="M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z"/></svg>'
+const VIEWFINDER_ICON = '<svg viewBox="0 0 16 16"><path d="M8.5 1.75a.75.75 0 0 0-1.5 0V3H1.75a.75.75 0 0 0 0 1.5H3v6H1.75a.75.75 0 0 0 0 1.5H7v1.25a.75.75 0 0 0 1.5 0V12h5.25a.75.75 0 0 0 0-1.5H12v-6h1.75a.75.75 0 0 0 0-1.5H8.5Zm2 8.75h-5a.25.25 0 0 1-.25-.25v-4.5A.25.25 0 0 1 5.5 5.5h5a.25.25 0 0 1 .25.25v4.5a.25.25 0 0 1-.25.25Z"/></svg>'
 const X_ICON = '<svg viewBox="0 0 16 16"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"/></svg>'
 
 function getSceneName() {
@@ -197,6 +198,10 @@ export function mountDevTools(options = {}) {
   const menu = document.createElement('div')
   menu.className = 'sb-devtools-menu'
 
+  const viewfinderBtn = document.createElement('button')
+  viewfinderBtn.className = 'sb-devtools-menu-item'
+  viewfinderBtn.innerHTML = `${VIEWFINDER_ICON} Viewfinder`
+
   const showInfoBtn = document.createElement('button')
   showInfoBtn.className = 'sb-devtools-menu-item'
   showInfoBtn.innerHTML = `${INFO_ICON} Show scene info`
@@ -209,6 +214,7 @@ export function mountDevTools(options = {}) {
   hint.className = 'sb-devtools-hint'
   hint.innerHTML = 'Press <code>⌘ + .</code> to hide'
 
+  menu.appendChild(viewfinderBtn)
   menu.appendChild(showInfoBtn)
   menu.appendChild(resetBtn)
   menu.appendChild(hint)
@@ -290,6 +296,12 @@ export function mountDevTools(options = {}) {
   })
 
   showInfoBtn.addEventListener('click', openPanel)
+
+  viewfinderBtn.addEventListener('click', () => {
+    menuOpen = false
+    menu.classList.remove('open')
+    window.location.href = (document.querySelector('base')?.href || '/') + 'viewfinder'
+  })
 
   resetBtn.addEventListener('click', () => {
     window.location.hash = ''
