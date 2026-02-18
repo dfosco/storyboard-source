@@ -37,9 +37,26 @@ export default defineConfig(({ command }) => {
             },
         },
     ],
-    server: { port: 1234, fs: { allow: ['..'] } },
+    server: {
+        port: 1234,
+        fs: { allow: ['..'] },
+        watch: {
+            ignored: ['**/.worktrees/**'],
+        },
+        warmup: {
+            clientFiles: [
+                'src/index.jsx',
+                'src/pages/**/*.jsx',
+                'src/components/**/*.jsx',
+                'src/templates/**/*.jsx',
+                'packages/react/src/**/*.{js,jsx}',
+                'packages/react-primer/src/**/*.{js,jsx}',
+                'packages/core/src/**/*.js',
+            ],
+        },
+    },
     optimizeDeps: {
-        include: ['reshaped', '@primer/react', '@primer/octicons-react'],
+        include: ['reshaped', '@primer/react', '@primer/octicons-react', 'prop-types'],
     },
     build: {
         // @primer/react barrel export can't be tree-shaken below ~664 KB.
@@ -63,7 +80,8 @@ export default defineConfig(({ command }) => {
             plugins: [
                 postcssGlobalData({
                     files: globSync(
-                        'node_modules/@primer/primitives/dist/css/**/*.css'
+                        'node_modules/@primer/primitives/dist/css/**/*.css',
+                        { ignore: ['**/themes/**'] }
                     ),
                 }),
                 postcssPresetEnv({
