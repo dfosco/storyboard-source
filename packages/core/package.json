@@ -13,9 +13,11 @@
   ],
   "exports": {
     ".": "./src/index.js",
-    "./comments": "./src/comments/index.js"
+    "./comments": "./src/comments/index.js",
+    "./comments/ui/comments.css": "./src/comments/ui/comments.css"
   },
   "dependencies": {
-    "alpinejs": "^3.15.8"
+    "alpinejs": "^3.15.8",
+    "tachyons": "^4.12.0"
   }
 }
