@@ -107,6 +107,14 @@ export default function storyboardDataPlugin() {
     name: 'storyboard-data',
     enforce: 'pre',
 
+    config() {
+      return {
+        optimizeDeps: {
+          exclude: ['@dfosco/storyboard-react'],
+        },
+      }
+    },
+
     configResolved(config) {
       root = config.root
     },
