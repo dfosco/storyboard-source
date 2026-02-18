@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect, useMemo } from 'react'
-import { hash, resolveSceneRoute } from '@dfosco/storyboard-core'
+import { hash, resolveSceneRoute, getSceneMeta } from '@dfosco/storyboard-core'
 import { Link } from 'react-router-dom'
 import styles from './Viewfinder.module.css'
 
@@ -124,16 +124,29 @@ export default function Viewfinder({ scenes = {}, pageModules = {}, basePath, ti
         <section>
           <h2 className={styles.sectionTitle}>Scenes</h2>
           <div className={styles.grid}>
-            {sceneNames.map((name) => (
-              <Link key={name} to={resolveSceneRoute(name, knownRoutes)} className={styles.card}>
-                <div className={styles.thumbnail}>
-                  <PlaceholderGraphic name={name} />
-                </div>
-                <div className={styles.cardBody}>
-                  <p className={styles.sceneName}>{name}</p>
-                </div>
-              </Link>
-            ))}
+            {sceneNames.map((name) => {
+              const meta = getSceneMeta(name)
+              return (
+                <Link key={name} to={resolveSceneRoute(name, knownRoutes)} className={styles.card}>
+                  <div className={styles.thumbnail}>
+                    <PlaceholderGraphic name={name} />
+                  </div>
+                  <div className={styles.cardBody}>
+                    <p className={styles.sceneName}>{name}</p>
+                    {meta?.author && (
+                      <div className={styles.author}>
+                        <img
+                          src={`https://github.com/${meta.author}.png?size=32`}
+                          alt={meta.author}
+                          className={styles.authorAvatar}
+                        />
+                        <span className={styles.authorName}>{meta.author}</span>
+                      </div>
+                    )}
+                  </div>
+                </Link>
+              )
+            })}
           </div>
         </section>
       )}

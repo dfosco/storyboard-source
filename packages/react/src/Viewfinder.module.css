@@ -109,3 +109,21 @@
   margin: 4px 0 0;
   font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 }
+
+.author {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.authorAvatar {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+}
+
+.authorName {
+  font-size: 12px;
+  color: var(--fgColor-muted, #848d97);
+}

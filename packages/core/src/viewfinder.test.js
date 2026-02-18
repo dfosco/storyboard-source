@@ -1,5 +1,5 @@
 import { init } from './loader.js'
-import { hash, resolveSceneRoute } from './viewfinder.js'
+import { hash, resolveSceneRoute, getSceneMeta } from './viewfinder.js'
 
 const makeIndex = () => ({
   scenes: {
@@ -8,6 +8,9 @@ const makeIndex = () => ({
     'custom-route': { route: 'Overview', title: 'Custom' },
     'absolute-route': { route: '/Forms', title: 'Absolute' },
     'no-route': { title: 'No route key' },
+    'meta-route': { sceneMeta: { route: 'Repositories' }, title: 'Meta Route' },
+    'meta-author': { sceneMeta: { author: 'dfosco' }, title: 'With Author' },
+    'meta-both': { sceneMeta: { route: '/Overview', author: 'octocat' }, title: 'Both' },
   },
   objects: {},
   records: {},
@@ -83,5 +86,40 @@ describe('resolveSceneRoute', () => {
       records: {},
     })
     expect(resolveSceneRoute('has spaces', [])).toBe('/?scene=has%20spaces')
+  })
+
+  it('uses sceneMeta.route when no route matches', () => {
+    expect(resolveSceneRoute('meta-route', routes)).toBe('/Repositories?scene=meta-route')
+  })
+
+  it('uses sceneMeta.route with absolute path', () => {
+    expect(resolveSceneRoute('meta-both', routes)).toBe('/Overview?scene=meta-both')
+  })
+
+  it('prefers sceneMeta.route over top-level route key', () => {
+    init({
+      scenes: { conflict: { route: 'Forms', sceneMeta: { route: 'Dashboard' } } },
+      objects: {},
+      records: {},
+    })
+    expect(resolveSceneRoute('conflict', [])).toBe('/Dashboard?scene=conflict')
+  })
+})
+
+describe('getSceneMeta', () => {
+  it('returns sceneMeta when present', () => {
+    expect(getSceneMeta('meta-author')).toEqual({ author: 'dfosco' })
+  })
+
+  it('returns sceneMeta with both fields', () => {
+    expect(getSceneMeta('meta-both')).toEqual({ route: '/Overview', author: 'octocat' })
+  })
+
+  it('returns null when no sceneMeta', () => {
+    expect(getSceneMeta('default')).toBeNull()
+  })
+
+  it('returns null for nonexistent scene', () => {
+    expect(getSceneMeta('nonexistent')).toBeNull()
   })
 })
