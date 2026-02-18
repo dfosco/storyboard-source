@@ -1,8 +1,11 @@
 {
   "sceneMeta": {
-    "route": "/example"
+    "route": "/example",
+    "author": "dfosco"
   },
-  "navigation": { "$ref": "navigation" },
+  "navigation": {
+    "$ref": "navigation"
+  },
   "user": {
     "name": "John Doe",
     "username": "johndoe",
@@ -18,7 +21,10 @@
       "id": 1,
       "name": "primer-react",
       "description": "React components for the Primer Design System",
-      "owner": { "name": "GitHub", "avatar": "https://avatars.githubusercontent.com/u/9919?v=4" },
+      "owner": {
+        "name": "GitHub",
+        "avatar": "https://avatars.githubusercontent.com/u/9919?v=4"
+      },
       "stars": 2500,
       "issues": 42
     },
@@ -26,7 +32,10 @@
       "id": 2,
       "name": "storyboard",
       "description": "Prototyping meta-framework",
-      "owner": { "name": "Jane Doe", "avatar": "https://avatars.githubusercontent.com/u/1?v=4" },
+      "owner": {
+        "name": "Jane Doe",
+        "avatar": "https://avatars.githubusercontent.com/u/1?v=4"
+      },
       "stars": 128,
       "issues": 7
     }
