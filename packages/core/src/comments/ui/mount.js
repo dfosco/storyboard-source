@@ -63,30 +63,31 @@ function injectStyles() {
     .sb-comment-pin {
       position: absolute;
       z-index: 100000;
-      width: 28px;
-      height: 28px;
-      margin-left: -14px;
-      margin-top: -14px;
+      width: 32px;
+      height: 32px;
+      margin-left: -16px;
+      margin-top: -16px;
       border-radius: 50%;
-      background: #238636;
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 700;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: #161b22;
+      border: 3px solid hsl(var(--pin-hue, 140), 60%, 50%);
       cursor: pointer;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
       pointer-events: auto;
       transition: transform 100ms ease;
+      overflow: hidden;
+    }
+    .sb-comment-pin img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
     }
     .sb-comment-pin:hover {
       transform: scale(1.15);
     }
     .sb-comment-pin[data-resolved="true"] {
-      background: #8b949e;
+      border-color: #8b949e;
       opacity: 0.5;
     }
   `
@@ -145,7 +146,19 @@ function renderPin(ov, comment, index) {
   pin.className = 'sb-comment-pin'
   pin.style.left = `${comment.meta?.x ?? 0}%`
   pin.style.top = `${comment.meta?.y ?? 0}%`
-  pin.textContent = index + 1
+
+  // Rotate hue by index (golden angle ≈ 137.5° gives good distribution)
+  const hue = (index * 137.5) % 360
+  pin.style.setProperty('--pin-hue', String(Math.round(hue)))
+
+  // Show author avatar instead of number
+  if (comment.author?.avatarUrl) {
+    const img = document.createElement('img')
+    img.src = comment.author.avatarUrl
+    img.alt = comment.author.login ?? ''
+    pin.appendChild(img)
+  }
+
   if (comment.meta?.resolved) pin.setAttribute('data-resolved', 'true')
   pin.title = `${comment.author?.login ?? 'unknown'}: ${comment.text?.slice(0, 80) ?? ''}`
 
