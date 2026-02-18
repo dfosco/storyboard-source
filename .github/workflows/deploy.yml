@@ -62,6 +62,7 @@ jobs:
       - name: Generate branch manifest
         run: |
           set -e
+          git worktree prune
           git fetch origin gh-pages:gh-pages 2>/dev/null || true
           DEPLOY_DIR=$(mktemp -d)
           git worktree add "$DEPLOY_DIR" gh-pages

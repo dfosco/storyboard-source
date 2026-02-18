@@ -20,7 +20,7 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org
 
-      - run: npm ci
+      - run: npm ci --legacy-peer-deps
 
       - name: Create release PR or publish
         uses: changesets/action@v1
