@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { ActionMenu, ActionList } from '@primer/react'
 import { loadScene } from '@dfosco/storyboard-core'
-import { BeakerIcon, InfoIcon, SyncIcon, XIcon } from '@primer/octicons-react'
+import { BeakerIcon, InfoIcon, SyncIcon, XIcon, ScreenFullIcon } from '@primer/octicons-react'
 import styles from './DevTools.module.css'
 
 function getSceneName() {
@@ -52,6 +52,10 @@ export default function DevTools() {
 
   const handleResetParams = useCallback(() => {
     window.location.hash = ''
+  }, [])
+
+  const handleViewfinder = useCallback(() => {
+    window.location.href = (document.querySelector('base')?.href || '/') + 'viewfinder'
   }, [])
 
   if (!visible) return null
@@ -105,6 +109,12 @@ export default function DevTools() {
           </ActionMenu.Anchor>
           <ActionMenu.Overlay align="center" side="outside-top" sideOffset={16}>
             <ActionList>
+              <ActionList.Item onSelect={handleViewfinder}>
+                <ActionList.LeadingVisual>
+                  <ScreenFullIcon size={16} />
+                </ActionList.LeadingVisual>
+                See viewfinder
+              </ActionList.Item>
               <ActionList.Item onSelect={handleShowSceneInfo}>
                 <ActionList.LeadingVisual>
                   <InfoIcon size={16} />
