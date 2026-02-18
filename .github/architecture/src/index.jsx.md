@@ -10,54 +10,42 @@ importance: high
 
 ## Goal
 
-The application entry point. It mounts the React component tree into the DOM, wrapping everything in `StrictMode`, Primer's `ThemeProvider` (set to `auto` color mode), and `BaseStyles`. It creates the React Router instance via `createBrowserRouter` with routes from `@generouted/react-router` for automatic route-level code splitting. It installs the hash-preserving navigation interceptor, the hide-param listener, history sync, and mounts dev tools in development mode.
-
-This file also imports the global CSS reset (`reset.css`) and shared styles (`globals.css`) that apply across the entire app. Note that only Primer is loaded globally — other design systems (e.g., Reshaped) are imported per-page within their route modules, so they only load when the user navigates to those pages.
+Application entry point. Creates the React root, sets up the router, installs framework-level integrations (hash preserver, hide param listener, history sync, devtools, comments), and renders the app wrapped in Primer's `ThemeProvider` with `colorMode="auto"`.
 
 ## Composition
 
-The full render tree:
-
-```jsx
-const router = createBrowserRouter(routes, {
-    basename: import.meta.env.BASE_URL,
-})
+```js
+const router = createBrowserRouter(routes, { basename: import.meta.env.BASE_URL })
 
 installHashPreserver(router, import.meta.env.BASE_URL)
 installHideParamListener()
 installHistorySync()
-if (import.meta.env.DEV) mountDevTools()
+initCommentsConfig(storyboardConfig)
+mountDevTools()
+mountComments()
 
 root.render(
-    <StrictMode>
-        <ThemeProvider colorMode="auto">
-            <BaseStyles>
-                <ColorModeSwitcher />
-                <RouterProvider router={router} />
-            </BaseStyles>
-        </ThemeProvider>
-    </StrictMode>
+  <StrictMode>
+    <ThemeProvider colorMode="auto">
+      <BaseStyles>
+        <ColorModeSwitcher />
+        <RouterProvider router={router} />
+      </BaseStyles>
+    </ThemeProvider>
+  </StrictMode>
 )
 ```
 
-- `ThemeProvider` is set to `colorMode="auto"` — it follows the system preference by default, switchable at runtime via `ColorModeSwitcher`.
-- `RouterProvider` renders the Generouted route tree from `src/pages/`. Routes are lazy-loaded via `@generouted/react-router`, meaning each page module is code-split into its own chunk and loaded on-demand. The root layout is [`src/pages/_app.jsx`](./pages/_app.jsx.md).
-- `installHashPreserver()` is called once at startup. It intercepts all internal `<a>` clicks at the document level and wraps `router.navigate()` — preventing default browser navigation (which causes full page reloads) and preserving URL hash params across all navigations (both link clicks and programmatic `navigate()` calls).
-- `installHideParamListener()` installs a listener that hides specified URL params from the address bar while keeping them in the hash state.
-- `installHistorySync()` synchronizes storyboard state with browser history.
-- `mountDevTools()` is only called in development mode — it mounts a floating dev tools panel.
-- `reset.css` and `globals.css` are imported as side effects for global styles.
+Integrations are installed before render to ensure they're ready when components mount.
 
 ## Dependencies
 
-- `react`, `react-dom/client` — React 19 root API (`createRoot`)
-- `react-router-dom` — `RouterProvider`, `createBrowserRouter`
-- `@generouted/react-router` — `routes` (auto-generated from `src/pages/`, lazy-loaded for code splitting)
+- [`packages/react/src/hashPreserver.js`](../packages/react/src/hashPreserver.js.md) — `installHashPreserver`
+- [`packages/core/src/index.js`](../packages/core/src/index.js.md) — `installHideParamListener`, `installHistorySync`, `mountDevTools`
+- `@generouted/react-router` — `routes` for file-based routing
 - `@primer/react` — `ThemeProvider`, `BaseStyles`
-- `src/components/ColorModeSwitcher.jsx` — Global theme toggle
-- [`@dfosco/storyboard-react/hash-preserver`](../packages/react/src/hashPreserver.js.md) — `installHashPreserver` navigation interceptor (from `packages/react`)
-- [`@dfosco/storyboard-core`](../packages/core/src/index.js.md) — `installHideParamListener`, `installHistorySync`, `mountDevTools` (from `packages/core`)
+- `storyboard.config.json` — Comments configuration
 
 ## Dependents
 
-Referenced by `index.html` as the app entry point via `<script type="module" src="/src/index.jsx">`. No other files import this module.
+- [`index.html`](../index.html) — Script entry point (`<script type="module" src="/src/index.jsx">`)

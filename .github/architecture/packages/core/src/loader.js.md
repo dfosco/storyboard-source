@@ -10,70 +10,63 @@ importance: high
 
 ## Goal
 
-The data loader is the heart of the storyboard data system. It manages a module-level **data index** (scenes, objects, records) and provides functions to initialize that index, load scene files with full `$ref` / `$global` resolution, and retrieve record collections. All functions are framework-agnostic and have zero npm dependencies.
+The loader is the heart of the storyboard data system. It manages a module-level data index (scenes, objects, records) that is seeded at app startup via `init()`, and provides functions to load and resolve scene data with `$ref` and `$global` references. Scenes are the primary data context for pages — they compose objects into a complete data shape that components consume.
 
-The index is seeded once at app startup via `init()`, typically called automatically by the Vite data plugin's generated virtual module. After initialization, `loadScene()` recursively resolves references, merges globals, and returns a deep-cloned result that is safe from consumer mutation.
+The loader is framework-agnostic with zero npm dependencies. It supports case-insensitive scene lookup, circular `$ref` detection, deep merging of `$global` data, and returns `structuredClone`d data to prevent consumer mutation of the index.
 
 ## Composition
 
-### Module state
+**`init(index)`** — Seeds the data index. Called once at startup by the Vite data plugin's virtual module.
 
 ```js
-let dataIndex = { scenes: {}, objects: {}, records: {} }
+export function init(index) {
+  if (!index || typeof index !== 'object') {
+    throw new Error('[storyboard-core] init() requires { scenes, objects, records }')
+  }
+  dataIndex = {
+    scenes: index.scenes || {},
+    objects: index.objects || {},
+    records: index.records || {},
+  }
+}
 ```
 
-A singleton holding all pre-parsed data files, populated by `init()`.
+**`loadScene(sceneName)`** — Loads a scene and resolves `$global` (root-level merges) and `$ref` (inline object replacement). Returns a `structuredClone` to prevent mutation.
 
-### Exported functions
-
-| Function | Signature | Purpose |
-|----------|-----------|---------|
-| `init` | `(index: { scenes, objects, records }) → void` | Seeds the data index. Throws if argument is not an object. |
-| `loadScene` | `(sceneName?: string) → object` | Loads a scene by name (default: `'default'`). Resolves `$global` merges and `$ref` replacements. Returns a `structuredClone`. |
-| `sceneExists` | `(sceneName: string) → boolean` | Case-insensitive check for scene existence. |
-| `loadRecord` | `(recordName: string) → Array` | Returns a cloned array from the records index. Throws if not found or not an array. |
-| `findRecord` | `(recordName: string, id: string) → object\|null` | Finds a single entry by `id` within a record collection. |
-| `deepMerge` | `(target, source) → object` | Deep merges two objects; source wins. Arrays are replaced, not concatenated. |
-
-### Internal helpers
-
-| Function | Purpose |
-|----------|---------|
-| `loadDataFile(name, type?)` | Looks up a data file by name in the index. Falls back to case-insensitive search for scenes. |
-| `resolveRefs(node, seen?)` | Recursively walks a data tree and replaces `{ "$ref": "name" }` nodes with the referenced object data. Detects circular refs via a `Set`. |
-
-### Scene loading flow
-
+```js
+export function loadScene(sceneName = 'default') {
+  // ... loads scene, handles $global merge, resolves $ref, clones
+  return structuredClone(sceneData)
+}
 ```
-loadScene("default")
-  → loadDataFile("default", "scenes")
-  → process $global: merge each named object into root
-  → resolveRefs(): replace $ref nodes recursively
-  → structuredClone() for mutation safety
-```
+
+**`deepMerge(target, source)`** — Deep merges two objects. Source wins conflicts; arrays are replaced, not concatenated.
+
+**`sceneExists(sceneName)`** — Case-insensitive check for scene existence.
+
+**`listScenes()`** — Returns all registered scene names.
+
+**`loadRecord(recordName)`** / **`findRecord(recordName, id)`** — Load record collections (arrays) and find individual entries by id. Both return clones.
+
+Internal helpers:
+- `loadDataFile(name, type)` — Resolves a data file from the index with case-insensitive fallback for scenes
+- `resolveRefs(node, seen)` — Recursively resolves `$ref` objects with circular dependency detection
 
 ## Dependencies
 
-None — this module has no imports. It is entirely self-contained.
+No external dependencies. Pure JavaScript with no imports.
 
 ## Dependents
 
-**Direct (internal) imports:**
-
-- [`packages/core/src/index.js`](./index.js.md) — re-exports `init`, `loadScene`, `sceneExists`, `loadRecord`, `findRecord`, `deepMerge`
-- `packages/core/src/devtools.js` — `import { loadScene } from './loader.js'`
-- `packages/core/src/sceneDebug.js` — `import { loadScene } from './loader.js'`
-
-**Indirect consumers** (via `@dfosco/storyboard-core` barrel):
-
-- [`packages/react/src/context.jsx`](../../react/src/context.jsx.md) — `loadScene`, `sceneExists`, `findRecord`, `deepMerge`
-- [`packages/react/src/hooks/useRecord.js`](../../react/src/hooks/useRecord.js.md) — `loadRecord`
-- [`packages/react/src/vite/data-plugin.js`](../../react/src/vite/data-plugin.js.md) — generates call to `init`
-- [`packages/react-primer/src/SceneDebug.jsx`](../../react-primer/src/SceneDebug.jsx.md) — `loadScene`
-- [`packages/react-primer/src/DevTools/DevTools.jsx`](../../react-primer/src/DevTools/DevTools.jsx.md) — `loadScene`
+- [`packages/core/src/index.js`](./index.js.md) — Re-exports all public functions
+- [`packages/core/src/devtools.js`](./devtools.js.md) — Imports `loadScene` for scene info panel
+- [`packages/core/src/sceneDebug.js`](./sceneDebug.js.md) — Imports `loadScene` for debug display
+- [`packages/core/src/viewfinder.js`](./viewfinder.js.md) — Imports `loadScene` for route resolution
+- [`packages/react/src/context.jsx`](../../react/src/context.jsx.md) — Imports `loadScene`, `sceneExists`, `findRecord`, `deepMerge`
+- [`packages/react/src/hooks/useRecord.js`](../../react/src/hooks/useRecord.js.md) — Imports `loadRecord`
 
 ## Notes
 
-- **Case-insensitive fallback:** `loadDataFile` and `sceneExists` perform a case-insensitive search for scenes. This allows page-scene auto-matching to work when file casing doesn't match exactly (e.g., `Overview` vs `overview`).
-- **Circular $ref detection:** `resolveRefs` tracks visited names in a `Set` and throws immediately on re-entry, preventing infinite loops.
-- **Mutation safety:** `structuredClone` is called once at the boundary of `loadScene` and `loadRecord`, rather than per-node, because `resolveRefs` already builds new objects internally.
+- The `$ref` resolution looks up objects first, then falls back to searching all types. This means object names take priority.
+- Circular `$ref` chains throw immediately — the `seen` Set tracks visited names during resolution.
+- `$global` entries that fail to load are silently warned (not thrown), allowing partial scene resolution.

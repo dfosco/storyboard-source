@@ -10,17 +10,11 @@ importance: high
 
 ## Goal
 
-The root layout component for all routes, following Generouted's `_app.jsx` convention. It wraps the entire route tree in a `<StoryboardProvider>`, making scene data available to every page via React context. A `<Suspense>` boundary with a spinner fallback handles lazy-loaded route transitions. The `<Outlet />` renders the matched child route.
-
-This is the bridge between the routing system and the storyboard data system — by placing the provider here, all pages automatically have access to scene data without needing to set up their own loading logic.
+Root layout component for the app. This is a special generouted file — `_app.jsx` wraps all page routes with the `StoryboardProvider` and a `Suspense` boundary for lazy-loaded pages. Every page in `src/pages/` is rendered as a child of this component via React Router's `<Outlet>`.
 
 ## Composition
 
-```jsx
-import { Suspense } from 'react'
-import { Outlet } from 'react-router-dom'
-import { StoryboardProvider } from '@dfosco/storyboard-react'
-
+```js
 export default function App() {
   return (
     <StoryboardProvider>
@@ -32,16 +26,14 @@ export default function App() {
 }
 ```
 
-A local `PageLoading` component renders a centered CSS spinner on a dark background as the `<Suspense>` fallback while lazy-loaded route chunks are fetched.
-
-No props — the [`StoryboardProvider`](../../packages/react/src/context.jsx.md) reads the scene name from the URL's `?scene=` param or defaults to `"default"`. Every page component rendered via `<Outlet />` can call `useSceneData()` to access the loaded scene.
+`PageLoading` is an inline loading spinner component using CSS animation and Primer design tokens for colors.
 
 ## Dependencies
 
-- `react` — `Suspense` for lazy-loaded route transitions
+- [`packages/react/src/context.jsx`](../../packages/react/src/context.jsx.md) — `StoryboardProvider`
 - `react-router-dom` — `Outlet` for nested route rendering
-- [`@dfosco/storyboard-react`](../../packages/react/src/index.js.md) — `StoryboardProvider` (from `packages/react`)
+- `react` — `Suspense` for lazy page loading
 
 ## Dependents
 
-Consumed automatically by Generouted as the root layout. All page components in `src/pages/` render inside this layout, including [`src/pages/index.jsx`](./index.jsx.md).
+- All page components in `src/pages/` are rendered within this layout

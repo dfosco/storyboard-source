@@ -6,69 +6,31 @@ category: storyboard
 importance: high
 -->
 
-> [← Architecture Index](../../../architecture.index.md)
+> [← Architecture Index](../../../../architecture.index.md)
 
 ## Goal
 
-Provides a framework-agnostic floating DevTools toolbar for Storyboard development. Mounts itself directly to the DOM (vanilla JS, no React/Vue dependency) and gives developers quick access to scene inspection and parameter reset without leaving the prototype.
-
-The toolbar renders a beaker button (bottom-right) that opens a dropdown menu with "Show scene info" (overlay panel with resolved scene JSON) and "Reset all params" (clears the URL hash). Visibility can be toggled with `Cmd+.` / `Ctrl+.`.
+Implements the Storyboard DevTools — a vanilla JS floating toolbar for development. Framework-agnostic: mounts itself directly to the DOM with no React/Vue dependency. Provides a beaker button (bottom-right corner) that opens a dropdown menu with actions: show scene info (overlay with resolved scene JSON), navigate to viewfinder, and reset all hash params. Toggleable with `Cmd+.` / `Ctrl+.`. Also dynamically loads comments menu items when the comments system is enabled.
 
 ## Composition
 
-### Exports
+**`mountDevTools(options?)`** — Mount the devtools to the DOM. Idempotent (safe to call multiple times). Accepts an optional `{ container }` option.
 
-| Export | Type | Description |
-|--------|------|-------------|
-| `mountDevTools(options?)` | `function` | Mount the DevTools to the DOM. Safe to call multiple times (no-ops after first). |
+The function builds the entire DOM structure imperatively:
+- Floating trigger button with beaker icon
+- Dropdown menu with scene info, viewfinder, and reset buttons
+- Overlay panel for displaying resolved scene JSON
+- Keyboard shortcut handler (`Cmd+.` / `Ctrl+.`)
+- Dynamic comments menu items via lazy import
 
-### Key internals
-
-- **`STYLES`** — Inline CSS string injected into `<head>` on first mount. All classes prefixed with `sb-devtools-` to avoid collisions.
-- **`getSceneName()`** — Reads `?scene=` from the URL, defaults to `'default'`.
-- **`openPanel()`** — Calls [`loadScene()`](./loader.js.md) synchronously to resolve scene data and renders it as formatted JSON in a floating overlay panel.
-- **`closePanel()`** — Removes the overlay element from the DOM.
-
-### Usage
-
-```js
-import { mountDevTools } from '@dfosco/storyboard-core'
-mountDevTools() // call once at app startup
-```
-
-### DOM structure created
-
-```
-.sb-devtools-wrapper (fixed, bottom-right)
-  ├── .sb-devtools-menu (dropdown)
-  │   ├── .sb-devtools-menu-item (Show scene info)
-  │   ├── .sb-devtools-menu-item (Reset all params)
-  │   └── .sb-devtools-hint (keyboard shortcut hint)
-  └── .sb-devtools-trigger (beaker button)
-
-.sb-devtools-overlay (on-demand)
-  ├── .sb-devtools-backdrop
-  └── .sb-devtools-panel
-      ├── .sb-devtools-panel-header
-      └── .sb-devtools-panel-body > pre.sb-devtools-code
-```
+All CSS is defined as a template string constant (`STYLES`) and injected via a `<style>` element. SVG icons are inline strings to avoid external dependencies.
 
 ## Dependencies
 
-| Module | Imports |
-|--------|---------|
-| [`packages/core/src/loader.js`](./loader.js.md) | `loadScene` |
+- [`packages/core/src/loader.js`](./loader.js.md) — `loadScene` for displaying scene data in the info panel
+- `packages/core/src/comments/config.js` — `isCommentsEnabled` for conditional comments menu
 
 ## Dependents
 
-| File | How |
-|------|-----|
-| [`packages/core/src/index.js`](./index.js.md) | Re-exports `mountDevTools` |
-| [`src/index.jsx`](../../../src/index.jsx.md) | Calls `mountDevTools()` in DEV mode via `@dfosco/storyboard-core` |
-
-## Notes
-
-- The toolbar is only mounted in development (`if (import.meta.env.DEV) mountDevTools()` in the app entry point).
-- Double-mount is prevented by checking for an existing `.sb-devtools-wrapper` element in the container.
-- The "Reset all params" button clears the entire URL hash (`window.location.hash = ''`), which may trigger `hashchange` listeners in other modules like [`hideMode.js`](./hideMode.js.md).
-- Scene data is loaded **synchronously** via `loadScene()` — this works because the data index is already initialized at startup.
+- [`packages/core/src/index.js`](./index.js.md) — Re-exports `mountDevTools`
+- [`src/index.jsx`](../../../src/index.jsx.md) — Calls `mountDevTools()` at app startup

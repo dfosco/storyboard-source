@@ -6,95 +6,55 @@ category: storyboard
 importance: high
 -->
 
-> [← Architecture Index](../../../architecture.index.md)
+> [← Architecture Index](../../../../architecture.index.md)
 
 ## Goal
 
-Implements "hide mode" — a clean-URL presentation mode where all override parameters are moved from the URL hash into localStorage. In normal mode, overrides live in `#key=value`; in hide mode, the URL stays pristine while overrides persist in localStorage shadow storage.
+Implements hide mode and the undo/redo override history system. In normal mode, overrides live in the URL hash (`#key=value`). In hide mode, overrides are moved to localStorage so the URL stays clean — useful when sharing storyboards with stakeholders. The module also provides a full history stack with undo/redo support, allowing users to navigate through previous override states.
 
-Also provides a full undo/redo history stack backed by localStorage, allowing users to navigate back and forth through override states. The history system works in both normal and hide mode.
+The localStorage mirror stores three keys under the `storyboard:` prefix: `historyState` (ordered array of `[position, route, paramString]` entries), `currentState` (index into the history for the active snapshot), and `nextState` (redo target index, cleared on new writes that fork the timeline). The hide flag itself is stored as `storyboard:__hide__`.
 
 ## Composition
 
-### Exports — Hide Mode
-
-| Export | Type | Description |
-|--------|------|-------------|
-| `isHideMode()` | `() → boolean` | Check if hide mode is active |
-| `activateHideMode()` | `() → void` | Snapshot current state, set hide flag, clear URL |
-| `deactivateHideMode()` | `() → void` | Restore params to URL hash, remove hide flag |
-
-### Exports — History Stack
-
-| Export | Type | Description |
-|--------|------|-------------|
-| `pushSnapshot(paramString?, route?)` | `function` | Push a new state onto the history stack |
-| `undo()` | `() → {route, params} \| null` | Move back one state |
-| `redo()` | `() → {route, params} \| null` | Move forward one state |
-| `canUndo()` | `() → boolean` | Check if undo is available |
-| `canRedo()` | `() → boolean` | Check if redo is available |
-| `getOverrideHistory()` | `() → Array<[number, string, string]>` | Full history stack |
-| `getCurrentIndex()` | `() → number \| null` | Current position in history |
-| `getNextIndex()` | `() → number \| null` | Redo target position |
-| `getCurrentSnapshot()` | `() → string \| null` | Current snapshot's param string |
-| `getCurrentRoute()` | `() → string \| null` | Current snapshot's route |
-| `syncHashToHistory()` | `() → void` | Sync localStorage when URL changes externally |
-| `installHistorySync()` | `() → void` | Install hashchange/popstate listeners (call once at startup) |
-
-### Exports — Shadow Read/Write
-
-| Export | Type | Description |
-|--------|------|-------------|
-| `getShadow(key)` | `(string) → string \| null` | Read a value from current shadow snapshot |
-| `setShadow(key, value)` | `(string, string) → void` | Write a value (pushes new snapshot) |
-| `removeShadow(key)` | `(string) → void` | Remove a value (pushes new snapshot) |
-| `getAllShadows()` | `() → Record<string, string>` | All shadow entries as plain object |
-
-### localStorage keys
-
-All stored under `storyboard:` prefix via [`localStorage.js`](./localStorage.js.md):
-
-| Key | Format | Description |
-|-----|--------|-------------|
-| `historyState` | `JSON array` | `[[position, route, paramString], ...]` ordered chronologically |
-| `currentState` | `string (number)` | Index into `historyState` for active snapshot |
-| `nextState` | `string (number)` | Index for redo target (`null` if none) |
-| `__hide__` | `'1'` or absent | Hide mode flag |
-
-### History model
-
+**Hide mode toggle:**
+```js
+export function isHideMode()         // Check if hide mode is active
+export function activateHideMode()   // Snapshot → set flag → clear URL
+export function deactivateHideMode() // Restore params → remove flag
 ```
-historyState: [ [0, "/", "a=1"], [1, "/", "a=1&b=2"], [2, "/page", "c=3"] ]
-                                    ↑ currentState=1     ↑ nextState=2
 
-undo → currentState=0, nextState=1
-redo → currentState=2, nextState=null (or 3 if exists)
-new write → appends at currentState+1, clears nextState (forks timeline)
+**History stack:**
+```js
+export function pushSnapshot(paramString?, route?)  // Append to history, fork timeline
+export function undo()    // Move back, returns { route, params } or null
+export function redo()    // Move forward, returns { route, params } or null
+export function canUndo() // boolean
+export function canRedo() // boolean
 ```
+
+**Shadow read/write (used by useOverride in hide mode):**
+```js
+export function getShadow(key)     // Read from current snapshot
+export function setShadow(key, value) // Push new snapshot with key
+export function removeShadow(key)  // Push new snapshot without key
+export function getAllShadows()    // All entries from current snapshot
+```
+
+**History sync:** `syncHashToHistory()` and `installHistorySync()` keep localStorage history in sync with browser navigation (back/forward).
+
+History is capped at `MAX_HISTORY = 200` entries.
 
 ## Dependencies
 
-| Module | Imports |
-|--------|---------|
-| [`packages/core/src/localStorage.js`](./localStorage.js.md) | `getLocal`, `setLocal`, `removeLocal`, `notifyChange` |
-| [`packages/core/src/session.js`](./session.js.md) | `setParam` |
+- [`packages/core/src/localStorage.js`](./localStorage.js.md) — `getLocal`, `setLocal`, `removeLocal`, `notifyChange` for persisting history state
+- [`packages/core/src/session.js`](./session.js.md) — `setParam` for restoring hash params on deactivate
 
 ## Dependents
 
-| File | How |
-|------|-----|
-| [`packages/core/src/index.js`](./index.js.md) | Re-exports all public functions |
-| [`packages/core/src/interceptHideParams.js`](./interceptHideParams.js.md) | Imports `activateHideMode`, `deactivateHideMode` |
-| [`src/index.jsx`](../../../src/index.jsx.md) | Calls `installHistorySync()` at startup via `@dfosco/storyboard-core` |
-| [`packages/react/src/hooks/useHideMode.js`](../../react/src/hooks/useHideMode.js.md) | Imports `isHideMode`, `activateHideMode`, `deactivateHideMode` |
-| [`packages/react/src/hooks/useOverride.js`](../../react/src/hooks/useOverride.js.md) | Imports `isHideMode`, `getShadow`, `setShadow`, `removeShadow` |
-| [`packages/react/src/hooks/useSceneData.js`](../../react/src/hooks/useSceneData.js.md) | Imports `isHideMode`, `getShadow`, `getAllShadows` |
-| [`packages/react/src/hooks/useUndoRedo.js`](../../react/src/hooks/useUndoRedo.js.md) | Imports `undo`, `redo`, `canUndo`, `canRedo` |
-
-## Notes
-
-- **MAX_HISTORY** is capped at 200 entries. When exceeded, the oldest entries are trimmed and positions are renumbered.
-- `pushSnapshot()` deduplicates: if the current state already matches the same route + params, the push is silently skipped.
-- `syncHashToHistory()` is a no-op in hide mode (URL is empty, nothing to sync).
-- The history model uses a "fork" paradigm: any new write after an undo discards the future (redo) timeline.
-- `deactivateHideMode()` restores overrides to the URL hash by calling `setParam()` for each key individually, then strips `?show` from the query string.
+- [`packages/core/src/index.js`](./index.js.md) — Re-exports all public functions
+- [`packages/core/src/interceptHideParams.js`](./interceptHideParams.js.md) — Imports `activateHideMode`, `deactivateHideMode`
+- [`packages/react/src/hooks/useOverride.js`](../../react/src/hooks/useOverride.js.md) — Imports hide mode and shadow functions
+- [`packages/react/src/hooks/useSceneData.js`](../../react/src/hooks/useSceneData.js.md) — Imports `isHideMode`, `getShadow`, `getAllShadows`
+- [`packages/react/src/hooks/useHideMode.js`](../../react/src/hooks/useHideMode.js.md) — Imports `isHideMode`, `activateHideMode`, `deactivateHideMode`
+- [`packages/react/src/hooks/useUndoRedo.js`](../../react/src/hooks/useUndoRedo.js.md) — Imports `undo`, `redo`, `canUndo`, `canRedo`
+- [`src/index.jsx`](../../../src/index.jsx.md) — Imports `installHistorySync`

@@ -10,82 +10,33 @@ importance: high
 
 ## Goal
 
-Provides hooks for loading record collections (`.record.json` files) with URL-hash override support. Records power dynamic routes — a `posts.record.json` file paired with `pages/posts/[id].jsx` gives each entry its own URL. Hash overrides can modify fields on existing entries or create entirely new entries from the URL alone.
+Provides hooks for loading record collections with hash override support. `useRecord` loads a single entry matched by URL param (for dynamic routes like `[id].jsx`). `useRecords` loads all entries. Both apply hash overrides — existing entries can be modified and new entries created entirely from URL hash params using the convention `record.{name}.{entryId}.{field}=value`.
 
 ## Composition
 
-### Internal: `applyRecordOverrides(baseRecords, recordName)`
+**`useRecord(recordName, paramName = 'id')`** — Loads a single record entry matched by the URL param. The `paramName` is both the route param to read and the entry field to match against.
 
-Collects hash params matching `record.{recordName}.{entryId}.{field}` and merges them into a deep-cloned copy of the base records array. Unknown entry IDs create new entries appended to the array.
+**`useRecords(recordName)`** — Loads all entries from a record collection with overrides applied.
 
+Internal helper `applyRecordOverrides(baseRecords, recordName)`:
 ```js
+// Hash convention: record.{recordName}.{entryId}.{field}=value
+// Existing entries get fields merged; unknown ids create new entries
 function applyRecordOverrides(baseRecords, recordName) {
   const allParams = getAllParams()
   const prefix = `record.${recordName}.`
-  const overrideKeys = Object.keys(allParams).filter(k => k.startsWith(prefix))
-  if (overrideKeys.length === 0) return baseRecords
-
-  const records = deepClone(baseRecords)
-  // Group overrides by entryId, merge into existing or create new entries
-  return records
-}
-```
-
-### Export: `useRecord(recordName, paramName = 'id')`
-
-Loads a **single** record entry matched by URL route param. The `paramName` serves double duty: it's the route param name and the record field to match against.
-
-```js
-export function useRecord(recordName, paramName = 'id') {
-  const params = useParams()
-  const paramValue = params[paramName]
-  const hashString = useSyncExternalStore(subscribeToHash, getHashSnapshot)
-
-  return useMemo(() => {
-    const base = loadRecord(recordName)
-    const merged = applyRecordOverrides(base, recordName)
-    return merged.find(e => e[paramName] === paramValue) ?? null
-  }, [recordName, paramName, paramValue, hashString])
-}
-```
-
-### Export: `useRecords(recordName)`
-
-Loads **all** entries from a record collection with overrides applied.
-
-```js
-export function useRecords(recordName) {
-  const hashString = useSyncExternalStore(subscribeToHash, getHashSnapshot)
-  return useMemo(() => {
-    const base = loadRecord(recordName)
-    return applyRecordOverrides(base, recordName)
-  }, [recordName, hashString])
+  // ... groups by entryId, merges or creates entries
 }
 ```
 
 ## Dependencies
 
-| Import | Source |
-|--------|--------|
-| `useMemo`, `useSyncExternalStore` | `react` |
-| `useParams` | `react-router-dom` |
-| `loadRecord` | `@dfosco/storyboard-core` |
-| `deepClone`, `setByPath` | `@dfosco/storyboard-core` |
-| `getAllParams` | `@dfosco/storyboard-core` |
-| `subscribeToHash`, `getHashSnapshot` | `@dfosco/storyboard-core` |
+- [`packages/core/src/loader.js`](../../../core/src/loader.js.md) — `loadRecord`
+- [`packages/core/src/dotPath.js`](../../../core/src/dotPath.js.md) — `deepClone`, `setByPath`
+- [`packages/core/src/session.js`](../../../core/src/session.js.md) — `getAllParams`
+- [`packages/core/src/hashSubscribe.js`](../../../core/src/hashSubscribe.js.md) — `subscribeToHash`, `getHashSnapshot`
+- `react-router-dom` — `useParams` for URL param reading
 
 ## Dependents
 
-| File | Usage |
-|------|-------|
-| [`packages/react/src/index.js`](../index.js.md) | Re-exports `useRecord` and `useRecords` as public API |
-| `src/pages/issues/index.jsx` | `useRecords('issues')` for issue list |
-| `src/pages/issues/[id].jsx` | `useRecord('issues')` for single issue |
-| `src/pages/posts/index.jsx` | `useRecords('posts')` for post list |
-| `src/pages/posts/[id].jsx` | `useRecord('posts')` for single post |
-
-## Notes
-
-- Override keys must follow the convention `record.{name}.{entryId}.{field}` — keys without a field path (no dot after the entry ID) are silently skipped.
-- Errors in `loadRecord` are caught and logged; `useRecord` returns `null` and `useRecords` returns `[]` on failure.
-- Both hooks re-render on every hash change via `useSyncExternalStore`, not just when relevant params change.
+- [`packages/react/src/index.js`](../index.js.md) — Re-exports `useRecord` and `useRecords`

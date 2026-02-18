@@ -10,35 +10,29 @@ importance: high
 
 ## Goal
 
-Defines the single React context object used by all Storyboard hooks. Separated into its own file so that both the provider ([`context.jsx`](./context.jsx.md)) and every hook can import it without circular dependencies — the context module has no imports besides `react` itself.
+Defines the React context object used by the storyboard system. Separated into its own file so that both the provider ([`packages/react/src/context.jsx`](./context.jsx.md)) and consumer hooks can import it without circular dependencies.
 
 ## Composition
 
-The entire file is three lines:
-
 ```js
 import { createContext } from 'react'
-
 export const StoryboardContext = createContext(null)
 ```
 
-The default value is `null`, meaning any hook that calls `useContext(StoryboardContext)` outside a `<StoryboardProvider>` will receive `null`.
+Context value shape (set by `StoryboardProvider`):
+```js
+{ data: object|null, error: string|null, loading: boolean, sceneName: string }
+```
 
 ## Dependencies
 
-| Module | Purpose |
-|--------|---------|
-| `react` | `createContext` |
+- `react` — `createContext`
 
 ## Dependents
 
-- [`packages/react/src/context.jsx`](./context.jsx.md) — imports `StoryboardContext` to provide data via `<StoryboardContext.Provider>`
-- [`packages/react/src/index.js`](./index.js.md) — re-exports `StoryboardContext` as part of the public API
-- `packages/react/src/hooks/useSceneData.js` — reads scene data from context
-- `packages/react/src/hooks/useScene.js` — reads scene metadata from context
-- `packages/react/src/hooks/useOverride.js` — reads scene data for override operations
-- `packages/react/src/hooks/useLocalStorage.js` — reads scene data for localStorage operations
-
-## Notes
-
-- The `null` default is intentional — hooks should fail gracefully or throw a helpful message when no provider is present rather than silently returning stale data.
+- [`packages/react/src/context.jsx`](./context.jsx.md) — Sets context value via `StoryboardContext.Provider`
+- [`packages/react/src/index.js`](./index.js.md) — Re-exports `StoryboardContext`
+- [`packages/react/src/hooks/useSceneData.js`](./hooks/useSceneData.js.md) — Reads context
+- [`packages/react/src/hooks/useOverride.js`](./hooks/useOverride.js.md) — Reads context
+- [`packages/react/src/hooks/useScene.js`](./hooks/useScene.js.md) — Reads context
+- [`packages/react/src/hooks/useLocalStorage.js`](./hooks/useLocalStorage.js.md) — Reads context
