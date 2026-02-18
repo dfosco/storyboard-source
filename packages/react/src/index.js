@@ -25,3 +25,6 @@ export { installHashPreserver } from './hashPreserver.js'
 
 // Form context (for design system packages to use)
 export { FormContext } from './context/FormContext.js'
+
+// Viewfinder dashboard
+export { default as Viewfinder } from './Viewfinder.jsx'

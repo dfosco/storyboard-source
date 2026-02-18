@@ -17,7 +17,7 @@ export function hash(str) {
  * Resolve the target route path for a scene.
  *
  * 1. If scene name matches a known route (case-insensitive), use that route
- * 2. If scene data has a `route` key, use that
+ * 2. If scene data has a `sceneMeta.route` or `route` key, use that
  * 3. Fall back to root "/"
  *
  * @param {string} sceneName
@@ -32,16 +32,32 @@ export function resolveSceneRoute(sceneName, knownRoutes = []) {
     }
   }
 
-  // Check for explicit `route` key in scene data
+  // Check for explicit route in sceneMeta or top-level route key
   try {
     const data = loadScene(sceneName)
-    if (data?.route) {
-      const route = data.route.startsWith('/') ? data.route : `/${data.route}`
-      return `${route}?scene=${encodeURIComponent(sceneName)}`
+    const route = data?.sceneMeta?.route || data?.route
+    if (route) {
+      const normalized = route.startsWith('/') ? route : `/${route}`
+      return `${normalized}?scene=${encodeURIComponent(sceneName)}`
     }
   } catch {
     // ignore load errors
   }
 
   return `/?scene=${encodeURIComponent(sceneName)}`
+}
+
+/**
+ * Get sceneMeta for a scene (route, author, etc).
+ *
+ * @param {string} sceneName
+ * @returns {{ route?: string, author?: string } | null}
+ */
+export function getSceneMeta(sceneName) {
+  try {
+    const data = loadScene(sceneName)
+    return data?.sceneMeta || null
+  } catch {
+    return null
+  }
 }

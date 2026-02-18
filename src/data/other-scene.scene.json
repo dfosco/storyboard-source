@@ -1,4 +1,7 @@
 {
+  "sceneMeta": {
+    "route": "/example"
+  },
   "navigation": { "$ref": "navigation" },
   "user": {
     "name": "John Doe",

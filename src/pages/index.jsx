@@ -1,13 +1,14 @@
-import Playground from '../components/Playground.jsx'
-import ColorModeSwitcher from '../components/ColorModeSwitcher.jsx'
+import { scenes } from 'virtual:storyboard-data-index'
+import { Viewfinder } from '@dfosco/storyboard-react'
 
-function Code() {
-    return (
-      <>
-        <Playground />
-        <ColorModeSwitcher />
-      </>
-    )
+const pageModules = import.meta.glob('/src/pages/*.jsx')
+
+export default function IndexPage() {
+  return (
+    <Viewfinder
+      scenes={scenes}
+      pageModules={pageModules}
+      basePath={import.meta.env.BASE_URL}
+    />
+  )
 }
-
-export default Code

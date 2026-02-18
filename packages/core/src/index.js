@@ -32,7 +32,7 @@ export { mountDevTools } from './devtools.js'
 export { mountSceneDebug } from './sceneDebug.js'
 
 // Viewfinder utilities
-export { hash, resolveSceneRoute } from './viewfinder.js'
+export { hash, resolveSceneRoute, getSceneMeta } from './viewfinder.js'
 
 // Comments system
 export { initCommentsConfig, getCommentsConfig, isCommentsEnabled } from './comments/config.js'

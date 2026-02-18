@@ -11,6 +11,7 @@
         "build": "vite build",
         "lint": "eslint .",
         "preview": "vite preview",
+        "prepare": "git config core.hooksPath .githooks",
         "changeset": "changeset",
         "version": "changeset version",
         "tag": "changeset tag",
