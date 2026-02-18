@@ -1,5 +1,12 @@
 # @dfosco/storyboard-react-reshaped
 
+## 1.7.1
+
+### Patch Changes
+
+-   Updated dependencies
+    -   @dfosco/storyboard-react@1.7.1
+
 ## 1.7.0
 
 ### Minor Changes

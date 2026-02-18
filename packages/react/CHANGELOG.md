@@ -1,5 +1,12 @@
 # @dfosco/storyboard-react
 
+## 1.7.1
+
+### Patch Changes
+
+-   Fix Vite optimizeDeps error by auto-excluding @dfosco/storyboard-react from esbuild pre-bundling
+    -   @dfosco/storyboard-core@1.7.1
+
 ## 1.7.0
 
 ### Minor Changes
