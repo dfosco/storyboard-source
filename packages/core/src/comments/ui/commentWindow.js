@@ -757,8 +757,8 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
   let winStartTop = 0
 
   function onMouseDown(e) {
-    // Only drag from header, not close button
-    if (e.target.closest('.sb-comment-window-close')) return
+    // Only drag from header, not action buttons
+    if (e.target.closest('.sb-comment-window-header-actions')) return
     isDragging = true
     dragStartX = e.clientX
     dragStartY = e.clientY
@@ -809,9 +809,20 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
       // Update the pin position
       comment.meta = { ...comment.meta, x: xPct, y: yPct }
 
+      // Move the corresponding pin element without re-rendering everything
+      const pins = container.querySelectorAll('.sb-comment-pin')
+      for (const pin of pins) {
+        if (pin._commentId === comment.id) {
+          pin.style.left = `${xPct}%`
+          pin.style.top = `${yPct}%`
+          break
+        }
+      }
+
       try {
         await moveComment(comment.id, comment._rawBody ?? '', xPct, yPct)
-        callbacks.onMove?.()
+        // Update raw body with new metadata for future moves
+        comment._rawBody = null // force re-fetch on next move
       } catch (err) {
         console.error('[storyboard] Failed to move comment:', err)
       }
