@@ -69,7 +69,7 @@ function injectStyles() {
       margin-top: -16px;
       border-radius: 50%;
       background: #161b22;
-      border: 3px solid hsl(var(--pin-hue, 140), 60%, 50%);
+      border: 3px solid hsl(var(--pin-hue, 140), 50%, 38%);
       cursor: pointer;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
       pointer-events: auto;

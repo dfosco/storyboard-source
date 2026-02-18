@@ -158,17 +158,20 @@ function injectStyles() {
     .sb-reaction-pill {
       display: inline-flex;
       align-items: center;
-      gap: 3px;
+      gap: 6px;
       padding: 2px 8px;
       border-radius: 999px;
       border: 1px solid #30363d;
       background: none;
       color: #8b949e;
-      font-size: 12px;
       cursor: pointer;
+      // font-size: 12px;
       font-family: inherit;
       transition: border-color 100ms, background 100ms;
     }
+    .sb-reaction-pill span {
+      // font-size: 12px;
+   }
     .sb-reaction-pill:hover {
       border-color: #8b949e;
     }
@@ -182,6 +185,7 @@ function injectStyles() {
       display: inline-flex;
       align-items: center;
       padding: 2px 6px;
+      gap: 4px;
       border-radius: 999px;
       border: 1px solid transparent;
       background: none;
@@ -398,7 +402,7 @@ function buildReactionBar(item) {
     // Add reaction button
     const addBtn = document.createElement('button')
     addBtn.className = 'sb-reaction-add-btn'
-    addBtn.textContent = ' ➕ '
+    addBtn.textContent = '😀 +'
     addBtn.addEventListener('click', (e) => {
       e.stopPropagation()
       showPicker(addBtn, item, render)
