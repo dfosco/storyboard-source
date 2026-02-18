@@ -231,6 +231,18 @@ function autoOpenCommentFromUrl(ov, discussion) {
   const comment = discussion.comments.find(c => c.id === commentId)
   if (!comment) return
 
+  // Scroll to comment Y position if not in viewport
+  if (comment.meta?.y != null) {
+    const container = getContentContainer()
+    const yPx = (comment.meta.y / 100) * container.scrollHeight
+    const viewTop = container.scrollTop || window.scrollY
+    const viewBottom = viewTop + window.innerHeight
+    if (yPx < viewTop || yPx > viewBottom) {
+      const scrollTarget = Math.max(0, yPx - window.innerHeight / 3)
+      window.scrollTo({ top: scrollTarget, behavior: 'smooth' })
+    }
+  }
+
   comment._rawBody = comment.body
   showCommentWindow(ov, comment, discussion, {
     onClose: () => {},
