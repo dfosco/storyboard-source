@@ -7,9 +7,8 @@ import './reset.css'
 import './globals.css'
 
 import ColorModeSwitcher from './components/ColorModeSwitcher'
-import { DevTools } from '@storyboard/react-primer'
 import { installHashPreserver } from '@storyboard/react/hash-preserver'
-import { installHideParamListener, installHistorySync } from '@storyboard/core'
+import { installHideParamListener, installHistorySync, mountDevTools } from '@storyboard/core'
 
 const router = createBrowserRouter(routes, {
     basename: import.meta.env.BASE_URL,
@@ -18,6 +17,7 @@ const router = createBrowserRouter(routes, {
 installHashPreserver(router, import.meta.env.BASE_URL)
 installHideParamListener()
 installHistorySync()
+if (import.meta.env.DEV) mountDevTools()
 
 const rootElement = document.getElementById('root')
 const root = createRoot(rootElement)
@@ -28,7 +28,6 @@ root.render(
             <BaseStyles>
                 <ColorModeSwitcher />
                 <RouterProvider router={router} />
-                {import.meta.env.DEV && <DevTools />}
             </BaseStyles>
         </ThemeProvider>
     </StrictMode>

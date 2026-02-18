@@ -12,7 +12,5 @@ export { default as Checkbox } from './Checkbox.jsx'
 export { default as Textarea } from './Textarea.jsx'
 export { default as StoryboardForm } from './StoryboardForm.jsx'
 
-// Dev tools
-export { default as DevTools } from './DevTools/DevTools.jsx'
-export { default as SceneDebug } from './SceneDebug.jsx'
+// Scene data demo
 export { default as SceneDataDemo } from './SceneDataDemo.jsx'
