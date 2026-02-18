@@ -3,13 +3,11 @@
  *
  * Opens when clicking a comment pin. Shows comment body, author, replies,
  * reply input, reactions, and supports drag-to-move.
- * Themed with Primer CSS custom properties for light/dark mode support.
+ * Styled with Tachyons + sb-* custom classes for light/dark mode support.
  */
 
 import { replyToComment, addReaction, removeReaction, moveComment, resolveComment, fetchRouteDiscussion } from '../api.js'
 import { getCachedUser } from '../auth.js'
-
-const STYLE_ID = 'sb-comment-window-style'
 
 const REACTION_EMOJI = {
   THUMBS_UP: '👍',
@@ -20,346 +18,6 @@ const REACTION_EMOJI = {
   HEART: '❤️',
   ROCKET: '🚀',
   EYES: '👀',
-}
-
-function injectStyles() {
-  if (document.getElementById(STYLE_ID)) return
-  const style = document.createElement('style')
-  style.id = STYLE_ID
-  style.textContent = `
-    .sb-comment-window {
-      position: absolute;
-      z-index: 100001;
-      width: 360px;
-      max-height: 480px;
-      display: flex;
-      flex-direction: column;
-      background: var(--overlay-bgColor, var(--bgColor-default));
-      border: 1px solid var(--borderColor-default);
-      border-radius: 10px;
-      box-shadow: var(--shadow-overlay, 0 8px 24px rgba(0, 0, 0, 0.3));
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-      overflow: hidden;
-    }
-
-    .sb-comment-window-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--borderColor-muted);
-      cursor: grab;
-      user-select: none;
-    }
-    .sb-comment-window-header:active {
-      cursor: grabbing;
-    }
-
-    .sb-comment-window-header-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .sb-comment-window-avatar {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      border: 1px solid var(--borderColor-default);
-      flex-shrink: 0;
-    }
-
-    .sb-comment-window-author {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--fgColor-default);
-    }
-
-    .sb-comment-window-time {
-      font-size: 11px;
-      color: var(--fgColor-muted);
-      margin-left: 4px;
-    }
-
-    .sb-comment-window-close {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 24px;
-      height: 24px;
-      background: none;
-      border: none;
-      border-radius: 6px;
-      color: var(--fgColor-muted);
-      cursor: pointer;
-      font-size: 16px;
-      line-height: 1;
-      flex-shrink: 0;
-    }
-    .sb-comment-window-close:hover {
-      background: var(--bgColor-muted);
-      color: var(--fgColor-default);
-    }
-
-    .sb-comment-window-header-actions {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      flex-shrink: 0;
-    }
-
-    .sb-comment-window-action-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 8px;
-      background: none;
-      border: none;
-      border-radius: 6px;
-      color: var(--fgColor-muted);
-      cursor: pointer;
-      font-size: 11px;
-      font-weight: 500;
-      font-family: inherit;
-      line-height: 1;
-      flex-shrink: 0;
-      white-space: nowrap;
-    }
-    .sb-comment-window-action-btn:hover {
-      background: var(--bgColor-muted);
-      color: var(--fgColor-default);
-    }
-    .sb-comment-window-action-btn[data-resolved="true"] {
-      color: var(--fgColor-success);
-    }
-    .sb-comment-window-action-btn[data-copied="true"] {
-      color: var(--fgColor-success);
-    }
-
-    .sb-comment-window-body {
-      flex: 1;
-      overflow-y: auto;
-      padding: 12px;
-    }
-
-    .sb-comment-window-text {
-      font-size: 13px;
-      line-height: 1.5;
-      color: var(--fgColor-default);
-      margin: 0 0 8px;
-      word-break: break-word;
-    }
-
-    .sb-comment-window-reactions {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-    }
-
-    .sb-reaction-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 2px 8px;
-      border-radius: 999px;
-      border: 1px solid var(--borderColor-default);
-      background: none;
-      color: var(--fgColor-muted);
-      cursor: pointer;
-      font-family: inherit;
-      transition: border-color 100ms, background 100ms;
-    }
-    .sb-reaction-pill:hover {
-      border-color: var(--fgColor-muted);
-    }
-    .sb-reaction-pill[data-active="true"] {
-      border-color: var(--borderColor-accent-emphasis, var(--fgColor-accent));
-      background: var(--bgColor-accent-muted, rgba(88, 166, 255, 0.1));
-      color: var(--fgColor-accent);
-    }
-
-    .sb-reaction-add-btn {
-      display: inline-flex;
-      align-items: center;
-      padding: 2px 6px;
-      gap: 4px;
-      border-radius: 999px;
-      border: 1px solid var(--borderColor-default);
-      background: var(--bgColor-muted);
-      color: var(--fgColor-muted);
-      font-size: 12px;
-      cursor: pointer;
-      font-family: inherit;
-      position: relative;
-    }
-    .sb-reaction-add-btn:hover {
-      border: 1px solid var(--borderColor-accent-emphasis, var(--fgColor-accent));
-      background: var(--bgColor-accent-muted, rgba(88, 166, 255, 0.1));
-    }
-
-    .sb-reaction-picker {
-      position: absolute;
-      bottom: 100%;
-      left: 0;
-      margin-bottom: 4px;
-      z-index: 10;
-      display: flex;
-      gap: 2px;
-      padding: 4px;
-      background: var(--overlay-bgColor, var(--bgColor-default));
-      border: 1px solid var(--borderColor-default);
-      border-radius: 10px;
-      box-shadow: var(--shadow-overlay, 0 8px 24px rgba(0, 0, 0, 0.3));
-    }
-
-    .sb-reaction-picker-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      border: none;
-      background: none;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background 100ms;
-    }
-    .sb-reaction-picker-btn:hover {
-      background: var(--bgColor-muted);
-    }
-    .sb-reaction-picker-btn[data-active="true"] {
-      background: var(--bgColor-accent-muted, rgba(88, 166, 255, 0.15));
-      box-shadow: inset 0 0 0 1px var(--borderColor-accent-emphasis, var(--fgColor-accent));
-    }
-
-    .sb-comment-window-replies {
-      border-top: 1px solid var(--borderColor-muted);
-      padding-top: 10px;
-      margin-top: 4px;
-    }
-
-    .sb-comment-window-replies-label {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--fgColor-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
-    }
-
-    .sb-reply-item {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .sb-reply-avatar {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      border: 1px solid var(--borderColor-default);
-      flex-shrink: 0;
-    }
-
-    .sb-reply-content {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .sb-reply-meta {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      margin-bottom: 2px;
-    }
-
-    .sb-reply-author {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--fgColor-default);
-    }
-
-    .sb-reply-time {
-      font-size: 11px;
-      color: var(--fgColor-muted);
-    }
-
-    .sb-reply-text {
-      font-size: 13px;
-      line-height: 1.4;
-      color: var(--fgColor-default);
-      margin: 0;
-      word-break: break-word;
-    }
-
-    .sb-reply-reactions {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      flex-wrap: wrap;
-      margin-top: 4px;
-    }
-
-    .sb-comment-window-reply-form {
-      border-top: 1px solid var(--borderColor-muted);
-      padding: 10px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .sb-reply-textarea {
-      width: 100%;
-      min-height: 40px;
-      max-height: 100px;
-      padding: 6px 8px;
-      background: var(--bgColor-inset, var(--bgColor-default));
-      border: 1px solid var(--borderColor-default);
-      border-radius: 6px;
-      color: var(--fgColor-default);
-      font-size: 12px;
-      font-family: inherit;
-      line-height: 1.4;
-      resize: vertical;
-      outline: none;
-      box-sizing: border-box;
-    }
-    .sb-reply-textarea:focus {
-      border-color: var(--fgColor-accent);
-      box-shadow: 0 0 0 3px var(--borderColor-accent-muted, rgba(88, 166, 255, 0.15));
-    }
-    .sb-reply-textarea::placeholder {
-      color: var(--fgColor-muted);
-    }
-
-    .sb-reply-form-actions {
-      display: flex;
-      justify-content: flex-end;
-    }
-
-    .sb-reply-submit-btn {
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 500;
-      font-family: inherit;
-      cursor: pointer;
-      border: none;
-      background: var(--bgColor-success-emphasis);
-      color: var(--fgColor-onEmphasis);
-    }
-    .sb-reply-submit-btn:hover {
-      filter: brightness(1.1);
-    }
-    .sb-reply-submit-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-  `
-  document.head.appendChild(style)
 }
 
 function timeAgo(dateStr) {
@@ -374,7 +32,9 @@ function timeAgo(dateStr) {
  */
 function buildReactionBar(item) {
   const bar = document.createElement('div')
-  bar.className = item.replies ? 'sb-comment-window-reactions' : 'sb-reply-reactions'
+  bar.className = item.replies
+    ? 'flex items-center flex-wrap mb2'
+    : 'flex items-center flex-wrap mt1'
 
   function render() {
     bar.innerHTML = ''
@@ -386,9 +46,14 @@ function buildReactionBar(item) {
       if (count === 0) continue
 
       const pill = document.createElement('button')
-      pill.className = 'sb-reaction-pill'
+      pill.className = 'sb-reaction-pill dib flex items-center ph2 br-pill sb-pill pointer sans-serif mr1 mb1' 
+      pill.style.cssText = 'padding-top:2px;padding-bottom:2px;font-size:12px'
       pill.dataset.active = String(!!group.viewerHasReacted)
-      pill.innerHTML = `<span>${REACTION_EMOJI[group.content] ?? group.content}</span><span>${count}</span>`
+      if (group.viewerHasReacted) {
+        pill.className = 'sb-reaction-pill dib flex items-center ph2 br-pill sb-pill sb-pill-active pointer sans-serif mr1 mb1'
+        pill.style.cssText = 'padding-top:2px;padding-bottom:2px;font-size:12px'
+      }
+      pill.innerHTML = `<span class="mr1">${REACTION_EMOJI[group.content] ?? group.content}</span><span>${count}</span>`
       pill.addEventListener('click', (e) => {
         e.stopPropagation()
         toggleReaction(item, group.content, group, render)
@@ -398,7 +63,8 @@ function buildReactionBar(item) {
 
     // Add reaction button
     const addBtn = document.createElement('button')
-    addBtn.className = 'sb-reaction-add-btn'
+    addBtn.className = 'dib flex items-center ph1 br-pill ba sb-b-default sb-bg-muted sb-fg-muted f7 pointer sans-serif relative mr1 mb1'
+    addBtn.style.cssText = 'padding-top:2px;padding-bottom:2px'
     addBtn.textContent = '😀 +'
     addBtn.addEventListener('click', (e) => {
       e.stopPropagation()
@@ -416,14 +82,20 @@ function showPicker(anchorBtn, item, rerenderBar) {
   if (existing) { existing.remove(); return }
 
   const picker = document.createElement('div')
-  picker.className = 'sb-reaction-picker'
+  picker.className = 'sb-reaction-picker absolute left-0 flex pa1 sb-bg ba sb-b-default br3 sb-shadow'
+  picker.style.cssText = 'bottom:100%;margin-bottom:4px;z-index:10'
 
   for (const [content, emoji] of Object.entries(REACTION_EMOJI)) {
     const groups = item.reactionGroups ?? []
     const reacted = groups.some(r => r.content === content && r.viewerHasReacted)
 
     const btn = document.createElement('button')
-    btn.className = 'sb-reaction-picker-btn'
+    btn.className = reacted
+      ? 'flex items-center justify-center br2 bn f6 pointer mr1'
+      : 'flex items-center justify-center br2 bn bg-transparent f6 pointer mr1'
+    btn.style.cssText = reacted
+      ? 'width:28px;height:28px;background:color-mix(in srgb, var(--sb-fg-accent) 10%, transparent);box-shadow:inset 0 0 0 1px var(--sb-fg-accent);transition:background 100ms'
+      : 'width:28px;height:28px;transition:background 100ms'
     btn.dataset.active = String(reacted)
     btn.textContent = emoji
     btn.addEventListener('click', (e) => {
@@ -495,8 +167,6 @@ let activeWindow = null
  * @returns {{ el: HTMLElement, destroy: () => void }}
  */
 export function showCommentWindow(container, comment, discussion, callbacks = {}) {
-  injectStyles()
-
   // Close any existing window
   if (activeWindow) {
     activeWindow.destroy()
@@ -505,34 +175,42 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
 
   const user = getCachedUser()
   const win = document.createElement('div')
-  win.className = 'sb-comment-window'
+  win.className = 'sb-comment-window absolute flex flex-column sb-bg ba sb-b-default br3 sb-shadow sans-serif overflow-hidden'
+  win.style.zIndex = '100001'
+  win.style.width = '360px'
+  win.style.maxHeight = '480px'
   win.style.left = `${comment.meta?.x ?? 0}%`
   win.style.top = `${comment.meta?.y ?? 0}%`
   win.style.transform = 'translate(12px, -50%)'
 
   // --- Header (draggable) ---
   const header = document.createElement('div')
-  header.className = 'sb-comment-window-header'
+  header.className = 'flex items-center justify-between ph3 pv2 bb sb-b-muted'
+  header.style.cssText = 'cursor:grab;user-select:none'
+  header.addEventListener('mousedown', () => { header.style.cursor = 'grabbing' })
+  header.addEventListener('mouseup', () => { header.style.cursor = 'grab' })
 
   const headerLeft = document.createElement('div')
-  headerLeft.className = 'sb-comment-window-header-left'
+  headerLeft.className = 'flex items-center'
 
   if (comment.author?.avatarUrl) {
     const avatar = document.createElement('img')
-    avatar.className = 'sb-comment-window-avatar'
+    avatar.className = 'br-100 ba sb-b-default flex-shrink-0 mr2'
+    avatar.style.cssText = 'width:24px;height:24px'
     avatar.src = comment.author.avatarUrl
     avatar.alt = comment.author.login ?? ''
     headerLeft.appendChild(avatar)
   }
 
   const authorSpan = document.createElement('span')
-  authorSpan.className = 'sb-comment-window-author'
+  authorSpan.className = 'f7 fw6 sb-fg'
   authorSpan.textContent = comment.author?.login ?? 'unknown'
   headerLeft.appendChild(authorSpan)
 
   if (comment.createdAt) {
     const timeSpan = document.createElement('span')
-    timeSpan.className = 'sb-comment-window-time'
+    timeSpan.className = 'sb-fg-muted ml1'
+    timeSpan.style.fontSize = '11px'
     timeSpan.textContent = timeAgo(comment.createdAt)
     headerLeft.appendChild(timeSpan)
   }
@@ -540,11 +218,17 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
   header.appendChild(headerLeft)
 
   const headerActions = document.createElement('div')
-  headerActions.className = 'sb-comment-window-header-actions'
+  headerActions.className = 'sb-comment-window-header-actions flex items-center flex-shrink-0'
+
+  const ACTION_BTN = 'flex items-center justify-center pa2 bg-transparent bn br2 pointer fw5 sans-serif flex-shrink-0 nowrap'
+  const ACTION_BTN_STYLE = 'font-size:11px;line-height:1'
+  const ACTION_BTN_DEFAULT = `${ACTION_BTN} sb-fg-muted`
+  const ACTION_BTN_SUCCESS = `${ACTION_BTN} sb-fg-success`
 
   // Resolve button
   const resolveBtn = document.createElement('button')
-  resolveBtn.className = 'sb-comment-window-action-btn'
+  resolveBtn.className = comment.meta?.resolved ? ACTION_BTN_SUCCESS : ACTION_BTN_DEFAULT
+  resolveBtn.style.cssText = ACTION_BTN_STYLE
   resolveBtn.setAttribute('aria-label', comment.meta?.resolved ? 'Resolved' : 'Resolve')
   resolveBtn.title = comment.meta?.resolved ? 'Resolved' : 'Resolve'
   resolveBtn.textContent = comment.meta?.resolved ? 'Resolved' : 'Resolve'
@@ -553,6 +237,7 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
     e.stopPropagation()
     if (comment.meta?.resolved) return
     resolveBtn.dataset.resolved = 'true'
+    resolveBtn.className = ACTION_BTN_SUCCESS
     resolveBtn.textContent = 'Resolved'
     resolveBtn.title = 'Resolved'
     try {
@@ -562,6 +247,7 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
     } catch (err) {
       console.error('[storyboard] Failed to resolve comment:', err)
       resolveBtn.dataset.resolved = 'false'
+      resolveBtn.className = ACTION_BTN_DEFAULT
       resolveBtn.textContent = 'Resolve'
       resolveBtn.title = 'Resolve'
     }
@@ -570,7 +256,8 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
 
   // Share button
   const shareBtn = document.createElement('button')
-  shareBtn.className = 'sb-comment-window-action-btn'
+  shareBtn.className = ACTION_BTN_DEFAULT
+  shareBtn.style.cssText = ACTION_BTN_STYLE
   shareBtn.setAttribute('aria-label', 'Copy link')
   shareBtn.title = 'Copy link'
   shareBtn.textContent = 'Copy link'
@@ -580,10 +267,12 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
     url.searchParams.set('comment', comment.id)
     navigator.clipboard.writeText(url.toString()).then(() => {
       shareBtn.dataset.copied = 'true'
+      shareBtn.className = ACTION_BTN_SUCCESS
       shareBtn.textContent = 'Copied!'
       shareBtn.title = 'Copied!'
       setTimeout(() => {
         shareBtn.dataset.copied = 'false'
+        shareBtn.className = ACTION_BTN_DEFAULT
         shareBtn.textContent = 'Copy link'
         shareBtn.title = 'Copy link'
       }, 2000)
@@ -600,7 +289,8 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
 
   // Close button
   const closeBtn = document.createElement('button')
-  closeBtn.className = 'sb-comment-window-close'
+  closeBtn.className = 'flex items-center justify-center bg-transparent bn br2 sb-fg-muted pointer flex-shrink-0'
+  closeBtn.style.cssText = 'width:24px;height:24px;font-size:16px;line-height:1'
   closeBtn.innerHTML = '×'
   closeBtn.setAttribute('aria-label', 'Close')
   closeBtn.addEventListener('click', (e) => {
@@ -614,10 +304,11 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
 
   // --- Body ---
   const body = document.createElement('div')
-  body.className = 'sb-comment-window-body'
+  body.className = 'flex-auto overflow-y-auto pa3'
 
   const textP = document.createElement('p')
-  textP.className = 'sb-comment-window-text'
+  textP.className = 'lh-copy sb-fg ma0 mb2 word-wrap'
+  textP.style.fontSize = '13px'
   textP.textContent = comment.text ?? ''
   body.appendChild(textP)
 
@@ -628,39 +319,43 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
   const replies = comment.replies ?? []
   if (replies.length > 0) {
     const repliesSection = document.createElement('div')
-    repliesSection.className = 'sb-comment-window-replies'
+    repliesSection.className = 'bt sb-b-muted pt2 mt1'
 
     const repliesLabel = document.createElement('div')
-    repliesLabel.className = 'sb-comment-window-replies-label'
+    repliesLabel.className = 'fw6 sb-fg-muted ttu tracked mb2'
+    repliesLabel.style.fontSize = '11px'
     repliesLabel.textContent = `${replies.length} ${replies.length === 1 ? 'Reply' : 'Replies'}`
     repliesSection.appendChild(repliesLabel)
 
     for (const reply of replies) {
       const replyEl = document.createElement('div')
-      replyEl.className = 'sb-reply-item'
+      replyEl.className = 'flex mb2'
 
       if (reply.author?.avatarUrl) {
         const avatar = document.createElement('img')
-        avatar.className = 'sb-reply-avatar'
+        avatar.className = 'br-100 ba sb-b-default flex-shrink-0 mr2'
+        avatar.style.cssText = 'width:20px;height:20px'
         avatar.src = reply.author.avatarUrl
         avatar.alt = reply.author.login ?? ''
         replyEl.appendChild(avatar)
       }
 
       const content = document.createElement('div')
-      content.className = 'sb-reply-content'
+      content.className = 'flex-auto'
+      content.style.minWidth = '0'
 
       const meta = document.createElement('div')
-      meta.className = 'sb-reply-meta'
+      meta.className = 'flex items-center mb1'
 
       const authorEl = document.createElement('span')
-      authorEl.className = 'sb-reply-author'
+      authorEl.className = 'f7 fw6 sb-fg mr1'
       authorEl.textContent = reply.author?.login ?? 'unknown'
       meta.appendChild(authorEl)
 
       if (reply.createdAt) {
         const timeEl = document.createElement('span')
-        timeEl.className = 'sb-reply-time'
+        timeEl.className = 'sb-fg-muted'
+        timeEl.style.fontSize = '11px'
         timeEl.textContent = timeAgo(reply.createdAt)
         meta.appendChild(timeEl)
       }
@@ -668,7 +363,8 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
       content.appendChild(meta)
 
       const replyText = document.createElement('p')
-      replyText.className = 'sb-reply-text'
+      replyText.className = 'lh-copy sb-fg ma0 word-wrap'
+      replyText.style.fontSize = '13px'
       replyText.textContent = reply.text ?? reply.body ?? ''
       content.appendChild(replyText)
 
@@ -687,18 +383,19 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
   // --- Reply form ---
   if (user && discussion) {
     const form = document.createElement('div')
-    form.className = 'sb-comment-window-reply-form'
+    form.className = 'bt sb-b-muted ph3 pv3 flex flex-column'
 
     const textarea = document.createElement('textarea')
-    textarea.className = 'sb-reply-textarea'
+    textarea.className = 'sb-input w-100 ph2 pv1 br2 f7 sans-serif lh-copy db mb1'
+    textarea.style.cssText = 'min-height:40px;max-height:100px;resize:vertical;box-sizing:border-box'
     textarea.placeholder = 'Reply…'
     form.appendChild(textarea)
 
     const actions = document.createElement('div')
-    actions.className = 'sb-reply-form-actions'
+    actions.className = 'flex justify-end mt2'
 
     const submitBtn = document.createElement('button')
-    submitBtn.className = 'sb-reply-submit-btn'
+    submitBtn.className = 'sb-btn-success ph2 pv1 br2 f7 fw5 sans-serif pointer bn'
     submitBtn.textContent = 'Reply'
     submitBtn.disabled = true
 

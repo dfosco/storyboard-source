@@ -10,6 +10,7 @@ import ColorModeSwitcher from './components/ColorModeSwitcher'
 import { installHashPreserver } from '@dfosco/storyboard-react/hash-preserver'
 import { installHideParamListener, installHistorySync, mountDevTools } from '@dfosco/storyboard-core'
 import { initCommentsConfig, mountComments } from '@dfosco/storyboard-core/comments'
+import '@dfosco/storyboard-core/comments/ui/comments.css'
 import storyboardConfig from '../storyboard.config.json'
 
 const router = createBrowserRouter(routes, {

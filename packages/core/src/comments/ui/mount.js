@@ -13,101 +13,8 @@ import { fetchRouteDiscussion } from '../api.js'
 import { showComposer } from './composer.js'
 import { openAuthModal } from './authModal.js'
 import { showCommentWindow, closeCommentWindow } from './commentWindow.js'
-import { applyTheme } from './themeBridge.js'
-
-const CURSOR_SVG_LIGHT = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="%231f2328" stroke-width="1.5" d="M19.503 9.97c1.204.489 1.112 2.224-.137 2.583l-6.305 1.813l-2.88 5.895c-.571 1.168-2.296.957-2.569-.314L4.677 6.257A1.369 1.369 0 0 1 6.53 4.7z" clip-rule="evenodd"/></svg>`
-const CURSOR_SVG_DARK = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="%23fff" stroke-width="1.5" d="M19.503 9.97c1.204.489 1.112 2.224-.137 2.583l-6.305 1.813l-2.88 5.895c-.571 1.168-2.296.957-2.569-.314L4.677 6.257A1.369 1.369 0 0 1 6.53 4.7z" clip-rule="evenodd"/></svg>`
-
-const STYLE_ID = 'sb-comment-mode-style'
-
-function injectStyles() {
-  if (document.getElementById(STYLE_ID)) return
-  const style = document.createElement('style')
-  style.id = STYLE_ID
-  style.textContent = `
-    [data-color-mode="dark"] .sb-comment-mode,
-    [data-dark-theme] .sb-comment-mode {
-      cursor: url("data:image/svg+xml,${CURSOR_SVG_DARK}") 4 2, crosshair;
-    }
-    [data-color-mode="light"] .sb-comment-mode,
-    [data-light-theme] .sb-comment-mode {
-      cursor: url("data:image/svg+xml,${CURSOR_SVG_LIGHT}") 4 2, crosshair;
-    }
-    .sb-comment-mode {
-      cursor: url("data:image/svg+xml,${CURSOR_SVG_DARK}") 4 2, crosshair;
-    }
-    .sb-comment-overlay {
-      position: absolute;
-      inset: 0;
-      z-index: 99998;
-      pointer-events: none;
-    }
-    .sb-comment-overlay.active {
-      pointer-events: auto;
-    }
-    .sb-comment-mode-banner {
-      position: fixed;
-      bottom: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 99999;
-      background: var(--bgColor-emphasis);
-      color: var(--fgColor-onEmphasis);
-      padding: 6px 16px;
-      border-radius: 8px;
-      font: 13px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      pointer-events: none;
-      backdrop-filter: blur(8px);
-      box-shadow: var(--shadow-overlay, 0 2px 8px rgba(0,0,0,0.3));
-    }
-    .sb-comment-mode-banner kbd {
-      display: inline-block;
-      padding: 1px 5px;
-      font-size: 11px;
-      font-family: inherit;
-      border: 1px solid var(--borderColor-muted);
-      border-radius: 4px;
-      background: var(--bgColor-muted);
-    }
-    .sb-comment-pin {
-      position: absolute;
-      z-index: 100000;
-      width: 32px;
-      height: 32px;
-      margin-left: -16px;
-      margin-top: -16px;
-      border-radius: 50%;
-      background: var(--bgColor-default);
-      border: 3px solid hsl(var(--pin-hue, 140), 50%, 38%);
-      cursor: pointer;
-      box-shadow: var(--shadow-overlay, 0 2px 8px rgba(0,0,0,0.4));
-      pointer-events: auto;
-      transition: transform 100ms ease;
-      overflow: hidden;
-    }
-    .sb-comment-pin img {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      object-fit: cover;
-      display: block;
-    }
-    .sb-comment-pin:hover {
-      transform: scale(1.15);
-    }
-    .sb-comment-pin[data-resolved="true"] {
-      border-color: var(--fgColor-muted);
-      opacity: 0.5;
-    }
-  `
-  document.head.appendChild(style)
-}
 
 let banner = null
-let bannerThemeCleanup = null
 let overlay = null
 let activeComposer = null
 let renderedPins = []
@@ -124,24 +31,29 @@ function ensureOverlay() {
   if (pos === 'static') container.style.position = 'relative'
 
   overlay = document.createElement('div')
-  overlay.className = 'sb-comment-overlay'
+  overlay.className = 'sb-comment-overlay absolute top-0 right-0 bottom-0 left-0 pe-none'
+  overlay.style.zIndex = '99998'
   container.appendChild(overlay)
+
+  overlay.addEventListener('click', (e) => {
+    if (!isCommentModeActive()) return
+    handleOverlayClick(e)
+  })
+
   return overlay
 }
 
 function showBanner() {
   if (banner) return
   banner = document.createElement('div')
-  banner.className = 'sb-comment-mode-banner'
-  banner.innerHTML = 'Comment mode — click to place a comment. Press <kbd>C</kbd> or <kbd>Esc</kbd> to exit.'
+  banner.className = 'fixed flex items-center pe-none sans-serif sb-shadow'
+  banner.style.cssText = 'bottom:12px;left:50%;transform:translateX(-50%);z-index:99999;background:var(--sb-bg);color:var(--sb-fg);padding:6px 16px;border-radius:8px;font-size:13px;line-height:1.4;backdrop-filter:blur(12px)'
+  banner.innerHTML = 'Comment mode — click to place a comment. Press <kbd style="display:inline-block;padding:1px 6px;font-size:11px;font-family:inherit;border:1px solid rgba(255,255,255,0.3);border-radius:4px;background:rgba(255,255,255,0.1)">C</kbd> or <kbd style="display:inline-block;padding:1px 6px;font-size:11px;font-family:inherit;border:1px solid rgba(255,255,255,0.3);border-radius:4px;background:rgba(255,255,255,0.1)">Esc</kbd> to exit.'
   document.body.appendChild(banner)
-  bannerThemeCleanup = applyTheme(banner)
 }
 
 function hideBanner() {
   if (!banner) return
-  bannerThemeCleanup?.()
-  bannerThemeCleanup = null
   banner.remove()
   banner = null
 }
@@ -157,7 +69,8 @@ function clearPins() {
 
 function renderPin(ov, comment, index) {
   const pin = document.createElement('div')
-  pin.className = 'sb-comment-pin'
+  pin.className = 'sb-comment-pin absolute br-100 sb-bg pointer sb-shadow pe-auto overflow-hidden'
+  pin.style.cssText = 'z-index:100000;width:32px;height:32px;margin-left:-16px;margin-top:-16px;transition:transform 100ms ease-in-out'
   pin.style.left = `${comment.meta?.x ?? 0}%`
   pin.style.top = `${comment.meta?.y ?? 0}%`
 
@@ -166,6 +79,8 @@ function renderPin(ov, comment, index) {
 
   if (comment.author?.avatarUrl) {
     const img = document.createElement('img')
+    img.className = 'br-100 db'
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover'
     img.src = comment.author.avatarUrl
     img.alt = comment.author.login ?? ''
     pin.appendChild(img)
@@ -285,7 +200,8 @@ function setBodyCommentMode(active) {
     document.body.classList.add('sb-comment-mode')
     showBanner()
     const ov = ensureOverlay()
-    ov.classList.add('active')
+    ov.classList.remove('pe-none')
+    ov.classList.add('pe-auto')
     renderCachedPins()
     loadAndRenderComments()
   } else {
@@ -297,7 +213,10 @@ function setBodyCommentMode(active) {
     }
     closeCommentWindow()
     clearPins()
-    if (overlay) overlay.classList.remove('active')
+    if (overlay) {
+      overlay.classList.remove('pe-auto')
+      overlay.classList.add('pe-none')
+    }
   }
 }
 
@@ -312,19 +231,11 @@ export function mountComments() {
   if (_mounted) return
   _mounted = true
 
-  injectStyles()
-
   // Initialize Alpine.js for comments UI
   window.Alpine = Alpine
   Alpine.start()
 
   subscribeToCommentMode(setBodyCommentMode)
-
-  document.addEventListener('click', (e) => {
-    if (!isCommentModeActive()) return
-    if (e.target.closest('.sb-devtools-wrapper') || e.target.closest('.sb-auth-backdrop') || e.target.closest('.sb-comments-drawer') || e.target.closest('.sb-comments-drawer-backdrop')) return
-    handleOverlayClick(e)
-  })
 
   window.addEventListener('keydown', (e) => {
     const tag = e.target.tagName

@@ -2,130 +2,11 @@
  * Comment composer — Alpine.js inline text input that appears at click position.
  *
  * Positioned absolutely within the comment overlay. Submits to the comments API.
- * Themed with Primer CSS custom properties for light/dark mode support.
+ * Styled with Tachyons + sb-* custom classes for light/dark mode support.
  */
 
 import { createComment } from '../api.js'
 import { getCachedUser } from '../auth.js'
-
-const STYLE_ID = 'sb-composer-style'
-
-function injectStyles() {
-  if (document.getElementById(STYLE_ID)) return
-  const style = document.createElement('style')
-  style.id = STYLE_ID
-  style.textContent = `
-    .sb-composer {
-      position: absolute;
-      z-index: 100001;
-      display: flex;
-      flex-direction: column;
-      width: 280px;
-      background: var(--overlay-bgColor, var(--bgColor-default));
-      border: 1px solid var(--borderColor-default);
-      border-radius: 10px;
-      box-shadow: var(--shadow-overlay, 0 8px 24px rgba(0, 0, 0, 0.3));
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-      overflow: hidden;
-    }
-
-    .sb-composer-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 12px 0;
-    }
-
-    .sb-composer-avatar {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      border: 1px solid var(--borderColor-default);
-      flex-shrink: 0;
-    }
-
-    .sb-composer-username {
-      font-size: 12px;
-      color: var(--fgColor-muted);
-      font-weight: 500;
-    }
-
-    .sb-composer-body {
-      padding: 8px 12px 12px;
-    }
-
-    .sb-composer-textarea {
-      width: 100%;
-      min-height: 60px;
-      max-height: 160px;
-      padding: 8px 10px;
-      background: var(--bgColor-inset, var(--bgColor-default));
-      border: 1px solid var(--borderColor-default);
-      border-radius: 6px;
-      color: var(--fgColor-default);
-      font-size: 13px;
-      font-family: inherit;
-      line-height: 1.5;
-      resize: vertical;
-      outline: none;
-      box-sizing: border-box;
-    }
-    .sb-composer-textarea:focus {
-      border-color: var(--fgColor-accent);
-      box-shadow: 0 0 0 3px var(--borderColor-accent-muted, rgba(88, 166, 255, 0.15));
-    }
-    .sb-composer-textarea::placeholder {
-      color: var(--fgColor-muted);
-    }
-
-    .sb-composer-footer {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 6px;
-      padding: 0 12px 10px;
-    }
-
-    .sb-composer-btn {
-      padding: 4px 12px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 500;
-      font-family: inherit;
-      cursor: pointer;
-      border: 1px solid transparent;
-    }
-
-    .sb-composer-btn-cancel {
-      background: none;
-      color: var(--fgColor-muted);
-      border-color: var(--borderColor-default);
-    }
-    .sb-composer-btn-cancel:hover {
-      background: var(--bgColor-muted);
-      color: var(--fgColor-default);
-    }
-
-    .sb-composer-btn-submit {
-      background: var(--bgColor-success-emphasis);
-      color: var(--fgColor-onEmphasis);
-    }
-    .sb-composer-btn-submit:hover {
-      filter: brightness(1.1);
-    }
-    .sb-composer-btn-submit:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .sb-composer-error {
-      padding: 4px 12px 8px;
-      font-size: 12px;
-      color: var(--fgColor-danger);
-    }
-  `
-  document.head.appendChild(style)
-}
 
 /**
  * Show the comment composer at a given position within a container.
@@ -139,11 +20,11 @@ function injectStyles() {
  * @returns {{ el: HTMLElement, destroy: () => void }}
  */
 export function showComposer(container, xPct, yPct, route, callbacks = {}) {
-  injectStyles()
-
   const user = getCachedUser()
   const composer = document.createElement('div')
-  composer.className = 'sb-composer'
+  composer.className = 'sb-composer absolute flex flex-column sb-bg ba sb-b-default br3 sb-shadow sans-serif overflow-hidden'
+  composer.style.zIndex = '100001'
+  composer.style.width = '280px'
   composer.style.left = `${xPct}%`
   composer.style.top = `${yPct}%`
   composer.style.transform = 'translate(12px, -50%)'
@@ -151,23 +32,24 @@ export function showComposer(container, xPct, yPct, route, callbacks = {}) {
   composer.innerHTML = `
     <div x-data="sbComposer" @keydown.escape.prevent.stop="cancel()">
       ${user ? `
-        <div class="sb-composer-header">
-          <img class="sb-composer-avatar" src="${user.avatarUrl}" alt="${user.login}" />
-          <span class="sb-composer-username">${user.login}</span>
+        <div class="flex items-center ph3 pt2">
+          <img class="br-100 ba sb-b-default flex-shrink-0 mr2" style="width:24px;height:24px" src="${user.avatarUrl}" alt="${user.login}" />
+          <span class="f7 sb-fg-muted fw5">${user.login}</span>
         </div>
       ` : ''}
-      <div class="sb-composer-body">
-        <textarea class="sb-composer-textarea" placeholder="Leave a comment…"
+      <div class="ph3 pt2 pb3">
+        <textarea class="sb-input w-100 ph2 pv2 br2 f6 sans-serif lh-copy db" style="min-height:60px;max-height:160px;resize:vertical;box-sizing:border-box;font-size:13px"
+                  placeholder="Leave a comment…"
                   x-model="text"
                   @keydown.meta.enter="submit()"
                   @keydown.ctrl.enter="submit()"></textarea>
       </div>
       <template x-if="error">
-        <div class="sb-composer-error" x-text="error"></div>
+        <div class="ph3 pb2 f7 sb-fg-danger" x-text="error"></div>
       </template>
-      <div class="sb-composer-footer">
-        <button class="sb-composer-btn sb-composer-btn-cancel" @click="cancel()">Cancel</button>
-        <button class="sb-composer-btn sb-composer-btn-submit" :disabled="submitting"
+      <div class="flex items-center justify-end ph3 pb2">
+        <button class="sb-btn-cancel ph3 pv1 br2 f7 fw5 pointer mr1" style="font-size:12px" @click="cancel()">Cancel</button>
+        <button class="sb-btn-success ph3 pv1 br2 f7 fw5 pointer bn" style="font-size:12px" :disabled="submitting"
                 @click="submit()" x-text="submitting ? 'Posting…' : 'Comment'">Comment</button>
       </div>
     </div>
@@ -232,7 +114,7 @@ export function showComposer(container, xPct, yPct, route, callbacks = {}) {
 
   // Focus textarea
   requestAnimationFrame(() => {
-    const textarea = composer.querySelector('.sb-composer-textarea')
+    const textarea = composer.querySelector('textarea')
     if (textarea) textarea.focus()
   })
 
