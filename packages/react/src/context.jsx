@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useMemo } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useLocation } from 'react-router-dom'
 // Side-effect import: seeds the core data index via init()
 import 'virtual:storyboard-data-index'
 import { loadScene, sceneExists, findRecord, deepMerge } from '@dfosco/storyboard-core'
@@ -9,20 +9,11 @@ import { StoryboardContext } from './StoryboardContext.js'
 export { StoryboardContext }
 
 /**
- * Read the ?scene= param directly from window.location.
- * Avoids useSearchParams() which re-renders on every router
- * navigation event (including hash changes), causing a flash.
- */
-function getSceneParam() {
-  return new URLSearchParams(window.location.search).get('scene')
-}
-
-/**
- * Derives a scene name from the current page pathname.
+ * Derives a scene name from a pathname.
  * "/Overview" → "Overview", "/" → "index", "/nested/Page" → "Page"
  */
-function getPageSceneName() {
-  const path = window.location.pathname.replace(/\/+$/, '') || '/'
+function getPageSceneName(pathname) {
+  const path = pathname.replace(/\/+$/, '') || '/'
   if (path === '/') return 'index'
   const last = path.split('/').pop()
   return last || 'index'
@@ -37,8 +28,10 @@ function getPageSceneName() {
  * The matched record entry is injected under the "record" key in scene data.
  */
 export default function StoryboardProvider({ sceneName, recordName, recordParam, children }) {
-  const pageScene = getPageSceneName()
-  const activeSceneName = getSceneParam() || sceneName || (sceneExists(pageScene) ? pageScene : 'default')
+  const location = useLocation()
+  const sceneParam = new URLSearchParams(location.search).get('scene')
+  const pageScene = getPageSceneName(location.pathname)
+  const activeSceneName = sceneParam || sceneName || (sceneExists(pageScene) ? pageScene : 'default')
   const params = useParams()
 
   const { data, error } = useMemo(() => {
@@ -57,7 +50,7 @@ export default function StoryboardProvider({ sceneName, recordName, recordParam,
     } catch (err) {
       return { data: null, error: err.message }
     }
-  }, [activeSceneName, recordName, recordParam, params])
+  }, [activeSceneName, recordName, recordParam, params, location.pathname])
 
   const value = {
     data,

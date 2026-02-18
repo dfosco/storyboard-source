@@ -46,6 +46,7 @@
 .card:hover {
   border-color: var(--borderColor-accent-emphasis, #1f6feb);
   box-shadow: 0 0 0 1px var(--borderColor-accent-emphasis, #1f6feb);
+  text-decoration: none !important;
 }
 
 .thumbnail {

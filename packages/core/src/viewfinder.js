@@ -28,7 +28,9 @@ export function resolveSceneRoute(sceneName, knownRoutes = []) {
   // Case-insensitive match against known routes
   for (const route of knownRoutes) {
     if (route.toLowerCase() === sceneName.toLowerCase()) {
-      return `/${route}?scene=${encodeURIComponent(sceneName)}`
+      // Scene name matches the route — no ?scene= needed,
+      // StoryboardProvider auto-matches by page name
+      return `/${route}`
     }
   }
 

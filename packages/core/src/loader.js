@@ -151,7 +151,7 @@ export function loadScene(sceneName = 'default') {
   let sceneData
 
   try {
-    sceneData = loadDataFile(sceneName, 'scenes')
+    sceneData = structuredClone(loadDataFile(sceneName, 'scenes'))
   } catch {
     throw new Error(`Failed to load scene: ${sceneName}`)
   }

@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect, useMemo } from 'react'
 import { hash, resolveSceneRoute, getSceneMeta } from '@dfosco/storyboard-core'
-import { Link } from 'react-router-dom'
 import styles from './Viewfinder.module.css'
 
 function PlaceholderGraphic({ name }) {
@@ -127,7 +126,7 @@ export default function Viewfinder({ scenes = {}, pageModules = {}, basePath, ti
             {sceneNames.map((name) => {
               const meta = getSceneMeta(name)
               return (
-                <Link key={name} to={resolveSceneRoute(name, knownRoutes)} className={styles.card}>
+                <a key={name} href={resolveSceneRoute(name, knownRoutes)} className={styles.card}>
                   <div className={styles.thumbnail}>
                     <PlaceholderGraphic name={name} />
                   </div>
@@ -144,7 +143,7 @@ export default function Viewfinder({ scenes = {}, pageModules = {}, basePath, ti
                       </div>
                     )}
                   </div>
-                </Link>
+                </a>
               )
             })}
           </div>

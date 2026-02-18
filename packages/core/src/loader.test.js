@@ -120,6 +120,19 @@ describe('loadScene', () => {
     expect(scene2.injected).toBeUndefined()
   })
 
+  it('resolves $global on repeated calls (no index mutation)', () => {
+    const first = loadScene('Dashboard')
+    expect(first.links).toEqual(['home', 'about'])
+    expect(first.heading).toBe('Dashboard')
+
+    // Second call must return the same resolved data — $global must not
+    // be deleted from the index by the first call
+    const second = loadScene('Dashboard')
+    expect(second.links).toEqual(['home', 'about'])
+    expect(second.heading).toBe('Dashboard')
+    expect(second.nav).toBe('scene-wins')
+  })
+
   it('default param loads "default" scene', () => {
     const scene = loadScene()
     expect(scene.title).toBe('Default Scene')

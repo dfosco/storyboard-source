@@ -44,11 +44,11 @@ describe('resolveSceneRoute', () => {
   const routes = ['Dashboard', 'Overview', 'Forms', 'Repositories']
 
   it('matches scene name to route (exact case)', () => {
-    expect(resolveSceneRoute('Dashboard', routes)).toBe('/Dashboard?scene=Dashboard')
+    expect(resolveSceneRoute('Dashboard', routes)).toBe('/Dashboard')
   })
 
   it('matches scene name to route (case-insensitive)', () => {
-    expect(resolveSceneRoute('dashboard', routes)).toBe('/Dashboard?scene=dashboard')
+    expect(resolveSceneRoute('dashboard', routes)).toBe('/Dashboard')
   })
 
   it('uses route key from scene data when no route matches', () => {

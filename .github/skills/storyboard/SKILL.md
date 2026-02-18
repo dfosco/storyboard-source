@@ -29,6 +29,20 @@ Storyboard uses **suffix-based naming** for data files. Files can live anywhere 
 - When refactoring an existing page to use scene data
 - When creating dynamic route pages with records
 
+## Navigation Anti-Pattern
+
+**DO NOT use React Router's `<Link>` component for internal navigation.** Use plain `<a href="...">` tags instead.
+
+The storyboard hash preserver intercepts `<a>` clicks to preserve URL hash params and handle client-side routing. React Router `<Link>` bypasses this by calling `navigate()` directly, which creates a duplicate browser history entry (one from `<Link>`, one from the hash preserver's click handler). This causes a "double back" bug where the user must press back twice to actually navigate back.
+
+```jsx
+// ❌ BAD — creates double history entries
+<Link to="/Overview">Overview</Link>
+
+// ✅ GOOD — intercepted by hash preserver for client-side navigation
+<a href="/Overview">Overview</a>
+```
+
 ## The Core Rule: What Goes in Data vs. What's Hardcoded
 
 ### Externalize as data objects
@@ -226,7 +240,7 @@ import { useRecords } from '../../storyboard'
 function PostsIndex() {
   const posts = useRecords('posts')
   return posts.map(post => (
-    <Link key={post.id} to={`/posts/${post.id}`}>{post.title}</Link>
+    <a key={post.id} href={`/posts/${post.id}`}>{post.title}</a>
   ))
 }
 ```
