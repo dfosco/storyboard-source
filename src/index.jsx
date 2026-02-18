@@ -20,7 +20,7 @@ installHashPreserver(router, import.meta.env.BASE_URL)
 installHideParamListener()
 installHistorySync()
 initCommentsConfig(storyboardConfig)
-mountDevTools()
+mountDevTools({ basePath: import.meta.env.BASE_URL })
 mountComments()
 
 const rootElement = document.getElementById('root')
