@@ -10,6 +10,7 @@ import { toggleCommentMode, setCommentMode, isCommentModeActive, subscribeToComm
 import { fetchRouteDiscussion } from '../api.js'
 import { showComposer } from './composer.js'
 import { openAuthModal } from './authModal.js'
+import { showCommentWindow, closeCommentWindow } from './commentWindow.js'
 
 const CURSOR_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="%23fff" stroke-width="1.5" d="M19.503 9.97c1.204.489 1.112 2.224-.137 2.583l-6.305 1.813l-2.88 5.895c-.571 1.168-2.296.957-2.569-.314L4.677 6.257A1.369 1.369 0 0 1 6.53 4.7z" clip-rule="evenodd"/></svg>`
 
@@ -34,7 +35,7 @@ function injectStyles() {
     }
     .sb-comment-mode-banner {
       position: fixed;
-      top: 12px;
+      bottom: 12px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 99999;
@@ -67,6 +68,7 @@ let banner = null
 let overlay = null
 let activeComposer = null
 let renderedPins = []
+let cachedDiscussion = null
 
 function getContentContainer() {
   // Per plan: coordinates relative to <main> or nearest positioned parent
@@ -117,6 +119,24 @@ function renderPin(ov, comment, index) {
   pin.textContent = index + 1
   if (comment.meta?.resolved) pin.setAttribute('data-resolved', 'true')
   pin.title = `${comment.author?.login ?? 'unknown'}: ${comment.text?.slice(0, 80) ?? ''}`
+
+  // Store raw body for move operations
+  comment._rawBody = comment.body
+
+  // Click pin to open comment window
+  pin.addEventListener('click', (e) => {
+    e.stopPropagation()
+    // Dismiss any open composer
+    if (activeComposer) {
+      activeComposer.destroy()
+      activeComposer = null
+    }
+    showCommentWindow(ov, comment, cachedDiscussion, {
+      onClose: () => {},
+      onMove: () => loadAndRenderComments(),
+    })
+  })
+
   ov.appendChild(pin)
   renderedPins.push(pin)
   return pin
@@ -129,6 +149,7 @@ async function loadAndRenderComments() {
 
   try {
     const discussion = await fetchRouteDiscussion(getCurrentRoute())
+    cachedDiscussion = discussion
     if (!discussion?.comments?.length) return
 
     discussion.comments.forEach((comment, i) => {
@@ -143,8 +164,11 @@ async function loadAndRenderComments() {
 
 function handleOverlayClick(e) {
   if (!isCommentModeActive()) return
-  // Don't place if clicking on an existing composer or pin
-  if (e.target.closest('.sb-composer') || e.target.closest('.sb-comment-pin')) return
+  // Don't place if clicking on an existing composer, pin, or comment window
+  if (e.target.closest('.sb-composer') || e.target.closest('.sb-comment-pin') || e.target.closest('.sb-comment-window')) return
+
+  // Close any open comment window
+  closeCommentWindow()
 
   // Dismiss any open composer
   if (activeComposer) {
@@ -182,6 +206,7 @@ function setBodyCommentMode(active) {
       activeComposer.destroy()
       activeComposer = null
     }
+    closeCommentWindow()
     clearPins()
     if (overlay) overlay.classList.remove('active')
   }

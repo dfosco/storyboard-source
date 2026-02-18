@@ -32,3 +32,6 @@ export { graphql } from './graphql.js'
 
 // Mount
 export { mountComments } from './ui/mount.js'
+
+// Comment window
+export { showCommentWindow, closeCommentWindow } from './ui/commentWindow.js'
