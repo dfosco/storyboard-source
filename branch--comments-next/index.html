@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/storyboard-source/branch--comments-next/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Storyboard Prototype</title>
+
+     <!-- Start Single Page Apps for GitHub Pages -->
+     <script type="text/javascript">
+      // Single Page Apps for GitHub Pages
+      // MIT License
+      // https://github.com/rafgraph/spa-github-pages
+      // This script checks to see if a redirect is present in the query string,
+      // converts it back into the correct url and adds it to the
+      // browser's history using window.history.replaceState(...),
+      // which won't cause the browser to attempt to load the new url.
+      // When the single page app is loaded further down in this file,
+      // the correct url will be waiting in the browser's history for
+      // the single page app to route accordingly.
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, null,
+              l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location))
+    </script>
+    <!-- End Single Page Apps for GitHub Pages -->   
+    <script type="module" crossorigin src="/storyboard-source/branch--comments-next/assets/index-AHG6cjRE.js"></script>
+    <link rel="modulepreload" crossorigin href="/storyboard-source/branch--comments-next/assets/vendor-react-BQyrhFMj.js">
+    <link rel="modulepreload" crossorigin href="/storyboard-source/branch--comments-next/assets/vendor-octicons-BtAiKi0j.js">
+    <link rel="modulepreload" crossorigin href="/storyboard-source/branch--comments-next/assets/vendor-primer-BK6UB-si.js">
+    <link rel="modulepreload" crossorigin href="/storyboard-source/branch--comments-next/assets/vendor-reshaped-BDP14DwY.js">
+    <link rel="stylesheet" crossorigin href="/storyboard-source/branch--comments-next/assets/vendor-primer-BEAryH55.css">
+    <link rel="stylesheet" crossorigin href="/storyboard-source/branch--comments-next/assets/vendor-reshaped-CHiksvd1.css">
+    <link rel="stylesheet" crossorigin href="/storyboard-source/branch--comments-next/assets/index-BUwVFieI.css">
+  </head>
+  <body>
+    <div id="root">
+      <div id="initial-loader" style="display:flex;align-items:center;justify-content:center;min-height:100vh;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" style="animation:spin .8s linear infinite">
+          <circle cx="12" cy="12" r="10" stroke-width="2.5" opacity=".25"/>
+          <path d="M12 2a10 10 0 0 1 10 10" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        <style>
+          body:has(#initial-loader) {
+            margin: 0;
+            padding: 0;
+          }
+          @keyframes spin{to{transform:rotate(360deg)}}
+          @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+          #initial-loader{background:#0d1117;color:#e6edf3;opacity:0;animation:fadeIn 0s 0.8s forwards}
+          #initial-loader circle{stroke:#484f58}
+          #initial-loader path{stroke:#e6edf3}
+          @media(prefers-color-scheme:light){
+            #initial-loader{background:#ffffff;color:#1f2328}
+            #initial-loader circle{stroke:#d1d9e0}
+            #initial-loader path{stroke:#1f2328}
+          }
+        </style>
+      </div>
+    </div>
+  </body>
+</html>
