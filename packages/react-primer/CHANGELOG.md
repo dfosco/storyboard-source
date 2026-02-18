@@ -1,5 +1,23 @@
 # @dfosco/storyboard-react-primer
 
+## 1.9.0
+
+### Minor Changes
+
+-   Comments system, theme sync, and navigation fixes
+
+    -   Revamp comments UI with Alpine.js, Primer tokens, and light/dark mode support
+    -   Replace injected CSS with Tachyons and sb-\* custom classes
+    -   Add edit/delete replies, edit/resolve/unresolve comments, viewport clamping
+    -   Fix devtools click blocking, add hide/show mode toggle
+    -   Theme sync: data-sb-theme attribute, localStorage persistence, basePath filter
+    -   Fix SPA navigation: double-back bug, $ref resolution, scene matching
+
+### Patch Changes
+
+-   Updated dependencies
+    -   @dfosco/storyboard-react@1.9.0
+
 ## 1.8.0
 
 ### Minor Changes
