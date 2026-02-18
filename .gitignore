@@ -25,6 +25,7 @@ yarn-error.log*
 .playwright-profile
 
 .github/skills/_archive
+.github/skills/primer-primitives
 .github/skills/primer-components-catalog
 .github/skills/primer-screenshot-builder
 .github/skills/primer-screenshot-patterns
