@@ -162,6 +162,9 @@ function renderPin(ov, comment, index) {
   if (comment.meta?.resolved) pin.setAttribute('data-resolved', 'true')
   pin.title = `${comment.author?.login ?? 'unknown'}: ${comment.text?.slice(0, 80) ?? ''}`
 
+  // Store comment ID on pin for drag-move updates
+  pin._commentId = comment.id
+
   // Store raw body for move operations
   comment._rawBody = comment.body
 
@@ -306,7 +309,7 @@ export function mountComments() {
   document.addEventListener('click', (e) => {
     if (!isCommentModeActive()) return
     // Ignore clicks on devtools, modals, etc.
-    if (e.target.closest('.sb-devtools-wrapper') || e.target.closest('.sb-auth-backdrop')) return
+    if (e.target.closest('.sb-devtools-wrapper') || e.target.closest('.sb-auth-backdrop') || e.target.closest('.sb-comments-drawer') || e.target.closest('.sb-comments-drawer-backdrop')) return
     handleOverlayClick(e)
   })
 
