@@ -1,4 +1,8 @@
 {
+  "sceneMeta": {
+    "route": "/example",
+    "author": "dfosco"
+  },
   "user": { "$ref": "jane-doe" },
   "navigation": { "$ref": "navigation" },
   "projects": [

@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+#
+# pre-commit hook: auto-populate sceneMeta.author on new *.scene.json files.
+#
+# For each staged scene file that is newly added (not modified), this script
+# looks up the git user who created it and writes sceneMeta.author if not
+# already present. It infers a GitHub @username from user@github.com emails.
+#
+set -euo pipefail
+
+# Only process newly added scene files (status "A" in the index)
+staged_scenes=$(git diff --cached --name-only --diff-filter=A -- '*.scene.json' '*.scene.jsonc' 2>/dev/null || true)
+
+[ -z "$staged_scenes" ] && exit 0
+
+# Get the committer's identity
+GIT_EMAIL=$(git config user.email || echo "")
+GIT_NAME=$(git config user.name || echo "")
+
+# Infer GitHub username from <user>@github.com, otherwise use git name
+if [[ "$GIT_EMAIL" =~ ^([^@]+)@github\.com$ ]]; then
+  AUTHOR="${BASH_REMATCH[1]}"
+else
+  AUTHOR="$GIT_NAME"
+fi
+
+[ -z "$AUTHOR" ] && exit 0
+
+for file in $staged_scenes; do
+  [ -f "$file" ] || continue
+
+  # Skip if sceneMeta.author already exists (any value, even empty string)
+  if python3 -c "
+import json, sys
+with open('$file') as f:
+    data = json.load(f)
+meta = data.get('sceneMeta')
+if isinstance(meta, dict) and 'author' in meta:
+    sys.exit(0)
+sys.exit(1)
+" 2>/dev/null; then
+    continue
+  fi
+
+  # Insert or merge sceneMeta.author into the file
+  python3 -c "
+import json
+
+with open('$file', 'r') as f:
+    data = json.load(f)
+
+if 'sceneMeta' not in data or not isinstance(data.get('sceneMeta'), dict):
+    data['sceneMeta'] = {}
+
+data['sceneMeta']['author'] = '$AUTHOR'
+
+# Preserve key order: put sceneMeta first
+ordered = {'sceneMeta': data.pop('sceneMeta')}
+ordered.update(data)
+
+with open('$file', 'w') as f:
+    json.dump(ordered, f, indent=2)
+    f.write('\n')
+"
+
+  git add "$file"
+done
