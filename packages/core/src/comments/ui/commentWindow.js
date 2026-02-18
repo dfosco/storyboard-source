@@ -111,16 +111,18 @@ function injectStyles() {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 24px;
-      height: 24px;
+      padding: 2px 8px;
       background: none;
       border: none;
       border-radius: 6px;
       color: #8b949e;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 11px;
+      font-weight: 500;
+      font-family: inherit;
       line-height: 1;
       flex-shrink: 0;
+      white-space: nowrap;
     }
     .sb-comment-window-action-btn:hover {
       background: #21262d;
@@ -553,12 +555,13 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
   resolveBtn.className = 'sb-comment-window-action-btn'
   resolveBtn.setAttribute('aria-label', comment.meta?.resolved ? 'Resolved' : 'Resolve')
   resolveBtn.title = comment.meta?.resolved ? 'Resolved' : 'Resolve'
-  resolveBtn.innerHTML = '✓'
+  resolveBtn.textContent = comment.meta?.resolved ? 'Resolved' : 'Resolve'
   if (comment.meta?.resolved) resolveBtn.dataset.resolved = 'true'
   resolveBtn.addEventListener('click', async (e) => {
     e.stopPropagation()
     if (comment.meta?.resolved) return
     resolveBtn.dataset.resolved = 'true'
+    resolveBtn.textContent = 'Resolved'
     resolveBtn.title = 'Resolved'
     try {
       await resolveComment(comment.id, comment._rawBody ?? comment.body ?? '')
@@ -567,6 +570,7 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
     } catch (err) {
       console.error('[storyboard] Failed to resolve comment:', err)
       resolveBtn.dataset.resolved = 'false'
+      resolveBtn.textContent = 'Resolve'
       resolveBtn.title = 'Resolve'
     }
   })
@@ -577,18 +581,18 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
   shareBtn.className = 'sb-comment-window-action-btn'
   shareBtn.setAttribute('aria-label', 'Copy link')
   shareBtn.title = 'Copy link'
-  shareBtn.innerHTML = '🔗'
+  shareBtn.textContent = 'Copy link'
   shareBtn.addEventListener('click', (e) => {
     e.stopPropagation()
     const url = new URL(window.location.href)
     url.searchParams.set('comment', comment.id)
     navigator.clipboard.writeText(url.toString()).then(() => {
       shareBtn.dataset.copied = 'true'
-      shareBtn.innerHTML = '✓'
+      shareBtn.textContent = 'Copied!'
       shareBtn.title = 'Copied!'
       setTimeout(() => {
         shareBtn.dataset.copied = 'false'
-        shareBtn.innerHTML = '🔗'
+        shareBtn.textContent = 'Copy link'
         shareBtn.title = 'Copy link'
       }, 2000)
     }).catch(() => {
