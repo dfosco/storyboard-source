@@ -190,10 +190,12 @@ function injectStyles() {
       cursor: pointer;
       font-family: inherit;
       position: relative;
-    }
-    .sb-reaction-add-btn:hover {
       border-color: #30363d;
       background: #21262d;
+    }
+    .sb-reaction-add-btn:hover {
+      border: 1px solid rgba(88, 166, 255, 0.4);
+      background: rgba(88, 166, 255, 0.1);
     }
 
     .sb-reaction-picker {
@@ -396,7 +398,7 @@ function buildReactionBar(item) {
     // Add reaction button
     const addBtn = document.createElement('button')
     addBtn.className = 'sb-reaction-add-btn'
-    addBtn.textContent = '😀+'
+    addBtn.textContent = ' ➕ '
     addBtn.addEventListener('click', (e) => {
       e.stopPropagation()
       showPicker(addBtn, item, render)
