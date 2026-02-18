@@ -552,7 +552,7 @@ Hash is **not** preserved when:
 | Component | Package | Description |
 |-----------|---------|-------------|
 | `<StoryboardProvider>` | `@dfosco/storyboard-react` | Wraps the app. Loads scene from `?scene=` param. Already configured in `src/pages/_app.jsx`. |
-| `<DevTools>` | `@storyboard/primer` | Floating debug panel showing current scene, hash params, and scene data. Already configured in `src/index.jsx`. |
+| `<DevTools>` | `@storyboard/primer` | Floating debug panel showing current scene, hash params, and scene data. Includes comments menu when configured. Already configured in `src/index.jsx`. |
 | `<SceneDebug>` | `@storyboard/primer` | Renders resolved scene data as formatted JSON. |
 | `<SceneDataDemo>` | `@storyboard/primer` | Interactive demo of scene data and overrides. |
 | `<StoryboardForm>` | `@storyboard/primer` | Form wrapper. `data` prop sets root path for child inputs. Buffers values locally; flushes to URL hash on submit. |
@@ -602,6 +602,69 @@ Hash is **not** preserved when:
 
 ---
 
+## Comments
+
+Storyboard includes an optional **comments system** backed by GitHub Discussions. Collaborators can leave contextual comments pinned to specific positions on any page — no database required.
+
+### How it works
+
+- Press **C** to enter comment mode — click anywhere on the page to place a comment
+- Comments are stored as GitHub Discussions in your repository (one discussion per route)
+- Each comment tracks its page position, so pins appear exactly where they were placed
+- A **comments drawer** lists all comments for the current page
+- Comments support **threaded replies**, **reactions**, **resolving**, and **drag-to-move**
+- Authentication uses a GitHub personal access token (stored in localStorage)
+
+### Setup
+
+1. Enable [GitHub Discussions](https://docs.github.com/en/discussions) on your repository
+2. Create a `storyboard.config.json` at the repo root:
+
+```json
+{
+  "comments": {
+    "repo": {
+      "owner": "your-username",
+      "name": "your-repo"
+    },
+    "discussions": {
+      "category": "General"
+    }
+  }
+}
+```
+
+3. Import and initialize in your app entry:
+
+```js
+import { initCommentsConfig, mountComments } from '@dfosco/storyboard-core/comments'
+import storyboardConfig from '../storyboard.config.json'
+
+initCommentsConfig(storyboardConfig)
+mountComments()
+```
+
+Comments menu items appear automatically in the DevTools toolbar when configured. Remove the `comments` key from `storyboard.config.json` to disable.
+
+### Comments API (`@dfosco/storyboard-core/comments`)
+
+| Function | Description |
+|----------|-------------|
+| `initCommentsConfig(config)` | Initialize from `storyboard.config.json`. Call once at startup. |
+| `mountComments()` | Mount keyboard shortcut, cursor overlay, and click-to-comment UI. |
+| `isCommentsEnabled()` | Check if comments are configured and enabled. |
+| `toggleCommentMode()` | Toggle comment placement mode on/off. |
+| `fetchRouteDiscussion(route)` | Fetch all comments for a given route. |
+| `createComment(...)` | Create a new comment on a route. |
+| `replyToComment(...)` | Reply to an existing comment thread. |
+| `resolveComment(id)` | Mark a comment thread as resolved. |
+| `moveComment(id, position)` | Update a comment's pinned position. |
+| `deleteComment(id)` | Delete a comment. |
+| `addReaction(id, content)` / `removeReaction(id, content)` | Toggle reactions on a comment. |
+| `openCommentsDrawer()` / `closeCommentsDrawer()` | Open/close the comments drawer panel. |
+
+---
+
 ## Build & Deploy
 
 ```bash
@@ -629,7 +692,7 @@ packages/
 
 | Package | Purpose | Import |
 |---------|---------|--------|
-| `@dfosco/storyboard-core` | Data loading, URL hash state, dot-path utilities, localStorage, hide mode | `import { loadScene, getParam } from '@dfosco/storyboard-core'` |
+| `@dfosco/storyboard-core` | Data loading, URL hash state, dot-path utilities, localStorage, hide mode, comments | `import { loadScene, getParam } from '@dfosco/storyboard-core'` |
 | `@dfosco/storyboard-react` | Provider, hooks (`useSceneData`, `useOverride`, `useRecord`, etc.), hash preserver | `import { useSceneData } from '@dfosco/storyboard-react'` |
 | `@storyboard/primer` | Primer-styled form inputs, DevTools, SceneDebug | `import { TextInput, DevTools } from '@storyboard/primer'` |
 | `@storyboard/reshaped` | Reshaped-styled form inputs (same API as Primer) | `import { TextInput } from '@storyboard/reshaped'` |
