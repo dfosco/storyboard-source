@@ -51,7 +51,7 @@ function Repositories() {
   const repos = Array.isArray(rawRepos) ? rawRepos : []
 
   return (
-    <Application title="dsp-testing" topnav={topnav} sidenav={sidenav}>
+    <Application title="Banana Org" topnav={topnav} sidenav={sidenav}>
       <div className={styles.content}>
         <header className={styles.pageHeader}>
           <h2 className={styles.pageTitle}>All</h2>
