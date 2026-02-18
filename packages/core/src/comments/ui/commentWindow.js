@@ -29,7 +29,7 @@ function injectStyles() {
     .sb-comment-window {
       position: absolute;
       z-index: 100001;
-      width: 320px;
+      width: 360px;
       max-height: 480px;
       display: flex;
       flex-direction: column;
@@ -111,7 +111,7 @@ function injectStyles() {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2px 8px;
+      padding: 8px;
       background: none;
       border: none;
       border-radius: 6px;
