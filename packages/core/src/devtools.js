@@ -14,6 +14,7 @@
  *   mountDevTools() // call once at app startup
  */
 import { loadScene } from './loader.js'
+import { isCommentsEnabled } from './comments/config.js'
 
 const STYLES = `
 .sb-devtools-wrapper {
@@ -217,6 +218,36 @@ export function mountDevTools(options = {}) {
   menu.appendChild(viewfinderBtn)
   menu.appendChild(showInfoBtn)
   menu.appendChild(resetBtn)
+
+  // Comments menu items (injected dynamically if comments are enabled)
+  function refreshCommentMenuItems() {
+    // Remove old comment items
+    menu.querySelectorAll('[data-sb-comment-menu-item]').forEach((el) => el.remove())
+
+    if (!isCommentsEnabled()) return
+
+    // Lazy-import to avoid loading comments code when not needed
+    import('./comments/ui/CommentOverlay.js').then(({ getCommentsMenuItems }) => {
+      const items = getCommentsMenuItems()
+      const insertBefore = hint
+      for (const item of items) {
+        const btn = document.createElement('button')
+        btn.className = 'sb-devtools-menu-item'
+        btn.setAttribute('data-sb-comment-menu-item', '')
+        btn.innerHTML = `<span style="width:16px;height:16px;display:flex;align-items:center;justify-content:center;">${item.icon}</span> ${item.label}`
+        btn.addEventListener('click', () => {
+          menuOpen = false
+          menu.classList.remove('open')
+          item.onClick()
+        })
+        menu.insertBefore(btn, insertBefore)
+      }
+    })
+  }
+
+  // Refresh comment items when menu opens
+  trigger.addEventListener('click', refreshCommentMenuItems)
+
   menu.appendChild(hint)
   wrapper.appendChild(menu)
   wrapper.appendChild(trigger)

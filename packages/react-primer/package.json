@@ -3,6 +3,13 @@
   "version": "1.0.1",
   "private": true,
   "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dfosco/storyboard.git",
+    "directory": "packages/react-primer"
+  },
+  "files": ["src"],
   "dependencies": {
     "@dfosco/storyboard-react": "*",
     "@primer/react": "^38.5.0",

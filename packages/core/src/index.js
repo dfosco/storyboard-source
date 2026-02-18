@@ -33,3 +33,6 @@ export { mountSceneDebug } from './sceneDebug.js'
 
 // Viewfinder utilities
 export { hash, resolveSceneRoute } from './viewfinder.js'
+
+// Comments system
+export { initCommentsConfig, getCommentsConfig, isCommentsEnabled } from './comments/config.js'

@@ -6,6 +6,13 @@
   "dependencies": {
     "@dfosco/storyboard-core": "*"
   },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dfosco/storyboard-react.git",
+    "directory": "packages/core"
+  },
+  "files": ["src"],
   "peerDependencies": {
     "react": ">=18",
     "react-router-dom": ">=6",
