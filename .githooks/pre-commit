@@ -1,35 +1,23 @@
 #!/usr/bin/env bash
 #
-# pre-commit hook: auto-populate sceneMeta.author on new *.scene.json files.
+# pre-commit hook: auto-populate sceneMeta.author on *.scene.json files.
 #
-# For each staged scene file that is newly added (not modified), this script
-# looks up the git user who created it and writes sceneMeta.author if not
-# already present. It infers a GitHub @username from user@github.com emails.
+# For each staged scene file missing sceneMeta.author, this script looks up
+# the original creator of the file via git log. It infers a GitHub @username
+# from user@github.com emails, otherwise uses the git author name.
+# Never overrides an existing sceneMeta.author.
 #
 set -euo pipefail
 
-# Only process newly added scene files (status "A" in the index)
-staged_scenes=$(git diff --cached --name-only --diff-filter=A -- '*.scene.json' '*.scene.jsonc' 2>/dev/null || true)
+# All staged scene files (added or modified)
+staged_scenes=$(git diff --cached --name-only --diff-filter=AM -- '*.scene.json' '*.scene.jsonc' 2>/dev/null || true)
 
 [ -z "$staged_scenes" ] && exit 0
-
-# Get the committer's identity
-GIT_EMAIL=$(git config user.email || echo "")
-GIT_NAME=$(git config user.name || echo "")
-
-# Infer GitHub username from <user>@github.com, otherwise use git name
-if [[ "$GIT_EMAIL" =~ ^([^@]+)@github\.com$ ]]; then
-  AUTHOR="${BASH_REMATCH[1]}"
-else
-  AUTHOR="$GIT_NAME"
-fi
-
-[ -z "$AUTHOR" ] && exit 0
 
 for file in $staged_scenes; do
   [ -f "$file" ] || continue
 
-  # Skip if sceneMeta.author already exists (any value, even empty string)
+  # Skip if sceneMeta.author already exists
   if python3 -c "
 import json, sys
 with open('$file') as f:
@@ -41,6 +29,25 @@ sys.exit(1)
 " 2>/dev/null; then
     continue
   fi
+
+  # Look up the original creator of this file
+  CREATOR_EMAIL=$(git log --diff-filter=A --follow --format='%ae' -- "$file" 2>/dev/null | tail -1)
+  CREATOR_NAME=$(git log --diff-filter=A --follow --format='%an' -- "$file" 2>/dev/null | tail -1)
+
+  # For brand-new files (no git history yet), use the current committer
+  if [ -z "$CREATOR_EMAIL" ]; then
+    CREATOR_EMAIL=$(git config user.email || echo "")
+    CREATOR_NAME=$(git config user.name || echo "")
+  fi
+
+  # Infer GitHub username from <user>@github.com, otherwise use git name
+  if [[ "$CREATOR_EMAIL" =~ ^([^@]+)@github\.com$ ]]; then
+    AUTHOR="${BASH_REMATCH[1]}"
+  else
+    AUTHOR="$CREATOR_NAME"
+  fi
+
+  [ -z "$AUTHOR" ] && continue
 
   # Insert or merge sceneMeta.author into the file
   python3 -c "
