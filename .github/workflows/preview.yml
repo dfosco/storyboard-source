@@ -75,7 +75,10 @@ jobs:
       - name: Generate branch manifest
         run: |
           set -e
-          git worktree prune
+          # Remove stale worktrees from previous steps
+          git worktree list --porcelain | awk '/^worktree \/tmp/{print $2}' | while read wt; do
+            git worktree remove --force "$wt" 2>/dev/null || true
+          done
           git fetch origin gh-pages:gh-pages 2>/dev/null || true
           DEPLOY_DIR=$(mktemp -d)
           git worktree add "$DEPLOY_DIR" gh-pages
