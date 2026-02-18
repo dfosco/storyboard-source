@@ -61,7 +61,7 @@ export default function SceneDataDemo() {
         </Button>
       </section>
 
-      <a href="/storyboard/Overview">hello</a>
+      <a href="/storyboard-source/Overview">hello</a>
 
       <section>
         <Text as="h3" fontWeight="bold">Edit User</Text>
