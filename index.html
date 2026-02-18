@@ -32,7 +32,30 @@
     <!-- End Single Page Apps for GitHub Pages -->   
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="initial-loader" style="display:flex;align-items:center;justify-content:center;min-height:100vh;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" style="animation:spin .8s linear infinite">
+          <circle cx="12" cy="12" r="10" stroke-width="2.5" opacity=".25"/>
+          <path d="M12 2a10 10 0 0 1 10 10" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        <style>
+          body:has(#initial-loader) {
+            margin: 0;
+            padding: 0;
+          }
+          @keyframes spin{to{transform:rotate(360deg)}}
+          @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+          #initial-loader{background:#0d1117;color:#e6edf3;opacity:0;animation:fadeIn 0s 0.8s forwards}
+          #initial-loader circle{stroke:#484f58}
+          #initial-loader path{stroke:#e6edf3}
+          @media(prefers-color-scheme:light){
+            #initial-loader{background:#ffffff;color:#1f2328}
+            #initial-loader circle{stroke:#d1d9e0}
+            #initial-loader path{stroke:#1f2328}
+          }
+        </style>
+      </div>
+    </div>
     <script type="module" src="/src/index.jsx"></script>
   </body>
 </html>
