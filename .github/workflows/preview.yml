@@ -33,7 +33,7 @@ jobs:
           SAFE_NAME=$(echo "$BRANCH_NAME" | sed 's/[^a-zA-Z0-9._-]/-/g' | sed 's/--*/-/g' | sed 's/^-//;s/-$//')
           FOLDER="branch--${SAFE_NAME}"
           echo "folder=$FOLDER" >> "$GITHUB_OUTPUT"
-          echo "base=/storyboard/${FOLDER}/" >> "$GITHUB_OUTPUT"
+          echo "base=/storyboard-source/${FOLDER}/" >> "$GITHUB_OUTPUT"
           echo "Preview folder: $FOLDER"
 
       - name: Install dependencies
@@ -112,7 +112,7 @@ jobs:
         run: |
           echo "## 🔗 Branch Preview" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "https://dfosco.github.io/storyboard/${{ steps.branch.outputs.folder }}/" >> "$GITHUB_STEP_SUMMARY"
+          echo "https://dfosco.github.io/storyboard-source/${{ steps.branch.outputs.folder }}/" >> "$GITHUB_STEP_SUMMARY"
 
   cleanup-preview:
     if: github.event_name == 'delete' && github.event.ref_type == 'branch'

@@ -7,7 +7,7 @@ import { hash, resolveSceneRoute } from '../../packages/core/src/viewfinder.js'
 import { Link } from 'react-router-dom'
 import styles from './viewfinder.module.css'
 
-const branchBasePath = (import.meta.env.BASE_URL || '/storyboard/').replace(/\/[^/]*\/$/, '/')
+const branchBasePath = (import.meta.env.BASE_URL || '/storyboard-source/').replace(/\/[^/]*\/$/, '/')
 const branchManifestUrl = `${branchBasePath}branches.json`
 
 // Build a set of known route names from page files
