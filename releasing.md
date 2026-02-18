@@ -80,13 +80,28 @@ Edit `.changeset/config.json`:
 }
 ```
 
-### 5. Set up GitHub Actions secret
+### 5. Set up npm authentication for CI
 
-Add your npm token as a repository secret named `NPM_TOKEN`:
+**Option A: Granular Access Token (required for first publish)**
 
-1. Generate a token at https://www.npmjs.com/settings/tokens (type: "Automation")
-2. Go to repo **Settings → Secrets and variables → Actions**
-3. Add secret `NPM_TOKEN`
+Since OIDC trusted publishing only works for packages that have been published at least once,
+you need a granular access token for the initial publish:
+
+1. Go to https://www.npmjs.com/settings/tokens
+2. Create a **Granular Access Token** with read/write permissions for your packages
+3. **Enable "Bypass 2FA"** on the token (required for non-interactive CI)
+4. Set expiration (90 days max for write tokens)
+5. Add it as a repository secret named `NPM_TOKEN` in **Settings → Secrets → Actions**
+
+**Option B: OIDC Trusted Publishing (recommended, after first publish)**
+
+After all packages have been published at least once, switch to OIDC trusted publishing
+to eliminate token management entirely:
+
+1. Go to each package's settings on npmjs.com → **Trusted Publisher**
+2. Add GitHub Actions as a trusted publisher (org/user: `dfosco`, repo: `storyboard`, workflow: `publish.yml`)
+3. The workflow already has `id-token: write` permission configured
+4. Remove the `NPM_TOKEN` secret — it's no longer needed
 
 ### 6. Add the publish workflow
 
