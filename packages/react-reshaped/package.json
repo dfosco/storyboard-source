@@ -11,7 +11,7 @@
   },
   "files": ["src"],
   "dependencies": {
-    "@dfosco/storyboard-react": "workspace:*",
+    "@dfosco/storyboard-react": "*",
     "reshaped": "^3.9.0"
   },
   "exports": {
