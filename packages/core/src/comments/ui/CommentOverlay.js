@@ -7,6 +7,7 @@
 import { isAuthenticated } from '../auth.js'
 import { toggleCommentMode } from '../commentMode.js'
 import { openAuthModal, signOut } from './authModal.js'
+import { openCommentsDrawer } from './commentsDrawer.js'
 
 /**
  * Get menu items for the DevTools comments section.
@@ -29,6 +30,13 @@ export function getCommentsMenuItems() {
       icon: '💬',
       onClick: () => {
         toggleCommentMode()
+      },
+    })
+    items.push({
+      label: 'See all comments',
+      icon: '📋',
+      onClick: () => {
+        openCommentsDrawer()
       },
     })
     items.push({

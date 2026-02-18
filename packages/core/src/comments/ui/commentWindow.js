@@ -5,7 +5,7 @@
  * reply input, reactions, and supports drag-to-move.
  */
 
-import { replyToComment, addReaction, removeReaction, moveComment, fetchRouteDiscussion } from '../api.js'
+import { replyToComment, addReaction, removeReaction, moveComment, resolveComment, fetchRouteDiscussion } from '../api.js'
 import { getCachedUser } from '../auth.js'
 
 const STYLE_ID = 'sb-comment-window-style'
@@ -98,6 +98,39 @@ function injectStyles() {
     .sb-comment-window-close:hover {
       background: #21262d;
       color: #c9d1d9;
+    }
+
+    .sb-comment-window-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .sb-comment-window-action-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      background: none;
+      border: none;
+      border-radius: 6px;
+      color: #8b949e;
+      cursor: pointer;
+      font-size: 13px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .sb-comment-window-action-btn:hover {
+      background: #21262d;
+      color: #c9d1d9;
+    }
+    .sb-comment-window-action-btn[data-resolved="true"] {
+      color: #3fb950;
+    }
+    .sb-comment-window-action-btn[data-copied="true"] {
+      color: #3fb950;
     }
 
     .sb-comment-window-body {
@@ -506,6 +539,65 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
 
   header.appendChild(headerLeft)
 
+  const headerActions = document.createElement('div')
+  headerActions.className = 'sb-comment-window-header-actions'
+
+  // Resolve button
+  const resolveBtn = document.createElement('button')
+  resolveBtn.className = 'sb-comment-window-action-btn'
+  resolveBtn.setAttribute('aria-label', comment.meta?.resolved ? 'Resolved' : 'Resolve')
+  resolveBtn.title = comment.meta?.resolved ? 'Resolved' : 'Resolve'
+  resolveBtn.innerHTML = '✓'
+  if (comment.meta?.resolved) resolveBtn.dataset.resolved = 'true'
+  resolveBtn.addEventListener('click', async (e) => {
+    e.stopPropagation()
+    if (comment.meta?.resolved) return
+    resolveBtn.dataset.resolved = 'true'
+    resolveBtn.title = 'Resolved'
+    try {
+      await resolveComment(comment.id, comment._rawBody ?? comment.body ?? '')
+      comment.meta = { ...comment.meta, resolved: true }
+      callbacks.onMove?.()
+    } catch (err) {
+      console.error('[storyboard] Failed to resolve comment:', err)
+      resolveBtn.dataset.resolved = 'false'
+      resolveBtn.title = 'Resolve'
+    }
+  })
+  headerActions.appendChild(resolveBtn)
+
+  // Share button
+  const shareBtn = document.createElement('button')
+  shareBtn.className = 'sb-comment-window-action-btn'
+  shareBtn.setAttribute('aria-label', 'Copy link')
+  shareBtn.title = 'Copy link'
+  shareBtn.innerHTML = '🔗'
+  shareBtn.addEventListener('click', (e) => {
+    e.stopPropagation()
+    const url = new URL(window.location.href)
+    url.searchParams.set('comment', comment.id)
+    navigator.clipboard.writeText(url.toString()).then(() => {
+      shareBtn.dataset.copied = 'true'
+      shareBtn.innerHTML = '✓'
+      shareBtn.title = 'Copied!'
+      setTimeout(() => {
+        shareBtn.dataset.copied = 'false'
+        shareBtn.innerHTML = '🔗'
+        shareBtn.title = 'Copy link'
+      }, 2000)
+    }).catch(() => {
+      // Fallback: select text in a temp input
+      const input = document.createElement('input')
+      input.value = url.toString()
+      document.body.appendChild(input)
+      input.select()
+      document.execCommand('copy')
+      input.remove()
+    })
+  })
+  headerActions.appendChild(shareBtn)
+
+  // Close button
   const closeBtn = document.createElement('button')
   closeBtn.className = 'sb-comment-window-close'
   closeBtn.innerHTML = '×'
@@ -514,7 +606,9 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
     e.stopPropagation()
     destroy()
   })
-  header.appendChild(closeBtn)
+  headerActions.appendChild(closeBtn)
+
+  header.appendChild(headerActions)
   win.appendChild(header)
 
   // --- Body ---
@@ -723,6 +817,11 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
   // Stop clicks from propagating to overlay
   win.addEventListener('click', (e) => e.stopPropagation())
 
+  // Set URL param for deep linking
+  const url = new URL(window.location.href)
+  url.searchParams.set('comment', comment.id)
+  window.history.replaceState(null, '', url.toString())
+
   container.appendChild(win)
 
   function destroy() {
@@ -730,6 +829,10 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
     document.removeEventListener('mouseup', onMouseUp)
     win.remove()
     if (activeWindow?.el === win) activeWindow = null
+    // Clear URL param
+    const currentUrl = new URL(window.location.href)
+    currentUrl.searchParams.delete('comment')
+    window.history.replaceState(null, '', currentUrl.toString())
     callbacks.onClose?.()
   }
 
