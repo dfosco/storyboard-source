@@ -160,6 +160,7 @@ function injectStyles() {
     }
     .sb-comment-pin[data-resolved="true"] {
       background: #8b949e;
+      opacity: 0.5;
     }
   `
   document.head.appendChild(style)

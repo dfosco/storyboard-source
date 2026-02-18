@@ -35,3 +35,6 @@ export { mountComments } from './ui/mount.js'
 
 // Comment window
 export { showCommentWindow, closeCommentWindow } from './ui/commentWindow.js'
+
+// Comments drawer
+export { openCommentsDrawer, closeCommentsDrawer } from './ui/commentsDrawer.js'

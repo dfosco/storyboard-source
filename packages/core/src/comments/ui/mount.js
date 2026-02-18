@@ -142,14 +142,28 @@ function renderPin(ov, comment, index) {
   return pin
 }
 
+function renderCachedPins() {
+  if (!cachedDiscussion?.comments?.length) return
+  const ov = ensureOverlay()
+  clearPins()
+  cachedDiscussion.comments.forEach((comment, i) => {
+    if (comment.meta?.x != null && comment.meta?.y != null) {
+      renderPin(ov, comment, i)
+    }
+  })
+}
+
 async function loadAndRenderComments() {
   if (!isAuthenticated()) return
   const ov = ensureOverlay()
-  clearPins()
+
+  // Show cached pins immediately if available
+  renderCachedPins()
 
   try {
     const discussion = await fetchRouteDiscussion(getCurrentRoute())
     cachedDiscussion = discussion
+    clearPins()
     if (!discussion?.comments?.length) return
 
     discussion.comments.forEach((comment, i) => {
@@ -157,9 +171,26 @@ async function loadAndRenderComments() {
         renderPin(ov, comment, i)
       }
     })
+
+    // Auto-open comment from URL param
+    autoOpenCommentFromUrl(ov, discussion)
   } catch (err) {
     console.warn('[storyboard] Could not load comments:', err.message)
   }
+}
+
+function autoOpenCommentFromUrl(ov, discussion) {
+  const commentId = new URLSearchParams(window.location.search).get('comment')
+  if (!commentId || !discussion?.comments?.length) return
+
+  const comment = discussion.comments.find(c => c.id === commentId)
+  if (!comment) return
+
+  comment._rawBody = comment.body
+  showCommentWindow(ov, comment, discussion, {
+    onClose: () => {},
+    onMove: () => loadAndRenderComments(),
+  })
 }
 
 function handleOverlayClick(e) {
@@ -198,6 +229,8 @@ function setBodyCommentMode(active) {
     showBanner()
     const ov = ensureOverlay()
     ov.classList.add('active')
+    // Show cached pins instantly, then refresh in background
+    renderCachedPins()
     loadAndRenderComments()
   } else {
     document.body.classList.remove('sb-comment-mode')
@@ -263,4 +296,12 @@ export function mountComments() {
       }
     }
   })
+
+  // Auto-open comment from URL param on page load
+  if (isCommentsEnabled() && isAuthenticated()) {
+    const commentId = new URLSearchParams(window.location.search).get('comment')
+    if (commentId) {
+      setCommentMode(true)
+    }
+  }
 }
