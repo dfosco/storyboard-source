@@ -1,6 +1,6 @@
 {
   "name": "@dfosco/storyboard-react",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "type": "module",
   "dependencies": {
     "@dfosco/storyboard-core": "*",

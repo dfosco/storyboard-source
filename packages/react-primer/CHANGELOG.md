@@ -1,5 +1,26 @@
 # @dfosco/storyboard-react-primer
 
+## 1.11.0
+
+### Minor Changes
+
+-   Comments UI refactor and improvements
+
+    -   Refactor comments UI to Alpine.js templates, drop inline styles
+    -   Make comment pins draggable to reposition
+    -   Cache comments in localStorage with lazy-load and 2-min TTL
+    -   Unify reaction trigger and indicator pill styles
+    -   Add Tachyons-scale gap utility classes
+    -   Move reply Edit/Delete inline with author heading
+    -   Hide browser scrollbar in comment window
+    -   Make window drag temporary, not persistent
+    -   Add worktree skill
+
+### Patch Changes
+
+-   Updated dependencies
+    -   @dfosco/storyboard-react@1.11.0
+
 ## 1.10.0
 
 ### Minor Changes
