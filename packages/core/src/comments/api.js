@@ -9,6 +9,8 @@ import { getCommentsConfig } from './config.js'
 import { parseMetadata, serializeMetadata, updateMetadata } from './metadata.js'
 import {
   SEARCH_DISCUSSION,
+  SEARCH_DISCUSSION_LIGHTWEIGHT,
+  GET_COMMENT_DETAIL,
   GET_CATEGORY_ID,
   CREATE_DISCUSSION,
   ADD_COMMENT,
@@ -50,6 +52,48 @@ export async function fetchRouteDiscussion(route) {
   })
 
   return { ...discussion, comments }
+}
+
+/**
+ * Fetch lightweight comment listing for a route (pins only — no replies, no reactions).
+ * Returns null if no discussion exists for the route.
+ * @param {string} route - The route path (e.g. "/Overview")
+ * @returns {Promise<object|null>}
+ */
+export async function fetchRouteCommentsSummary(route) {
+  const config = getCommentsConfig()
+  const title = `Comments: ${route}`
+  const query = `"${title}" in:title repo:${config.repo.owner}/${config.repo.name}`
+
+  const data = await graphql(SEARCH_DISCUSSION_LIGHTWEIGHT, { query })
+  const discussion = data.search?.nodes?.[0]
+  if (!discussion) return null
+
+  const comments = (discussion.comments?.nodes ?? []).map((comment) => {
+    const { meta, text } = parseMetadata(comment.body)
+    return { ...comment, meta, text }
+  })
+
+  return { ...discussion, comments }
+}
+
+/**
+ * Fetch full detail for a single comment (replies, reactions, etc.).
+ * @param {string} commentId - The GraphQL node ID of the comment
+ * @returns {Promise<object|null>}
+ */
+export async function fetchCommentDetail(commentId) {
+  const data = await graphql(GET_COMMENT_DETAIL, { id: commentId })
+  const node = data.node
+  if (!node) return null
+
+  const { meta, text } = parseMetadata(node.body)
+  const replies = (node.replies?.nodes ?? []).map((reply) => {
+    const { meta: replyMeta, text: replyText } = parseMetadata(reply.body)
+    return { ...reply, meta: replyMeta, text: replyText }
+  })
+
+  return { ...node, meta, text, replies }
 }
 
 /**

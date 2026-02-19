@@ -1,5 +1,7 @@
 import {
   fetchRouteDiscussion,
+  fetchRouteCommentsSummary,
+  fetchCommentDetail,
   createComment,
   replyToComment,
   resolveComment,
@@ -100,6 +102,92 @@ describe('api', () => {
       const result = await fetchRouteDiscussion('/Test')
       expect(result.comments[0].replies).toHaveLength(1)
       expect(result.comments[0].replies[0].text).toBe('A reply')
+    })
+  })
+
+  describe('fetchRouteCommentsSummary', () => {
+    it('returns null when no discussion found', async () => {
+      graphql.mockResolvedValue({ search: { nodes: [] } })
+      const result = await fetchRouteCommentsSummary('/Overview')
+      expect(result).toBeNull()
+    })
+
+    it('parses comments with metadata (no replies/reactions)', async () => {
+      graphql.mockResolvedValue({
+        search: {
+          nodes: [
+            {
+              id: 'D_123',
+              title: 'Comments: /Overview',
+              comments: {
+                nodes: [
+                  {
+                    id: 'C_1',
+                    body: '<!-- sb-meta {"x":10,"y":20} -->\nHello',
+                    author: { login: 'dfosco', avatarUrl: 'https://example.com' },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      })
+
+      const result = await fetchRouteCommentsSummary('/Overview')
+      expect(result.id).toBe('D_123')
+      expect(result.comments).toHaveLength(1)
+      expect(result.comments[0].meta).toEqual({ x: 10, y: 20 })
+      expect(result.comments[0].text).toBe('Hello')
+      // Should use lightweight query (no replies/reactions in query)
+      expect(graphql).toHaveBeenCalledWith(
+        expect.stringContaining('SearchDiscussionLightweight'),
+        expect.any(Object)
+      )
+    })
+  })
+
+  describe('fetchCommentDetail', () => {
+    it('returns null when node not found', async () => {
+      graphql.mockResolvedValue({ node: null })
+      const result = await fetchCommentDetail('C_999')
+      expect(result).toBeNull()
+    })
+
+    it('returns full comment with replies and reactions', async () => {
+      graphql.mockResolvedValue({
+        node: {
+          id: 'C_1',
+          body: '<!-- sb-meta {"x":10,"y":20} -->\nHello',
+          createdAt: '2026-01-01T00:00:00Z',
+          author: { login: 'dfosco', avatarUrl: 'https://example.com' },
+          replies: {
+            nodes: [
+              {
+                id: 'R_1',
+                body: 'A reply',
+                createdAt: '2026-01-02T00:00:00Z',
+                author: { login: 'user2', avatarUrl: 'https://example.com/2' },
+                reactionGroups: [],
+              },
+            ],
+          },
+          reactionGroups: [
+            { content: 'HEART', users: { totalCount: 1 }, viewerHasReacted: true },
+          ],
+        },
+      })
+
+      const result = await fetchCommentDetail('C_1')
+      expect(result.id).toBe('C_1')
+      expect(result.meta).toEqual({ x: 10, y: 20 })
+      expect(result.text).toBe('Hello')
+      expect(result.replies).toHaveLength(1)
+      expect(result.replies[0].text).toBe('A reply')
+      expect(result.reactionGroups).toHaveLength(1)
+      expect(graphql).toHaveBeenCalledWith(
+        expect.stringContaining('GetCommentDetail'),
+        { id: 'C_1' }
+      )
     })
   })
 

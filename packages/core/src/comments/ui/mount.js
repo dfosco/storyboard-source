@@ -9,7 +9,8 @@ import Alpine from 'alpinejs'
 import { isCommentsEnabled } from '../config.js'
 import { isAuthenticated } from '../auth.js'
 import { toggleCommentMode, setCommentMode, isCommentModeActive, subscribeToCommentMode } from '../commentMode.js'
-import { fetchRouteDiscussion } from '../api.js'
+import { fetchRouteCommentsSummary, fetchCommentDetail } from '../api.js'
+import { getCachedComments, setCachedComments } from '../commentCache.js'
 import { showComposer } from './composer.js'
 import { openAuthModal } from './authModal.js'
 import { showCommentWindow, closeCommentWindow } from './commentWindow.js'
@@ -88,16 +89,30 @@ function renderPin(ov, comment, index) {
   pin._commentId = comment.id
   comment._rawBody = comment.body
 
-  pin.addEventListener('click', (e) => {
+  pin.addEventListener('click', async (e) => {
     e.stopPropagation()
     if (activeComposer) {
       activeComposer.destroy()
       activeComposer = null
     }
-    showCommentWindow(ov, comment, cachedDiscussion, {
-      onClose: () => {},
-      onMove: () => loadAndRenderComments(),
-    })
+    // Lazy-load full comment detail (replies, reactions, createdAt)
+    try {
+      const detail = await fetchCommentDetail(comment.id)
+      if (detail) {
+        detail._rawBody = detail.body
+        showCommentWindow(ov, detail, cachedDiscussion, {
+          onClose: () => {},
+          onMove: () => loadAndRenderComments(),
+        })
+      }
+    } catch (err) {
+      console.warn('[storyboard] Could not load comment detail:', err.message)
+      // Fall back to summary data
+      showCommentWindow(ov, comment, cachedDiscussion, {
+        onClose: () => {},
+        onMove: () => loadAndRenderComments(),
+      })
+    }
   })
 
   ov.appendChild(pin)
@@ -119,12 +134,22 @@ function renderCachedPins() {
 async function loadAndRenderComments() {
   if (!isAuthenticated()) return
   const ov = ensureOverlay()
+  const route = getCurrentRoute()
 
-  renderCachedPins()
+  // 1. Render from cache immediately (instant pins)
+  const cached = getCachedComments(route)
+  if (cached) {
+    cachedDiscussion = cached
+    renderCachedPins()
+  }
 
+  // 2. Fetch lightweight summary in background
   try {
-    const discussion = await fetchRouteDiscussion(getCurrentRoute())
+    const discussion = await fetchRouteCommentsSummary(route)
     cachedDiscussion = discussion
+    if (discussion) {
+      setCachedComments(route, discussion)
+    }
     clearPins()
     if (!discussion?.comments?.length) return
 
@@ -140,7 +165,7 @@ async function loadAndRenderComments() {
   }
 }
 
-function autoOpenCommentFromUrl(ov, discussion) {
+async function autoOpenCommentFromUrl(ov, discussion) {
   const commentId = new URLSearchParams(window.location.search).get('comment')
   if (!commentId || !discussion?.comments?.length) return
 
@@ -158,6 +183,22 @@ function autoOpenCommentFromUrl(ov, discussion) {
     }
   }
 
+  // Lazy-load full detail before opening window
+  try {
+    const detail = await fetchCommentDetail(commentId)
+    if (detail) {
+      detail._rawBody = detail.body
+      showCommentWindow(ov, detail, discussion, {
+        onClose: () => {},
+        onMove: () => loadAndRenderComments(),
+      })
+      return
+    }
+  } catch (err) {
+    console.warn('[storyboard] Could not load comment detail:', err.message)
+  }
+
+  // Fallback to summary data
   comment._rawBody = comment.body
   showCommentWindow(ov, comment, discussion, {
     onClose: () => {},

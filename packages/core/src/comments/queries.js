@@ -2,7 +2,7 @@
  * GraphQL query and mutation strings for the comments system.
  */
 
-/** Search for a discussion by title in a repo */
+/** Search for a discussion by title — full data (used by drawer) */
 export const SEARCH_DISCUSSION = `
   query SearchDiscussion($query: String!) {
     search(query: $query, type: DISCUSSION, first: 1) {
@@ -44,6 +44,69 @@ export const SEARCH_DISCUSSION = `
               }
             }
           }
+        }
+      }
+    }
+  }
+`
+
+/** Search for a discussion — lightweight (pins only: id, body for metadata, author) */
+export const SEARCH_DISCUSSION_LIGHTWEIGHT = `
+  query SearchDiscussionLightweight($query: String!) {
+    search(query: $query, type: DISCUSSION, first: 1) {
+      nodes {
+        ... on Discussion {
+          id
+          title
+          url
+          comments(first: 100) {
+            nodes {
+              id
+              body
+              author {
+                login
+                avatarUrl
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`
+
+/** Fetch full detail for a single comment by node ID */
+export const GET_COMMENT_DETAIL = `
+  query GetCommentDetail($id: ID!) {
+    node(id: $id) {
+      ... on DiscussionComment {
+        id
+        body
+        createdAt
+        author {
+          login
+          avatarUrl
+        }
+        replies(first: 50) {
+          nodes {
+            id
+            body
+            createdAt
+            author {
+              login
+              avatarUrl
+            }
+            reactionGroups {
+              content
+              users(first: 0) { totalCount }
+              viewerHasReacted
+            }
+          }
+        }
+        reactionGroups {
+          content
+          users(first: 0) { totalCount }
+          viewerHasReacted
         }
       }
     }
