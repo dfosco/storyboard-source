@@ -30,14 +30,16 @@ export function openAuthModal() {
         </div>
         <div class="pa4">
           <p class="ma0 mb3 lh-copy sb-fg-muted sb-f-sm">
-            Enter a <a class="sb-fg-accent no-underline" href="https://github.com/settings/tokens/new" target="_blank" rel="noopener">GitHub Personal Access Token</a>
-            to leave comments on this prototype. Your token is stored locally in your browser.
+            Create a <a class="sb-fg-accent no-underline" href="https://github.com/settings/tokens/new?scopes=repo&description=Storyboard+Comments" target="_blank" rel="noopener">GitHub Personal Access Token</a> with access to <b>github/storyboard</b> repository and <b>Discussions</b> read/write scope. Then enter the token below to sign in and enable commenting features.
           </p>
           <label class="db mb1 fw5 sb-fg sb-f-sm" for="sb-auth-token-input">Personal Access Token</label>
           <input class="sb-input w-100 ph3 pv2 br2 f6 code db" id="sb-auth-token-input" type="password"
-                 placeholder="ghp_xxxxxxxxxxxx" autocomplete="off" spellcheck="false"
+                 placeholder="github_pat_… or ghp_…" autocomplete="off" spellcheck="false"
                  x-model="token" @keydown.enter="submit()" />
-          <div class="mt2 ph3 pv2 sb-bg-inset ba sb-b-muted br2 f7 sb-fg-muted lh-copy">Required scopes: <code class="dib ph1 sb-bg-muted br1 code sb-fg sb-code-badge">repo</code> <code class="dib ph1 sb-bg-muted br1 code sb-fg sb-code-badge">read:user</code></div>
+          <div class="mt2 ph3 pv2 sb-bg-inset ba sb-b-muted br2 f7 sb-fg-muted lh-copy">
+            <div class="mb1"><strong class="sb-fg">Fine-grained</strong> (recommended): <code class="dib ph1 sb-bg-muted br1 code sb-fg sb-code-badge">Discussions: Read and write</code></div>
+            <div><strong class="sb-fg">Classic</strong>: <code class="dib ph1 sb-bg-muted br1 code sb-fg sb-code-badge">repo</code></div>
+          </div>
           <template x-if="error">
             <div class="mt2 ph3 pv2 br2 sb-fg-danger sb-f-sm sb-error-alert" x-text="error"></div>
           </template>

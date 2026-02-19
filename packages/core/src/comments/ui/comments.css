@@ -139,7 +139,7 @@
 .sb-comment-window * { scrollbar-width: none; }
 .sb-comment-window *::-webkit-scrollbar { display: none; }
 .sb-composer        { width: 280px; z-index: 100001; }
-.sb-comment-overlay { z-index: 99998; }
+.sb-comment-overlay { z-index: 99998; pointer-events: none; }
 .sb-auth-backdrop   { z-index: 100000; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
 .sb-comments-drawer-backdrop { z-index: 99997; background: rgba(0,0,0,0.4); }
 .sb-comments-drawer { z-index: 99998; width: 420px; max-width: 90vw; }
@@ -164,6 +164,7 @@
   z-index: 99999; background: var(--sb-bg); color: var(--sb-fg);
   padding: 6px 16px; border-radius: 8px; font-size: 13px;
   line-height: 1.4; backdrop-filter: blur(12px);
+  pointer-events: none;
 }
 .sb-kbd {
   display: inline-block; padding: 1px 6px; font-size: 11px;
@@ -178,6 +179,7 @@
   margin-left: -16px; margin-top: -16px;
   transition: transform 100ms ease-in-out;
   cursor: grab;
+  pointer-events: auto;
 }
 .sb-comment-pin:active { cursor: grabbing; }
 .sb-pin-img { width: 100%; height: 100%; object-fit: cover; }

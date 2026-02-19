@@ -166,10 +166,16 @@ storyboard.config.json               # Config file at repo root
 | Remove reaction | `removeReaction` | On comments or replies |
 | List all discussions | `discussions` query with categoryId | For debug panel |
 
-### PAT scopes required
+### PAT permissions required
 
-- `repo` — read/write Discussions
-- `read:user` — fetch user profile for avatar/login
+**Fine-grained PAT** (recommended):
+- `Discussions: Read and write` — on the target repository
+
+**Classic PAT**:
+- `repo` — required for Discussions access (covers both public and private repositories)
+
+> Note: `read:user` is **not** needed — `GET /user` returns login/avatar with any authenticated token.
+> Note: `write:discussion` / `read:discussion` are for **team discussions** (org teams), not repository Discussions.
 
 ### Comment mode UX flow
 
