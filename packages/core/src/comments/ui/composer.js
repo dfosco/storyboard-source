@@ -23,8 +23,6 @@ export function showComposer(container, xPct, yPct, route, callbacks = {}) {
   const user = getCachedUser()
   const composer = document.createElement('div')
   composer.className = 'sb-composer absolute flex flex-column sb-bg ba sb-b-default br3 sb-shadow sans-serif overflow-hidden'
-  composer.style.zIndex = '100001'
-  composer.style.width = '280px'
   composer.style.left = `${xPct}%`
   composer.style.top = `${yPct}%`
   composer.style.transform = 'translate(12px, -50%)'
@@ -33,12 +31,12 @@ export function showComposer(container, xPct, yPct, route, callbacks = {}) {
     <div x-data="sbComposer" @keydown.escape.prevent.stop="cancel()">
       ${user ? `
         <div class="flex items-center ph3 pt2">
-          <img class="br-100 ba sb-b-default flex-shrink-0 mr2" style="width:24px;height:24px" src="${user.avatarUrl}" alt="${user.login}" />
+          <img class="br-100 ba sb-b-default flex-shrink-0 mr2 sb-avatar" src="${user.avatarUrl}" alt="${user.login}" />
           <span class="f7 sb-fg-muted fw5">${user.login}</span>
         </div>
       ` : ''}
-      <div class="ph3 pt2 pb3">
-        <textarea class="sb-input w-100 ph2 pv2 br2 f6 sans-serif lh-copy db" style="min-height:60px;max-height:160px;resize:vertical;box-sizing:border-box;font-size:13px"
+      <div class="ph3 pt3">
+        <textarea class="sb-input sb-textarea w-100 ph2 pv2 br2 f6 sans-serif lh-copy db sb-f-sm"
                   placeholder="Leave a comment…"
                   x-model="text"
                   @keydown.meta.enter="submit()"
@@ -47,9 +45,9 @@ export function showComposer(container, xPct, yPct, route, callbacks = {}) {
       <template x-if="error">
         <div class="ph3 pb2 f7 sb-fg-danger" x-text="error"></div>
       </template>
-      <div class="flex items-center justify-end ph3 pb2">
-        <button class="sb-btn-cancel ph3 pv1 br2 f7 fw5 pointer mr1" style="font-size:12px" @click="cancel()">Cancel</button>
-        <button class="sb-btn-success ph3 pv1 br2 f7 fw5 pointer bn" style="font-size:12px" :disabled="submitting"
+      <div class="flex items-center justify-end pa3">
+        <button class="sb-btn-cancel ph3 pv2 br2 f7 fw5 pointer mr1" @click="cancel()">Cancel</button>
+        <button class="sb-btn-success ph3 pv2 br2 f7 fw5 pointer bn" :disabled="submitting"
                 @click="submit()" x-text="submitting ? 'Posting…' : 'Comment'">Comment</button>
       </div>
     </div>

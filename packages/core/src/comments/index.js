@@ -17,6 +17,8 @@ export { parseMetadata, serializeMetadata, updateMetadata } from './metadata.js'
 // API
 export {
   fetchRouteDiscussion,
+  fetchRouteCommentsSummary,
+  fetchCommentDetail,
   createComment,
   replyToComment,
   resolveComment,
@@ -29,6 +31,9 @@ export {
   removeReaction,
   listDiscussions,
 } from './api.js'
+
+// Cache
+export { getCachedComments, setCachedComments, clearCachedComments } from './commentCache.js'
 
 // GraphQL client (for advanced use)
 export { graphql } from './graphql.js'

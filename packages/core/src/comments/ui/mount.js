@@ -9,7 +9,8 @@ import Alpine from 'alpinejs'
 import { isCommentsEnabled } from '../config.js'
 import { isAuthenticated } from '../auth.js'
 import { toggleCommentMode, setCommentMode, isCommentModeActive, subscribeToCommentMode } from '../commentMode.js'
-import { fetchRouteDiscussion } from '../api.js'
+import { fetchRouteCommentsSummary, fetchCommentDetail, moveComment } from '../api.js'
+import { getCachedComments, setCachedComments, clearCachedComments } from '../commentCache.js'
 import { showComposer } from './composer.js'
 import { openAuthModal } from './authModal.js'
 import { showCommentWindow, closeCommentWindow } from './commentWindow.js'
@@ -19,6 +20,12 @@ let overlay = null
 let activeComposer = null
 let renderedPins = []
 let cachedDiscussion = null
+
+function esc(str) {
+  const d = document.createElement('div')
+  d.textContent = str ?? ''
+  return d.innerHTML
+}
 
 function getContentContainer() {
   return document.querySelector('main') || document.body
@@ -32,7 +39,6 @@ function ensureOverlay() {
 
   overlay = document.createElement('div')
   overlay.className = 'sb-comment-overlay absolute top-0 right-0 bottom-0 left-0 pe-none'
-  overlay.style.zIndex = '99998'
   container.appendChild(overlay)
 
   return overlay
@@ -41,9 +47,12 @@ function ensureOverlay() {
 function showBanner() {
   if (banner) return
   banner = document.createElement('div')
-  banner.className = 'fixed flex items-center pe-none sans-serif sb-shadow'
-  banner.style.cssText = 'bottom:12px;left:50%;transform:translateX(-50%);z-index:99999;background:var(--sb-bg);color:var(--sb-fg);padding:6px 16px;border-radius:8px;font-size:13px;line-height:1.4;backdrop-filter:blur(12px)'
-  banner.innerHTML = 'Comment mode — click to place a comment. Press <kbd style="display:inline-block;padding:1px 6px;font-size:11px;font-family:inherit;border:1px solid rgba(255,255,255,0.3);border-radius:4px;background:rgba(255,255,255,0.1)">C</kbd> or <kbd style="display:inline-block;padding:1px 6px;font-size:11px;font-family:inherit;border:1px solid rgba(255,255,255,0.3);border-radius:4px;background:rgba(255,255,255,0.1)">Esc</kbd> to exit.'
+  banner.className = 'sb-banner fixed flex items-center pe-none sans-serif sb-shadow'
+  banner.innerHTML = `
+    Comment mode — click to place a comment. Press
+    <kbd class="sb-kbd">C</kbd> or
+    <kbd class="sb-kbd">Esc</kbd> to exit.
+  `
   document.body.appendChild(banner)
 }
 
@@ -62,41 +71,104 @@ function clearPins() {
   renderedPins = []
 }
 
+function reloadComments() {
+  clearCachedComments(getCurrentRoute())
+  loadAndRenderComments()
+}
+
 function renderPin(ov, comment, index) {
+  const hue = Math.round((index * 137.5) % 360)
   const pin = document.createElement('div')
   pin.className = 'sb-comment-pin absolute br-100 sb-bg pointer sb-shadow pe-auto overflow-hidden'
-  pin.style.cssText = 'z-index:100000;width:32px;height:32px;margin-left:-16px;margin-top:-16px;transition:transform 100ms ease-in-out'
   pin.style.left = `${comment.meta?.x ?? 0}%`
   pin.style.top = `${comment.meta?.y ?? 0}%`
-
-  const hue = (index * 137.5) % 360
-  pin.style.setProperty('--pin-hue', String(Math.round(hue)))
-
-  if (comment.author?.avatarUrl) {
-    const img = document.createElement('img')
-    img.className = 'br-100 db'
-    img.style.cssText = 'width:100%;height:100%;object-fit:cover'
-    img.src = comment.author.avatarUrl
-    img.alt = comment.author.login ?? ''
-    pin.appendChild(img)
-  }
+  pin.style.setProperty('--pin-hue', String(hue))
 
   if (comment.meta?.resolved) pin.setAttribute('data-resolved', 'true')
   pin.title = `${comment.author?.login ?? 'unknown'}: ${comment.text?.slice(0, 80) ?? ''}`
 
+  pin.innerHTML = comment.author?.avatarUrl
+    ? `<img class="br-100 db sb-pin-img" src="${esc(comment.author.avatarUrl)}" alt="${esc(comment.author.login)}" draggable="false" />`
+    : ''
+
   pin._commentId = comment.id
   comment._rawBody = comment.body
 
-  pin.addEventListener('click', (e) => {
+  let dragged = false
+
+  pin.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return
+    dragged = false
+    const container = getContentContainer()
+    const containerRect = container.getBoundingClientRect()
+    const startX = e.clientX
+    const startY = e.clientY
+    const startLeft = (parseFloat(pin.style.left) / 100) * containerRect.width
+    const startTop = (parseFloat(pin.style.top) / 100) * containerRect.height
+
+    const onMove = (ev) => {
+      const dx = ev.clientX - startX
+      const dy = ev.clientY - startY
+      if (!dragged && Math.abs(dx) < 4 && Math.abs(dy) < 4) return
+      dragged = true
+      const cr = container.getBoundingClientRect()
+      const xPct = Math.round(((startLeft + dx) / cr.width) * 1000) / 10
+      const yPct = Math.round(((startTop + dy) / cr.height) * 1000) / 10
+      pin.style.left = `${xPct}%`
+      pin.style.top = `${yPct}%`
+    }
+
+    const onUp = async (ev) => {
+      document.removeEventListener('mousemove', onMove)
+      document.removeEventListener('mouseup', onUp)
+      if (!dragged) return
+
+      const cr = container.getBoundingClientRect()
+      const dx = ev.clientX - startX
+      const dy = ev.clientY - startY
+      const xPct = Math.round(((startLeft + dx) / cr.width) * 1000) / 10
+      const yPct = Math.round(((startTop + dy) / cr.height) * 1000) / 10
+      comment.meta = { ...comment.meta, x: xPct, y: yPct }
+
+      try {
+        await moveComment(comment.id, comment._rawBody ?? comment.body ?? '', xPct, yPct)
+        comment._rawBody = null
+        clearCachedComments(getCurrentRoute())
+      } catch (err) {
+        console.error('[storyboard] Failed to move pin:', err)
+      }
+    }
+
+    document.addEventListener('mousemove', onMove)
+    document.addEventListener('mouseup', onUp)
+    e.preventDefault()
+  })
+
+  pin.addEventListener('click', async (e) => {
     e.stopPropagation()
+    if (dragged) return
     if (activeComposer) {
       activeComposer.destroy()
       activeComposer = null
     }
-    showCommentWindow(ov, comment, cachedDiscussion, {
-      onClose: () => {},
-      onMove: () => loadAndRenderComments(),
-    })
+    // Lazy-load full comment detail (replies, reactions, createdAt)
+    try {
+      const detail = await fetchCommentDetail(comment.id)
+      if (detail) {
+        detail._rawBody = detail.body
+        showCommentWindow(ov, detail, cachedDiscussion, {
+          onClose: () => {},
+          onMove: () => reloadComments(),
+        })
+      }
+    } catch (err) {
+      console.warn('[storyboard] Could not load comment detail:', err.message)
+      // Fall back to summary data
+      showCommentWindow(ov, comment, cachedDiscussion, {
+        onClose: () => {},
+        onMove: () => reloadComments(),
+      })
+    }
   })
 
   ov.appendChild(pin)
@@ -118,12 +190,23 @@ function renderCachedPins() {
 async function loadAndRenderComments() {
   if (!isAuthenticated()) return
   const ov = ensureOverlay()
+  const route = getCurrentRoute()
 
-  renderCachedPins()
+  // 1. Render from cache — skip API if cache is fresh
+  const cached = getCachedComments(route)
+  if (cached) {
+    cachedDiscussion = cached
+    renderCachedPins()
+    return
+  }
 
+  // 2. Cache miss/expired — fetch lightweight summary
   try {
-    const discussion = await fetchRouteDiscussion(getCurrentRoute())
+    const discussion = await fetchRouteCommentsSummary(route)
     cachedDiscussion = discussion
+    if (discussion) {
+      setCachedComments(route, discussion)
+    }
     clearPins()
     if (!discussion?.comments?.length) return
 
@@ -139,7 +222,7 @@ async function loadAndRenderComments() {
   }
 }
 
-function autoOpenCommentFromUrl(ov, discussion) {
+async function autoOpenCommentFromUrl(ov, discussion) {
   const commentId = new URLSearchParams(window.location.search).get('comment')
   if (!commentId || !discussion?.comments?.length) return
 
@@ -157,10 +240,26 @@ function autoOpenCommentFromUrl(ov, discussion) {
     }
   }
 
+  // Lazy-load full detail before opening window
+  try {
+    const detail = await fetchCommentDetail(commentId)
+    if (detail) {
+      detail._rawBody = detail.body
+      showCommentWindow(ov, detail, discussion, {
+        onClose: () => {},
+        onMove: () => reloadComments(),
+      })
+      return
+    }
+  } catch (err) {
+    console.warn('[storyboard] Could not load comment detail:', err.message)
+  }
+
+  // Fallback to summary data
   comment._rawBody = comment.body
   showCommentWindow(ov, comment, discussion, {
     onClose: () => {},
-    onMove: () => loadAndRenderComments(),
+    onMove: () => reloadComments(),
   })
 }
 
@@ -185,7 +284,7 @@ function handleOverlayClick(e) {
     onCancel: () => { activeComposer = null },
     onSubmit: () => {
       activeComposer = null
-      loadAndRenderComments()
+      reloadComments()
     },
   })
 }
