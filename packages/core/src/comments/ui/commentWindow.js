@@ -6,7 +6,7 @@
  * Styled with Tachyons + sb-* custom classes for light/dark mode support.
  */
 
-import { replyToComment, addReaction, removeReaction, moveComment, resolveComment, unresolveComment, editComment, editReply, deleteComment, fetchRouteDiscussion } from '../api.js'
+import { replyToComment, addReaction, removeReaction, moveComment, resolveComment, unresolveComment, editComment, editReply, deleteComment } from '../api.js'
 import { getCachedUser } from '../auth.js'
 
 const REACTION_EMOJI = {
@@ -25,132 +25,10 @@ function timeAgo(dateStr) {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
-/**
- * Build a reaction bar for a comment or reply.
- * @param {object} item - The comment/reply object with reactionGroups
- * @returns {HTMLElement}
- */
-function buildReactionBar(item) {
-  const bar = document.createElement('div')
-  bar.className = item.replies
-    ? 'flex items-center flex-wrap mb2'
-    : 'flex items-center flex-wrap mt1'
-
-  function render() {
-    bar.innerHTML = ''
-    const groups = item.reactionGroups ?? []
-
-    for (const group of groups) {
-      if (group.users?.totalCount === 0 && !group.viewerHasReacted) continue
-      const count = group.users?.totalCount ?? 0
-      if (count === 0) continue
-
-      const pill = document.createElement('button')
-      pill.className = 'sb-reaction-pill dib flex items-center ph2 br-pill sb-pill pointer sans-serif mr1 mb1' 
-      pill.style.cssText = 'padding-top:2px;padding-bottom:2px;font-size:12px'
-      pill.dataset.active = String(!!group.viewerHasReacted)
-      if (group.viewerHasReacted) {
-        pill.className = 'sb-reaction-pill dib flex items-center ph2 br-pill sb-pill sb-pill-active pointer sans-serif mr1 mb1'
-        pill.style.cssText = 'padding-top:2px;padding-bottom:2px;font-size:12px'
-      }
-      pill.innerHTML = `<span class="mr1">${REACTION_EMOJI[group.content] ?? group.content}</span><span>${count}</span>`
-      pill.addEventListener('click', (e) => {
-        e.stopPropagation()
-        toggleReaction(item, group.content, group, render)
-      })
-      bar.appendChild(pill)
-    }
-
-    // Add reaction button
-    const addBtn = document.createElement('button')
-    addBtn.className = 'dib flex items-center ph1 br-pill ba sb-b-default sb-bg-muted sb-fg-muted f7 pointer sans-serif relative mr1 mb1'
-    addBtn.style.cssText = 'padding-top:2px;padding-bottom:2px'
-    addBtn.textContent = '😀 +'
-    addBtn.addEventListener('click', (e) => {
-      e.stopPropagation()
-      showPicker(addBtn, item, render)
-    })
-    bar.appendChild(addBtn)
-  }
-
-  render()
-  return bar
-}
-
-function showPicker(anchorBtn, item, rerenderBar) {
-  const existing = anchorBtn.querySelector('.sb-reaction-picker')
-  if (existing) { existing.remove(); return }
-
-  const picker = document.createElement('div')
-  picker.className = 'sb-reaction-picker absolute left-0 flex pa1 sb-bg ba sb-b-default br3 sb-shadow'
-  picker.style.cssText = 'bottom:100%;margin-bottom:4px;z-index:10'
-
-  for (const [content, emoji] of Object.entries(REACTION_EMOJI)) {
-    const groups = item.reactionGroups ?? []
-    const reacted = groups.some(r => r.content === content && r.viewerHasReacted)
-
-    const btn = document.createElement('button')
-    btn.className = reacted
-      ? 'flex items-center justify-center br2 bn f6 pointer mr1'
-      : 'flex items-center justify-center br2 bn bg-transparent f6 pointer mr1'
-    btn.style.cssText = reacted
-      ? 'width:28px;height:28px;background:color-mix(in srgb, var(--sb-fg-accent) 10%, transparent);box-shadow:inset 0 0 0 1px var(--sb-fg-accent);transition:background 100ms'
-      : 'width:28px;height:28px;transition:background 100ms'
-    btn.dataset.active = String(reacted)
-    btn.textContent = emoji
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation()
-      const group = groups.find(r => r.content === content)
-      toggleReaction(item, content, group, rerenderBar)
-      picker.remove()
-    })
-    picker.appendChild(btn)
-  }
-
-  anchorBtn.appendChild(picker)
-
-  function onClickOutside(e) {
-    if (!picker.contains(e.target) && e.target !== anchorBtn) {
-      picker.remove()
-      document.removeEventListener('click', onClickOutside, true)
-    }
-  }
-  setTimeout(() => document.addEventListener('click', onClickOutside, true), 0)
-}
-
-async function toggleReaction(item, content, existingGroup, rerenderBar) {
-  const wasReacted = existingGroup?.viewerHasReacted ?? false
-
-  if (!item.reactionGroups) item.reactionGroups = []
-
-  if (wasReacted && existingGroup) {
-    existingGroup.users = { totalCount: Math.max(0, (existingGroup.users?.totalCount ?? 1) - 1) }
-    existingGroup.viewerHasReacted = false
-    if (existingGroup.users.totalCount === 0) {
-      item.reactionGroups = item.reactionGroups.filter(r => r.content !== content)
-    }
-  } else if (existingGroup) {
-    existingGroup.users = { totalCount: (existingGroup.users?.totalCount ?? 0) + 1 }
-    existingGroup.viewerHasReacted = true
-  } else {
-    item.reactionGroups.push({
-      content,
-      users: { totalCount: 1 },
-      viewerHasReacted: true,
-    })
-  }
-
-  rerenderBar()
-
-  try {
-    if (wasReacted) {
-      await removeReaction(item.id, content)
-    } else {
-      await addReaction(item.id, content)
-    }
-  } catch (err) {
-    console.error('[storyboard] Reaction toggle failed:', err)
-  }
+function esc(str) {
+  const d = document.createElement('div')
+  d.textContent = str ?? ''
+  return d.innerHTML
 }
 
 // Track the currently open window so only one is open at a time
@@ -167,521 +45,193 @@ let activeWindow = null
  * @returns {{ el: HTMLElement, destroy: () => void }}
  */
 export function showCommentWindow(container, comment, discussion, callbacks = {}) {
-  // Close any existing window
   if (activeWindow) {
     activeWindow.destroy()
     activeWindow = null
   }
 
   const user = getCachedUser()
+  const replies = comment.replies ?? []
+  const canEdit = user && comment.author?.login === user.login
+  const canReply = user && discussion
+
   const win = document.createElement('div')
   win.className = 'sb-comment-window absolute flex flex-column sb-bg ba sb-b-default br3 sb-shadow sans-serif overflow-hidden'
-  win.style.zIndex = '100001'
-  win.style.width = '360px'
-  win.style.maxHeight = '480px'
-  win.style.left = `${comment.meta?.x ?? 0}%`
-  win.style.top = `${comment.meta?.y ?? 0}%`
-  win.style.transform = 'translate(12px, -50%)'
-
-  // --- Header (draggable) ---
-  const header = document.createElement('div')
-  header.className = 'flex items-center justify-between ph3 pv2 bb sb-b-muted'
-  header.style.cssText = 'cursor:grab;user-select:none'
-  header.addEventListener('mousedown', () => { header.style.cursor = 'grabbing' })
-  header.addEventListener('mouseup', () => { header.style.cursor = 'grab' })
-
-  const headerLeft = document.createElement('div')
-  headerLeft.className = 'flex items-center'
-
-  if (comment.author?.avatarUrl) {
-    const avatar = document.createElement('img')
-    avatar.className = 'br-100 ba sb-b-default flex-shrink-0 mr2'
-    avatar.style.cssText = 'width:24px;height:24px'
-    avatar.src = comment.author.avatarUrl
-    avatar.alt = comment.author.login ?? ''
-    headerLeft.appendChild(avatar)
-  }
-
-  const authorSpan = document.createElement('span')
-  authorSpan.className = 'f7 fw6 sb-fg'
-  authorSpan.textContent = comment.author?.login ?? 'unknown'
-  headerLeft.appendChild(authorSpan)
-
-  if (comment.createdAt) {
-    const timeSpan = document.createElement('span')
-    timeSpan.className = 'sb-fg-muted ml1'
-    timeSpan.style.fontSize = '11px'
-    timeSpan.textContent = timeAgo(comment.createdAt)
-    headerLeft.appendChild(timeSpan)
-  }
-
-  header.appendChild(headerLeft)
-
-  const headerActions = document.createElement('div')
-  headerActions.className = 'sb-comment-window-header-actions flex items-center flex-shrink-0'
-
-  const ACTION_BTN = 'flex items-center justify-center pa2 bg-transparent bn br2 pointer fw5 sans-serif flex-shrink-0 nowrap'
-  const ACTION_BTN_STYLE = 'font-size:11px;line-height:1'
-  const ACTION_BTN_DEFAULT = `${ACTION_BTN} sb-fg-muted`
-  const ACTION_BTN_SUCCESS = `${ACTION_BTN} sb-fg-success`
-
-  // Resolve/Unresolve button
-  const resolveBtn = document.createElement('button')
-  resolveBtn.className = comment.meta?.resolved ? ACTION_BTN_SUCCESS : ACTION_BTN_DEFAULT
-  resolveBtn.style.cssText = ACTION_BTN_STYLE
-  resolveBtn.setAttribute('aria-label', comment.meta?.resolved ? 'Unresolve' : 'Resolve')
-  resolveBtn.title = comment.meta?.resolved ? 'Unresolve' : 'Resolve'
-  resolveBtn.textContent = comment.meta?.resolved ? 'Resolved ✓' : 'Resolve'
-  resolveBtn.addEventListener('click', async (e) => {
-    e.stopPropagation()
-    const wasResolved = !!comment.meta?.resolved
-    resolveBtn.disabled = true
-    resolveBtn.textContent = wasResolved ? 'Unresolving…' : 'Resolving…'
-    try {
-      if (wasResolved) {
-        await unresolveComment(comment.id, comment._rawBody ?? comment.body ?? '')
-        comment.meta = { ...comment.meta, resolved: false }
-        delete comment.meta.resolved
-        resolveBtn.className = ACTION_BTN_DEFAULT
-        resolveBtn.textContent = 'Resolve'
-        resolveBtn.title = 'Resolve'
-        resolveBtn.disabled = false
-        callbacks.onMove?.()
-      } else {
-        await resolveComment(comment.id, comment._rawBody ?? comment.body ?? '')
-        comment.meta = { ...comment.meta, resolved: true }
-        callbacks.onMove?.()
-        destroy()
-      }
-    } catch (err) {
-      console.error('[storyboard] Failed to toggle resolve:', err)
-      resolveBtn.className = wasResolved ? ACTION_BTN_SUCCESS : ACTION_BTN_DEFAULT
-      resolveBtn.textContent = wasResolved ? 'Resolved ✓' : 'Resolve'
-      resolveBtn.disabled = false
-    }
-  })
-  headerActions.appendChild(resolveBtn)
-
-  // Share button
-  const shareBtn = document.createElement('button')
-  shareBtn.className = ACTION_BTN_DEFAULT
-  shareBtn.style.cssText = ACTION_BTN_STYLE
-  shareBtn.setAttribute('aria-label', 'Copy link')
-  shareBtn.title = 'Copy link'
-  shareBtn.textContent = 'Copy link'
-  shareBtn.addEventListener('click', (e) => {
-    e.stopPropagation()
-    const url = new URL(window.location.href)
-    url.searchParams.set('comment', comment.id)
-    navigator.clipboard.writeText(url.toString()).then(() => {
-      shareBtn.dataset.copied = 'true'
-      shareBtn.className = ACTION_BTN_SUCCESS
-      shareBtn.textContent = 'Copied!'
-      shareBtn.title = 'Copied!'
-      setTimeout(() => {
-        shareBtn.dataset.copied = 'false'
-        shareBtn.className = ACTION_BTN_DEFAULT
-        shareBtn.textContent = 'Copy link'
-        shareBtn.title = 'Copy link'
-      }, 2000)
-    }).catch(() => {
-      const input = document.createElement('input')
-      input.value = url.toString()
-      document.body.appendChild(input)
-      input.select()
-      document.execCommand('copy')
-      input.remove()
-    })
-  })
-  headerActions.appendChild(shareBtn)
-
-  // Close button
-  const closeBtn = document.createElement('button')
-  closeBtn.className = 'flex items-center justify-center bg-transparent bn br2 sb-fg-muted pointer flex-shrink-0'
-  closeBtn.style.cssText = 'width:24px;height:24px;font-size:16px;line-height:1'
-  closeBtn.innerHTML = '×'
-  closeBtn.setAttribute('aria-label', 'Close')
-  closeBtn.addEventListener('click', (e) => {
-    e.stopPropagation()
-    destroy()
-  })
-  headerActions.appendChild(closeBtn)
-
-  header.appendChild(headerActions)
-  win.appendChild(header)
-
-  // --- Body ---
-  const body = document.createElement('div')
-  body.className = 'flex-auto overflow-y-auto pa3'
-
-  const textP = document.createElement('p')
-  textP.className = 'lh-copy sb-fg ma0 mb2 word-wrap'
-  textP.style.fontSize = '13px'
-  textP.textContent = comment.text ?? ''
-  body.appendChild(textP)
-
-  // Edit button for top-level comment (only for author)
-  if (user && comment.author?.login === user.login) {
-    const editBtn = document.createElement('button')
-    editBtn.className = 'sb-fg-muted bg-transparent bn pointer f7 mb2 underline-hover'
-    editBtn.textContent = 'Edit'
-    editBtn.addEventListener('click', (e) => {
-      e.stopPropagation()
-      editBtn.style.display = 'none'
-      textP.style.display = 'none'
-
-      const editArea = document.createElement('textarea')
-      editArea.className = 'sb-input w-100 ph2 pv1 br2 f7 sans-serif lh-copy db mb1'
-      editArea.style.cssText = 'min-height:60px;max-height:160px;resize:vertical;box-sizing:border-box'
-      editArea.value = comment.text ?? ''
-      body.insertBefore(editArea, textP.nextSibling)
-
-      const editActions = document.createElement('div')
-      editActions.className = 'flex justify-end mb2'
-      const cancelEdit = document.createElement('button')
-      cancelEdit.className = 'sb-btn-cancel ph2 pv1 br2 f7 fw5 sans-serif pointer mr1'
-      cancelEdit.textContent = 'Cancel'
-      const saveEdit = document.createElement('button')
-      saveEdit.className = 'sb-btn-success ph2 pv1 br2 f7 fw5 sans-serif pointer bn'
-      saveEdit.textContent = 'Save'
-      editActions.appendChild(cancelEdit)
-      editActions.appendChild(saveEdit)
-      body.insertBefore(editActions, editArea.nextSibling)
-
-      cancelEdit.addEventListener('click', (ev) => {
-        ev.stopPropagation()
-        editArea.remove()
-        editActions.remove()
-        textP.style.display = ''
-        editBtn.style.display = ''
-      })
-
-      saveEdit.addEventListener('click', async (ev) => {
-        ev.stopPropagation()
-        const newText = editArea.value.trim()
-        if (!newText) return
-        saveEdit.disabled = true
-        saveEdit.textContent = 'Saving…'
-        try {
-          await editComment(comment.id, comment._rawBody ?? comment.body ?? '', newText)
-          comment.text = newText
-          comment._rawBody = null
-          textP.textContent = newText
-          editArea.remove()
-          editActions.remove()
-          textP.style.display = ''
-          editBtn.style.display = ''
-        } catch (err) {
-          console.error('[storyboard] Failed to edit comment:', err)
-          saveEdit.disabled = false
-          saveEdit.textContent = 'Save'
-        }
-      })
-
-      editArea.focus()
-    })
-    body.appendChild(editBtn)
-  }
-
-  // Reactions for the main comment
-  body.appendChild(buildReactionBar(comment))
-
-  // --- Replies ---
-  const replies = comment.replies ?? []
-  if (replies.length > 0) {
-    const repliesSection = document.createElement('div')
-    repliesSection.className = 'bt sb-b-muted pt2 mt1'
-
-    const repliesLabel = document.createElement('div')
-    repliesLabel.className = 'fw6 sb-fg-muted ttu tracked mb2'
-    repliesLabel.style.fontSize = '11px'
-    repliesLabel.textContent = `${replies.length} ${replies.length === 1 ? 'Reply' : 'Replies'}`
-    repliesSection.appendChild(repliesLabel)
-
-    for (const reply of replies) {
-      const replyEl = document.createElement('div')
-      replyEl.className = 'flex mb2'
-
-      if (reply.author?.avatarUrl) {
-        const avatar = document.createElement('img')
-        avatar.className = 'br-100 ba sb-b-default flex-shrink-0 mr2'
-        avatar.style.cssText = 'width:20px;height:20px'
-        avatar.src = reply.author.avatarUrl
-        avatar.alt = reply.author.login ?? ''
-        replyEl.appendChild(avatar)
-      }
-
-      const content = document.createElement('div')
-      content.className = 'flex-auto'
-      content.style.minWidth = '0'
-
-      const meta = document.createElement('div')
-      meta.className = 'flex items-center mb1'
-
-      const authorEl = document.createElement('span')
-      authorEl.className = 'f7 fw6 sb-fg mr1'
-      authorEl.textContent = reply.author?.login ?? 'unknown'
-      meta.appendChild(authorEl)
-
-      if (reply.createdAt) {
-        const timeEl = document.createElement('span')
-        timeEl.className = 'sb-fg-muted'
-        timeEl.style.fontSize = '11px'
-        timeEl.textContent = timeAgo(reply.createdAt)
-        meta.appendChild(timeEl)
-      }
-
-      content.appendChild(meta)
-
-      const replyText = document.createElement('p')
-      replyText.className = 'lh-copy sb-fg ma0 word-wrap'
-      replyText.style.fontSize = '13px'
-      replyText.textContent = reply.text ?? reply.body ?? ''
-      content.appendChild(replyText)
-
-      // Edit/Delete buttons for reply (only for author)
-      if (user && reply.author?.login === user.login) {
-        const replyActions = document.createElement('div')
-        replyActions.className = 'flex mt1'
-        replyActions.style.gap = '8px'
-
-        const editReplyBtn = document.createElement('button')
-        editReplyBtn.className = 'sb-fg-muted bg-transparent bn pointer underline-hover'
-        editReplyBtn.style.fontSize = '11px'
-        editReplyBtn.textContent = 'Edit'
-        editReplyBtn.addEventListener('click', (ev) => {
-          ev.stopPropagation()
-          editReplyBtn.style.display = 'none'
-          replyText.style.display = 'none'
-          if (replyActions.querySelector('.sb-delete-reply')) replyActions.querySelector('.sb-delete-reply').style.display = 'none'
-
-          const editArea = document.createElement('textarea')
-          editArea.className = 'sb-input w-100 ph2 pv1 br2 sans-serif lh-copy db mb1'
-          editArea.style.cssText = 'min-height:40px;max-height:100px;resize:vertical;box-sizing:border-box;font-size:12px'
-          editArea.value = reply.text ?? reply.body ?? ''
-          content.insertBefore(editArea, replyText.nextSibling)
-
-          const editBtns = document.createElement('div')
-          editBtns.className = 'flex justify-end mb1'
-          const cancelBtn = document.createElement('button')
-          cancelBtn.className = 'sb-btn-cancel ph2 pv1 br2 f7 fw5 sans-serif pointer mr1'
-          cancelBtn.textContent = 'Cancel'
-          const saveBtn = document.createElement('button')
-          saveBtn.className = 'sb-btn-success ph2 pv1 br2 f7 fw5 sans-serif pointer bn'
-          saveBtn.textContent = 'Save'
-          editBtns.appendChild(cancelBtn)
-          editBtns.appendChild(saveBtn)
-          content.insertBefore(editBtns, editArea.nextSibling)
-
-          cancelBtn.addEventListener('click', (ev2) => {
-            ev2.stopPropagation()
-            editArea.remove()
-            editBtns.remove()
-            replyText.style.display = ''
-            editReplyBtn.style.display = ''
-            if (replyActions.querySelector('.sb-delete-reply')) replyActions.querySelector('.sb-delete-reply').style.display = ''
-          })
-
-          saveBtn.addEventListener('click', async (ev2) => {
-            ev2.stopPropagation()
-            const newText = editArea.value.trim()
-            if (!newText) return
-            saveBtn.disabled = true
-            saveBtn.textContent = 'Saving…'
-            try {
-              await editReply(reply.id, newText)
-              reply.text = newText
-              reply.body = newText
-              replyText.textContent = newText
-              editArea.remove()
-              editBtns.remove()
-              replyText.style.display = ''
-              editReplyBtn.style.display = ''
-              if (replyActions.querySelector('.sb-delete-reply')) replyActions.querySelector('.sb-delete-reply').style.display = ''
-            } catch (err) {
-              console.error('[storyboard] Failed to edit reply:', err)
-              saveBtn.disabled = false
-              saveBtn.textContent = 'Save'
-            }
-          })
-
-          editArea.focus()
-        })
-        replyActions.appendChild(editReplyBtn)
-
-        const deleteReplyBtn = document.createElement('button')
-        deleteReplyBtn.className = 'sb-delete-reply sb-fg-danger bg-transparent bn pointer underline-hover'
-        deleteReplyBtn.style.fontSize = '11px'
-        deleteReplyBtn.textContent = 'Delete'
-        deleteReplyBtn.addEventListener('click', async (ev) => {
-          ev.stopPropagation()
-          if (!confirm('Delete this reply?')) return
-          deleteReplyBtn.textContent = 'Deleting…'
-          deleteReplyBtn.disabled = true
-          try {
-            await deleteComment(reply.id)
-            replyEl.remove()
-            callbacks.onMove?.()
-          } catch (err) {
-            console.error('[storyboard] Failed to delete reply:', err)
-            deleteReplyBtn.textContent = 'Delete'
-            deleteReplyBtn.disabled = false
-          }
-        })
-        replyActions.appendChild(deleteReplyBtn)
-
-        content.appendChild(replyActions)
-      }
-
-      // Reply reactions
-      content.appendChild(buildReactionBar(reply))
-
-      replyEl.appendChild(content)
-      repliesSection.appendChild(replyEl)
-    }
-
-    body.appendChild(repliesSection)
-  }
-
-  win.appendChild(body)
-
-  // --- Reply form ---
-  if (user && discussion) {
-    const form = document.createElement('div')
-    form.className = 'bt sb-b-muted ph3 pv3 flex flex-column'
-
-    const textarea = document.createElement('textarea')
-    textarea.className = 'sb-input w-100 ph2 pv1 br2 f7 sans-serif lh-copy db mb1'
-    textarea.style.cssText = 'min-height:40px;max-height:100px;resize:vertical;box-sizing:border-box'
-    textarea.placeholder = 'Reply…'
-    form.appendChild(textarea)
-
-    const actions = document.createElement('div')
-    actions.className = 'flex justify-end mt2'
-
-    const submitBtn = document.createElement('button')
-    submitBtn.className = 'sb-btn-success ph2 pv1 br2 f7 fw5 sans-serif pointer bn'
-    submitBtn.textContent = 'Reply'
-    submitBtn.disabled = true
-
-    textarea.addEventListener('input', () => {
-      submitBtn.disabled = !textarea.value.trim()
-    })
-
-    async function submitReply() {
-      const text = textarea.value.trim()
-      if (!text) return
-
-      submitBtn.disabled = true
-      submitBtn.textContent = 'Posting…'
-
-      try {
-        await replyToComment(discussion.id, comment.id, text)
-        textarea.value = ''
-        submitBtn.textContent = 'Reply'
-        callbacks.onMove?.()
-      } catch (err) {
-        console.error('[storyboard] Failed to post reply:', err)
-        submitBtn.textContent = 'Reply'
-        submitBtn.disabled = false
-      }
-    }
-
-    submitBtn.addEventListener('click', submitReply)
-
-    textarea.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault()
-        submitReply()
-      }
-      if (e.key === 'Escape') {
-        e.preventDefault()
-        e.stopPropagation()
-      }
-    })
-
-    actions.appendChild(submitBtn)
-    form.appendChild(actions)
-    win.appendChild(form)
-  }
-
-  // --- Drag to move ---
-  let isDragging = false
-  let dragStartX = 0
-  let dragStartY = 0
-  let winStartLeft = 0
-  let winStartTop = 0
-
-  function onMouseDown(e) {
-    if (e.target.closest('.sb-comment-window-header-actions')) return
-    isDragging = true
-    dragStartX = e.clientX
-    dragStartY = e.clientY
-
-    const containerRect = container.getBoundingClientRect()
-    winStartLeft = (parseFloat(win.style.left) / 100) * containerRect.width
-    winStartTop = (parseFloat(win.style.top) / 100) * containerRect.height
-
-    document.addEventListener('mousemove', onMouseMove)
-    document.addEventListener('mouseup', onMouseUp)
-    e.preventDefault()
-  }
-
-  function onMouseMove(e) {
-    if (!isDragging) return
-    const dx = e.clientX - dragStartX
-    const dy = e.clientY - dragStartY
-
-    const containerRect = container.getBoundingClientRect()
-    const newLeft = winStartLeft + dx
-    const newTop = winStartTop + dy
-
-    const xPct = Math.round((newLeft / containerRect.width) * 1000) / 10
-    const yPct = Math.round((newTop / containerRect.height) * 1000) / 10
-
-    win.style.left = `${xPct}%`
-    win.style.top = `${yPct}%`
-  }
-
-  async function onMouseUp(e) {
-    if (!isDragging) return
-    isDragging = false
-    document.removeEventListener('mousemove', onMouseMove)
-    document.removeEventListener('mouseup', onMouseUp)
-
-    const containerRect = container.getBoundingClientRect()
-    const dx = e.clientX - dragStartX
-    const dy = e.clientY - dragStartY
-    const newLeft = winStartLeft + dx
-    const newTop = winStartTop + dy
-    const xPct = Math.round((newLeft / containerRect.width) * 1000) / 10
-    const yPct = Math.round((newTop / containerRect.height) * 1000) / 10
-
-    if (Math.abs(dx) > 2 || Math.abs(dy) > 2) {
-      comment.meta = { ...comment.meta, x: xPct, y: yPct }
-
-      const pins = container.querySelectorAll('.sb-comment-pin')
-      for (const pin of pins) {
-        if (pin._commentId === comment.id) {
-          pin.style.left = `${xPct}%`
-          pin.style.top = `${yPct}%`
-          break
-        }
-      }
-
-      try {
-        await moveComment(comment.id, comment._rawBody ?? '', xPct, yPct)
-        comment._rawBody = null
-      } catch (err) {
-        console.error('[storyboard] Failed to move comment:', err)
-      }
-    }
-  }
-
-  header.addEventListener('mousedown', onMouseDown)
-
-  // Stop clicks from propagating to overlay
-  win.addEventListener('click', (e) => e.stopPropagation())
+  win.style.cssText = `z-index:100001;width:360px;max-height:480px;left:${comment.meta?.x ?? 0}%;top:${comment.meta?.y ?? 0}%;transform:translate(12px,-50%)`
+  win.setAttribute('x-data', 'sbCommentWindow')
+  win.setAttribute('@click.stop', '')
+
+  win.innerHTML = `
+      <!-- Header (draggable) -->
+      <div class="flex items-center justify-between ph3 pt3 pb2 bb sb-b-muted sb-draggable"
+           @mousedown="startDrag($event)">
+        <div class="flex items-center">
+          ${comment.author?.avatarUrl ? `<img class="br-100 ba sb-b-default flex-shrink-0 mr2 sb-avatar" src="${esc(comment.author.avatarUrl)}" alt="${esc(comment.author.login)}" />` : ''}
+          <span class="f7 fw6 sb-fg">${esc(comment.author?.login ?? 'unknown')}</span>
+          ${comment.createdAt ? `<span class="sb-fg-muted ml1 sb-f-xs">${esc(timeAgo(comment.createdAt))}</span>` : ''}
+        </div>
+        <div class="sb-comment-window-header-actions flex items-center flex-shrink-0" @mousedown.stop>
+          <!-- Resolve -->
+          <button class="flex items-center justify-center bg-transparent bn br2 pointer fw5 sans-serif flex-shrink-0 nowrap sb-action-btn"
+                  :class="resolved ? 'sb-fg-success' : 'sb-fg-muted'"
+                  :title="resolved ? 'Unresolve' : 'Resolve'"
+                  :disabled="resolving"
+                  @click="toggleResolve()"
+                  x-text="resolving ? (resolved ? 'Unresolving…' : 'Resolving…') : (resolved ? 'Resolved ✓' : 'Resolve')"></button>
+          <!-- Copy link -->
+          <button class="flex items-center justify-center bg-transparent bn br2 pointer fw5 sans-serif flex-shrink-0 nowrap sb-action-btn"
+                  :class="copied ? 'sb-fg-success' : 'sb-fg-muted'"
+                  title="Copy link"
+                  @click="copyLink()"
+                  x-text="copied ? 'Copied!' : 'Copy link'"></button>
+          <!-- Close -->
+          <button class="flex items-center justify-center bg-transparent bn br2 sb-fg-muted pointer flex-shrink-0 sb-close-btn-sm"
+                  aria-label="Close"
+                  @click="close()">×</button>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="flex-auto overflow-y-auto pa3">
+        <!-- Comment text / edit -->
+        <template x-if="!editing">
+          <div>
+            <p class="lh-copy sb-fg ma0 mb2 word-wrap sb-f-sm">${esc(comment.text)}</p>
+          </div>
+        </template>
+        <template x-if="editing">
+          <div>
+            <textarea class="sb-input sb-textarea w-100 ph2 pv1 br2 f7 sans-serif lh-copy db mb2"
+                      x-model="editText" x-ref="editArea" x-init="$nextTick(() => $refs.editArea?.focus())"></textarea>
+            <div class="flex justify-end mb2">
+              <button class="sb-btn-cancel ph2 pv1 br2 f7 fw5 sans-serif pointer mr1" @click="editing = false">Cancel</button>
+              <button class="sb-btn-success ph2 pv1 br2 f7 fw5 sans-serif pointer bn"
+                      :disabled="saving" @click="saveEdit()"
+                      x-text="saving ? 'Saving…' : 'Save'">Save</button>
+            </div>
+          </div>
+        </template>
+
+        <!-- Reactions -->
+        <div class="flex items-center flex-wrap mb2" x-ref="reactionBar">
+          <template x-for="(group, gi) in reactions" :key="group.content">
+            <template x-if="(group.users?.totalCount ?? 0) > 0">
+              <button class="sb-reaction-pill dib flex items-center ph2 br-pill pointer sans-serif mr1 mb1 sb-pill-size"
+                      :class="group.viewerHasReacted ? 'sb-pill sb-pill-active' : 'sb-pill'"
+                      @click.stop="toggleReaction(group.content, gi)">
+                <span class="mr1" x-text="emojiFor(group.content)"></span>
+                <span x-text="group.users?.totalCount ?? 0"></span>
+              </button>
+            </template>
+          </template>
+          <div class="relative mr1 mb1 flex flex-row justify-between w-100 align-center">
+            <button class="dib flex items-center ph1 br-pill ba sb-b-default sb-bg-muted sb-fg-muted f7 pointer sans-serif sb-pill-size"
+                    @click.stop="pickerTarget = pickerTarget === 'comment' ? null : 'comment'">😀 +</button>
+            <template x-if="pickerTarget === 'comment'">
+              <div class="sb-reaction-picker absolute left-0 flex pa1 sb-bg ba sb-b-default br3 sb-shadow" @click.outside="pickerTarget = null">
+                <template x-for="[key, emoji] in emojiEntries" :key="key">
+                  <button class="flex items-center justify-center br2 bn f6 pointer mr1"
+                          :class="isReacted(key) ? 'sb-reaction-btn-active' : 'bg-transparent sb-reaction-btn'"
+                          @click.stop="toggleReaction(key); pickerTarget = null"
+                          x-text="emoji"></button>
+                </template>
+              </div>
+            </template>
+            <template x-if="!editing">
+            ${canEdit ? `<button class="sb-fg-muted bg-transparent bn pointer f7 underline-hover" @click="editing = true; editText = commentText">Edit</button>` : ''}
+            </template>
+          </div>
+        </div>
+
+        <!-- Replies -->
+        ${replies.length > 0 ? `
+        <div class="bt sb-b-muted pt2 mt1">
+          <div class="fw6 sb-fg-muted ttu tracked mb2 sb-f-xs">${replies.length} ${replies.length === 1 ? 'Reply' : 'Replies'}</div>
+          ${replies.map((reply, ri) => `
+          <div class="flex mb2" data-reply-index="${ri}">
+            ${reply.author?.avatarUrl ? `<img class="br-100 ba sb-b-default flex-shrink-0 mr2 sb-avatar-sm" src="${esc(reply.author.avatarUrl)}" alt="${esc(reply.author.login)}" />` : ''}
+            <div class="flex-auto sb-min-w-0">
+              <div class="flex items-center mb1">
+                <span class="f7 fw6 sb-fg mr1">${esc(reply.author?.login ?? 'unknown')}</span>
+                ${reply.createdAt ? `<span class="sb-fg-muted sb-f-xs">${esc(timeAgo(reply.createdAt))}</span>` : ''}
+              </div>
+              <template x-if="editingReply !== ${ri}">
+                <p class="lh-copy sb-fg ma0 word-wrap sb-f-sm">${esc(reply.text ?? reply.body)}</p>
+              </template>
+              <template x-if="editingReply === ${ri}">
+                <div>
+                  <textarea class="sb-input sb-textarea-sm w-100 ph2 pv1 br2 sans-serif lh-copy db mb1 f7"
+                            x-model="editReplyText"></textarea>
+                  <div class="flex justify-end mb1">
+                    <button class="sb-btn-cancel ph2 pv1 br2 f7 fw5 sans-serif pointer mr1" @click="editingReply = -1">Cancel</button>
+                    <button class="sb-btn-success ph2 pv1 br2 f7 fw5 sans-serif pointer bn"
+                            :disabled="savingReply" @click="saveReply(${ri})"
+                            x-text="savingReply ? 'Saving…' : 'Save'">Save</button>
+                  </div>
+                </div>
+              </template>
+              ${user && reply.author?.login === user.login ? `
+              <template x-if="editingReply !== ${ri}">
+                <div class="flex mt1 sb-gap-2">
+                  <button class="sb-fg-muted bg-transparent bn pointer underline-hover sb-f-xs"
+                          @click="editingReply = ${ri}; editReplyText = replyTexts[${ri}]">Edit</button>
+                  <button class="sb-fg-danger bg-transparent bn pointer underline-hover sb-f-xs"
+                          @click="deleteReplyAt(${ri})">Delete</button>
+                </div>
+              </template>
+              ` : ''}
+              <!-- Reply reactions -->
+              <div class="flex items-center flex-wrap mt1">
+                <template x-for="(rg, rgi) in replyReactions[${ri}]" :key="rg.content">
+                  <template x-if="(rg.users?.totalCount ?? 0) > 0">
+                    <button class="sb-reaction-pill dib flex items-center ph2 br-pill pointer sans-serif mr1 mb1 sb-pill-size"
+                            :class="rg.viewerHasReacted ? 'sb-pill sb-pill-active' : 'sb-pill'"
+                            @click.stop="toggleReplyReaction(${ri}, rg.content, rgi)">
+                      <span class="mr1" x-text="emojiFor(rg.content)"></span>
+                      <span x-text="rg.users?.totalCount ?? 0"></span>
+                    </button>
+                  </template>
+                </template>
+                <div class="relative mr1 mb1">
+                  <button class="dib flex items-center ph1 br-pill ba sb-b-default sb-bg-muted sb-fg-muted f7 pointer sans-serif sb-pill-size"
+                          @click.stop="pickerTarget = pickerTarget === 'reply-${ri}' ? null : 'reply-${ri}'">😀 +</button>
+                  <template x-if="pickerTarget === 'reply-${ri}'">
+                    <div class="sb-reaction-picker absolute left-0 flex pa1 sb-bg ba sb-b-default br3 sb-shadow" @click.outside="pickerTarget = null">
+                      <template x-for="[key, emoji] in emojiEntries" :key="key">
+                        <button class="flex items-center justify-center br2 bn f6 pointer mr1"
+                                :class="isReplyReacted(${ri}, key) ? 'sb-reaction-btn-active' : 'bg-transparent sb-reaction-btn'"
+                                @click.stop="toggleReplyReaction(${ri}, key); pickerTarget = null"
+                                x-text="emoji"></button>
+                      </template>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </div>
+          </div>
+          `).join('')}
+        </div>
+        ` : ''}
+      </div>
+
+      <!-- Reply form -->
+      ${canReply ? `
+      <div class="bt sb-b-muted ph3 pv3 flex flex-column">
+        <textarea class="sb-input sb-textarea-sm w-100 ph2 pv1 br2 f7 sans-serif lh-copy db mb1"
+                  placeholder="Reply…"
+                  x-model="replyText"
+                  @keydown.meta.enter="submitReply()"
+                  @keydown.ctrl.enter="submitReply()"
+                  @keydown.escape.prevent.stop></textarea>
+        <div class="flex justify-end mt2">
+          <button class="sb-btn-success ph2 pv1 br2 f7 fw5 sans-serif pointer bn"
+                  :disabled="!replyText.trim() || submittingReply"
+                  @click="submitReply()"
+                  x-text="submittingReply ? 'Posting…' : 'Reply'">Reply</button>
+        </div>
+      </div>
+      ` : ''}
+  `
 
   // Set URL param for deep linking
   const url = new URL(window.location.href)
@@ -689,6 +239,297 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
   window.history.replaceState(null, '', url.toString())
 
   container.appendChild(win)
+
+  function destroy() {
+    win.remove()
+    if (activeWindow?.el === win) activeWindow = null
+    const currentUrl = new URL(window.location.href)
+    currentUrl.searchParams.delete('comment')
+    window.history.replaceState(null, '', currentUrl.toString())
+    callbacks.onClose?.()
+  }
+
+  // Register Alpine component (once)
+  if (!window.Alpine._sbCommentWindowRegistered) {
+    window.Alpine.data('sbCommentWindow', () => ({
+      // State
+      resolved: false,
+      resolving: false,
+      copied: false,
+      editing: false,
+      editText: '',
+      saving: false,
+      commentText: '',
+      replyText: '',
+      submittingReply: false,
+      editingReply: -1,
+      editReplyText: '',
+      savingReply: false,
+      pickerTarget: null, // 'comment' | 'reply-N' | null
+      reactions: [],
+      replyReactions: [],
+      replyTexts: [],
+      emojiEntries: Object.entries(REACTION_EMOJI),
+
+      // Closured refs (set per-instance via _sbInit)
+      _comment: null,
+      _discussion: null,
+      _container: null,
+      _callbacks: null,
+      _destroy: null,
+      _win: null,
+
+      init() {
+        // Read instance data stashed on the root element
+        const init = this.$root._sbInit
+        if (!init) return
+        this._comment = init.comment
+        this._discussion = init.discussion
+        this._container = init.container
+        this._callbacks = init.callbacks
+        this._destroy = init.destroy
+        this._win = init.win
+
+        this.resolved = !!this._comment.meta?.resolved
+        this.commentText = this._comment.text ?? ''
+        this.reactions = [...(this._comment.reactionGroups ?? [])]
+        this.replyTexts = (this._comment.replies ?? []).map(r => r.text ?? r.body ?? '')
+        this.replyReactions = (this._comment.replies ?? []).map(r => [...(r.reactionGroups ?? [])])
+      },
+
+      emojiFor(content) { return REACTION_EMOJI[content] ?? content },
+
+      isReacted(content) {
+        return this.reactions.some(r => r.content === content && r.viewerHasReacted)
+      },
+
+      isReplyReacted(ri, content) {
+        return (this.replyReactions[ri] ?? []).some(r => r.content === content && r.viewerHasReacted)
+      },
+
+      async toggleResolve() {
+        this.resolving = true
+        try {
+          if (this.resolved) {
+            await unresolveComment(this._comment.id, this._comment._rawBody ?? this._comment.body ?? '')
+            this._comment.meta = { ...this._comment.meta }
+            delete this._comment.meta.resolved
+            this.resolved = false
+            this.resolving = false
+            this._callbacks.onMove?.()
+          } else {
+            await resolveComment(this._comment.id, this._comment._rawBody ?? this._comment.body ?? '')
+            this._comment.meta = { ...this._comment.meta, resolved: true }
+            this._callbacks.onMove?.()
+            this._destroy()
+          }
+        } catch (err) {
+          console.error('[storyboard] Failed to toggle resolve:', err)
+          this.resolving = false
+        }
+      },
+
+      copyLink() {
+        const linkUrl = new URL(window.location.href)
+        linkUrl.searchParams.set('comment', this._comment.id)
+        navigator.clipboard.writeText(linkUrl.toString()).then(() => {
+          this.copied = true
+          setTimeout(() => { this.copied = false }, 2000)
+        }).catch(() => {
+          const input = document.createElement('input')
+          input.value = linkUrl.toString()
+          document.body.appendChild(input)
+          input.select()
+          document.execCommand('copy')
+          input.remove()
+        })
+      },
+
+      close() { this._destroy() },
+
+      async saveEdit() {
+        const newText = this.editText.trim()
+        if (!newText) return
+        this.saving = true
+        try {
+          await editComment(this._comment.id, this._comment._rawBody ?? this._comment.body ?? '', newText)
+          this._comment.text = newText
+          this._comment._rawBody = null
+          this.commentText = newText
+          // Update the visible text in the DOM
+          const p = this.$root.querySelector('.word-wrap')
+          if (p) p.textContent = newText
+          this.editing = false
+          this.saving = false
+        } catch (err) {
+          console.error('[storyboard] Failed to edit comment:', err)
+          this.saving = false
+        }
+      },
+
+      async toggleReaction(content, gi) {
+        const group = gi !== undefined ? this.reactions[gi] : this.reactions.find(r => r.content === content)
+        const wasReacted = group?.viewerHasReacted ?? false
+
+        if (wasReacted && group) {
+          group.users = { totalCount: Math.max(0, (group.users?.totalCount ?? 1) - 1) }
+          group.viewerHasReacted = false
+          if (group.users.totalCount === 0) {
+            this.reactions = this.reactions.filter(r => r.content !== content)
+          }
+        } else if (group) {
+          group.users = { totalCount: (group.users?.totalCount ?? 0) + 1 }
+          group.viewerHasReacted = true
+        } else {
+          this.reactions.push({ content, users: { totalCount: 1 }, viewerHasReacted: true })
+        }
+        // Sync back to comment object
+        this._comment.reactionGroups = this.reactions
+
+        try {
+          if (wasReacted) { await removeReaction(this._comment.id, content) }
+          else { await addReaction(this._comment.id, content) }
+        } catch (err) { console.error('[storyboard] Reaction toggle failed:', err) }
+      },
+
+      async toggleReplyReaction(ri, content, rgi) {
+        const reply = (this._comment.replies ?? [])[ri]
+        if (!reply) return
+        const groups = this.replyReactions[ri] ?? []
+        const group = rgi !== undefined ? groups[rgi] : groups.find(r => r.content === content)
+        const wasReacted = group?.viewerHasReacted ?? false
+
+        if (wasReacted && group) {
+          group.users = { totalCount: Math.max(0, (group.users?.totalCount ?? 1) - 1) }
+          group.viewerHasReacted = false
+          if (group.users.totalCount === 0) {
+            this.replyReactions[ri] = groups.filter(r => r.content !== content)
+          }
+        } else if (group) {
+          group.users = { totalCount: (group.users?.totalCount ?? 0) + 1 }
+          group.viewerHasReacted = true
+        } else {
+          groups.push({ content, users: { totalCount: 1 }, viewerHasReacted: true })
+          this.replyReactions[ri] = groups
+        }
+        reply.reactionGroups = this.replyReactions[ri]
+
+        try {
+          if (wasReacted) { await removeReaction(reply.id, content) }
+          else { await addReaction(reply.id, content) }
+        } catch (err) { console.error('[storyboard] Reaction toggle failed:', err) }
+      },
+
+      async submitReply() {
+        const text = this.replyText.trim()
+        if (!text) return
+        this.submittingReply = true
+        try {
+          await replyToComment(this._discussion.id, this._comment.id, text)
+          this.replyText = ''
+          this.submittingReply = false
+          this._callbacks.onMove?.()
+        } catch (err) {
+          console.error('[storyboard] Failed to post reply:', err)
+          this.submittingReply = false
+        }
+      },
+
+      async saveReply(ri) {
+        const newText = this.editReplyText.trim()
+        if (!newText) return
+        const reply = (this._comment.replies ?? [])[ri]
+        if (!reply) return
+        this.savingReply = true
+        try {
+          await editReply(reply.id, newText)
+          reply.text = newText
+          reply.body = newText
+          this.replyTexts[ri] = newText
+          this.editingReply = -1
+          this.savingReply = false
+        } catch (err) {
+          console.error('[storyboard] Failed to edit reply:', err)
+          this.savingReply = false
+        }
+      },
+
+      async deleteReplyAt(ri) {
+        const reply = (this._comment.replies ?? [])[ri]
+        if (!reply || !confirm('Delete this reply?')) return
+        try {
+          await deleteComment(reply.id)
+          this._callbacks.onMove?.()
+        } catch (err) {
+          console.error('[storyboard] Failed to delete reply:', err)
+        }
+      },
+
+      // Drag-to-move
+      startDrag(e) {
+        if (e.target.closest('.sb-comment-window-header-actions')) return
+        const winEl = this._win
+        const containerEl = this._container
+        const comment = this._comment
+        const callbacks = this._callbacks
+
+        const containerRect = containerEl.getBoundingClientRect()
+        const startX = e.clientX
+        const startY = e.clientY
+        const winStartLeft = (parseFloat(winEl.style.left) / 100) * containerRect.width
+        const winStartTop = (parseFloat(winEl.style.top) / 100) * containerRect.height
+
+        e.target.style.cursor = 'grabbing'
+
+        const onMove = (ev) => {
+          const cr = containerEl.getBoundingClientRect()
+          const xPct = Math.round(((winStartLeft + ev.clientX - startX) / cr.width) * 1000) / 10
+          const yPct = Math.round(((winStartTop + ev.clientY - startY) / cr.height) * 1000) / 10
+          winEl.style.left = `${xPct}%`
+          winEl.style.top = `${yPct}%`
+        }
+
+        const onUp = async (ev) => {
+          e.target.style.cursor = 'grab'
+          document.removeEventListener('mousemove', onMove)
+          document.removeEventListener('mouseup', onUp)
+
+          const cr = containerEl.getBoundingClientRect()
+          const dx = ev.clientX - startX
+          const dy = ev.clientY - startY
+          if (Math.abs(dx) < 3 && Math.abs(dy) < 3) return
+
+          const xPct = Math.round(((winStartLeft + dx) / cr.width) * 1000) / 10
+          const yPct = Math.round(((winStartTop + dy) / cr.height) * 1000) / 10
+          comment.meta = { ...comment.meta, x: xPct, y: yPct }
+
+          for (const pin of containerEl.querySelectorAll('.sb-comment-pin')) {
+            if (pin._commentId === comment.id) {
+              pin.style.left = `${xPct}%`
+              pin.style.top = `${yPct}%`
+              break
+            }
+          }
+
+          try {
+            await moveComment(comment.id, comment._rawBody ?? '', xPct, yPct)
+            comment._rawBody = null
+          } catch (err) { console.error('[storyboard] Failed to move comment:', err) }
+        }
+
+        document.addEventListener('mousemove', onMove)
+        document.addEventListener('mouseup', onUp)
+        e.preventDefault()
+      },
+    }))
+    window.Alpine._sbCommentWindowRegistered = true
+  }
+
+  // Stash instance data on the win element so init() can read it
+  win._sbInit = { comment, discussion, container, callbacks, destroy, win }
+
+  // Initialize Alpine on the new DOM
+  window.Alpine.initTree(win)
 
   // Adjust position to keep window within viewport
   requestAnimationFrame(() => {
@@ -700,17 +541,12 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
     let tx = 12
     let ty = -(rect.height / 2)
 
-    // Flip left if it would overflow right edge
-    const rightEdge = rect.left + rect.width
-    if (rightEdge > vw - pad) {
+    if (rect.left + rect.width > vw - pad) {
       tx = -(rect.width + 12)
     }
 
-    // Clamp vertically: compute final top/bottom in viewport coords
-    const anchorY = rect.top + rect.height / 2 // center of the initial rect (transform was 12px, -50%)
-    const finalTop = anchorY + ty
-    const finalBottom = finalTop + rect.height
-
+    const anchorY = rect.top + rect.height / 2
+    const finalBottom = anchorY + ty + rect.height
     if (finalBottom > vh - pad) {
       ty -= (finalBottom - vh + pad)
     }
@@ -720,17 +556,6 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
 
     win.style.transform = `translate(${tx}px, ${ty}px)`
   })
-
-  function destroy() {
-    document.removeEventListener('mousemove', onMouseMove)
-    document.removeEventListener('mouseup', onMouseUp)
-    win.remove()
-    if (activeWindow?.el === win) activeWindow = null
-    const currentUrl = new URL(window.location.href)
-    currentUrl.searchParams.delete('comment')
-    window.history.replaceState(null, '', currentUrl.toString())
-    callbacks.onClose?.()
-  }
 
   activeWindow = { el: win, destroy }
   return { el: win, destroy }

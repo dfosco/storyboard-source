@@ -8,13 +8,18 @@
 
 import { listDiscussions, fetchRouteDiscussion } from '../api.js'
 import { getCommentsConfig } from '../config.js'
-import { parseMetadata } from '../metadata.js'
 import { isAuthenticated } from '../auth.js'
 import { setCommentMode } from '../commentMode.js'
 
 function timeAgo(dateStr) {
   const d = new Date(dateStr)
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
+
+function esc(str) {
+  const d = document.createElement('div')
+  d.textContent = str ?? ''
+  return d.innerHTML
 }
 
 let activeDrawer = null
@@ -28,47 +33,85 @@ export async function openCommentsDrawer() {
 
   const backdrop = document.createElement('div')
   backdrop.className = 'sb-comments-drawer-backdrop fixed top-0 right-0 bottom-0 left-0'
-  backdrop.style.cssText = 'z-index:99997;background:rgba(0,0,0,0.4)'
   backdrop.addEventListener('click', closeCommentsDrawer)
 
   const drawer = document.createElement('div')
   drawer.className = 'sb-comments-drawer sb-drawer-animate fixed top-0 right-0 bottom-0 flex flex-column sb-bg bl sb-b-default sb-shadow sans-serif'
-  drawer.style.cssText = 'z-index:99998;width:420px;max-width:90vw'
 
-  // Header
-  const header = document.createElement('div')
-  header.className = 'flex items-center justify-between ph4 pv3 bb sb-b-muted flex-shrink-0'
+  drawer.innerHTML = `
+    <div x-data="sbCommentsDrawer">
+      <!-- Header -->
+      <div class="flex items-center justify-between ph4 pv3 bb sb-b-muted flex-shrink-0">
+        <h2 class="f5 fw6 sb-fg ma0">All Comments</h2>
+        <button class="flex items-center justify-center bg-transparent bn br2 sb-fg-muted pointer sb-close-btn"
+                aria-label="Close"
+                @click="closeDrawer()">×</button>
+      </div>
 
-  const title = document.createElement('h2')
-  title.className = 'f5 fw6 sb-fg ma0'
-  title.textContent = 'All Comments'
-  header.appendChild(title)
+      <!-- Body -->
+      <div class="flex-auto overflow-y-auto pa0">
+        <!-- Loading state -->
+        <template x-if="loading">
+          <div class="pv4 ph4 tc sb-fg-muted sb-f-sm">Loading comments…</div>
+        </template>
 
-  const closeBtn = document.createElement('button')
-  closeBtn.className = 'flex items-center justify-center bg-transparent bn br2 sb-fg-muted pointer'
-  closeBtn.style.cssText = 'width:28px;height:28px;font-size:18px;line-height:1'
-  closeBtn.innerHTML = '×'
-  closeBtn.setAttribute('aria-label', 'Close')
-  closeBtn.addEventListener('click', closeCommentsDrawer)
-  header.appendChild(closeBtn)
+        <!-- Error state -->
+        <template x-if="error">
+          <div class="pv4 ph4 tc sb-fg-muted sb-f-sm" x-text="'Failed to load comments: ' + error"></div>
+        </template>
 
-  drawer.appendChild(header)
+        <!-- Empty state -->
+        <template x-if="!loading && !error && groups.length === 0">
+          <div class="pv4 ph4 tc sb-fg-muted sb-f-sm">No comments yet</div>
+        </template>
 
-  // Body
-  const body = document.createElement('div')
-  body.className = 'flex-auto overflow-y-auto pa0'
-
-  const loading = document.createElement('div')
-  loading.className = 'pv4 ph4 tc sb-fg-muted'
-  loading.style.fontSize = '13px'
-  loading.textContent = 'Loading comments…'
-  body.appendChild(loading)
-
-  drawer.appendChild(body)
+        <!-- Comment groups by route -->
+        <template x-for="group in groups" :key="group.route">
+          <div class="bb sb-b-muted">
+            <div class="flex items-center ph4 pv2 sb-bg-inset f7 fw6 sb-fg-muted">
+              <span class="code sb-fg-accent" x-text="group.route"></span>
+              <span class="ml-auto fw4 flex flex-nowrap sb-f-xs sb-min-w-max"
+                    x-text="group.comments.length + (group.comments.length !== 1 ? ' comments' : ' comment')"></span>
+            </div>
+            <template x-for="comment in group.comments" :key="comment.id">
+              <button class="flex ph4 pv2 pointer bn bg-transparent w-100 tl sans-serif sb-drawer-btn"
+                      :class="comment.meta?.resolved ? 'sb-drawer-btn-resolved' : ''"
+                      @click="navigateTo(group.route, comment.id)">
+                <template x-if="comment.author?.avatarUrl">
+                  <img class="br-100 ba sb-b-default flex-shrink-0 mr2 sb-avatar"
+                       :src="comment.author.avatarUrl"
+                       :alt="comment.author?.login ?? ''" />
+                </template>
+                <div class="flex-auto sb-min-w-0">
+                  <div class="flex items-center mb1">
+                    <span class="f7 fw6 mr1"
+                          :class="comment.meta?.resolved ? 'sb-fg-muted' : 'sb-fg'"
+                          x-text="comment.author?.login ?? 'unknown'"></span>
+                    <template x-if="comment.createdAt">
+                      <span class="sb-fg-muted mr1 sb-f-xs" x-text="formatDate(comment.createdAt)"></span>
+                    </template>
+                    <template x-if="comment.meta?.resolved">
+                      <span class="sb-fg-success br-pill ph1 sb-badge-resolved">Resolved</span>
+                    </template>
+                  </div>
+                  <p class="ma0 overflow-hidden nowrap truncate lh-copy sb-f-sm"
+                     :class="comment.meta?.resolved ? 'sb-fg-muted' : 'sb-fg'"
+                     x-text="(comment.text ?? '').slice(0, 100)"></p>
+                  <template x-if="(comment.replies?.length ?? 0) > 0">
+                    <div class="sb-fg-muted mt1 sb-f-xs"
+                         x-text="'💬 ' + comment.replies.length + ' ' + (comment.replies.length === 1 ? 'reply' : 'replies')"></div>
+                  </template>
+                </div>
+              </button>
+            </template>
+          </div>
+        </template>
+      </div>
+    </div>
+  `
 
   document.body.appendChild(backdrop)
   document.body.appendChild(drawer)
-
   activeDrawer = { backdrop, drawer }
 
   // Escape to close
@@ -83,118 +126,69 @@ export async function openCommentsDrawer() {
   window.addEventListener('keydown', onKeyDown, true)
   activeDrawer.onKeyDown = onKeyDown
 
-  // Load all discussions
-  try {
-    const discussions = await listDiscussions()
-    body.innerHTML = ''
+  // Register Alpine component (once)
+  if (!window.Alpine._sbDrawerRegistered) {
+    window.Alpine.data('sbCommentsDrawer', () => ({
+      loading: true,
+      error: null,
+      groups: [],
 
-    if (!discussions || discussions.length === 0) {
-      const empty = document.createElement('div')
-      empty.className = 'pv4 ph4 tc sb-fg-muted'
-      empty.style.fontSize = '13px'
-      empty.textContent = 'No comments yet'
-      body.appendChild(empty)
-      return
-    }
-
-    // For each discussion, fetch full comments
-    const basePath = getCommentsConfig()?.basePath ?? '/'
-    for (const disc of discussions) {
-      const routeMatch = disc.title?.match(/^Comments:\s*(.+)$/)
-      if (!routeMatch) continue
-      const route = routeMatch[1]
-
-      // Skip comments from other branches/deployments
-      if (!route.startsWith(basePath)) continue
-
-      let discussion
-      try {
-        discussion = await fetchRouteDiscussion(route)
-      } catch {
-        continue
-      }
-      if (!discussion?.comments?.length) continue
-
-      const group = document.createElement('div')
-      group.className = 'bb sb-b-muted'
-
-      const routeHeader = document.createElement('div')
-      routeHeader.className = 'flex items-center ph4 pv2 sb-bg-inset f7 fw6 sb-fg-muted'
-      routeHeader.innerHTML = `<span class="code sb-fg-accent">${route}</span><span class="ml-auto fw4 flex flex-nowrap" style="font-size:11px;min-width:max-content">${discussion.comments.length} comment${discussion.comments.length !== 1 ? 's' : ''}</span>`
-      group.appendChild(routeHeader)
-
-      for (const comment of discussion.comments) {
-        const isResolved = !!comment.meta?.resolved
-        const btn = document.createElement('button')
-        btn.className = 'flex ph4 pv2 pointer bn bg-transparent w-100 tl sans-serif'
-        btn.style.cssText = `font:inherit;transition:background 100ms${isResolved ? ';opacity:0.6' : ''}`
-
-        const avatar = comment.author?.avatarUrl
-          ? `<img class="br-100 ba sb-b-default flex-shrink-0 mr2" style="width:24px;height:24px" src="${comment.author.avatarUrl}" alt="${comment.author?.login ?? ''}" />`
-          : ''
-
-        const resolvedBadge = isResolved
-          ? '<span class="sb-fg-success br-pill ph1" style="font-size:10px;background:color-mix(in srgb, var(--sb-fg-success) 10%, transparent)">Resolved</span>'
-          : ''
-
-        const textColorClass = isResolved ? 'sb-fg-muted' : 'sb-fg'
-
-        const replyCount = comment.replies?.length ?? 0
-        const repliesText = replyCount > 0
-          ? `<div class="sb-fg-muted mt1" style="font-size:11px">💬 ${replyCount} ${replyCount === 1 ? 'reply' : 'replies'}</div>`
-          : ''
-
-        btn.innerHTML = `
-          ${avatar}
-          <div class="flex-auto" style="min-width:0">
-            <div class="flex items-center mb1">
-              <span class="f7 fw6 ${isResolved ? 'sb-fg-muted' : 'sb-fg'} mr1">${comment.author?.login ?? 'unknown'}</span>
-              ${comment.createdAt ? `<span class="sb-fg-muted mr1" style="font-size:11px">${timeAgo(comment.createdAt)}</span>` : ''}
-              ${resolvedBadge}
-            </div>
-            <p class="${textColorClass} ma0 overflow-hidden nowrap truncate lh-copy" style="font-size:13px;text-overflow:ellipsis">${comment.text?.slice(0, 100) ?? ''}</p>
-            ${repliesText}
-          </div>
-        `
-
-        btn.addEventListener('click', () => {
-          closeCommentsDrawer()
-          // Navigate to route if different
-          if (window.location.pathname !== route) {
-            const url = new URL(window.location.href)
-            url.pathname = route
-            url.searchParams.set('comment', comment.id)
-            window.location.href = url.toString()
-          } else {
-            // Same route — activate comment mode and open comment
-            const url = new URL(window.location.href)
-            url.searchParams.set('comment', comment.id)
-            window.history.replaceState(null, '', url.toString())
-            setCommentMode(true)
+      async init() {
+        try {
+          const discussions = await listDiscussions()
+          if (!discussions || discussions.length === 0) {
+            this.loading = false
+            return
           }
-        })
 
-        group.appendChild(btn)
-      }
+          const basePath = getCommentsConfig()?.basePath ?? '/'
+          const result = []
 
-      body.appendChild(group)
-    }
+          for (const disc of discussions) {
+            const routeMatch = disc.title?.match(/^Comments:\s*(.+)$/)
+            if (!routeMatch) continue
+            const route = routeMatch[1]
+            if (!route.startsWith(basePath)) continue
 
-    if (body.children.length === 0) {
-      const empty = document.createElement('div')
-      empty.className = 'pv4 ph4 tc sb-fg-muted'
-      empty.style.fontSize = '13px'
-      empty.textContent = 'No comments yet'
-      body.appendChild(empty)
-    }
-  } catch (err) {
-    body.innerHTML = ''
-    const errEl = document.createElement('div')
-    errEl.className = 'pv4 ph4 tc sb-fg-muted'
-    errEl.style.fontSize = '13px'
-    errEl.textContent = `Failed to load comments: ${err.message}`
-    body.appendChild(errEl)
+            let discussion
+            try { discussion = await fetchRouteDiscussion(route) } catch { continue }
+            if (!discussion?.comments?.length) continue
+
+            result.push({ route, comments: discussion.comments })
+          }
+
+          this.groups = result
+        } catch (err) {
+          this.error = err.message
+        } finally {
+          this.loading = false
+        }
+      },
+
+      formatDate(dateStr) { return timeAgo(dateStr) },
+
+      closeDrawer() { closeCommentsDrawer() },
+
+      navigateTo(route, commentId) {
+        closeCommentsDrawer()
+        if (window.location.pathname !== route) {
+          const navUrl = new URL(window.location.href)
+          navUrl.pathname = route
+          navUrl.searchParams.set('comment', commentId)
+          window.location.href = navUrl.toString()
+        } else {
+          const navUrl = new URL(window.location.href)
+          navUrl.searchParams.set('comment', commentId)
+          window.history.replaceState(null, '', navUrl.toString())
+          setCommentMode(true)
+        }
+      },
+    }))
+    window.Alpine._sbDrawerRegistered = true
   }
+
+  // Initialize Alpine on the new DOM
+  window.Alpine.initTree(drawer)
 }
 
 /**

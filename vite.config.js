@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite'
+import path from 'path'
 import react from '@vitejs/plugin-react'
 import generouted from '@generouted/react-router/plugin'
 import storyboardData from '@dfosco/storyboard-react/vite'
@@ -8,11 +9,27 @@ import browsers from '@github/browserslist-config'
 import { globSync } from 'glob'
 import { repository } from './storyboard.config.json'
 
+const __dirname = path.dirname(new URL(import.meta.url).pathname)
+
 export default defineConfig(({ command }) => {
     const base = process.env.VITE_BASE_PATH || `/${repository.name}/`
 
     return {
     base,
+    resolve: {
+        alias: {
+            // In git worktrees, npm resolves workspace packages to the main
+            // worktree. Force local resolution so edits here take effect.
+            '@dfosco/storyboard-core/comments/ui/comments.css': path.resolve(__dirname, 'packages/core/src/comments/ui/comments.css'),
+            '@dfosco/storyboard-core/comments': path.resolve(__dirname, 'packages/core/src/comments/index.js'),
+            '@dfosco/storyboard-core': path.resolve(__dirname, 'packages/core/src/index.js'),
+            '@dfosco/storyboard-react/vite': path.resolve(__dirname, 'packages/react/src/vite/data-plugin.js'),
+            '@dfosco/storyboard-react/hash-preserver': path.resolve(__dirname, 'packages/react/src/hashPreserver.js'),
+            '@dfosco/storyboard-react': path.resolve(__dirname, 'packages/react/src/index.js'),
+            '@dfosco/storyboard-react-primer': path.resolve(__dirname, 'packages/react-primer/src/index.js'),
+            '@dfosco/storyboard-react-reshaped': path.resolve(__dirname, 'packages/react-reshaped/src/index.js'),
+        },
+    },
     plugins: [
         storyboardData(),
         react(),
@@ -42,7 +59,7 @@ export default defineConfig(({ command }) => {
         port: 1234,
         fs: { allow: ['..'] },
         watch: {
-            ignored: ['**/.worktrees/**'],
+            // Don't ignore .worktrees — this project may run inside one
         },
         warmup: {
             clientFiles: [

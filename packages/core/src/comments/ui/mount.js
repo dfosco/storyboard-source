@@ -20,6 +20,12 @@ let activeComposer = null
 let renderedPins = []
 let cachedDiscussion = null
 
+function esc(str) {
+  const d = document.createElement('div')
+  d.textContent = str ?? ''
+  return d.innerHTML
+}
+
 function getContentContainer() {
   return document.querySelector('main') || document.body
 }
@@ -32,7 +38,6 @@ function ensureOverlay() {
 
   overlay = document.createElement('div')
   overlay.className = 'sb-comment-overlay absolute top-0 right-0 bottom-0 left-0 pe-none'
-  overlay.style.zIndex = '99998'
   container.appendChild(overlay)
 
   return overlay
@@ -41,9 +46,12 @@ function ensureOverlay() {
 function showBanner() {
   if (banner) return
   banner = document.createElement('div')
-  banner.className = 'fixed flex items-center pe-none sans-serif sb-shadow'
-  banner.style.cssText = 'bottom:12px;left:50%;transform:translateX(-50%);z-index:99999;background:var(--sb-bg);color:var(--sb-fg);padding:6px 16px;border-radius:8px;font-size:13px;line-height:1.4;backdrop-filter:blur(12px)'
-  banner.innerHTML = 'Comment mode — click to place a comment. Press <kbd style="display:inline-block;padding:1px 6px;font-size:11px;font-family:inherit;border:1px solid rgba(255,255,255,0.3);border-radius:4px;background:rgba(255,255,255,0.1)">C</kbd> or <kbd style="display:inline-block;padding:1px 6px;font-size:11px;font-family:inherit;border:1px solid rgba(255,255,255,0.3);border-radius:4px;background:rgba(255,255,255,0.1)">Esc</kbd> to exit.'
+  banner.className = 'sb-banner fixed flex items-center pe-none sans-serif sb-shadow'
+  banner.innerHTML = `
+    Comment mode — click to place a comment. Press
+    <kbd class="sb-kbd">C</kbd> or
+    <kbd class="sb-kbd">Esc</kbd> to exit.
+  `
   document.body.appendChild(banner)
 }
 
@@ -63,26 +71,19 @@ function clearPins() {
 }
 
 function renderPin(ov, comment, index) {
+  const hue = Math.round((index * 137.5) % 360)
   const pin = document.createElement('div')
   pin.className = 'sb-comment-pin absolute br-100 sb-bg pointer sb-shadow pe-auto overflow-hidden'
-  pin.style.cssText = 'z-index:100000;width:32px;height:32px;margin-left:-16px;margin-top:-16px;transition:transform 100ms ease-in-out'
   pin.style.left = `${comment.meta?.x ?? 0}%`
   pin.style.top = `${comment.meta?.y ?? 0}%`
-
-  const hue = (index * 137.5) % 360
-  pin.style.setProperty('--pin-hue', String(Math.round(hue)))
-
-  if (comment.author?.avatarUrl) {
-    const img = document.createElement('img')
-    img.className = 'br-100 db'
-    img.style.cssText = 'width:100%;height:100%;object-fit:cover'
-    img.src = comment.author.avatarUrl
-    img.alt = comment.author.login ?? ''
-    pin.appendChild(img)
-  }
+  pin.style.setProperty('--pin-hue', String(hue))
 
   if (comment.meta?.resolved) pin.setAttribute('data-resolved', 'true')
   pin.title = `${comment.author?.login ?? 'unknown'}: ${comment.text?.slice(0, 80) ?? ''}`
+
+  pin.innerHTML = comment.author?.avatarUrl
+    ? `<img class="br-100 db sb-pin-img" src="${esc(comment.author.avatarUrl)}" alt="${esc(comment.author.login)}" />`
+    : ''
 
   pin._commentId = comment.id
   comment._rawBody = comment.body
