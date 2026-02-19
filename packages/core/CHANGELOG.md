@@ -1,5 +1,11 @@
 # @dfosco/storyboard-core
 
+## 1.11.1
+
+### Patch Changes
+
+-   Update auth modal PAT guidance: recommend fine-grained tokens with Discussions read/write permission, show minimum classic scope (repo), drop unnecessary read:user, pre-fill classic token creation form.
+
 ## 1.11.0
 
 ### Minor Changes
