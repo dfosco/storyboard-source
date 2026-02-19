@@ -136,14 +136,15 @@ async function loadAndRenderComments() {
   const ov = ensureOverlay()
   const route = getCurrentRoute()
 
-  // 1. Render from cache immediately (instant pins)
+  // 1. Render from cache — skip API if cache is fresh
   const cached = getCachedComments(route)
   if (cached) {
     cachedDiscussion = cached
     renderCachedPins()
+    return
   }
 
-  // 2. Fetch lightweight summary in background
+  // 2. Cache miss/expired — fetch lightweight summary
   try {
     const discussion = await fetchRouteCommentsSummary(route)
     cachedDiscussion = discussion

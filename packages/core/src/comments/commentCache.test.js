@@ -20,7 +20,7 @@ describe('commentCache', () => {
     const data = { id: 'D_1', comments: [] }
     // Manually write expired entry
     localStorage.setItem('sb-comments:/Overview', JSON.stringify({
-      ts: Date.now() - 6 * 60 * 1000, // 6 min ago
+      ts: Date.now() - 3 * 60 * 1000, // 3 min ago (exceeds 2-min TTL)
       data,
     }))
     expect(getCachedComments('/Overview')).toBeNull()

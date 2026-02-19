@@ -6,7 +6,7 @@
  */
 
 const CACHE_PREFIX = 'sb-comments:'
-const TTL_MS = 5 * 60 * 1000 // 5 minutes
+const TTL_MS = 2 * 60 * 1000 // 2 minutes
 
 /**
  * Get cached comment listing for a route.
