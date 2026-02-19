@@ -123,7 +123,14 @@
 
 /* Layout helpers */
 .sb-min-w-0   { min-width: 0; }
-.sb-gap-2     { gap: 8px; }
+.gap-0        { gap: 0; }
+.gap-1        { gap: .25rem; }
+.gap-2        { gap: .5rem; }
+.gap-3        { gap: 1rem; }
+.gap-4        { gap: 2rem; }
+.gap-5        { gap: 4rem; }
+.gap-6        { gap: 8rem; }
+.gap-7        { gap: 16rem; }
 .sb-lh-1      { line-height: 1; }
 
 /* Comment-specific sizing/z-index */

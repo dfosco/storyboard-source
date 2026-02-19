@@ -174,7 +174,7 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
               </template>
               ${user && reply.author?.login === user.login ? `
               <template x-if="editingReply !== ${ri}">
-                <div class="flex mt1 sb-gap-2">
+                <div class="flex mt1 gap-2">
                   <button class="sb-fg-muted bg-transparent bn pointer underline-hover sb-f-xs"
                           @click="editingReply = ${ri}; editReplyText = replyTexts[${ri}]">Edit</button>
                   <button class="sb-fg-danger bg-transparent bn pointer underline-hover sb-f-xs"
