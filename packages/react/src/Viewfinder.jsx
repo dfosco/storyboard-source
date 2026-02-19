@@ -96,7 +96,7 @@ export default function Viewfinder({ scenes = {}, pageModules = {}, basePath, ti
 
   const branchBasePath = useMemo(() => {
     const base = basePath || '/storyboard-source/'
-    return base.replace(/\/[^/]*\/$/, '/')
+    return base.replace(/\/branch--[^/]*\/$/, '/')
   }, [basePath])
 
   useEffect(() => {
