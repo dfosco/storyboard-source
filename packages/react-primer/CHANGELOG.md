@@ -1,5 +1,16 @@
 # @dfosco/storyboard-react-primer
 
+## 1.10.0
+
+### Minor Changes
+
+-   Fix branch previews not showing on main deployment viewfinder, move repository config to top-level and derive vite base path, and fix router.ts formatting.
+
+### Patch Changes
+
+-   Updated dependencies
+    -   @dfosco/storyboard-react@1.10.0
+
 ## 1.9.0
 
 ### Minor Changes
