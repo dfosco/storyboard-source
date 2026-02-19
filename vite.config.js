@@ -6,9 +6,10 @@ import postcssGlobalData from '@csstools/postcss-global-data'
 import postcssPresetEnv from 'postcss-preset-env'
 import browsers from '@github/browserslist-config'
 import { globSync } from 'glob'
+import { repository } from './storyboard.config.json'
 
 export default defineConfig(({ command }) => {
-    const base = process.env.VITE_BASE_PATH || '/storyboard-source/' // eslint-disable-line no-undef
+    const base = process.env.VITE_BASE_PATH || `/${repository.name}/`
 
     return {
     base,

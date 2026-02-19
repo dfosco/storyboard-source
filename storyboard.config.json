@@ -1,9 +1,9 @@
 {
+  "repository": {
+    "owner": "dfosco",
+    "name": "storyboard-source"
+  },
   "comments": {
-    "repo": {
-      "owner": "dfosco",
-      "name": "storyboard-source"
-    },
     "discussions": {
       "category": "General"
     }
