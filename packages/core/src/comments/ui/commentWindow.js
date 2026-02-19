@@ -125,8 +125,8 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
             </template>
           </template>
           <div class="relative mr1 mb1 dib">
-            <button class="dib flex items-center ph2 pv1 br-pill ba sb-b-default sb-bg-muted hover:b--black-60 sb-fg-muted f7 pointer sans-serif"
-                    @click.stop="pickerTarget = pickerTarget === 'comment' ? null : 'comment'"><span style="padding: 2px 0">😀 +</span></button>
+            <button class="f7 flex items-center ph2 pv1 br-pill pointer sans-serif sb-pill"
+                    @click.stop="pickerTarget = pickerTarget === 'comment' ? null : 'comment'"><span>😀 +</span></button>
             <template x-if="pickerTarget === 'comment'">
               <div class="sb-reaction-picker absolute left-0 flex pa1 sb-bg ba sb-b-default br3 sb-shadow" @click.outside="pickerTarget = null">
                 <template x-for="[key, emoji] in emojiEntries" :key="key">
@@ -195,7 +195,7 @@ export function showCommentWindow(container, comment, discussion, callbacks = {}
                   </template>
                 </template>
                 <div class="relative mr1 mb1">
-                  <button class="dib flex items-center ph2 pv1 br-pill ba sb-b-default sb-bg-muted hover:b--black-60 sb-fg-muted f7 pointer sans-serif "
+                  <button class="f7 flex items-center ph2 pv1 br-pill pointer sans-serif sb-pill"
                           @click.stop="pickerTarget = pickerTarget === 'reply-${ri}' ? null : 'reply-${ri}'">😀 +</button>
                   <template x-if="pickerTarget === 'reply-${ri}'">
                     <div class="sb-reaction-picker absolute left-0 flex pa1 sb-bg ba sb-b-default br3 sb-shadow" @click.outside="pickerTarget = null">
