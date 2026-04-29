@@ -1385,6 +1385,56 @@ export default function storyboardDataPlugin() {
     buildStart() {
       buildResult = null
     },
+
+    // Emit terminal snapshots into the build so TerminalReadWidget can
+    // fetch them as static files in production (no dev-server API).
+    generateBundle() {
+      const emittedIds = new Set()
+
+      // 1. New public snapshots (flat structure) — .json and .txt
+      const publicDir = path.resolve('assets/.storyboard-public/terminal-snapshots')
+      if (fs.existsSync(publicDir)) {
+        for (const file of fs.readdirSync(publicDir)) {
+          if (file.startsWith('~') || file.startsWith('.')) continue
+          const isJson = file.endsWith('.snapshot.json')
+          const isTxt = file.endsWith('.snapshot.txt')
+          if (!isJson && !isTxt) continue
+          if (isJson) {
+            const widgetId = file.replace(/\.snapshot\.json$/, '')
+            if (widgetId) emittedIds.add(widgetId)
+          }
+          this.emitFile({
+            type: 'asset',
+            fileName: `_storyboard/terminal-snapshots/${file}`,
+            source: fs.readFileSync(path.join(publicDir, file), 'utf-8'),
+          })
+        }
+      }
+
+      // 2. Legacy snapshots (nested by canvas dir) — skip if already emitted
+      const legacyDir = path.resolve('.storyboard/terminal-snapshots')
+      if (fs.existsSync(legacyDir)) {
+        const walk = (dir) => {
+          const entries = fs.readdirSync(dir, { withFileTypes: true })
+          for (const entry of entries) {
+            const full = path.join(dir, entry.name)
+            if (entry.isDirectory()) {
+              walk(full)
+            } else if (entry.name.endsWith('.json') && !entry.name.startsWith('~')) {
+              const widgetId = entry.name.replace(/\.json$/, '')
+              if (emittedIds.has(widgetId)) continue
+              const rel = path.relative(legacyDir, full).replace(/\\/g, '/')
+              this.emitFile({
+                type: 'asset',
+                fileName: `_storyboard/terminal-snapshots/${rel}`,
+                source: fs.readFileSync(full, 'utf-8'),
+              })
+            }
+          }
+        }
+        walk(legacyDir)
+      }
+    },
   }
 }
 
