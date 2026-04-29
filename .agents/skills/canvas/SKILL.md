@@ -810,10 +810,15 @@ A **story widget** embeds a React component (`.story.jsx`) directly on the canva
 
 3. **Or use the CLI**:
    ```bash
-   storyboard canvas add story --canvas my-canvas
+   npx storyboard canvas add story --canvas my-canvas --props '{"storyId":"text-input","exportName":"Default"}'
    ```
 
 ### Component-set widgets (all variants in one widget)
+
+`component-set` is a **dedicated widget type** — not a prop on `story`. The canvas renderer maps `component-set` → `ComponentSetWidget` and `story` → `StoryWidget`. Using the wrong type renders the wrong component.
+
+- ✅ `npx storyboard canvas add component-set --props '{ "storyId": "my-story" }'`
+- ❌ `npx storyboard canvas add story --props '{ "storyId": "my-story", "componentSet": true }'`
 
 A **component-set widget** renders ALL named exports from a single `.story.jsx` file in a grid layout inside one iframe. Use this instead of multiple `story` widgets when you want to show every variant of a component side by side.
 
@@ -830,14 +835,28 @@ A **component-set widget** renders ALL named exports from a single `.story.jsx` 
      }
    }
    ```
-   - `storyId` — the kebab-case component name (matches the story file stem)
-   - `layout` — `"horizontal"` (default) or `"vertical"` grid arrangement
-   - `selected` — (optional) pre-select a variant by export name (e.g. `"WithValidation"`)
 
 3. **Or use the CLI**:
    ```bash
-   storyboard canvas add component-set --canvas my-canvas --props '{"storyId":"text-input"}'
+   npx storyboard canvas add component-set --canvas my-canvas --props '{"storyId":"text-input"}'
    ```
+
+#### Component-set props
+
+| Prop | Values | Notes |
+|------|--------|-------|
+| `storyId` | file stem | Required. e.g. `cq-setup-progress` for `cq-setup-progress.story.jsx`, NOT the route path |
+| `layout` | `horizontal` (default), `vertical` | Grid direction |
+| `selected` | export name | Pre-selects a cell |
+| `width`, `height` | number | Widget dimensions |
+
+#### Authoring stories for component sets
+
+- **Named exports only** — no `export default`. Each named export = one grid cell.
+- **No wrapper chrome** — no headings, descriptions, or layout wrappers. The `ComponentSetPage` handles labels and grid layout.
+- **PascalCase export names** — they become the cell labels (e.g. `Simple`, `RepoList`, `ProgressBar`).
+- **`storyId` = file stem** — e.g. `cq-setup-progress` for `cq-setup-progress.story.jsx`, NOT the route path (`CqSetupProgress/cq-setup-progress`).
+- **Route is auto-generated** from directory: `src/components/Foo/bar.story.jsx` → `/components/Foo/bar`.
 
 **When to use `component-set` vs `story`:**
 - Use `story` when embedding a single specific export (e.g. just the `Default` variant)
