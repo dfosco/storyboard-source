@@ -80,6 +80,7 @@ const { x, y, adjusted } = findFreePosition({
 | `figma-embed` | 800×450 | `url` | `width`, `height` |
 | `codepen-embed` | 800×450 | `url` | `width`, `height` |
 | `story` | 780×420 | `storyId` + `exportName` | `width`, `height`, `showCode` |
+| `component-set` | 780×420 | `storyId` | `layout` (horizontal/vertical), `selected`, `width`, `height` |
 | `image` | 400×300 | `src` (filename) | `width`, `height`, `private` |
 | `link-preview` | 320×200 | `url` | `title` |
 | `component` | 300×200 | — | `width`, `height` |
@@ -190,7 +191,7 @@ npx storyboard canvas update {WIDGET_ID} --canvas {NAME} --x 100 --y 200
 
 ### Add flags reference
 ```
-  Positional: <widget-type>  Widget type (sticky-note, markdown, prototype, story)
+  Positional: <widget-type>  Widget type (sticky-note, markdown, prototype, story, component-set, image, figma-embed, codepen-embed, link-preview)
 
   -c, --canvas           Target canvas name (required)
   --x                    X position (omit for auto-positioning)
@@ -811,3 +812,33 @@ A **story widget** embeds a React component (`.story.jsx`) directly on the canva
    ```bash
    storyboard canvas add story --canvas my-canvas
    ```
+
+### Component-set widgets (all variants in one widget)
+
+A **component-set widget** renders ALL named exports from a single `.story.jsx` file in a grid layout inside one iframe. Use this instead of multiple `story` widgets when you want to show every variant of a component side by side.
+
+1. **Scaffold the component** — same as story widgets: invoke the **`create` skill** with type "Component".
+2. **Add the component-set widget to the canvas**:
+   ```json
+   {
+     "type": "component-set",
+     "props": {
+       "storyId": "text-input",
+       "layout": "horizontal",
+       "width": 780,
+       "height": 420
+     }
+   }
+   ```
+   - `storyId` — the kebab-case component name (matches the story file stem)
+   - `layout` — `"horizontal"` (default) or `"vertical"` grid arrangement
+   - `selected` — (optional) pre-select a variant by export name (e.g. `"WithValidation"`)
+
+3. **Or use the CLI**:
+   ```bash
+   storyboard canvas add component-set --canvas my-canvas --props '{"storyId":"text-input"}'
+   ```
+
+**When to use `component-set` vs `story`:**
+- Use `story` when embedding a single specific export (e.g. just the `Default` variant)
+- Use `component-set` when showing all exports/variants of a component together (e.g. a design review of all states)
