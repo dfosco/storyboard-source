@@ -16,6 +16,17 @@ export default function ActionMenuButton({ config = {}, data: _data, localOnly: 
     return unsub
   }, [])
 
+  // Allow external callers (e.g. command palette) to open this menu
+  useEffect(() => {
+    const actionId = config.action
+    if (!actionId) return
+    function onTrigger(e) {
+      if (e.detail?.action === actionId) setMenuOpen(true)
+    }
+    window.addEventListener('storyboard:open-tool-menu', onTrigger)
+    return () => window.removeEventListener('storyboard:open-tool-menu', onTrigger)
+  }, [config.action])
+
   const children = config.action ? getActionChildren(config.action) : []
   const hasRadio = children.some((c) => c.type === 'radio')
   const activeValue = children.find((c) => c.type === 'radio' && c.active)?.id || ''

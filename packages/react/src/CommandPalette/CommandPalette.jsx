@@ -180,27 +180,28 @@ function buildConfigSections(prefix, onNavigateToPage, onCreateAction) {
         continue
       }
 
-      // Tools with submenu children — resolve handler ID directly from
-      // toolbar config so tools on any surface (command-toolbar, etc.) work.
+      // Tools with submenu children
       if (tool.render === 'submenu' || tool.render === 'menu') {
-        const handlerId = tool.handler || `core:${toolId}`
-        const children = getActionChildren(handlerId)
-        if (children.length > 0) {
-          const pageId = `tool:${toolId}`
-          toolMenus.push({
-            id: pageId, label, title: label,
-            keywords: [label, toolId].filter(Boolean),
-            options: children.map(child => ({ label: child.label, execute: child.execute })),
-          })
-          remainingItems.push({
-            id: `cfg:${section.id}:${toolId}`,
-            children: label,
-            keywords: [label, toolId].filter(Boolean),
-            showType: false,
-            onClick: () => onNavigateToPage?.(pageId),
-            closeOnSelect: false,
-          })
-          continue
+        const action = actions.find(a => a.toolKey === toolId)
+        if (action?.type === 'submenu') {
+          const children = getActionChildren(action.id)
+          if (children.length > 0) {
+            const pageId = `tool:${toolId}`
+            toolMenus.push({
+              id: pageId, label, title: label,
+              keywords: [label, toolId].filter(Boolean),
+              options: children.map(child => ({ label: child.label, execute: child.execute })),
+            })
+            remainingItems.push({
+              id: `cfg:${section.id}:${toolId}`,
+              children: label,
+              keywords: [label, toolId].filter(Boolean),
+              showType: false,
+              onClick: () => onNavigateToPage?.(pageId),
+              closeOnSelect: false,
+            })
+            continue
+          }
         }
         // Declarative options
         if (tool.options?.length > 0) {
@@ -253,19 +254,17 @@ function buildConfigSections(prefix, onNavigateToPage, onCreateAction) {
           onClick: () => { window.location.href = resolvedUrl },
         })
       } else {
-        // Menu tools: close palette and click the toolbar button to open the menu
+        // Menu tools: close palette and dispatch event to open the toolbar menu
         if (tool.render === 'menu') {
-          const ariaLabel = tool.ariaLabel || tool.label || toolId
+          const handlerId = tool.handler || `core:${toolId}`
           remainingItems.push({
             id: `cfg:${section.id}:${toolId}`,
             children: label,
             keywords: [label, toolId].filter(Boolean),
             showType: false,
             onClick: () => {
-              // Find and click the toolbar button
               setTimeout(() => {
-                const btn = document.querySelector(`[aria-label="${ariaLabel}"]`)
-                if (btn) btn.click()
+                window.dispatchEvent(new CustomEvent('storyboard:open-tool-menu', { detail: { action: handlerId } }))
               }, 100)
             },
           })
