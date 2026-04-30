@@ -6,7 +6,7 @@
       "mode": "updateable"
     },
     {
-      "source": "scaffold/.gitignore",
+      "source": "scaffold/gitignore",
       "target": ".gitignore",
       "mode": "updateable"
     },
