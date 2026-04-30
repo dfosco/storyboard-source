@@ -1,14 +1,19 @@
 {
   "files": [
     {
+      "source": "scaffold/AGENTS.md",
+      "target": "AGENTS.md",
+      "mode": "updateable"
+    },
+    {
       "source": "scaffold/storyboard.config.json",
       "target": "storyboard.config.json",
-      "mode": "scaffold"
+      "mode": "updateable"
     },
     {
       "source": "scaffold/svelte.config.js",
       "target": "svelte.config.js",
-      "mode": "scaffold"
+      "mode": "updateable"
     },
     {
       "source": "scaffold/scripts/link.sh",
@@ -29,12 +34,12 @@
     {
       "source": "scaffold/deploy.yml",
       "target": ".github/workflows/deploy.yml",
-      "mode": "scaffold"
+      "mode": "updateable"
     },
     {
       "source": "scaffold/preview.yml",
       "target": ".github/workflows/preview.yml",
-      "mode": "scaffold"
+      "mode": "updateable"
     },
     {
       "source": "scaffold/githooks/",
@@ -45,7 +50,7 @@
     {
       "source": "scaffold/codex/config.toml",
       "target": ".codex/config.toml",
-      "mode": "scaffold"
+      "mode": "updateable"
     }
   ]
 }
