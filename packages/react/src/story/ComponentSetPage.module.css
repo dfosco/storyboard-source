@@ -25,11 +25,20 @@
   display: flex;
   flex-direction: column;
   border: 1px solid var(--borderColor-muted, #d8dee4);
-  border-radius: 2px;
+  border-radius: 0;
   overflow: hidden;
   transition: border-color 120ms ease, box-shadow 120ms ease;
   position: relative;
   background: var(--bgColor-muted, #f6f8fa);
+}
+
+/* Collapse double borders between adjacent cells */
+.grid[data-layout="horizontal"] .cell + .cell {
+  border-left: none;
+}
+
+.grid[data-layout="vertical"] .cell + .cell {
+  border-top: none;
 }
 
 /* In horizontal layout, each cell snaps to the widest component */
@@ -64,8 +73,6 @@
   user-select: none;
   transition: background 100ms ease, color 100ms ease;
   flex-shrink: 0;
-  /* Round top corners to match cell */
-  border-radius: 6px 6px 0 0;
 }
 
 .cellLabel:hover {
