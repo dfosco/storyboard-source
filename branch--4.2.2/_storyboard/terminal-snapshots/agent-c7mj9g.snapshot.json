@@ -1,0 +1,10 @@
+{
+  "widgetId": "agent-c7mj9g",
+  "canvasId": "viewfinder-redesign",
+  "prettyName": "silver-bunting",
+  "timestamp": "2026-04-25T18:57:50.937Z",
+  "cols": 80,
+  "rows": 24,
+  "paneContent": "│ model:     o4-mini medium   /model to change             │\n│ directory: ~/workspace/…/.worktrees/4.3.0--prompt-widget │\n╰──────────────────────────────────────────────────────────╯\n\n  Tip: New Build faster with the Codex App. Run 'codex app' or visit\n  https://chatgpt.com/codex?app-landing-page=true\n\n\n› [System] Your terminal identity has been set. widgetId=agent-c7mj9g\n  displayName=silver-bunting canvasId=viewfinder-redesign configFile=.storyboard\n/\n  terminals/agent-c7mj9g.json serverUrl=http://localhost:1236 — this is a config\nuration\n  step, no response needed.\n\n\n⚠ Model metadata for `o4-mini` not found. Defaulting to fallback metadata; this\ncan\n  degrade performance and cause issues.\n\n\n› kcop\n\n  o4-mini medium · ~/workspace/storyboard-core/.worktrees/4.3.0--prompt-widget\n",
+  "scrollback": ""
+}

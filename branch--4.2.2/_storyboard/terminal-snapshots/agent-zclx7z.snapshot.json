@@ -1,0 +1,10 @@
+{
+  "widgetId": "agent-zclx7z",
+  "canvasId": "viewfinder-redesign",
+  "prettyName": "pearl-falcon",
+  "timestamp": "2026-04-25T21:13:53.984Z",
+  "cols": 89,
+  "rows": 32,
+  "paneContent": "  │ CONN=$(curl -s -X POST \"${STORYBOARD_SERVER_URL}/_storyboard/canvas/connector\" \\\n  │ -H \"Content-Type: application/json\" \\\n  │ -d \"{\\\"name\\\":\\\"${STORYBOARD_CANVAS_ID}\\\",\\\"startWidgetId\\\":\\\"${STORYBOARD_WIDGET_ID}\n  │ \\\",\\\"endWidgetId\\\":\\\"${NEW_ID}\\\",\\\"startAnchor\\\":\\\"right\\\",\\\"endAnchor\\\":\\\"left\\\"}\")\n  │ echo \"  Connected: $CONN\"\n  │ done\n  └ 15 lines\n\n● Delete debug test sticky (shell)\n  │\n  │ {\"success\":true,\"removed\":1}\n  │ <exited with exit code 0>\n  │\n  │ cd /Users/dfosco/workspace/storyboard-core/.worktrees/4.3.0--prompt-widget\n  │ \n  │ # Clean up the debug test sticky from earlier\n  │ curl -s -X DELETE \"${STORYBOARD_SERVER_URL}/_storyboard/canvas/widget\" \\\n  │ -H \"Content-Type: application/json\" \\\n  │ -d \"{\\\"name\\\":\\\"${STORYBOARD_CANVAS_ID}\\\",\\\"widgetId\\\":\\\"sticky-note-eneqgc\\\"}\"\n  └ 2 lines\n\n● Done! Created 7 color-coded stickies — 🎯 Focus, 💡 Idea, ✅ Done, 🔥 Urgent, 🧪\n  Test,\n  📝 Note, ⭐ Star — all connected to me with connectors. They're arranged in a grid to\n  my right.\n\n ~/workspace/st... [⎇ 4.3.0--prompt-widget*%]\n─────────────────────────────────────────────────────────────────────────────────────────\n❯\n─────────────────────────────────────────────────────────────────────────────────────────\n / commands · ? help        terminal-agent · Claude Opus 4.6 (1M context)(Internal only)\n\n",
+  "scrollback": "[lost tty]\r\n"
+}
