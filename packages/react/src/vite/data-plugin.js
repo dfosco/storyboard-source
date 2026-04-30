@@ -639,12 +639,6 @@ function buildUnifiedConfig(root) {
   }
 
   // 7. Build the unified config object
-    coreCPSections: coreCommandPalette?.sections?.length,
-    afterSbCPSections: afterSbCommandPalette?.sections?.length,
-    finalCPSections: finalCommandPalette?.sections?.length,
-    rawSbHasCP: !!rawSbConfig.commandPalette,
-    userHasCP: !!userConfigs.commandPalette,
-  })
   const unified = {
     toolbar: finalToolbar,
     commandPalette: finalCommandPalette,
