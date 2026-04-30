@@ -94,6 +94,7 @@
   {"folder":"branch--create-widget-skill","branch":"create-widget-skill"},
   {"folder":"branch--design-modes","branch":"design-modes"},
   {"folder":"branch--design-system-catalog-skill","branch":"design-system-catalog-skill"},
+  {"folder":"branch--dev-domain-color","branch":"dev-domain-color"},
   {"folder":"branch--feat-cmd-palette-subpage-search","branch":"feat-cmd-palette-subpage-search"},
   {"folder":"branch--feat-widget-feature-prod-flag","branch":"feat-widget-feature-prod-flag"},
   {"folder":"branch--feat-widget-multi-select","branch":"feat-widget-multi-select"},
