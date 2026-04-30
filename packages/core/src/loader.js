@@ -392,11 +392,18 @@ export function listStories() {
 /**
  * Returns story data by name.
  * Story entries include `_storyModule` (path) and `_storyImport` (dynamic import function).
- * @param {string} name - Story name (e.g. "button-patterns")
+ * Accepts both flat names ("product-card") and scoped names ("folder/product-card") —
+ * if an exact match isn't found and the name contains a slash, tries the basename.
+ * @param {string} name - Story name (e.g. "button-patterns" or "explorations/button-patterns")
  * @returns {object|null} Story data with import function, or null
  */
 export function getStoryData(name) {
-  return dataIndex.stories[name] ?? null
+  if (dataIndex.stories[name]) return dataIndex.stories[name]
+  if (name && name.includes('/')) {
+    const basename = name.split('/').pop()
+    if (dataIndex.stories[basename]) return dataIndex.stories[basename]
+  }
+  return null
 }
 
 export { deepMerge }
