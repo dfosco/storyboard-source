@@ -567,6 +567,15 @@ export default function storyboardServer() {
           injectTo: 'head',
         })
 
+        // Inject per-domain branch bar color (configurable via devDomainColor)
+        if (config.devDomainColor) {
+          tags.push({
+            tag: 'script',
+            children: `window.__SB_DEV_DOMAIN_COLOR__=${JSON.stringify(config.devDomainColor)}`,
+            injectTo: 'head',
+          })
+        }
+
         // Browser error bridge — forwards console.error/warn and uncaught
         // exceptions to the dev server via HMR for structured o11y logging
         tags.push({

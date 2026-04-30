@@ -16,7 +16,7 @@
   justify-content: center;
   gap: 8px;
   height: 32px;
-  background: hsl(212, 92%, 45%);
+  background: var(--sb-branch-bar-bg, hsl(212, 92%, 45%));
   color: #fff;
   padding: 4px 12px;
   position: relative;

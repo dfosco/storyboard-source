@@ -15,6 +15,15 @@ function checkLocalDev() {
   return window.__SB_LOCAL_DEV__ === true
 }
 
+/** Read the dev domain color injected by the server plugin, validated via CSS.supports. */
+function getDevDomainColor() {
+  if (typeof window === 'undefined') return null
+  const color = window.__SB_DEV_DOMAIN_COLOR__
+  if (!color) return null
+  if (typeof CSS !== 'undefined' && CSS.supports && !CSS.supports('color', color)) return null
+  return color
+}
+
 export default function BranchBar({ basePath }) {
   const [hidden, setHidden] = useState(
     () => typeof document !== 'undefined' && document.documentElement.classList.contains('storyboard-chrome-hidden')
@@ -33,6 +42,7 @@ export default function BranchBar({ basePath }) {
 
   const isLocalDev = checkLocalDev()
   const isOnBranch = currentBranch !== 'main'
+  const domainColor = isLocalDev ? getDevDomainColor() : null
 
   useEffect(() => {
     const observer = new MutationObserver(() => {
@@ -52,7 +62,10 @@ export default function BranchBar({ basePath }) {
 
   return (
     <div className={css.bar} data-branch-bar>
-      <div className={`${css.barInner}${isLocalDev ? '' : ` ${css.barProd}`}`}>
+      <div
+        className={`${css.barInner}${isLocalDev ? '' : ` ${css.barProd}`}`}
+        style={domainColor ? { '--sb-branch-bar-bg': domainColor } : undefined}
+      >
         <span className={css.barLabel}>
           <GitBranchIcon size={12} />
           <span className={css.barBranchName}>{currentBranch}</span>
