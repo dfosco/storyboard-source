@@ -55,6 +55,14 @@ function postProcessHtml(html) {
     return `<input ${before}${after}>`
   })
 
+  // Mark @mention links with a data attribute for pill styling.
+  // GitHub API HTML uses class="user-mention" but remark output won't have it.
+  // Match <a ...>@username</a> linking to github.com profiles.
+  out = out.replace(/<a\s([^>]*)>(@[a-zA-Z0-9_-]+)<\/a>/g, (match, attrs, text) => {
+    if (match.includes('data-mention')) return match
+    return `<a ${attrs} data-mention>${text}</a>`
+  })
+
   return out
 }
 

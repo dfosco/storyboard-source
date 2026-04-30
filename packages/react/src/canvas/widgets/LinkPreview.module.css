@@ -241,6 +241,22 @@
   text-decoration: underline;
 }
 
+/* @mention pills — blue background + text like GitHub */
+.issueBody a[data-mention] {
+  background: var(--bgColor-accent-muted, #ddf4ff);
+  color: var(--fgColor-accent, #0969da);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.issueBody a[data-mention]:hover {
+  background: var(--bgColor-accent-emphasis, #0969da);
+  color: var(--fgColor-onEmphasis, #ffffff);
+  text-decoration: none;
+}
+
 .issueBody img {
   max-width: 100%;
   height: auto;
@@ -508,6 +524,8 @@
 .expandedIssueBody * { pointer-events: auto; }
 .expandedIssueBody a { color: var(--fgColor-accent, #0969da); text-decoration: none; }
 .expandedIssueBody a:hover { text-decoration: underline; }
+.expandedIssueBody a[data-mention] { background: var(--bgColor-accent-muted, #ddf4ff); color: var(--fgColor-accent, #0969da); padding: 1px 6px; border-radius: 4px; font-weight: 600; text-decoration: none; }
+.expandedIssueBody a[data-mention]:hover { background: var(--bgColor-accent-emphasis, #0969da); color: var(--fgColor-onEmphasis, #ffffff); text-decoration: none; }
 .expandedIssueBody img { max-width: 100%; height: auto; border-radius: 6px; margin: 8px 0; display: block; }
 .expandedIssueBody video { max-width: 100%; height: auto; border-radius: 6px; margin: 8px 0; display: block; }
 .expandedIssueBody h1 { font-size: 20px; font-weight: 700; margin: 16px 0 8px; border-bottom: 1px solid var(--borderColor-muted, #d8dee4); padding-bottom: 4px; }
