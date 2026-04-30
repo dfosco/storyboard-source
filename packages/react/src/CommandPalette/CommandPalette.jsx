@@ -180,28 +180,27 @@ function buildConfigSections(prefix, onNavigateToPage, onCreateAction) {
         continue
       }
 
-      // Tools with submenu children
+      // Tools with submenu children — resolve handler ID directly from
+      // toolbar config so tools on any surface (command-toolbar, etc.) work.
       if (tool.render === 'submenu' || tool.render === 'menu') {
-        const action = actions.find(a => a.toolKey === toolId)
-        if (action?.type === 'submenu') {
-          const children = getActionChildren(action.id)
-          if (children.length > 0) {
-            const pageId = `tool:${toolId}`
-            toolMenus.push({
-              id: pageId, label, title: label,
-              keywords: [label, toolId].filter(Boolean),
-              options: children.map(child => ({ label: child.label, execute: child.execute })),
-            })
-            remainingItems.push({
-              id: `cfg:${section.id}:${toolId}`,
-              children: label,
-              keywords: [label, toolId].filter(Boolean),
-              showType: false,
-              onClick: () => onNavigateToPage?.(pageId),
-              closeOnSelect: false,
-            })
-            continue
-          }
+        const handlerId = tool.handler || `core:${toolId}`
+        const children = getActionChildren(handlerId)
+        if (children.length > 0) {
+          const pageId = `tool:${toolId}`
+          toolMenus.push({
+            id: pageId, label, title: label,
+            keywords: [label, toolId].filter(Boolean),
+            options: children.map(child => ({ label: child.label, execute: child.execute })),
+          })
+          remainingItems.push({
+            id: `cfg:${section.id}:${toolId}`,
+            children: label,
+            keywords: [label, toolId].filter(Boolean),
+            showType: false,
+            onClick: () => onNavigateToPage?.(pageId),
+            closeOnSelect: false,
+          })
+          continue
         }
         // Declarative options
         if (tool.options?.length > 0) {
