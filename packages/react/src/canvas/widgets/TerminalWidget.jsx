@@ -5,6 +5,8 @@ import { getTerminalConfig, getTerminalDimensions } from '@dfosco/storyboard-cor
 import { useOverride } from '../../hooks/useOverride.js'
 import { getSplitPaneLabel, findAllConnectedSplitTargets, buildPaneForWidget, buildSplitLayout } from './expandUtils.js'
 import ExpandedPane from './ExpandedPane.jsx'
+import { useWebGLSlot, Priority } from '../WebGLContextPool.jsx'
+import FrozenTerminalOverlay from './FrozenTerminalOverlay.jsx'
 import styles from './TerminalWidget.module.css'
 import overlayStyles from './embedOverlay.module.css'
 
@@ -145,6 +147,22 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
   const expandContainerRef = useRef(null)
   const dragHintTimer = useRef(null)
 
+  // ── WebGL context pool integration ──
+  const { isLive, generation, setPriority } = useWebGLSlot(id)
+
+  // Update pool priority based on widget state
+  useEffect(() => {
+    if (expanded || interactive) {
+      setPriority(Priority.PINNED)
+    }
+    // Priority for VISIBLE/NEAR/OFFSCREEN is set by CanvasPage via usePoolVisibilityUpdater
+  }, [expanded, interactive, setPriority])
+
+  // Request activation when user clicks a frozen terminal
+  const handleFrozenActivate = useCallback(() => {
+    setPriority(Priority.PINNED)
+  }, [setPriority])
+
   useImperativeHandle(ref, () => ({
     handleAction(actionId) {
       if (actionId === 'expand') { setExpanded('single'); return true }
@@ -179,8 +197,9 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
     if (multiSelected && interactive) setInteractive(false)
   }, [multiSelected])
 
-  // Connect terminal + WebSocket
+  // Connect terminal + WebSocket (only when pool grants a live slot)
   useEffect(() => {
+    if (!isLive) return
     if (!containerRef.current) return
 
     let disposed = false
@@ -308,8 +327,10 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
       if (term) term.dispose()
       termRef.current = null
       wsRef.current = null
+      setReady(false)
+      setRevealed(false)
     }
-  }, [id, connectAttempt])
+  }, [id, isLive, generation, connectAttempt])
 
   // Resize terminal on dimension changes
   useEffect(() => {
@@ -479,105 +500,121 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
         onPointerDown={handleTerminalPointerDown}
         onKeyDown={interactive ? (e) => e.stopPropagation() : undefined}
       >
-        {showDragHint && (
-          <div className={styles.dragHint}>
-            <span className={styles.dragHintArrow}>←</span> Drag here to move widget
-          </div>
-        )}
-        {error && !sessionEnded && (
-          <div className={styles.error}>
-            <span>⚠ {error}</span>
-          </div>
-        )}
-        <div ref={containerRef} className={styles.xtermContainer} style={{ opacity: revealed ? 1 : 0 }} />
-
-        {/* Live but not interactive */}
-        {revealed && !interactive && !sessionEnded && (
-          <div
-            className={overlayStyles.interactOverlay}
-            style={{ backgroundColor: 'transparent' }}
-            onClick={(e) => {
-              if (multiSelected || e.shiftKey || e.metaKey || e.ctrlKey || e.altKey) return
-              setInteractive(true)
-              termRef.current?.focus({ preventScroll: true })
-            }}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => { if (!multiSelected && e.key === 'Enter') { setInteractive(true); termRef.current?.focus({ preventScroll: true }) } }}
-            aria-label="Click to interact"
-          >
-            {!multiSelected && <span className={overlayStyles.interactHint}>Click to interact</span>}
-          </div>
+        {/* ── Frozen state: WebGL context released, show snapshot ── */}
+        {!isLive && (
+          <FrozenTerminalOverlay
+            widgetId={id}
+            width={snappedWidth ?? width}
+            height={snappedHeight ?? height}
+            onActivate={handleFrozenActivate}
+            prettyName={prettyName}
+          />
         )}
 
-        {/* Session ended — resource limited */}
-        {sessionEnded && resourceLimited && (
-          <div
-            className={overlayStyles.interactOverlay}
-            style={{ backgroundColor: 'var(--term-bg, #0d1117)', flexDirection: 'column', gap: '8px', padding: '24px' }}
-          >
-            <span className={styles.resourceIcon}>⚠</span>
-            <span className={styles.resourceTitle}>No terminal devices available</span>
-            <span className={styles.resourceMessage}>
-              Too many terminal sessions are open.
-              {resourceLimited.counts && (
-                <span className={styles.resourceCounts}>
-                  {resourceLimited.counts.live} live · {resourceLimited.counts.background} background · {resourceLimited.counts.archived} archived
-                </span>
-              )}
-            </span>
-            <div className={styles.resourceActions}>
-              {!resourceLimited.cleanupResult && (resourceLimited.counts?.background > 0 || resourceLimited.counts?.archived > 0) && (
-                <button className={styles.resourceBtn} onClick={handleCleanupAndRetry}>
-                  Close background sessions
-                </button>
-              )}
-              {resourceLimited.cleanupResult === 'nothing-to-clean' && (
-                <span className={styles.resourceMuted}>
-                  All background sessions already cleaned. Close some live terminals to free resources.
-                </span>
-              )}
-              {resourceLimited.cleanupResult === 'failed' && (
-                <span className={styles.resourceMuted}>
-                  Cleanup failed — could not reach dev server.
-                </span>
-              )}
-              <button className={styles.resourceBtnSecondary} onClick={handleStartSession}>
-                Retry
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Session ended — normal (zzz) */}
-        {sessionEnded && !resourceLimited && (
-          <div
-            className={overlayStyles.interactOverlay}
-            style={{ backgroundColor: 'var(--term-bg, #0d1117)', flexDirection: 'column', gap: 0 }}
-            onClick={handleStartSession}
-            role="button"
-            tabIndex={0}
-            aria-label="Start terminal session"
-            onKeyDown={(e) => { if (e.key === 'Enter') handleStartSession() }}
-          >
-            {!waking && (
-              <div className={styles.buddyZzz}>
-                <span className={styles.z1}>z</span>
-                <span className={styles.z2}>z</span>
-                <span className={styles.z3}>z</span>
+        {/* ── Live state: ghostty WebGL terminal ── */}
+        {isLive && (
+          <>
+            {showDragHint && (
+              <div className={styles.dragHint}>
+                <span className={styles.dragHintArrow}>←</span> Drag here to move widget
               </div>
             )}
-            <span className={overlayStyles.interactHint}>
-              {waking ? 'Waking up...' : connectAttempt > 0 ? 'Continue terminal session' : 'Start terminal session'}
-            </span>
-          </div>
-        )}
+            {error && !sessionEnded && (
+              <div className={styles.error}>
+                <span>⚠ {error}</span>
+              </div>
+            )}
+            <div ref={containerRef} className={styles.xtermContainer} style={{ opacity: revealed ? 1 : 0 }} />
 
-        {/* Connecting / reveal mask */}
-        {!revealed && !error && !sessionEnded && (
-          <div className={styles.loading}>
-            <div className={styles.spinner} />
-          </div>
+            {/* Live but not interactive */}
+            {revealed && !interactive && !sessionEnded && (
+              <div
+                className={overlayStyles.interactOverlay}
+                style={{ backgroundColor: 'transparent' }}
+                onClick={(e) => {
+                  if (multiSelected || e.shiftKey || e.metaKey || e.ctrlKey || e.altKey) return
+                  setInteractive(true)
+                  termRef.current?.focus({ preventScroll: true })
+                }}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (!multiSelected && e.key === 'Enter') { setInteractive(true); termRef.current?.focus({ preventScroll: true }) } }}
+                aria-label="Click to interact"
+              >
+                {!multiSelected && <span className={overlayStyles.interactHint}>Click to interact</span>}
+              </div>
+            )}
+
+            {/* Session ended — resource limited */}
+            {sessionEnded && resourceLimited && (
+              <div
+                className={overlayStyles.interactOverlay}
+                style={{ backgroundColor: 'var(--term-bg, #0d1117)', flexDirection: 'column', gap: '8px', padding: '24px' }}
+              >
+                <span className={styles.resourceIcon}>⚠</span>
+                <span className={styles.resourceTitle}>No terminal devices available</span>
+                <span className={styles.resourceMessage}>
+                  Too many terminal sessions are open.
+                  {resourceLimited.counts && (
+                    <span className={styles.resourceCounts}>
+                      {resourceLimited.counts.live} live · {resourceLimited.counts.background} background · {resourceLimited.counts.archived} archived
+                    </span>
+                  )}
+                </span>
+                <div className={styles.resourceActions}>
+                  {!resourceLimited.cleanupResult && (resourceLimited.counts?.background > 0 || resourceLimited.counts?.archived > 0) && (
+                    <button className={styles.resourceBtn} onClick={handleCleanupAndRetry}>
+                      Close background sessions
+                    </button>
+                  )}
+                  {resourceLimited.cleanupResult === 'nothing-to-clean' && (
+                    <span className={styles.resourceMuted}>
+                      All background sessions already cleaned. Close some live terminals to free resources.
+                    </span>
+                  )}
+                  {resourceLimited.cleanupResult === 'failed' && (
+                    <span className={styles.resourceMuted}>
+                      Cleanup failed — could not reach dev server.
+                    </span>
+                  )}
+                  <button className={styles.resourceBtnSecondary} onClick={handleStartSession}>
+                    Retry
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Session ended — normal (zzz) */}
+            {sessionEnded && !resourceLimited && (
+              <div
+                className={overlayStyles.interactOverlay}
+                style={{ backgroundColor: 'var(--term-bg, #0d1117)', flexDirection: 'column', gap: 0 }}
+                onClick={handleStartSession}
+                role="button"
+                tabIndex={0}
+                aria-label="Start terminal session"
+                onKeyDown={(e) => { if (e.key === 'Enter') handleStartSession() }}
+              >
+                {!waking && (
+                  <div className={styles.buddyZzz}>
+                    <span className={styles.z1}>z</span>
+                    <span className={styles.z2}>z</span>
+                    <span className={styles.z3}>z</span>
+                  </div>
+                )}
+                <span className={overlayStyles.interactHint}>
+                  {waking ? 'Waking up...' : connectAttempt > 0 ? 'Continue terminal session' : 'Start terminal session'}
+                </span>
+              </div>
+            )}
+
+            {/* Connecting / reveal mask */}
+            {!revealed && !error && !sessionEnded && (
+              <div className={styles.loading}>
+                <div className={styles.spinner} />
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

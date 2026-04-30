@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useRef, forwardRef, useImperativeHand
 import { readProp, promptSchema } from './widgetProps.js'
 import { CopilotIcon, SquareFillIcon, CheckCircleIcon, XIcon } from '@primer/octicons-react'
 import ResizeHandle from './ResizeHandle.jsx'
+import { useWebGLSlot, Priority } from '../WebGLContextPool.jsx'
 import styles from './PromptWidget.module.css'
 
 function getBase() {
@@ -91,6 +92,18 @@ const PromptWidget = forwardRef(function PromptWidget({ id, props, onUpdate, res
   const wsRef = useRef(null)
   const termDisposedRef = useRef(false)
   const textareaRef = useRef(null)
+
+  // ── WebGL context pool integration ──
+  // Only request a live slot when the output terminal is actually shown
+  const { isLive, setPriority } = useWebGLSlot(id)
+
+  useEffect(() => {
+    if (showOutput && execStatus !== 'idle') {
+      setPriority(Priority.VISIBLE)
+    } else {
+      setPriority(Priority.OFFSCREEN)
+    }
+  }, [showOutput, execStatus, setPriority])
 
   const onUpdateRef = useRef(onUpdate)
   useEffect(() => { onUpdateRef.current = onUpdate }, [onUpdate])
@@ -206,8 +219,9 @@ const PromptWidget = forwardRef(function PromptWidget({ id, props, onUpdate, res
     }
   }, [onUpdate])
 
-  // Embedded read-only terminal
+  // Embedded read-only terminal (only created when pool grants a live slot)
   useEffect(() => {
+    if (!isLive) return
     if (!showOutput || execStatus === 'idle') return
     if (!termContainerRef.current) return
 
@@ -279,7 +293,7 @@ const PromptWidget = forwardRef(function PromptWidget({ id, props, onUpdate, res
       termRef.current = null
       wsRef.current = null
     }
-  }, [showOutput, execStatus, id, width, height])
+  }, [isLive, showOutput, execStatus, id, width, height])
 
   const isPending = execStatus === 'pending'
   const isDone = execStatus === 'done'

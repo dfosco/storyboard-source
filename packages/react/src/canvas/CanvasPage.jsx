@@ -15,6 +15,7 @@ import { getCanvasZoom } from '@dfosco/storyboard-core'
 import { registerSmoothCorners } from '@dfosco/storyboard-core/smooth-corners'
 import { registerHotPoolDevLogs } from './hotPoolDevLogs.js'
 import { isGitHubEmbedUrl } from './widgets/githubUrl.js'
+import { WebGLContextPoolProvider, usePoolVisibilityUpdater } from './WebGLContextPool.jsx'
 
 import WidgetChrome from './widgets/WidgetChrome.jsx'
 import ComponentWidget from './widgets/ComponentWidget.jsx'
@@ -2190,6 +2191,50 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
     window[CANVAS_BRIDGE_STATE_KEY] = bridge
   }, [localWidgets, localConnectors])
 
+  // ── WebGL context pool: viewport-based visibility tracking ──
+  const updatePoolVisibility = usePoolVisibilityUpdater()
+  const poolRafRef = useRef(null)
+
+  // Compute viewport rect in canvas coordinates and update terminal priorities
+  const syncPoolVisibility = useCallback(() => {
+    const el = scrollRef.current
+    if (!el || !localWidgets) return
+    const currentZoom = zoomRef.current || 100
+    const currentScale = currentZoom / 100
+    const viewportRect = {
+      x: el.scrollLeft / currentScale,
+      y: el.scrollTop / currentScale,
+      w: el.clientWidth / currentScale,
+      h: el.clientHeight / currentScale,
+    }
+    updatePoolVisibility(viewportRect, localWidgets, selectedWidgetIds, null)
+  }, [updatePoolVisibility, localWidgets, selectedWidgetIds])
+
+  // Throttle visibility updates via rAF on scroll
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+    function onScroll() {
+      if (poolRafRef.current) return
+      poolRafRef.current = requestAnimationFrame(() => {
+        poolRafRef.current = null
+        syncPoolVisibility()
+      })
+    }
+    el.addEventListener('scroll', onScroll, { passive: true })
+    // Initial sync
+    syncPoolVisibility()
+    return () => {
+      el.removeEventListener('scroll', onScroll)
+      if (poolRafRef.current) cancelAnimationFrame(poolRafRef.current)
+    }
+  }, [syncPoolVisibility])
+
+  // Re-sync on zoom changes
+  useEffect(() => {
+    syncPoolVisibility()
+  }, [zoom, syncPoolVisibility])
+
   // Delete selected widget on Delete/Backspace key
   useEffect(() => {
     function handleSelectStart(e) {
@@ -2954,7 +2999,7 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
   const filteredConnectors = localConnectors
 
   return (
-    <>
+    <WebGLContextPoolProvider>
       <div className={styles.canvasTitle}>
         <a href={(import.meta.env?.BASE_URL || '/')} className={styles.canvasLogo} aria-label="Go to homepage">
           <Icon name="home" size={16} color="#fff" />
@@ -3029,6 +3074,6 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
           </button>
         </aside>
       )}
-    </>
+    </WebGLContextPoolProvider>
   )
 }
