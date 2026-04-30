@@ -16,8 +16,8 @@ import * as Panel from './lib/components/ui/panel/index.js'
 import PwaInstallBanner from './PwaInstallBanner.jsx'
 import { TriggerButton } from './lib/components/ui/trigger-button/index.js'
 import * as Tooltip from './lib/components/ui/tooltip/index.js'
-import Icon from './svelte-plugin-ui/components/Icon.jsx'
-import { modeState } from './svelte-plugin-ui/stores/modeStore.js'
+import Icon from './Icon.jsx'
+import { getCurrentMode, getRegisteredModes, subscribeToMode, isModeSwitcherVisible } from './modes.js'
 import { sidePanelState, togglePanel } from './stores/sidePanelStore.js'
 import {
   initCommandActions, registerCommandAction, getActionChildren,
@@ -112,6 +112,22 @@ function menuVisibleInMode(menu, mode) {
   if (!menu?.modes) return false
   if (isExcludedByRoute(menu)) return false
   return menu.modes.includes('*') || menu.modes.includes(mode)
+}
+
+// Subscribable mode state for useExternalStore (replaces Svelte modeState)
+const modeState = {
+  get mode() { return getCurrentMode() },
+  get modes() { return getRegisteredModes() },
+  get switcherVisible() { return isModeSwitcherVisible() },
+  subscribe(fn) {
+    const snapshot = () => ({
+      mode: getCurrentMode(),
+      modes: getRegisteredModes(),
+      switcherVisible: isModeSwitcherVisible(),
+    })
+    fn(snapshot())
+    return subscribeToMode(() => fn(snapshot()))
+  },
 }
 
 // Hook to subscribe to an external store (modeState, sidePanelState)

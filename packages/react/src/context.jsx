@@ -263,7 +263,7 @@ function StoryboardProviderInner({ flowName, sceneName, recordName, recordParam,
         cleanup = mountDesignModes()
       })
       .catch(() => {
-        // Svelte UI not available — degrade gracefully
+        // UI not available — degrade gracefully
       })
 
     return () => cleanup?.()

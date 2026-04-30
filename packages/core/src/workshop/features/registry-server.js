@@ -1,7 +1,7 @@
 /**
  * Workshop feature server registry.
  *
- * Server-safe registry that only imports server handlers (no Svelte/UI code).
+ * Server-safe registry that only imports server handlers (no UI code).
  * Used by the Vite server plugin to wire API routes.
  *
  * To add a new feature:

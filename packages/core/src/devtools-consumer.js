@@ -2,8 +2,8 @@
  * Consumer-safe proxy for mountDevTools.
  *
  * Delegates to the compiled UI bundle (@dfosco/storyboard-core/ui-runtime)
- * so consumers don't need svelte installed. The real mountDevTools in
- * devtools.js imports svelte directly and is only usable in the source repo
+ * so consumers don't need internal dependencies. The real mountDevTools in
+ * devtools.js imports internal deps and is only usable in the source repo
  * or via the compiled UI bundle.
  */
 

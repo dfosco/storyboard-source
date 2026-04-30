@@ -2075,7 +2075,7 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
     return () => document.removeEventListener('storyboard:canvas:toggle-snap', handleSnapToggle)
   }, [canvasId])
 
-  // Broadcast snap state to Svelte toolbar
+  // Broadcast snap state to toolbar
   useEffect(() => {
     document.dispatchEvent(new CustomEvent('storyboard:canvas:snap-state', {
       detail: { snapEnabled }
@@ -2083,7 +2083,7 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
     snapEnabledRef.current = snapEnabled
   }, [snapEnabled])
 
-  // Respond to snap-state requests from Svelte toolbar (handles mount-order race)
+  // Respond to snap-state requests from toolbar (handles mount-order race)
   useEffect(() => {
     function handleRequest() {
       document.dispatchEvent(new CustomEvent('storyboard:canvas:snap-state', {
@@ -2094,7 +2094,7 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
     return () => document.removeEventListener('storyboard:canvas:snap-state-request', handleRequest)
   }, [])
 
-  // Listen for gridSize from Svelte toolbar config
+  // Listen for gridSize from toolbar config
   useEffect(() => {
     function handleGridSize(e) {
       const size = e.detail?.gridSize
@@ -2638,7 +2638,7 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [handleUndo, handleRedo, handleDuplicateSelected, handleDuplicateWithConnectors, handleSelectAll])
 
-  // Listen for undo/redo from CoreUIBar (Svelte toolbar)
+  // Listen for undo/redo from CoreUIBar
   useEffect(() => {
     function handleUndoEvent() { handleUndo() }
     function handleRedoEvent() { handleRedo() }
@@ -2650,7 +2650,7 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
     }
   }, [handleUndo, handleRedo])
 
-  // Broadcast undo/redo availability to Svelte toolbar
+  // Broadcast undo/redo availability to toolbar
   useEffect(() => {
     document.dispatchEvent(new CustomEvent('storyboard:canvas:undo-redo-state', {
       detail: { canUndo: undoRedo.canUndo, canRedo: undoRedo.canRedo }

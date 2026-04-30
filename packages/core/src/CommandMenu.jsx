@@ -11,10 +11,10 @@ import { useState, useEffect, useMemo, useCallback } from 'react'
 import * as DropdownMenu from './lib/components/ui/dropdown-menu/index.js'
 import * as Panel from './lib/components/ui/panel/index.js'
 import { TriggerButton } from './lib/components/ui/trigger-button/index.js'
-import Icon from './svelte-plugin-ui/components/Icon.jsx'
+import Icon from './Icon.jsx'
 import { getActionsForMode, executeAction, getActionChildren, subscribeToCommandActions } from './commandActions.js'
 import { getToolbarToolState, isToolbarToolLocalOnly, subscribeToToolbarToolStates } from './toolStateStore.js'
-import { getCurrentMode, subscribeToMode } from './svelte-plugin-ui/stores/types.js'
+import { getCurrentMode, subscribeToMode } from './modes.js'
 
 const localDotStyle = {
   display: 'inline-block',

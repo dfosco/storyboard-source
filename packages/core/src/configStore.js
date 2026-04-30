@@ -104,7 +104,7 @@ export function clearAllOverrides() {
 // ---------------------------------------------------------------------------
 
 /**
- * Subscribe to config changes. Compatible with Svelte stores.
+ * Subscribe to config changes. Compatible with external stores.
  *
  * @param {Function} callback - Called with the full merged config
  * @returns {Function} Unsubscribe

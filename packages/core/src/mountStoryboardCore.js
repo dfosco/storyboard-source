@@ -2,7 +2,7 @@
  * mountStoryboardCore — single entry point for consumer apps.
  *
  * Initializes all storyboard systems (URL state, history, comments, devtools)
- * and mounts the compiled Svelte UI. Consumers call this once at app startup.
+ * Consumers call this once at app startup.
  *
  * Usage:
  *   import { mountStoryboardCore } from '@dfosco/storyboard-core'
@@ -74,7 +74,7 @@ function installChromeStatePersistence() {
 
 /**
  * Apply the saved theme to Primer CSS attributes immediately, before
- * React or Svelte mount. This prevents a flash of wrong-theme content.
+ * React mount. This prevents a flash of wrong-theme content.
  * Reads the same `sb-color-scheme` localStorage key used by themeStore.
  */
 function applyEarlyTheme() {
@@ -192,7 +192,7 @@ export async function mountStoryboardCore(config = {}, options = {}) {
   // Apply saved chrome-hidden state immediately — before React mount
   applyEarlyChromeState()
 
-  // Apply saved theme to DOM immediately — before Svelte/React mount
+  // Apply saved theme to DOM immediately — before React mount
   applyEarlyTheme()
 
   // Initialize framework-agnostic systems

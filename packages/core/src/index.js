@@ -2,7 +2,7 @@
  * storyboard-core — framework-agnostic data layer.
  *
  * This barrel exports all core utilities that have zero framework dependencies.
- * Any frontend (React, Vue, Svelte, Alpine, vanilla JS) can use these directly.
+ * Any frontend (React, Vue, Alpine, vanilla JS) can use these directly.
  */
 
 // Data index initialization
@@ -52,7 +52,7 @@ export { initTools, setToolAction, setToolState, getToolState, getToolsForMode, 
 
 // Dev tools (vanilla JS, framework-agnostic)
 // mountDevTools delegates to the compiled UI bundle so consumers
-// don't need svelte installed — svelte is bundled into ui-runtime.
+
 export { mountDevTools } from './devtools-consumer.js'
 export { mountFlowDebug } from './sceneDebug.js'
 // Deprecated alias
@@ -118,7 +118,7 @@ export { trackRecent, getRecent, clearRecent } from './recentArtifacts.js'
 export { scoreMatch } from './fuzzySearch.js'
 
 // Icon component for UI rendering
-export { Icon, default as IconDefault } from './svelte-plugin-ui/components/Icon.jsx'
+export { default as Icon, default as IconDefault } from './Icon.jsx'
 
 // Shared UI components
 export { default as BranchSelect } from './BranchSelect.jsx'

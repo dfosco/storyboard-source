@@ -10,7 +10,7 @@ import { Button } from './lib/components/ui/button/index.js'
 import { Input } from './lib/components/ui/input/index.js'
 import { Label } from './lib/components/ui/label/index.js'
 import { SearchableList } from './lib/components/ui/searchable-list.jsx'
-import Icon from './svelte-plugin-ui/components/Icon.jsx'
+import Icon from './Icon.jsx'
 import { getConfig } from '@dfosco/storyboard-core'
 import { buildPrototypeIndex } from '@dfosco/storyboard-core'
 

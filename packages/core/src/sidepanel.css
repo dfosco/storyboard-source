@@ -87,7 +87,7 @@ html.sb-sidepanel-open.sb-sidepanel-bottom .sb-mode-switch {
 }
 
 /* -----------------------------------------------------------------------
-   Panel element styles (migrated from Svelte scoped <style>)
+   Panel element styles (migrated from scoped styles)
    ----------------------------------------------------------------------- */
 
 .sb-sidepanel {

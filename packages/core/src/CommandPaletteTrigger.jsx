@@ -5,7 +5,7 @@
 
 import { useCallback } from 'react'
 import { TriggerButton } from './lib/components/ui/trigger-button/index.js'
-import Icon from './svelte-plugin-ui/components/Icon.jsx'
+import Icon from './Icon.jsx'
 
 export default function CommandPaletteTrigger({ config = {}, tabindex }) {
   const openPalette = useCallback(() => {

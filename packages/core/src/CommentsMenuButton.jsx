@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { TriggerButton } from './lib/components/ui/trigger-button/index.js'
-import Icon from './svelte-plugin-ui/components/Icon.jsx'
+import Icon from './Icon.jsx'
 import { isAuthenticated } from './comments/auth.js'
 import { isCommentModeActive, toggleCommentMode, subscribeToCommentMode } from './comments/commentMode.js'
 import { openAuthModal } from './comments/ui/authModal.js'

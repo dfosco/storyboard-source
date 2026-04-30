@@ -1,7 +1,7 @@
 /**
  * AuthModal — Global PAT entry dialog for comments authentication.
  * Mounted at app root, triggered by:
- *   - Svelte CoreUIBar (comments tool / "C" shortcut) via 'storyboard:open-auth-modal' event
+ *   - CoreUIBar (comments tool / "C" shortcut) via 'storyboard:open-auth-modal' event
  *   - ViewfinderNew sidebar login button via same event
  */
 import { useState, useEffect, useCallback } from 'react'

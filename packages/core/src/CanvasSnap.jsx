@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react'
 import './CanvasSnap.css'
 import * as Tooltip from './lib/components/ui/tooltip/index.js'
-import Icon from './svelte-plugin-ui/components/Icon.jsx'
+import Icon from './Icon.jsx'
 
 export default function CanvasSnap({ config = {}, data, tabindex = -1 }) {
   const [snapEnabled, setSnapEnabled] = useState(false)

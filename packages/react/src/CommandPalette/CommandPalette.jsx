@@ -880,7 +880,7 @@ function buildPaletteItems(basePath, onCreateAction, onNavigateToPage) {
 
 /**
  * StoryboardCommandPalette — React command palette using react-cmdk.
- * Mounted at app root, listens for custom events from Svelte CoreUIBar.
+ * Mounted at app root, listens for custom events from CoreUIBar.
  */
 export default function StoryboardCommandPalette({ basePath }) {
   const [open, setOpen] = useState(false)

@@ -6,7 +6,7 @@
  *   - label:         Display name for the menu item
  *   - icon:          Emoji or HTML for the menu icon
  *   - overlayId:     Unique ID for the overlay
- *   - overlay:       Svelte component rendered in the overlay
+ *   - overlay:       Component rendered in the overlay
  *   - serverSetup:   Called by the server plugin to register API routes
  */
 

@@ -1,7 +1,7 @@
 /**
  * Auth modal — delegates to the React PATDialog via a custom event.
  *
- * The Svelte AuthModal is no longer mounted directly. Instead, we dispatch
+ * The AuthModal is no longer mounted directly. Instead, we dispatch
  * a 'storyboard:open-auth-modal' event that the React ViewfinderNew listens for.
  */
 

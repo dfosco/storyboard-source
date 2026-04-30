@@ -27,7 +27,7 @@
     "build:ui": "vite build --config vite.ui.config.js",
     "dev:ui": "vite build --config vite.ui.config.js --watch",
     "prepublishOnly": "npm run build:css && npm run build:ui",
-    "check:imports": "! grep -r '\\$lib/' src --include='*.svelte' --include='*.js' --include='*.ts' -l"
+    "check:imports": "echo 'no svelte checks needed'"
   },
   "exports": {
     ".": "./src/index.js",
@@ -39,18 +39,13 @@
     "./ui-runtime/style.css": "./dist/storyboard-ui.css",
     "./canvas/materializer": "./src/canvas/materializer.js",
     "./vite/server": "./src/vite/server-plugin.js",
-    "./comments/svelte": "./src/comments/ui/index.js",
     "./comments": "./src/comments/index.js",
     "./comments/ui/comments.css": "./src/comments/ui/comment-layout.css",
     "./comments/ui/comment-layout.css": "./src/comments/ui/comment-layout.css",
     "./workshop/ui/mount.js": "./src/workshop/ui/mount.ts",
     "./modes.css": "./src/modes.css",
-    "./svelte-plugin-ui": "./src/svelte-plugin-ui/index.ts",
-    "./svelte-plugin-ui/design-modes": "./src/ui/design-modes.ts",
-    "./svelte-plugin-ui/viewfinder": "./src/ui/viewfinder.ts",
     "./ui/design-modes": "./src/ui/design-modes.ts",
     "./ui/viewfinder": "./src/ui/viewfinder.ts",
-    "./svelte-plugin-ui/styles/base.css": "./dist/tailwind.css",
     "./styles/tailwind.css": "./dist/tailwind.css",
     "./worktree/port": "./src/worktree/port.js",
     "./worktree/serverRegistry": "./src/worktree/serverRegistry.js",
@@ -73,15 +68,10 @@
     "ws": "^8.0.0"
   },
   "devDependencies": {
-    "@lucide/svelte": "^1.7.0",
-    "@sveltejs/vite-plugin-svelte": "^6.0.0",
     "@tailwindcss/cli": "^4.2.2",
     "@tailwindcss/vite": "^4.2.2",
-    "bits-ui": "^2.16.4",
     "clsx": "^2.1.1",
     "marked": "^17.0.5",
-    "shadcn-svelte": "^1.2.4",
-    "svelte": "^5.0.0",
     "tailwind-merge": "^3.5.0",
     "tailwind-variants": "^3.2.2",
     "tailwindcss": "^4.2.2",

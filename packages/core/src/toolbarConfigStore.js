@@ -89,7 +89,7 @@ export function getToolbarConfig() {
 // ---------------------------------------------------------------------------
 
 /**
- * Subscribe to toolbar config changes. Compatible with Svelte stores.
+ * Subscribe to toolbar config changes. Compatible with external stores.
  *
  * @param {Function} callback
  * @returns {Function} Unsubscribe
