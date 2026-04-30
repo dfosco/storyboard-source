@@ -1,0 +1,40 @@
+SESSION: agent-yt6xpf | green-plover
+CANVAS:  viewfinder-redesign/viewfinder-redesign
+BRANCH:  4.2.3
+TIME:    2026-04-30T15:49:38.672Z
+
+================================================================================
+SCREEN
+================================================================================
+
+╭───────────────────────────────────────────────────────────────────────────────────────╮
+│                                         ╭─╮╭─╮                                        │
+│                                         ╰─╯╰─╯                                        │
+│                                         █ ▘▝ █                                        │
+│                                          ▔▔▔▔                                         │
+│                                GitHub Copilot v1.0.40-1                               │
+│                          Copilot uses AI. Check for mistakes.                         │
+│                                                                                       │
+╰───────────────────────────────────────────────────────────────────────────────────────╯
+
+✗ Custom agent "terminal-agent" not found. Available agents: none 
+
+● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ~/workspace/storyboard-core/.worktrees/4.2.3 [⎇ 4.2.3]
+─────────────────────────────────────────────────────────────────────────────────────────
+❯  
+─────────────────────────────────────────────────────────────────────────────────────────
+ / commands · ? help                         Claude Opus 4.6 (1M context)(Internal only)

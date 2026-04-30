@@ -1,0 +1,40 @@
+SESSION: agent-dxbzlb | rust-kite
+CANVAS:  viewfinder-redesign/viewfinder-redesign
+BRANCH:  4.2.3
+TIME:    2026-04-30T15:49:38.296Z
+
+================================================================================
+SCREEN
+================================================================================
+
+╭───────────────────────────────────────────────────────────────────────────────────────╮
+│                                         ╭─╮╭─╮                                        │
+│                                         ╰─╯╰─╯                                        │
+│                                         █ ▘▝ █                                        │
+│                                          ▔▔▔▔                                         │
+│                                GitHub Copilot v1.0.40-1                               │
+│                          Copilot uses AI. Check for mistakes.                         │
+│                                                                                       │
+╰───────────────────────────────────────────────────────────────────────────────────────╯
+
+✗ Custom agent "terminal-agent" not found. Available agents: none 
+
+╭───────────────────────────────────────────────────────────────────────────────────────╮
+│ Confirm folder trust                                                                  │
+│ ───────────────────────────────────────────────────────────────────────────────────── │
+│ ╭───────────────────────────────────────────────────────────────────────────────────╮ │
+│ │ /Users/dfosco/workspace/storyboard-core/.worktrees/4.2.3                          │ │
+│ ╰───────────────────────────────────────────────────────────────────────────────────╯ │
+│                                                                                       │
+│ Copilot may read files in this folder. Reading untrusted files may lead Copilot to    │
+│ behave in unexpected ways. With your permission, Copilot may execute code or bash     │
+│ commands in this folder. Executing untrusted code is unsafe.                          │
+│                                                                                       │
+│ Do you trust the files in this folder?                                                │
+│                                                                                       │
+│ ❯ 1. Yes                                                                              │
+│   2. Yes, and remember this folder for future sessions                                │
+│   3. No (Esc)                                                                         │
+│                                                                                       │
+│ ↑↓ to navigate · Enter to select · Esc to cancel                                      │
+╰───────────────────────────────────────────────────────────────────────────────────────╯

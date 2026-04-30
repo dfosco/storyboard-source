@@ -1,5 +1,17 @@
 # @dfosco/storyboard-core
 
+## 4.2.3
+
+### Patch Changes
+
+-   Configurable BranchBar color, Svelte removal, component-set sizing, scaffold updates
+
+    -   Add configurable `devDomainColor` for BranchBar background and `devDomain` name label with ⌘ prefix
+    -   Remove all Svelte code, dependencies, and references — Icon, mode stores, and mount entrypoints replaced with React equivalents
+    -   Fix component-set widget sizing — cells snap to max content dimensions, widget auto-resizes to fit grid via postMessage
+    -   Restyle component-set grid: edge-to-edge cells, collapsed borders, padding inside cells, swapped header/content backgrounds
+    -   Make all scaffold files updateable (AGENTS.md, .gitignore, configs, workflows) so clients get latest on every version update
+
 ## 4.2.2
 
 ### Patch Changes
