@@ -28,9 +28,21 @@
   pointer-events: none;
 }
 
-/* Hide the widget toolbar when crop is active (WidgetChrome reads this) */
+/* Hide the widget toolbar when crop is active (replaced by crop bar) */
 .container[data-crop-active] {
   overflow: visible;
+}
+
+/* Crop bar slot — positioned below the widget like the WidgetChrome toolbar */
+.cropBarSlot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 10px);
+  z-index: 20;
 }
 
 .privateBadge {

@@ -47,27 +47,29 @@
 .handleW  { left: -6px; top: 50%; transform: translateY(-50%); cursor: w-resize; }
 .handleE  { right: -6px; top: 50%; transform: translateY(-50%); cursor: e-resize; }
 
-/* ── Floating crop bar ────────────────────────────────────── */
+/* ── Crop confirmation bar (rendered outside widget by ImageWidget) ── */
 
-.floatingBar {
-  position: absolute;
+.cropBar {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   padding: 4px 8px;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  z-index: 20;
-  transform: translateX(-50%);
-  transition: top 80ms ease-out, left 80ms ease-out;
-  pointer-events: auto;
+  background: var(--bgColor-default, #ffffff);
+  border: 1.6px solid var(--borderColor-muted, #d0d7de);
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   white-space: nowrap;
+  pointer-events: auto;
 }
 
-.floatingBtn {
+:global([data-sb-canvas-theme^='dark']) .cropBar {
+  background: var(--bgColor-muted, #161b22);
+  border-color: var(--borderColor-muted, #373e47);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.cropBarBtn {
   all: unset;
   cursor: pointer;
   display: flex;
@@ -77,42 +79,76 @@
   border-radius: 6px;
   font-size: 12px;
   font-weight: 500;
-  color: #ffffff;
+  color: var(--fgColor-default, #1f2328);
   transition: background 100ms;
 }
 
-.floatingBtn:hover {
-  background: rgba(255, 255, 255, 0.15);
+:global([data-sb-canvas-theme^='dark']) .cropBarBtn {
+  color: var(--fgColor-default, #e6edf3);
 }
 
-.floatingBtnSave {
+.cropBarBtn:hover {
+  background: var(--bgColor-neutral-muted, #eaeef2);
+}
+
+:global([data-sb-canvas-theme^='dark']) .cropBarBtn:hover {
+  background: var(--bgColor-neutral-muted, #272c33);
+}
+
+.cropBarBtnSave {
   background: var(--bgColor-success-emphasis, #1a7f37);
-  color: #ffffff;
+  color: var(--fgColor-onEmphasis, #ffffff);
 }
 
-.floatingBtnSave:hover {
+.cropBarBtnSave:hover {
   background: var(--bgColor-success-emphasis, #2da44e);
+  filter: brightness(1.1);
 }
 
-.floatingBtnCancel {
-  color: rgba(255, 255, 255, 0.7);
+:global([data-sb-canvas-theme^='dark']) .cropBarBtnSave {
+  background: var(--bgColor-success-emphasis, #238636);
+  color: var(--fgColor-onEmphasis, #ffffff);
 }
 
-.floatingBtnCancel:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.1);
+:global([data-sb-canvas-theme^='dark']) .cropBarBtnSave:hover {
+  background: var(--bgColor-success-emphasis, #2ea043);
+  filter: brightness(1.1);
+}
+
+.cropBarBtnCancel {
+  color: var(--fgColor-muted, #656d76);
+}
+
+:global([data-sb-canvas-theme^='dark']) .cropBarBtnCancel {
+  color: var(--fgColor-muted, #8b949e);
+}
+
+.cropBarBtnCancel:hover {
+  color: var(--fgColor-default, #1f2328);
+}
+
+:global([data-sb-canvas-theme^='dark']) .cropBarBtnCancel:hover {
+  color: var(--fgColor-default, #e6edf3);
 }
 
 .dimensions {
   font-size: 11px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--fgColor-muted, #656d76);
   padding: 0 4px;
   font-variant-numeric: tabular-nums;
+}
+
+:global([data-sb-canvas-theme^='dark']) .dimensions {
+  color: var(--fgColor-muted, #8b949e);
 }
 
 .separator {
   width: 1px;
   height: 16px;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--borderColor-muted, #d0d7de);
+}
+
+:global([data-sb-canvas-theme^='dark']) .separator {
+  background: var(--borderColor-muted, #373e47);
 }

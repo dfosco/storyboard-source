@@ -5,17 +5,17 @@
  * - A crop region with drag handles (corners + edges)
  * - Dark overlay on excluded area (via box-shadow)
  * - Rule-of-thirds grid
- * - A floating bar anchored to the crop region with Save / Undo / Cancel + dimensions
+ *
+ * The confirmation bar (CropBar) is rendered separately by ImageWidget,
+ * outside the WidgetWrapper, to avoid overflow clipping.
  *
  * Props:
  *   containerWidth / containerHeight — pixel dimensions of the image container
- *   naturalWidth / naturalHeight — natural image dimensions
- *   onSave(cropRect) — called with { x, y, width, height } in natural pixels
+ *   cropRect — current crop rectangle { x, y, width, height } in display pixels
+ *   onCropRectChange(rect) — called when the user drags the crop region
  *   onCancel() — exit crop mode without saving
- *   onUndo() — revert to previous image (only when canUndo is true)
- *   canUndo — whether undo is available
  */
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useRef, useCallback, useEffect } from 'react'
 import styles from './CropOverlay.module.css'
 
 const MIN_CROP = 20
@@ -52,22 +52,12 @@ function XIcon() {
 export default function CropOverlay({
   containerWidth,
   containerHeight,
-  naturalWidth,
-  naturalHeight,
-  onSave,
+  cropRect,
+  onCropRectChange,
   onCancel,
-  onUndo,
-  canUndo,
 }) {
   const cw = containerWidth || 400
   const ch = containerHeight || 300
-
-  const [cropRect, setCropRect] = useState({
-    x: Math.round(cw * 0.05),
-    y: Math.round(ch * 0.05),
-    width: Math.round(cw * 0.9),
-    height: Math.round(ch * 0.9),
-  })
 
   const dragging = useRef(null)
 
@@ -118,7 +108,7 @@ export default function CropOverlay({
         }
       }
 
-      setCropRect({ x, y, width, height })
+      onCropRectChange({ x, y, width, height })
     }
 
     const onUp = () => {
@@ -129,21 +119,7 @@ export default function CropOverlay({
 
     window.addEventListener('pointermove', onMove)
     window.addEventListener('pointerup', onUp)
-  }, [cropRect, cw, ch])
-
-  const handleSave = useCallback(() => {
-    const scaleX = (naturalWidth || cw) / cw
-    const scaleY = (naturalHeight || ch) / ch
-    onSave?.({
-      x: Math.round(cropRect.x * scaleX),
-      y: Math.round(cropRect.y * scaleY),
-      width: Math.round(cropRect.width * scaleX),
-      height: Math.round(cropRect.height * scaleY),
-    })
-  }, [cropRect, cw, ch, naturalWidth, naturalHeight, onSave])
-
-  const cropW = Math.round(((naturalWidth || cw) / cw) * cropRect.width)
-  const cropH = Math.round(((naturalHeight || ch) / ch) * cropRect.height)
+  }, [cropRect, cw, ch, onCropRectChange])
 
   return (
     <div
@@ -170,48 +146,32 @@ export default function CropOverlay({
         ))}
       </div>
 
-      <FloatingCropBar
-        cropRect={cropRect}
-        containerWidth={cw}
-        cropW={cropW}
-        cropH={cropH}
-        onSave={handleSave}
-        onUndo={onUndo}
-        onCancel={onCancel}
-        canUndo={canUndo}
-      />
     </div>
   )
 }
 
-function FloatingCropBar({ cropRect, containerWidth, cropW, cropH, onSave, onUndo, onCancel, canUndo }) {
-  const barHeight = 36
-  const gap = 10
-  const centerX = cropRect.x + cropRect.width / 2
-  const aboveY = cropRect.y - barHeight - gap
-  const belowY = cropRect.y + cropRect.height + gap
-
-  const anchorBelow = aboveY < 0
-  const barTop = anchorBelow ? belowY : aboveY
-  const barLeft = clamp(centerX, 80, containerWidth - 80)
-
+/**
+ * CropBar — crop confirmation toolbar rendered outside the image widget.
+ * Positioned by the parent (ImageWidget) in place of the WidgetChrome toolbar.
+ */
+export function CropBar({ cropW, cropH, onSave, onUndo, onCancel, canUndo }) {
   return (
     <div
-      className={`${styles.floatingBar} ${anchorBelow ? styles.floatingBarBelow : ''}`}
-      style={{ top: barTop, left: barLeft }}
+      className={styles.cropBar}
       onPointerDown={(e) => e.stopPropagation()}
+      onMouseDown={(e) => e.stopPropagation()}
     >
       <span className={styles.dimensions}>{cropW} × {cropH}</span>
       <span className={styles.separator} />
-      <button className={`${styles.floatingBtn} ${styles.floatingBtnSave}`} onClick={onSave}>
+      <button className={`${styles.cropBarBtn} ${styles.cropBarBtnSave}`} onClick={onSave}>
         <CheckIcon /> Save
       </button>
       {canUndo && (
-        <button className={styles.floatingBtn} onClick={onUndo}>
+        <button className={styles.cropBarBtn} onClick={onUndo}>
           <UndoIcon /> Undo
         </button>
       )}
-      <button className={`${styles.floatingBtn} ${styles.floatingBtnCancel}`} onClick={onCancel}>
+      <button className={`${styles.cropBarBtn} ${styles.cropBarBtnCancel}`} onClick={onCancel}>
         <XIcon />
       </button>
     </div>

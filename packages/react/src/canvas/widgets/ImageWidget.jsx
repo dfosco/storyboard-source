@@ -2,7 +2,7 @@ import { useRef, useCallback, useState, useMemo, forwardRef, useImperativeHandle
 import WidgetWrapper from './WidgetWrapper.jsx'
 import ResizeHandle from './ResizeHandle.jsx'
 import ExpandedPane from './ExpandedPane.jsx'
-import CropOverlay from './CropOverlay.jsx'
+import CropOverlay, { CropBar } from './CropOverlay.jsx'
 import { readProp } from './widgetProps.js'
 import { schemas } from './widgetConfig.js'
 import { toggleImagePrivacy, cropAndUpload } from '../canvasApi.js'
@@ -29,6 +29,7 @@ const ImageWidget = forwardRef(function ImageWidget({ id, props, onUpdate, resiz
   const [expandMode, setExpandMode] = useState(null)
   const expanded = expandMode !== null
   const [cropping, setCropping] = useState(false)
+  const [cropRect, setCropRect] = useState(null)
   const [previousSrc, setPreviousSrc] = useState(null)
   const [containerSize, setContainerSize] = useState(null)
 
@@ -54,11 +55,22 @@ const ImageWidget = forwardRef(function ImageWidget({ id, props, onUpdate, resiz
     onUpdate?.({ width: newWidth, height: newHeight })
   }, [naturalRatio, width, height, onUpdate])
 
-  const handleCropSave = useCallback(async (cropRect) => {
-    if (!src) return
+  const cw = containerSize?.width || width || 400
+  const ch = containerSize?.height || height || 300
+
+  const handleCropSave = useCallback(async () => {
+    if (!src || !cropRect) return
+    const scaleX = (naturalSize?.width || cw) / cw
+    const scaleY = (naturalSize?.height || ch) / ch
+    const naturalCropRect = {
+      x: Math.round(cropRect.x * scaleX),
+      y: Math.round(cropRect.y * scaleY),
+      width: Math.round(cropRect.width * scaleX),
+      height: Math.round(cropRect.height * scaleY),
+    }
     const canvasId = window.__storyboardCanvasBridgeState?.canvasId || ''
     try {
-      const result = await cropAndUpload(src, cropRect, canvasId)
+      const result = await cropAndUpload(src, naturalCropRect, canvasId)
       if (result.success) {
         setPreviousSrc(src)
         onUpdate?.({ src: result.filename })
@@ -67,10 +79,12 @@ const ImageWidget = forwardRef(function ImageWidget({ id, props, onUpdate, resiz
       console.error('[canvas] Failed to crop image:', err)
     }
     setCropping(false)
-  }, [src, onUpdate])
+    setCropRect(null)
+  }, [src, cropRect, naturalSize, cw, ch, onUpdate])
 
   const handleCropCancel = useCallback(() => {
     setCropping(false)
+    setCropRect(null)
   }, [])
 
   const handleCropUndo = useCallback(() => {
@@ -79,6 +93,7 @@ const ImageWidget = forwardRef(function ImageWidget({ id, props, onUpdate, resiz
       setPreviousSrc(null)
     }
     setCropping(false)
+    setCropRect(null)
   }, [previousSrc, onUpdate])
 
   useImperativeHandle(ref, () => ({
@@ -88,7 +103,15 @@ const ImageWidget = forwardRef(function ImageWidget({ id, props, onUpdate, resiz
       if (actionId === 'crop-image') {
         // Measure container at activation time (not during render)
         const el = containerRef.current
-        if (el) setContainerSize({ width: el.offsetWidth, height: el.offsetHeight })
+        const w = el?.offsetWidth || width || 400
+        const h = el?.offsetHeight || height || 300
+        if (el) setContainerSize({ width: w, height: h })
+        setCropRect({
+          x: Math.round(w * 0.05),
+          y: Math.round(h * 0.05),
+          width: Math.round(w * 0.9),
+          height: Math.round(h * 0.9),
+        })
         setCropping(true)
         return true
       }
@@ -104,12 +127,22 @@ const ImageWidget = forwardRef(function ImageWidget({ id, props, onUpdate, resiz
       } else if (actionId === 'download-image') {
         if (!src) return
         const url = getImageUrl(src)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = src.replace(/^~/, '')
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
+        fetch(url)
+          .then((r) => {
+            if (!r.ok) throw new Error(`HTTP ${r.status}`)
+            return r.blob()
+          })
+          .then((blob) => {
+            const blobUrl = URL.createObjectURL(blob)
+            const a = document.createElement('a')
+            a.href = blobUrl
+            a.download = src.replace(/^~/, '')
+            document.body.appendChild(a)
+            a.click()
+            document.body.removeChild(a)
+            URL.revokeObjectURL(blobUrl)
+          })
+          .catch((err) => console.error('[canvas] Failed to download image:', err))
       } else if (actionId === 'copy-as-png') {
         if (!src) return
         const url = getImageUrl(src)
@@ -132,6 +165,12 @@ const ImageWidget = forwardRef(function ImageWidget({ id, props, onUpdate, resiz
   const sizeStyle = {}
   if (typeof width === 'number') sizeStyle.width = `${width}px`
 
+  // Compute crop dimensions in natural pixels for the CropBar display
+  const scaleX = cropRect ? ((naturalSize?.width || cw) / cw) : 1
+  const scaleY = cropRect ? ((naturalSize?.height || ch) / ch) : 1
+  const cropW = cropRect ? Math.round(cropRect.width * scaleX) : 0
+  const cropH = cropRect ? Math.round(cropRect.height * scaleY) : 0
+
   return (
     <>
     <WidgetWrapper className={styles.imageWrapper}>
@@ -150,16 +189,13 @@ const ImageWidget = forwardRef(function ImageWidget({ id, props, onUpdate, resiz
               Private
             </span>
           )}
-          {cropping && (
+          {cropping && cropRect && (
             <CropOverlay
-              containerWidth={containerSize?.width || width || 400}
-              containerHeight={containerSize?.height || height || 300}
-              naturalWidth={naturalSize?.width}
-              naturalHeight={naturalSize?.height}
-              onSave={handleCropSave}
+              containerWidth={cw}
+              containerHeight={ch}
+              cropRect={cropRect}
+              onCropRectChange={setCropRect}
               onCancel={handleCropCancel}
-              onUndo={handleCropUndo}
-              canUndo={!!previousSrc}
             />
           )}
         </div>
@@ -173,6 +209,18 @@ const ImageWidget = forwardRef(function ImageWidget({ id, props, onUpdate, resiz
         )}
       </div>
     </WidgetWrapper>
+    {cropping && cropRect && (
+      <div className={styles.cropBarSlot}>
+        <CropBar
+          cropW={cropW}
+          cropH={cropH}
+          onSave={handleCropSave}
+          onCancel={handleCropCancel}
+          onUndo={handleCropUndo}
+          canUndo={!!previousSrc}
+        />
+      </div>
+    )}
     {expanded && (
       <ImageExpandPane
         widgetId={id}
