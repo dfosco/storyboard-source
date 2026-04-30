@@ -1,5 +1,14 @@
 # @dfosco/storyboard-core
 
+## 4.2.1
+
+### Patch Changes
+
+-   [`ab1db0e`](https://github.com/dfosco/storyboard/commit/ab1db0e2a85fd76630b6709995872547fc99e2d6) Thanks [@dfosco](https://github.com/dfosco)! - Fix dev server startup crash caused by orphaned debug code
+
+    -   Fix `SyntaxError: Unexpected token ':'` on `npm run dev` caused by an incomplete devlog removal in `buildUnifiedConfig` (data-plugin.js)
+    -   Fix terminal snapshots not being emitted in production builds
+
 ## 4.2.0
 
 ### Minor Changes
