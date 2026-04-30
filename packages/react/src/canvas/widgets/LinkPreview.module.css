@@ -400,15 +400,32 @@
   margin: 16px 0;
 }
 
-/* Details/summary — show content expanded, no collapse UI */
+/* Details/summary — interactive collapsible sections */
 .issueBody details {
-  border: none;
-  margin: 0;
+  border: 1px solid var(--borderColor-muted, #d8dee4);
+  border-radius: 6px;
+  margin: 12px 0;
   padding: 0;
 }
 
 .issueBody summary {
-  display: none;
+  display: list-item;
+  cursor: pointer;
+  pointer-events: auto;
+  font-weight: 600;
+  padding: 8px 12px;
+  list-style: disclosure-closed inside;
+  user-select: none;
+}
+
+.issueBody details[open] > summary {
+  list-style-type: disclosure-open;
+  border-bottom: 1px solid var(--borderColor-muted, #d8dee4);
+  margin-bottom: 0;
+}
+
+.issueBody details > :not(summary) {
+  padding: 0 12px;
 }
 
 .error {
@@ -504,6 +521,10 @@
 .expandedIssueBody ol { margin: 0 0 12px; padding-left: 24px; list-style: decimal; }
 .expandedIssueBody li { margin: 0 0 4px; display: list-item; }
 .expandedIssueBody blockquote { border-left: 4px solid var(--borderColor-default, #d0d7de); margin: 12px 0; padding: 4px 16px; color: var(--fgColor-muted, #656d76); }
+.expandedIssueBody details { border: 1px solid var(--borderColor-muted, #d8dee4); border-radius: 6px; margin: 12px 0; padding: 0; }
+.expandedIssueBody summary { display: list-item; cursor: pointer; font-weight: 600; padding: 8px 12px; list-style: disclosure-closed inside; user-select: none; }
+.expandedIssueBody details[open] > summary { list-style-type: disclosure-open; border-bottom: 1px solid var(--borderColor-muted, #d8dee4); margin-bottom: 0; }
+.expandedIssueBody details > :not(summary) { padding: 0 12px; }
 
 /* ── Expanded plain link view ─────────────────────────────────────── */
 

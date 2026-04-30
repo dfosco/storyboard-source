@@ -31,6 +31,9 @@ function postProcessHtml(html) {
   // Unwrap <details><summary>...</summary><video ...></details> → just the <video>
   out = out.replace(/<details[^>]*>\s*<summary[^>]*>[\s\S]*?<\/summary>\s*(<video[\s\S]*?<\/video>)\s*<\/details>/gi, '$1')
 
+  // Force remaining <details> elements open so content is visible
+  out = out.replace(/<details(?![^>]*\bopen\b)/gi, '<details open')
+
   // Convert bare video URLs (wrapped in <p>) into <video> elements
   out = out.replace(VIDEO_URL_LINE_RE, (_, url) =>
     `<video src="${url}" controls preload="none"></video>`
