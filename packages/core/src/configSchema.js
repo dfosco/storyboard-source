@@ -117,6 +117,7 @@
  * @typedef {object} StoryboardConfig
  * @property {string}   [customDomain]
  * @property {string}   [devDomain]
+ * @property {string}   [devDomainColor] — CSS color for the BranchBar in local dev (default: blue)
  * @property {{ owner: string, name: string }} [repository]
  * @property {{ enabled: boolean }} [modes]
  * @property {{ discussions: { category: string } }} [comments]
@@ -145,6 +146,7 @@ export const builtinPasteRules = [
 export const configDefaults = {
   customDomain: '',
   devDomain: '',
+  devDomainColor: '',
   repository: { owner: '', name: '' },
   modes: { enabled: false },
   comments: { discussions: { category: 'Comments' } },
