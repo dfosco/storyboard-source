@@ -1,5 +1,6 @@
 {
   "devDomain": "storyboard-core",
+  "devDomainColor": "#c77f25",
   "repository": {
     "owner": "dfosco",
     "name": "storyboard"

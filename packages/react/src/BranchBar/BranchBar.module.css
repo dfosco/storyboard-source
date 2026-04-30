@@ -72,6 +72,14 @@
   white-space: nowrap;
 }
 
+.barDomainName {
+  font-weight: 600;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .barSeparator {
   opacity: 0.6;
   margin: 0 2px;

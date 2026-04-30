@@ -68,6 +68,10 @@ export default function BranchBar({ basePath }) {
       >
         <span className={css.barLabel}>
           <GitBranchIcon size={12} />
+          {isLocalDev && window.__SB_DEV_DOMAIN__ && <>
+            <span className={css.barDomainName}>{window.__SB_DEV_DOMAIN__}</span>
+            <span className={css.barSeparator}>·</span>
+          </>}
           <span className={css.barBranchName}>{currentBranch}</span>
           {isLocalDev && <>
             <span className={css.barSeparator}>·</span>
