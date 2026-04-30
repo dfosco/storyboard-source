@@ -225,7 +225,7 @@ function CardActionsMenu({ typeLabel, onEdit, onDelete }) {
         <KebabHorizontalIcon size={16} />
       </Menu.Trigger>
       <Menu.Portal>
-        <Menu.Positioner className={css.actionsMenuPositioner} side="bottom" alignment="end">
+        <Menu.Positioner className={css.actionsMenuPositioner} side="inline-end" alignment="end" sideOffset={8}>
           <Menu.Popup className={css.actionsMenu} onClick={(e) => { e.preventDefault(); e.stopPropagation() }}>
             <Menu.Item
               className={css.actionsMenuItem}
@@ -486,6 +486,7 @@ function ArtifactCard({ item, basePath, starred, onToggleStar, onItemDeleted }) 
         <div className={css.cardHeader}>
           <span className={css.cardBadge}>{getTypeLabel(item.type)}</span>
           <div className={css.cardActions}>
+            <StarBtn active={starred} onClick={() => onToggleStar(item.id)} inline />
             {item.flows?.length > 0 && <FlowsDropdown flows={item.flows} basePath={basePath} />}
             {item.pages?.length > 1 && <PagesDropdown pages={item.pages} basePath={basePath} />}
             {canEditDelete && (
@@ -504,7 +505,6 @@ function ArtifactCard({ item, basePath, starred, onToggleStar, onItemDeleted }) 
                 {item.name}
                 {isExternal && <span className={css.externalBadge}>↗</span>}
               </div>
-              <StarBtn active={starred} onClick={() => onToggleStar(item.id)} inline />
             </div>
             {item.description && (
               <div className={css.cardDescription}>{item.description}</div>
