@@ -6,14 +6,14 @@
       "mode": "updateable"
     },
     {
-      "source": "scaffold/storyboard.config.json",
-      "target": "storyboard.config.json",
+      "source": "scaffold/.gitignore",
+      "target": ".gitignore",
       "mode": "updateable"
     },
     {
-      "source": "scaffold/svelte.config.js",
-      "target": "svelte.config.js",
-      "mode": "updateable"
+      "source": "scaffold/storyboard.config.json",
+      "target": "storyboard.config.json",
+      "mode": "scaffold"
     },
     {
       "source": "scaffold/scripts/link.sh",
