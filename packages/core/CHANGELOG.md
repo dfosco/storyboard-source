@@ -1,5 +1,18 @@
 # @dfosco/storyboard-core
 
+## 4.2.2
+
+### Patch Changes
+
+-   Canvas widget fixes and internal navigation improvements
+
+    -   Fix image download (use blob URL instead of broken `<a download>`)
+    -   Fix crop bar clipping — render outside widget with Primer theme-aware styling; hide connector anchors during crop
+    -   Fix `<details>` panels not rendering in GitHub embed widgets — force open, style summary as interactive toggle
+    -   Fix scoped story IDs (`folder/story-name`) failing to resolve in StoryWidget and ComponentSetWidget
+    -   Style `@mention` links as blue pills in GitHub embeds
+    -   Use `<a href>` for internal page navigation (PageSelector, Viewfinder dropdowns) — Cmd+click and right-click open in new tab
+
 ## 4.2.1
 
 ### Patch Changes
