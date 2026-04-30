@@ -1,17 +1,12 @@
 SESSION: agent-yt6xpf | green-plover
 CANVAS:  viewfinder-redesign/viewfinder-redesign
 BRANCH:  4.2.3
-TIME:    2026-04-30T15:49:38.672Z
+TIME:    2026-04-30T16:13:52.462Z
 
 ================================================================================
 SCREEN
 ================================================================================
 
-╭───────────────────────────────────────────────────────────────────────────────────────╮
-│                                         ╭─╮╭─╮                                        │
-│                                         ╰─╯╰─╯                                        │
-│                                         █ ▘▝ █                                        │
-│                                          ▔▔▔▔                                         │
 │                                GitHub Copilot v1.0.40-1                               │
 │                          Copilot uses AI. Check for mistakes.                         │
 │                                                                                       │
@@ -21,19 +16,24 @@ SCREEN
 
 ● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server
 
+❯ what are you connected to?
 
+◐ The user is asking what I'm connected to - they want to know about my environment, 
+  repository, and capabilities.
 
+● I'm connected to:
 
+   - Repository: dfosco/storyboard (branch in worktree .worktrees/4.2.3)
+   - OS: macOS (Darwin)
+   - Tools: git, curl, gh CLI
+   - MCP: GitHub MCP server (code search, file contents, spaces)
+   - Skills: 17 available (ship, canvas, create, vitest, release, etc.)
+   - Model: Claude Opus
+    4.6 (1M context)(Internal only)
 
+  Anything specific you'd like to explore?
 
-
-
-
-
-
-
-
- ~/workspace/storyboard-core/.worktrees/4.2.3 [⎇ 4.2.3]
+ ~/workspace/storyboard-core/.worktrees/4.2.3 [⎇ 4.2.3*%]
 ─────────────────────────────────────────────────────────────────────────────────────────
 ❯  
 ─────────────────────────────────────────────────────────────────────────────────────────
