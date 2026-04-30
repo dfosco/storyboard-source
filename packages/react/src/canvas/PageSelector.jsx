@@ -126,6 +126,13 @@ export default function PageSelector({ currentName, pages: initialPages, isLocal
       return
     }
     if (editingPage) return
+    // Cmd/Ctrl+click → open in new tab
+    if (e?.metaKey || e?.ctrlKey) {
+      e.preventDefault()
+      const base = (import.meta.env?.BASE_URL || '/').replace(/\/$/, '')
+      window.open(base + page.route, '_blank')
+      return
+    }
     // Keyboard Enter/Space → navigate immediately
     if (!e?.nativeEvent || e.nativeEvent instanceof KeyboardEvent) {
       handleSelect(page)
