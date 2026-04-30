@@ -83,6 +83,15 @@
   white-space: nowrap;
 }
 
+.itemLink {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+}
+
 .dragHandle {
   opacity: 0;
   color: var(--fgColor-muted, #656d76);

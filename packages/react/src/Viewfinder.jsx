@@ -582,12 +582,13 @@ function FlowsDropdown({ flows, basePath }) {
               <Menu.Item
                 key={flow.key}
                 className={css.flowsItem}
-                onClick={(e) => {
-                  e.preventDefault()
-                  window.location.href = withBase(basePath, flow.route)
-                }}
               >
-                {flow.meta?.title || flow.name}
+                <a
+                  href={withBase(basePath, flow.route)}
+                  className={css.flowsItemLink}
+                >
+                  {flow.meta?.title || flow.name}
+                </a>
               </Menu.Item>
             ))}
           </Menu.Popup>
@@ -619,12 +620,13 @@ function PagesDropdown({ pages, basePath }) {
               <Menu.Item
                 key={page.route}
                 className={css.flowsItem}
-                onClick={(e) => {
-                  e.preventDefault()
-                  window.location.href = withBase(basePath, page.route)
-                }}
               >
-                {page.name}
+                <a
+                  href={withBase(basePath, page.route)}
+                  className={css.flowsItemLink}
+                >
+                  {page.name}
+                </a>
               </Menu.Item>
             ))}
           </Menu.Popup>

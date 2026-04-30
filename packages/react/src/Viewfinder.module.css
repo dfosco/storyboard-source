@@ -1118,6 +1118,12 @@
   color: var(--fgColor-default, #1a1a1a);
 }
 
+.flowsItemLink {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
 /* Avatar stack */
 
 .avatarStack {

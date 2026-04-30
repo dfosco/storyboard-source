@@ -104,10 +104,14 @@ export default function PageSelector({ currentName, pages: initialPages, isLocal
   const currentLabel = currentPage?.title || currentName.split('/').pop()
   const currentIndex = realPages.findIndex(p => p.name === currentName)
 
-  const navigateTo = useCallback((page) => {
+  const getPageHref = useCallback((page) => {
     const base = (import.meta.env?.BASE_URL || '/').replace(/\/$/, '')
-    window.location.href = base + page.route
+    return base + page.route
   }, [])
+
+  const navigateTo = useCallback((page) => {
+    window.location.href = getPageHref(page)
+  }, [getPageHref])
 
   const handleSelect = useCallback(
     (page) => {
@@ -119,20 +123,21 @@ export default function PageSelector({ currentName, pages: initialPages, isLocal
     [currentName, navigateTo],
   )
 
-  // Click handler with 300ms delay (mouse only) to distinguish from dblclick
+  // Click handler with 300ms delay (mouse only) to distinguish from dblclick.
+  // Cmd/Ctrl+click is handled natively by the <a> tag.
   const handleItemClick = useCallback((page, e) => {
     if (didDragRef.current) {
       didDragRef.current = false
-      return
-    }
-    if (editingPage) return
-    // Cmd/Ctrl+click → open in new tab
-    if (e?.metaKey || e?.ctrlKey) {
       e.preventDefault()
-      const base = (import.meta.env?.BASE_URL || '/').replace(/\/$/, '')
-      window.open(base + page.route, '_blank')
       return
     }
+    if (editingPage) {
+      e.preventDefault()
+      return
+    }
+    // Cmd/Ctrl+click or middle-click → let browser handle natively
+    if (e?.metaKey || e?.ctrlKey || e?.button === 1) return
+    e.preventDefault()
     // Keyboard Enter/Space → navigate immediately
     if (!e?.nativeEvent || e.nativeEvent instanceof KeyboardEvent) {
       handleSelect(page)
@@ -472,15 +477,7 @@ export default function PageSelector({ currentName, pages: initialPages, isLocal
                 role="option"
                 aria-selected={page.name === currentName}
                 className={`${styles.item} ${page.name === currentName ? styles.itemActive : ''} ${dragIndex === index ? styles.itemDragging : ''}`}
-                onClick={(e) => handleItemClick(page, e)}
                 onDoubleClick={() => handleItemDblClick(page)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    handleSelect(page)
-                  }
-                }}
-                tabIndex={0}
                 draggable={isLocalDev && !isEditing}
                 onDragStart={(e) => handleDragStart(index, e)}
                 onDragOver={(e) => handleDragOver(index, e)}
@@ -506,22 +503,27 @@ export default function PageSelector({ currentName, pages: initialPages, isLocal
                     onBlur={handleRenameCommit}
                   />
                 ) : (
-                  <>
+                  <a
+                    href={getPageHref(page)}
+                    className={styles.itemLink}
+                    onClick={(e) => handleItemClick(page, e)}
+                    onDoubleClick={(e) => e.stopPropagation()}
+                  >
                     <span className={styles.itemContent}>{page.title}</span>
-                    {isLocalDev && (
-                      <button
-                        className={styles.duplicateBtn}
-                        onClick={(e) => handleDuplicate(page, e)}
-                        onDoubleClick={(e) => e.stopPropagation()}
-                        title="Duplicate page"
-                        aria-label="Duplicate page"
-                      >
-                        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                          <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25ZM5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z" />
-                        </svg>
-                      </button>
-                    )}
-                  </>
+                  </a>
+                )}
+                {!isEditing && isLocalDev && (
+                  <button
+                    className={styles.duplicateBtn}
+                    onClick={(e) => handleDuplicate(page, e)}
+                    onDoubleClick={(e) => e.stopPropagation()}
+                    title="Duplicate page"
+                    aria-label="Duplicate page"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                      <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25ZM5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z" />
+                    </svg>
+                  </button>
                 )}
               </li>
             )
