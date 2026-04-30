@@ -46,7 +46,7 @@
   - **"Ship", "ship this", "ship a change", "ship a feature"** → always invoke the **ship** skill. This is a hard rule — never implement changes directly on `main`. The ship skill creates a worktree, implements there, and pushes to a remote branch.
 - If the user asks `how to use this repo`, `how to run this project` etc, give them an outline of `AGENTS.md` and point them to this file, the `README.md` and the `.agents/architecture` docs
 - **After completing any change**, and NOT USING THE SHIP SKILL:
-  1. Create a feature branch and push it. Never leave committed work on `main`.
+  1. Commit directly to the current branch and push. Never create a feature branch unless the user explicitly asks for one.
   2. Create a clips task for the work done and mark it as closed. Use the relevant goal if one exists, or create a new one.
   - Never skip either step.
 
