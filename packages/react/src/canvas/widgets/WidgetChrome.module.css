@@ -92,8 +92,9 @@
   border-radius: 4px;
 }
 
-/* Hide toolbar when a child widget is in crop mode */
-.chromeContainer:has([data-crop-active]) .toolbar {
+/* Hide toolbar and connector anchors when a child widget is in crop mode */
+.chromeContainer:has([data-crop-active]) .toolbar,
+.chromeContainer:has([data-crop-active]) .anchorPort {
   visibility: hidden;
   pointer-events: none;
 }
