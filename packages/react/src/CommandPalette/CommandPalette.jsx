@@ -549,7 +549,7 @@ function buildDynamicSection(section, prefix, onNavigateToPage, onCreateAction) 
     const pushProtoFlows = (p) => {
       if (p.isExternal) {
         sourceItems.push({ name: p.name, route: p.externalUrl, id: p.dirName, type: 'prototype', isExternal: true })
-      } else if (p.hideFlows || p.flows.length <= 1) {
+      } else if (p.flows.length <= 1) {
         const route = p.flows.length === 1 ? `${prefix}${p.flows[0].route}` : `${prefix}/${p.dirName}`
         sourceItems.push({ name: p.name, route, id: p.dirName, type: 'prototype' })
       } else {
