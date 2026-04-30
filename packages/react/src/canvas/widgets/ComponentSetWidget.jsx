@@ -73,15 +73,24 @@ export default forwardRef(function ComponentSetWidget({ id: widgetId, props, onU
   useEffect(() => {
     function handleMessage(e) {
       if (e.source !== iframeRef.current?.contentWindow) return
-      if (e.data?.type !== 'storyboard:component-set:select') return
-      const newSelected = e.data.exportName || ''
-      if (newSelected !== selected) {
-        onUpdate?.({ selected: newSelected })
+      if (e.data?.type === 'storyboard:component-set:select') {
+        const newSelected = e.data.exportName || ''
+        if (newSelected !== selected) {
+          onUpdate?.({ selected: newSelected })
+        }
+      } else if (e.data?.type === 'storyboard:component-set:resize') {
+        // Auto-size widget to fit the grid content (+ header height)
+        const headerH = 32
+        const newW = Math.max(200, Math.ceil(e.data.width))
+        const newH = Math.max(60, Math.ceil(e.data.height) + headerH)
+        if (newW !== width || newH !== height) {
+          onUpdate?.({ width: newW, height: newH })
+        }
       }
     }
     window.addEventListener('message', handleMessage)
     return () => window.removeEventListener('message', handleMessage)
-  }, [selected, onUpdate])
+  }, [selected, width, height, onUpdate])
 
   const handleResize = useCallback((w, h) => {
     onUpdate?.({ width: w, height: h })

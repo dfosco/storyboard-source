@@ -6,7 +6,6 @@
   flex-wrap: nowrap;
   gap: 0;
   padding: 0;
-  min-height: 100vh;
   width: max-content;
   min-width: 100%;
   box-sizing: border-box;
@@ -41,12 +40,13 @@
   border-top: none;
 }
 
-/* In horizontal layout, each cell snaps to the widest component */
+/* In horizontal layout, cells snap to widest and tallest component */
 .grid[data-layout="horizontal"] .cell {
   min-width: var(--cell-snap-w, 200px);
+  min-height: var(--cell-snap-h, 60px);
 }
 
-/* In vertical layout, each cell snaps to the tallest component */
+/* In vertical layout, cells snap to widest and tallest component */
 .grid[data-layout="vertical"] .cell {
   min-height: var(--cell-snap-h, 120px);
   min-width: 100%;

@@ -84,7 +84,8 @@ export default function ComponentSetPage({ name }) {
 
   const gridRef = useRef(null)
 
-  // Measure all cell content elements and snap cells to the largest
+  // Measure all cell content elements and snap cells to the largest.
+  // Posts the total grid size to the parent widget so it can auto-size.
   useLayoutEffect(() => {
     const grid = gridRef.current
     if (!grid || !exports) return
@@ -101,6 +102,17 @@ export default function ComponentSetPage({ name }) {
       }
       grid.style.setProperty('--cell-snap-w', `${maxW}px`)
       grid.style.setProperty('--cell-snap-h', `${maxH}px`)
+
+      // Post total grid size to parent widget
+      if (isEmbed && window.parent !== window) {
+        requestAnimationFrame(() => {
+          window.parent.postMessage({
+            type: 'storyboard:component-set:resize',
+            width: grid.scrollWidth,
+            height: grid.scrollHeight,
+          }, '*')
+        })
+      }
     }
 
     // Measure after fonts load and initial paint
@@ -110,7 +122,7 @@ export default function ComponentSetPage({ name }) {
     const ro = new ResizeObserver(measure)
     for (const el of cells) ro.observe(el)
     return () => ro.disconnect()
-  }, [exports, layout])
+  }, [exports, layout, isEmbed])
 
   const handleSelect = useCallback((exportName) => {
     const params = new URLSearchParams(location.search)
