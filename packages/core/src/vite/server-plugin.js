@@ -567,6 +567,15 @@ export default function storyboardServer() {
           injectTo: 'head',
         })
 
+        // Inject dev domain name for branch bar display
+        if (config.devDomain) {
+          tags.push({
+            tag: 'script',
+            children: `window.__SB_DEV_DOMAIN__=${JSON.stringify(config.devDomain)}`,
+            injectTo: 'head',
+          })
+        }
+
         // Inject per-domain branch bar color (configurable via devDomainColor)
         if (config.devDomainColor) {
           tags.push({
