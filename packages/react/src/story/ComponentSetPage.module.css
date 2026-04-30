@@ -1,11 +1,11 @@
 /* ComponentSetPage — grid layout for all exports of a story */
 
 .grid {
-  background-color: var(--bgColor-muted, #f6f8fa);
+  background-color: var(--bgColor-default, #ffffff);
   display: flex;
   flex-wrap: nowrap;
-  gap: 12px;
-  padding: 12px;
+  gap: 0;
+  padding: 0;
   min-height: 100vh;
   width: max-content;
   min-width: 100%;
@@ -24,12 +24,12 @@
   flex: 0 0 auto;
   display: flex;
   flex-direction: column;
-  border: 2px solid var(--borderColor-muted, #d8dee4);
+  border: 1px solid var(--borderColor-muted, #d8dee4);
   border-radius: 2px;
   overflow: hidden;
   transition: border-color 120ms ease, box-shadow 120ms ease;
   position: relative;
-  background: var(--bgColor-default, #ffffff);
+  background: var(--bgColor-muted, #f6f8fa);
 }
 
 /* In horizontal layout, each cell snaps to the widest component */
@@ -58,7 +58,7 @@
   font-size: 11px;
   font-weight: 600;
   color: var(--fgColor-muted, #656d76);
-  background: var(--bgColor-muted, #f6f8fa);
+  background: var(--bgColor-default, #ffffff);
   border-bottom: 1px solid var(--borderColor-muted, #d8dee4);
   cursor: pointer;
   user-select: none;
@@ -99,6 +99,7 @@
   flex: 1;
   overflow: visible;
   position: relative;
+  padding: 12px;
 }
 
 .error {
