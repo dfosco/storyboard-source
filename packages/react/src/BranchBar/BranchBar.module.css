@@ -73,7 +73,7 @@
 }
 
 .barDomainName {
-  font-weight: 600;
+  font-weight: 400;
   max-width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
