@@ -1,5 +1,13 @@
 # @dfosco/storyboard-core
 
+## 4.2.4
+
+### Patch Changes
+
+-   Fix scaffold sync crash on `sb update`
+
+    -   Fixed `.gitignore` not being included in the published npm tarball, causing `sb update` to fail with ENOENT during scaffold sync
+
 ## 4.2.3
 
 ### Patch Changes

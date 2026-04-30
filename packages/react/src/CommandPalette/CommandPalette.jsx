@@ -545,9 +545,28 @@ function buildDynamicSection(section, prefix, onNavigateToPage, onCreateAction) 
       if (f.canvases) for (const c of f.canvases) sourceItems.push({ name: c.name, route: `${prefix}${c.route}`, id: c.dirName, type: 'canvas' })
     }
   } else if (section.source === 'prototypes') {
-    for (const p of index.prototypes) sourceItems.push({ name: p.name, route: `${prefix}/${p.dirName}`, id: p.dirName, type: 'prototype' })
+    const formatFlowName = (name) => name.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+    const pushProtoFlows = (p) => {
+      if (p.isExternal) {
+        sourceItems.push({ name: p.name, route: p.externalUrl, id: p.dirName, type: 'prototype', isExternal: true })
+      } else if (p.hideFlows || p.flows.length <= 1) {
+        const route = p.flows.length === 1 ? `${prefix}${p.flows[0].route}` : `${prefix}/${p.dirName}`
+        sourceItems.push({ name: p.name, route, id: p.dirName, type: 'prototype' })
+      } else {
+        for (const flow of p.flows) {
+          const flowLabel = flow.meta?.title || formatFlowName(flow.name)
+          sourceItems.push({
+            name: `${p.name} – ${flowLabel}`,
+            route: `${prefix}${flow.route}`,
+            id: `${p.dirName}/${flow.name}`,
+            type: 'prototype',
+          })
+        }
+      }
+    }
+    for (const p of index.prototypes) pushProtoFlows(p)
     for (const f of index.folders) {
-      for (const p of f.prototypes) sourceItems.push({ name: p.name, route: `${prefix}/${p.dirName}`, id: p.dirName, type: 'prototype' })
+      for (const p of f.prototypes) pushProtoFlows(p)
     }
   } else if (section.source === 'stories') {
     for (const name of listStories()) {
@@ -588,7 +607,11 @@ function buildDynamicSection(section, prefix, onNavigateToPage, onCreateAction) 
         url: item.route,
         onClick: () => {
           trackRecent(item.type, item.id, item.name)
-          window.location.href = item.route
+          if (item.isExternal) {
+            window.open(item.route, '_blank')
+          } else {
+            window.location.href = item.route
+          }
         },
       })),
     },
