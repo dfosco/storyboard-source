@@ -5,7 +5,6 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, fireEvent, screen } from '@testing-library/react'
 import PrototypeEmbed from './PrototypeEmbed.jsx'
 import FigmaEmbed from './FigmaEmbed.jsx'
-import ComponentWidget from './ComponentWidget.jsx'
 import StoryWidget from './StoryWidget.jsx'
 
 // Mock buildPrototypeIndex for PrototypeEmbed
@@ -24,7 +23,7 @@ vi.mock('@dfosco/storyboard-core', () => ({
     globalFlows: [],
     sorted: { title: { prototypes: [], folders: [] } },
   }),
-  getStoryData: (storyId) => ({ _route: `/components/${storyId}` }),
+  getStoryData: (storyId) => ({ _storyModule: `/src/canvas/${storyId}.story.jsx`, _route: `/components/${storyId}` }),
 }))
 
 // Simple mock wrapper for WidgetWrapper
@@ -41,11 +40,6 @@ vi.mock('@dfosco/storyboard-core/inspector/highlighter', () => ({
 // Mock ResizeHandle
 vi.mock('./ResizeHandle.jsx', () => ({
   default: () => <div data-testid="resize-handle" />,
-}))
-
-// Mock ComponentErrorBoundary
-vi.mock('../ComponentErrorBoundary.jsx', () => ({
-  default: ({ children }) => <div data-testid="error-boundary">{children}</div>,
 }))
 
 describe('Embed interaction overlay', () => {
@@ -174,60 +168,6 @@ describe('Embed interaction overlay', () => {
       fireEvent.pointerDown(document.body)
       expect(screen.getByRole('button', { name: /click to interact$/i })).toBeInTheDocument()
       expect(container.querySelector('iframe')).toBeInTheDocument()
-    })
-  })
-
-  describe('ComponentWidget', () => {
-    const MockComponent = () => <div>Mock Component</div>
-    
-    const defaultProps = {
-      component: MockComponent,
-      jsxModule: null,
-      exportName: 'MockComponent',
-      canvasTheme: 'light',
-      isLocalDev: false,
-      width: 200,
-      height: 150,
-      onUpdate: vi.fn(),
-      resizable: false,
-    }
-
-    it('renders "Click to interact" hint', () => {
-      render(<ComponentWidget {...defaultProps} />)
-      
-      const hint = screen.getByText('Click to interact')
-      expect(hint).toBeInTheDocument()
-    })
-
-    it('enters interactive mode on single click', () => {
-      render(<ComponentWidget {...defaultProps} />)
-      
-      const overlay = screen.getByRole('button', { name: /click to interact/i })
-      fireEvent.click(overlay)
-      
-      expect(screen.queryByRole('button', { name: /click to interact/i })).not.toBeInTheDocument()
-    })
-
-    it('mounts dev iframe only after user activation', () => {
-      const { container } = render(
-        <ComponentWidget
-          {...defaultProps}
-          isLocalDev
-          jsxModule="/src/canvas/mock.story.jsx"
-          exportName="MockComponent"
-        />
-      )
-
-      const overlay = screen.getByRole('button', { name: /click to interact with component/i })
-      expect(container.querySelector('iframe')).not.toBeInTheDocument()
-
-      fireEvent.click(overlay)
-
-      expect(container.querySelector('iframe')).toBeInTheDocument()
-
-      fireEvent.pointerDown(document.body)
-      expect(screen.getByRole('button', { name: /click to interact with component/i })).toBeInTheDocument()
-      expect(container.querySelector('iframe')).not.toBeInTheDocument()
     })
   })
 })

@@ -21,7 +21,7 @@ vi.mock('@dfosco/storyboard-core', () => ({
     globalFlows: [],
     sorted: { title: { prototypes: [], folders: [] } },
   }),
-  getStoryData: (storyId) => ({ _route: `/components/${storyId}` }),
+  getStoryData: (storyId) => ({ _storyModule: `/src/canvas/${storyId}.story.jsx`, _route: `/components/${storyId}` }),
 }))
 
 vi.mock('./WidgetWrapper.jsx', () => ({
