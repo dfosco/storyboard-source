@@ -1100,10 +1100,13 @@ export default function Workspace({
 
     // Prototypes (ungrouped + from folders)
     const addProto = (proto) => {
-      // For prototypes with flows, use the first flow's route
-      const route = proto.flows?.length > 0
-        ? proto.flows[0].route
-        : `/${proto.dirName}`
+      // Prefer a flow marked as default, fall back to the first flow
+      const defaultFlow = proto.flows?.find(f => f.meta?.default === true)
+      const route = defaultFlow
+        ? defaultFlow.route
+        : proto.flows?.length > 0
+          ? proto.flows[0].route
+          : `/${proto.dirName}`
 
       items.push({
         id: `proto:${proto.dirName}`,
