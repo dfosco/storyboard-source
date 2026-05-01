@@ -3,10 +3,10 @@ import { ActionList, Text } from '@primer/react'
 import styles from './AppSidebar.module.css'
 
 const navItems = [
-  { label: 'Overview', path: '/Dashboard' },
-  { label: 'Issues', path: '/Dashboard' },
-  { label: 'Projects', path: '/Dashboard' },
-  { label: 'Views', path: '/Dashboard' },
+  { label: 'Overview', path: '/Signup/Dashboard' },
+  { label: 'Issues', path: '/Signup/Dashboard' },
+  { label: 'Projects', path: '/Signup/Dashboard' },
+  { label: 'Views', path: '/Signup/Dashboard' },
 ]
 
 export default function AppSidebar({ orgName, activePage, userInfo }) {

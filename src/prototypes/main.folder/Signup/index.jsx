@@ -139,7 +139,7 @@ export default function Signup() {
       setStepIndex(2)
       return
     }
-    navigate('/Dashboard')
+    navigate('/Signup/Dashboard')
   }
 
   return (
