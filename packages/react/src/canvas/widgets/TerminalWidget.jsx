@@ -493,8 +493,12 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
         ref={terminalRef}
         className={styles.terminal}
         style={{
-          ...(typeof (snappedWidth ?? width) === 'number' ? { width: `${snappedWidth ?? width}px` } : undefined),
-          ...(typeof (snappedHeight ?? height) === 'number' ? { height: `${snappedHeight ?? height}px` } : undefined),
+          ...(typeof (isLive ? (snappedWidth ?? width) : width) === 'number'
+            ? { width: `${isLive ? (snappedWidth ?? width) : width}px` }
+            : undefined),
+          ...(typeof (isLive ? (snappedHeight ?? height) : height) === 'number'
+            ? { height: `${isLive ? (snappedHeight ?? height) : height}px` }
+            : undefined),
         }}
         onClick={handleClick}
         onPointerDown={handleTerminalPointerDown}
