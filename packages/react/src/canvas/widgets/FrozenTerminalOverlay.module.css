@@ -1,87 +1,84 @@
 .overlay {
   position: absolute;
   inset: 0;
-  background: #0d1117;
-  border-radius: 6px;
+  background: var(--term-bg, #0d1117);
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  cursor: pointer;
 }
 
+/* ── Faded snapshot background ── */
+
 .snapshotContent {
-  flex: 1;
-  overflow-y: auto;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
   padding: 8px 12px;
   font-family: 'Ghostty', 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
   font-size: 12px;
   line-height: 1.4;
   color: #e6edf3;
-  opacity: 0.5;
-  filter: grayscale(0.3);
-  display: flex;
-  flex-direction: column;
+  opacity: 0.35;
+  pointer-events: none;
 }
 
 .snapshotPre {
   margin: 0;
-  margin-top: auto;
-  white-space: pre;
+  white-space: pre-wrap;
+  word-break: break-all;
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
 }
 
-.placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  min-height: 80px;
-}
+/* ── Status + action layer ── */
 
-.placeholderLabel {
-  color: #8b949e;
-  font-size: 13px;
-}
-
-.activateOverlay {
+.statusLayer {
   position: absolute;
   inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  cursor: pointer;
-  background: transparent;
-  transition: background 0.15s ease;
-}
-
-.activateOverlay:hover {
-  background: rgba(13, 17, 23, 0.6);
-}
-
-.frozenBadge {
-  background: rgba(110, 118, 129, 0.3);
-  color: #8b949e;
-  font-size: 11px;
-  padding: 2px 8px;
-  border-radius: 12px;
-  letter-spacing: 0.02em;
+  gap: 12px;
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.15s ease;
 }
 
-.activateHint {
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(110, 118, 129, 0.25);
   color: #8b949e;
   font-size: 12px;
-  pointer-events: none;
-  opacity: 0;
+  padding: 5px 14px;
+  border-radius: 999px;
+  letter-spacing: 0.01em;
+}
+
+.actionText {
+  color: #e6edf3;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.7;
   transition: opacity 0.15s ease;
 }
 
-.activateOverlay:hover .frozenBadge,
-.activateOverlay:hover .activateHint {
+.overlay:hover .actionText {
   opacity: 1;
+}
+
+/* ── Orbit spinner ── */
+
+.orbitSpinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid transparent;
+  border-top-color: #8b949e;
+  border-radius: 50%;
+  animation: orbitSpin 1s linear infinite;
+}
+
+@keyframes orbitSpin {
+  to { transform: rotate(360deg); }
 }

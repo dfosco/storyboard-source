@@ -1,11 +1,13 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import styles from './FrozenTerminalOverlay.module.css'
 
 /**
  * Renders a frozen terminal preview from the latest server snapshot.
- * Shown when a terminal widget loses its live WebGL slot.
+ * Shown when a terminal widget loses its live WebGL slot but the
+ * server-side tmux session is still running.
  *
- * Falls back to a styled placeholder if no snapshot is available.
+ * Layout: faded snapshot background + centered status badge + action text.
+ * The entire overlay is the click target.
  */
 
 let Convert = null
@@ -34,11 +36,10 @@ function getBaseUrl() {
   return base.endsWith('/') ? base : base + '/'
 }
 
-export default function FrozenTerminalOverlay({ widgetId, onActivate, prettyName }) {
+export default function FrozenTerminalOverlay({ widgetId, onActivate }) {
   const [html, setHtml] = useState(null)
   const [plainText, setPlainText] = useState(null)
   const [loaded, setLoaded] = useState(false)
-  const contentRef = useRef(null)
 
   useEffect(() => {
     let cancelled = false
@@ -72,7 +73,6 @@ export default function FrozenTerminalOverlay({ widgetId, onActivate, prettyName
           continue
         }
       }
-      // No snapshot available — show placeholder
       if (!cancelled) setLoaded(true)
     }
 
@@ -80,43 +80,39 @@ export default function FrozenTerminalOverlay({ widgetId, onActivate, prettyName
     return () => { cancelled = true }
   }, [widgetId])
 
-  // Auto-scroll to bottom
-  useEffect(() => {
-    if (contentRef.current) {
-      contentRef.current.scrollTop = contentRef.current.scrollHeight
-    }
-  }, [html, plainText])
+  const hasSnapshot = !!(html || plainText)
 
   return (
-    <div className={styles.overlay}>
-      <div ref={contentRef} className={styles.snapshotContent}>
-        {html && (
-          <pre
-            className={styles.snapshotPre}
-            dangerouslySetInnerHTML={{ __html: html }}
-          />
-        )}
-        {!html && plainText && (
-          <pre className={styles.snapshotPre}>{plainText}</pre>
-        )}
-        {loaded && !html && !plainText && (
-          <div className={styles.placeholder}>
-            <span className={styles.placeholderLabel}>
-              {prettyName || 'Terminal'} · paused
-            </span>
-          </div>
-        )}
-      </div>
-      <div
-        className={styles.activateOverlay}
-        onClick={onActivate}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => { if (e.key === 'Enter') onActivate?.() }}
-        aria-label="Click to activate terminal"
-      >
-        <span className={styles.frozenBadge}>⏸ Paused</span>
-        <span className={styles.activateHint}>Click to resume</span>
+    <div
+      className={styles.overlay}
+      onClick={onActivate}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === 'Enter') onActivate?.() }}
+      aria-label="Click to resume terminal"
+    >
+      {/* Faded snapshot background */}
+      {hasSnapshot && (
+        <div className={styles.snapshotContent}>
+          {html && (
+            <pre
+              className={styles.snapshotPre}
+              dangerouslySetInnerHTML={{ __html: html }}
+            />
+          )}
+          {!html && plainText && (
+            <pre className={styles.snapshotPre}>{plainText}</pre>
+          )}
+        </div>
+      )}
+
+      {/* Status + action */}
+      <div className={styles.statusLayer}>
+        <span className={styles.statusBadge}>
+          Running in background
+          <span className={styles.orbitSpinner} />
+        </span>
+        <span className={styles.actionText}>Click to resume</span>
       </div>
     </div>
   )
