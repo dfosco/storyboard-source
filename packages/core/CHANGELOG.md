@@ -1,5 +1,15 @@
 # @dfosco/storyboard-core
 
+## 4.2.6
+
+### Patch Changes
+
+-   Alt+Cmd+. completely hides all toolbars including the lightbulb trigger
+
+    -   Add alt+cmd+. shortcut to completely hide all chrome (no half-opacity trigger button)
+    -   Command palette shows "Completely hide toolbars" when alt is held
+    -   Fix ComponentWidget stub to prevent CanvasPage crash on missing widget types
+
 ## 4.2.5
 
 ### Patch Changes
