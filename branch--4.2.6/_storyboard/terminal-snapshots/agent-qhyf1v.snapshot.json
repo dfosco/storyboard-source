@@ -1,0 +1,10 @@
+{
+  "widgetId": "agent-qhyf1v",
+  "canvasId": "viewfinder-redesign",
+  "prettyName": "scarlet-warbler",
+  "timestamp": "2026-04-25T20:02:34.515Z",
+  "cols": 89,
+  "rows": 32,
+  "paneContent": "  └ 14 lines...\n\n● Push to remote (shell)\n  │ cd /Users/dfosco/workspace/storyboard-core/.worktrees/4.3.0--prompt-widget && git\n  │ push 2>&1 | tail -5\n  └ 4 lines...\n\n● Now update the summary widget on canvas:\n\n● Update summary widget on canvas (shell)\n  │ npx storyboard canvas update markdown-p4oexw --canvas viewfinder-redesign --content\n  │ \"# Connector Anchor Optimization — Done\n  │ \n  │ ## What shipped…\n  └ 15 lines...\n\n● Done. All 4 todos implemented and pushed:\n\n   1. ✅ PATCH /connector docs — new \"Updating a connector\" subsection\n   2. ✅ Anchor Optimization section — 3×3 grid model, center-point sector calculation,\n   full orientation→anchor table\n   3. ✅ When to Recalculate — triggers (new connections, widget moves) + step-by-step\n  procedure\n   4. ✅ Pattern examples updated — all now reference orientation-based anchors\n\n ~/workspace/st... [⎇ 4.3.0--prompt-widget*%]\n─────────────────────────────────────────────────────────────────────────────────────────\n❯ rrr \n─────────────────────────────────────────────────────────────────────────────────────────\n plan · ctrl+y view/edit plan\n terminal-agent · Claude Opus 4.6 (1M context)(Internal only)\n\n",
+  "scrollback": ""
+}
