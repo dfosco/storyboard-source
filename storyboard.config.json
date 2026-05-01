@@ -67,7 +67,7 @@
       "codex": {
         "label": "Codex CLI",
         "icon": "codex",
-        "startupCommand": "codex --full-auto",
+        "startupCommand": "codex --ask-for-approval never",
         "resumeCommand": "codex --resume",
         "configFiles": [
           ".codex/config.toml"
@@ -93,13 +93,13 @@
         "webgl_ready_slots": 1
       },
       "claude": {
-        "pool_size": 2
+        "pool_size": 1
       },
       "codex": {
-        "pool_size": 2
+        "pool_size": 1
       },
       "prompt": {
-        "pool_size": 1
+        "pool_size": 2
       }
     }
   },

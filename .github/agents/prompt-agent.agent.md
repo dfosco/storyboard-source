@@ -25,10 +25,15 @@ Before signaling done, you must have done **at least one** of:
 If you wrote code that isn't surfaced through any of these paths, **add a summary widget** to the canvas describing what you did:
 
 ```bash
-npx storyboard canvas batch --canvas ${STORYBOARD_CANVAS_ID} --ops '[
-  {"op":"create-widget","ref":"summary","type":"markdown","near":"'${STORYBOARD_WIDGET_ID}'","direction":"right","props":{"content":"# Done\n\nCreated `src/components/LoginForm/LoginForm.jsx` with email + password fields."}},
-  {"op":"create-connector","startWidgetId":"'${STORYBOARD_WIDGET_ID}'","endWidgetId":"$summary","startAnchor":"right","endAnchor":"left"}
-]'
+RESPONSE=$(curl -s -X POST "${STORYBOARD_SERVER_URL}/_storyboard/canvas/${STORYBOARD_CANVAS_ID}/widgets" \
+  -H "Content-Type: application/json" \
+  -d '{"type":"markdown","props":{"content":"# Done\n\nCreated `src/components/LoginForm/LoginForm.jsx` with email + password fields.\n\n```jsx\nimport LoginForm from \"./components/LoginForm/LoginForm\"\n```"}}')
+
+NEW_ID=$(echo "$RESPONSE" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
+
+curl -s -X POST "${STORYBOARD_SERVER_URL}/_storyboard/canvas/connector" \
+  -H "Content-Type: application/json" \
+  -d "{\"name\":\"${STORYBOARD_CANVAS_ID}\",\"startWidgetId\":\"${STORYBOARD_WIDGET_ID}\",\"endWidgetId\":\"${NEW_ID}\",\"startAnchor\":\"right\",\"endAnchor\":\"left\"}"
 ```
 
 **If the result is not on the canvas, do not signal done.**
@@ -111,59 +116,39 @@ You received your task as the `-p` argument. Interpret it in light of connected 
 - If the task is ambiguous but connected widgets provide context, use that context to disambiguate.
 - If you truly cannot determine what to do, signal error with a clear message rather than guessing.
 
-### Canvas operations — CLI only
-
-**Always use the CLI.** It resolves the dev server automatically — no ports or URLs needed.
-
-#### Creating widgets — use `--near` for automatic positioning
-
-**`--near` places a widget next to another widget with collision avoidance.** No manual coordinate math needed.
-
-```bash
-# Create a sticky to the right of your prompt widget
-npx storyboard canvas add sticky-note --canvas ${STORYBOARD_CANVAS_ID} \
-  --near ${STORYBOARD_WIDGET_ID} --direction right --props '{"text":"Hello","color":"yellow"}'
-
-# Directions: right (default), left, above, below
-npx storyboard canvas add markdown --canvas ${STORYBOARD_CANVAS_ID} \
-  --near ${STORYBOARD_WIDGET_ID} --direction below --props '{"content":"# Notes"}'
-```
-
-#### Batch — THE way to create multiple widgets + connectors
-
-**When creating 2+ widgets, ALWAYS use `canvas batch`.** One command, one HMR push, automatic `$ref` resolution. Do NOT loop individual `canvas add` calls.
-
-```bash
-npx storyboard canvas batch --canvas ${STORYBOARD_CANVAS_ID} --ops '[
-  {"op":"create-widget","ref":"s1","type":"sticky-note","near":"'${STORYBOARD_WIDGET_ID}'","direction":"right","props":{"text":"Task 1","color":"yellow"}},
-  {"op":"create-widget","ref":"s2","type":"sticky-note","near":"$s1","direction":"below","props":{"text":"Task 2","color":"blue"}},
-  {"op":"create-connector","startWidgetId":"'${STORYBOARD_WIDGET_ID}'","endWidgetId":"$s1","startAnchor":"right","endAnchor":"left"},
-  {"op":"create-connector","startWidgetId":"'${STORYBOARD_WIDGET_ID}'","endWidgetId":"$s2","startAnchor":"right","endAnchor":"left"}
-]'
-```
-
-**Key concepts:**
-- `"ref":"s1"` registers the widget's ID → later ops reference it as `"$s1"`
-- `"near":"$s1"` positions relative to a just-created widget (with collision avoidance)
-- `"near":"widget-id"` positions relative to an existing widget
-- Connectors must come after the widgets they reference
-
-**Supported ops:** `create-widget`, `update-widget`, `move-widget`, `delete-widget`, `create-connector`, `delete-connector`
-
-#### Reading and updating
+### Canvas operations (prefer CLI)
 
 ```bash
 # Read canvas state
-npx storyboard canvas read ${STORYBOARD_CANVAS_ID} --json
-npx storyboard canvas read ${STORYBOARD_CANVAS_ID} --id <widget-id> --json
+npx storyboard canvas read <canvas-name> --json
 
 # Update a widget
-npx storyboard canvas update <widget-id> --canvas ${STORYBOARD_CANVAS_ID} --text "New text"
-npx storyboard canvas update <widget-id> --canvas ${STORYBOARD_CANVAS_ID} --content "# Heading"
-npx storyboard canvas update <widget-id> --canvas ${STORYBOARD_CANVAS_ID} --props '{"key":"value"}'
+npx storyboard canvas update <widget-id> --canvas <canvas-name> --text "New text"
+npx storyboard canvas update <widget-id> --canvas <canvas-name> --props '{"key":"value"}'
+
+# Add a widget
+npx storyboard canvas add sticky-note --canvas <canvas-name> --props '{"text":"Hello"}'
 ```
 
-**Always connect output widgets back to your prompt widget.** Use batch for widget+connector creation in one command. Remember the Prime Directive — if your work isn't visible on the canvas, it's not done.
+### Creating widgets on the canvas
+
+If your task requires creating new widgets (e.g. "create a plan", "add tasks"), create them and connect them to your prompt widget:
+
+```bash
+# Create widget
+RESPONSE=$(curl -s -X POST "${STORYBOARD_SERVER_URL}/_storyboard/canvas/${STORYBOARD_CANVAS_ID}/widgets" \
+  -H "Content-Type: application/json" \
+  -d '{"type":"sticky-note","props":{"text":"Output from prompt"}}')
+
+NEW_ID=$(echo "$RESPONSE" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
+
+# Connect prompt → new widget
+curl -s -X POST "${STORYBOARD_SERVER_URL}/_storyboard/canvas/connector" \
+  -H "Content-Type: application/json" \
+  -d "{\"name\":\"${STORYBOARD_CANVAS_ID}\",\"startWidgetId\":\"${STORYBOARD_WIDGET_ID}\",\"endWidgetId\":\"${NEW_ID}\",\"startAnchor\":\"right\",\"endAnchor\":\"left\"}"
+```
+
+**Always** connect output widgets back to your prompt widget. Remember the Prime Directive — if your work isn't visible on the canvas, it's not done.
 
 ## Step 4: Signal completion
 

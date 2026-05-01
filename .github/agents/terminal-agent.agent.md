@@ -10,7 +10,11 @@ tools:
 
 # Terminal Agent Context
 
-> **🔴 FIRST ACTION — before anything else:** If the `canvas` skill is available, **invoke it immediately** on your very first turn. The canvas skill contains the authoritative reference for all widget operations (positioning, batch, collision detection, layout). Load it before reading config, before processing the user's prompt, before any other work. This is non-negotiable.
+> **⚠️ API URL rule:** Canvas endpoints use FLAT paths. The canvas name goes in the **request body** as `"name"`, NEVER in the URL.
+> - ✅ `POST /_storyboard/canvas/widget` with body `{"name":"my-canvas", ...}`
+> - ✅ `POST /_storyboard/canvas/connector` with body `{"name":"my-canvas", ...}`
+> - ✅ `POST /_storyboard/canvas/batch` with body `{"name":"my-canvas", ...}`
+> - ❌ `POST /_storyboard/canvas/my-canvas/widgets` — **DOES NOT EXIST**
 
 ## ⚠️ Prime Directive: Results MUST be visible on the canvas
 
@@ -25,10 +29,15 @@ Before signaling done, you must have done **at least one** of:
 If you wrote code that isn't surfaced through any of these paths, **add a summary widget** to the canvas describing what you did:
 
 ```bash
-npx storyboard canvas batch --canvas ${STORYBOARD_CANVAS_ID} --ops '[
-  {"op":"create-widget","ref":"summary","type":"markdown","near":"'${STORYBOARD_WIDGET_ID}'","direction":"right","props":{"content":"# Done\n\nCreated LoginForm component."}},
-  {"op":"create-connector","startWidgetId":"'${STORYBOARD_WIDGET_ID}'","endWidgetId":"$summary","startAnchor":"right","endAnchor":"left"}
-]'
+RESPONSE=$(curl -s -X POST "${STORYBOARD_SERVER_URL}/_storyboard/canvas/widget" \
+  -H "Content-Type: application/json" \
+  -d "{\"name\":\"${STORYBOARD_CANVAS_ID}\",\"type\":\"markdown\",\"props\":{\"content\":\"# Done\\n\\nCreated LoginForm component.\"}}")
+
+NEW_ID=$(echo "$RESPONSE" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
+
+curl -s -X POST "${STORYBOARD_SERVER_URL}/_storyboard/canvas/connector" \
+  -H "Content-Type: application/json" \
+  -d "{\"name\":\"${STORYBOARD_CANVAS_ID}\",\"startWidgetId\":\"${STORYBOARD_WIDGET_ID}\",\"endWidgetId\":\"${NEW_ID}\",\"startAnchor\":\"right\",\"endAnchor\":\"left\"}"
 ```
 
 **If the result is not on the canvas, do not signal done.**
@@ -115,9 +124,15 @@ When the user refers to a widget by type — e.g. "the connected image", "implem
 
 **Never pick randomly.** If there's ambiguity, always ask for clarification.
 
-## Step 3: Canvas operations — CLI only
+## Step 3: Canvas operations — CLI first, batch for multiples
 
-**Always use the CLI.** It resolves the dev server automatically — no ports or URLs needed. If the CLI says the dev server is unreachable, tell the user to start it (`storyboard dev`).
+**Always use the CLI.** It resolves the dev server automatically — no ports or URLs needed.
+
+If the CLI says the dev server is unreachable, verify before falling back to HTTP:
+```bash
+curl -s -m 3 "${STORYBOARD_SERVER_URL}/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | jq '.widgets | length'
+```
+If this also fails, the dev server is genuinely down — tell the user.
 
 ### ⚡ Creating widgets — use `--near` for automatic positioning
 
@@ -189,16 +204,16 @@ npx storyboard canvas update <widget-id> --canvas ${STORYBOARD_CANVAS_ID} --x 10
 
 To connect an **already existing** widget individually:
 ```bash
-npx storyboard canvas batch --canvas ${STORYBOARD_CANVAS_ID} --ops '[
-  {"op":"create-connector","startWidgetId":"'${STORYBOARD_WIDGET_ID}'","endWidgetId":"<target-id>","startAnchor":"right","endAnchor":"left"}
-]'
+curl -s -X POST "${STORYBOARD_SERVER_URL}/_storyboard/canvas/connector" \
+  -H "Content-Type: application/json" \
+  -d "{\"name\":\"${STORYBOARD_CANVAS_ID}\",\"startWidgetId\":\"${STORYBOARD_WIDGET_ID}\",\"endWidgetId\":\"<target-id>\",\"startAnchor\":\"right\",\"endAnchor\":\"left\"}"
 ```
 
 **Anchor guidance:** Use `"right"` → `"left"` by default. Adjust if layout calls for a different direction.
 
 ### Positioning reference
 
-For complex layout operations (rearranging, grid layouts, spatial queries), invoke the **canvas skill** or read `.agents/skills/canvas/SKILL.md` — it covers collision detection, relational positioning, bounds queries, and grid snapping.
+For complex layout operations (rearranging, grid layouts, spatial queries), read `.agents/skills/canvas/SKILL.md` — it covers collision detection, relational positioning, bounds queries, and grid snapping.
 
 **Do NOT use Python** for positioning, layout, or JSON parsing — use `jq` for API responses and bash arithmetic (`$((...))`) for calculations. Only use Python for complex geometry (circles, spirals, radial trees).
 
@@ -274,8 +289,63 @@ Messaging is controlled by the user via the 💬 menu on terminal widgets:
 Check your `messaging.peers` array to see which peers you can message and in which direction (`canSend` / `canReceive`).
 
 **IMPORTANT:**
-- NEVER write directly to `.canvas.jsonl` files — always use the CLI
-- **Always use CLI commands** (`npx storyboard canvas ...`) — they resolve ports automatically
-- **Do NOT use Python** for widget positioning, layout, or JSON parsing — use `jq` for API responses and bash arithmetic for calculations. Python is only acceptable for complex geometric layouts (circles, spirals, radial trees)
+- NEVER write directly to `.canvas.jsonl` files — use the canvas CLI or server API
+- **Prefer CLI commands** (`npx storyboard canvas ...`) over direct HTTP calls — they resolve ports automatically
+- Only fall back to HTTP API (`{serverUrl}/_storyboard/canvas/`) if the CLI doesn't support the operation
 - Environment variables `$STORYBOARD_WIDGET_ID`, `$STORYBOARD_CANVAS_ID`, `$STORYBOARD_BRANCH`, `$STORYBOARD_SERVER_URL` are available in the shell
-- For the full canvas operations reference (collision detection, grid snapping, spatial queries, HTTP API fallback), invoke the **canvas skill** or read `.agents/skills/canvas/SKILL.md`
+
+## HTTP API Reference (fallback only)
+
+If the CLI fails, use these endpoints. The `serverUrl` is in your terminal config or `$STORYBOARD_SERVER_URL`.
+
+### Batch operations (POST /batch) — preferred for multi-widget work
+
+**Use batch when creating/updating/connecting multiple widgets.** One request, one HMR push.
+
+Operations reference earlier results via `$index` (auto) or `$refName` (opt-in). Every create op gets an automatic `$0`, `$1`, etc. ref by its position in the array.
+
+```bash
+curl -s -X POST "${STORYBOARD_SERVER_URL}/_storyboard/canvas/batch" \
+  -H "Content-Type: application/json" \
+  -d "{\"name\":\"${STORYBOARD_CANVAS_ID}\",\"operations\":[
+    {\"op\":\"create-widget\",\"type\":\"sticky-note\",\"position\":{\"x\":100,\"y\":200},\"props\":{\"text\":\"A\"}},
+    {\"op\":\"create-widget\",\"type\":\"sticky-note\",\"position\":{\"x\":400,\"y\":200},\"props\":{\"text\":\"B\"}},
+    {\"op\":\"update-widget\",\"widgetId\":\"\$0\",\"props\":{\"text\":\"Updated A\"}},
+    {\"op\":\"create-connector\",\"startWidgetId\":\"${STORYBOARD_WIDGET_ID}\",\"endWidgetId\":\"\$0\",\"startAnchor\":\"right\",\"endAnchor\":\"left\"},
+    {\"op\":\"create-connector\",\"startWidgetId\":\"${STORYBOARD_WIDGET_ID}\",\"endWidgetId\":\"\$1\",\"startAnchor\":\"right\",\"endAnchor\":\"left\"}
+  ]}"
+```
+
+**Supported ops:** `create-widget`, `update-widget`, `move-widget`, `delete-widget`, `create-connector`, `delete-connector`
+
+**CLI equivalent:**
+```bash
+npx storyboard canvas batch --canvas <canvas-name> --ops '[...]'
+npx storyboard canvas batch --canvas <canvas-name> --ops-file ops.json
+```
+
+### Safe: Create a widget (POST)
+```bash
+curl -s -X POST "${STORYBOARD_SERVER_URL}/_storyboard/canvas/widget" \
+  -H "Content-Type: application/json" \
+  -d "{\"name\":\"${STORYBOARD_CANVAS_ID}\",\"type\":\"sticky-note\",\"position\":{\"x\":100,\"y\":200},\"props\":{\"text\":\"Hello\"}}"
+# Returns: {"success":true,"widget":{"id":"sticky-note-abc123","type":"sticky-note","position":{"x":100,"y":200},"props":{...}}}
+```
+
+### Safe: Update a single widget (PATCH)
+```bash
+curl -s -X PATCH "${STORYBOARD_SERVER_URL}/_storyboard/canvas/widget" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"<canvasId>","widgetId":"<widgetId>","props":{"text":"new value"}}'
+```
+
+### Safe: Read canvas state (GET)
+```bash
+curl -s "${STORYBOARD_SERVER_URL}/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}"
+# Returns: {"widgets":[...],"connectors":[...],"settings":{...}}
+# Parse with jq, NOT Python:
+curl -s "${STORYBOARD_SERVER_URL}/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | jq '.widgets[] | select(.id == "my-widget-id") | .position'
+```
+
+### ⚠️ NEVER use `PUT /_storyboard/canvas/update` with a `widgets` array
+That endpoint **replaces ALL widgets** in the canvas. Sending one widget = deleting everything else.
