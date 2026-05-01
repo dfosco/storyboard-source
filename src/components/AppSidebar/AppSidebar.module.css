@@ -1,18 +1,23 @@
-.navItem {
-  all: unset;
-  display: block;
-  width: 100%;
-  padding: 6px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.15s ease;
-  box-sizing: border-box;
+.sidebar {
+  padding: 16px;
+  border: 1px solid var(--borderColor-default, var(--color-border-default));
+  border-radius: 12px;
+  background-color: var(--bgColor-default, var(--color-canvas-default));
 }
 
-.navItem:hover {
-  background-color: var(--rs-color-background-neutral-faded);
+.divider {
+  border: none;
+  border-top: 1px solid var(--borderColor-muted, var(--color-border-muted));
+  margin: 8px 0;
 }
 
-.active {
-  background-color: var(--rs-color-background-neutral-faded);
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 4px;
+}
+
+.faded {
+  color: var(--fgColor-muted, var(--color-fg-muted));
 }

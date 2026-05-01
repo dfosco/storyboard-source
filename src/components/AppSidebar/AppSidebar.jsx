@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { Card, Divider, Text, View } from 'reshaped'
+import { ActionList, Text } from '@primer/react'
 import styles from './AppSidebar.module.css'
 
 const navItems = [
@@ -13,38 +13,33 @@ export default function AppSidebar({ orgName, activePage, userInfo }) {
   const navigate = useNavigate()
 
   return (
-    <Card padding={4}>
-      <View direction="column" gap={2}>
-        <Text variant="featured-3" weight="bold">
-          {orgName || '—'}
-        </Text>
-        <Divider />
-        <nav>
-          <View direction="column" gap={0}>
-            {navItems.map((item) => (
-              <button
-                key={item.label}
-                type="button"
-                className={`${styles.navItem} ${activePage === item.label ? styles.active : ''}`}
-                onClick={() => navigate(item.path)}
-              >
-                <Text variant="body-3" weight={activePage === item.label ? 'bold' : 'regular'}>
-                  {item.label}
-                </Text>
-              </button>
-            ))}
-          </View>
-        </nav>
-        {userInfo && (
-          <>
-            <Divider />
-            <View direction="column" gap={1} paddingTop={1}>
-              <Text variant="caption-1" color="neutral-faded">{userInfo.name || '—'}</Text>
-              <Text variant="caption-1" color="neutral-faded">{userInfo.role || '—'}</Text>
-            </View>
-          </>
-        )}
-      </View>
-    </Card>
+    <div className={styles.sidebar}>
+      <Text as="p" size="large" weight="bold">
+        {orgName || '—'}
+      </Text>
+      <hr className={styles.divider} />
+      <nav>
+        <ActionList>
+          {navItems.map((item) => (
+            <ActionList.Item
+              key={item.label}
+              active={activePage === item.label}
+              onSelect={() => navigate(item.path)}
+            >
+              {item.label}
+            </ActionList.Item>
+          ))}
+        </ActionList>
+      </nav>
+      {userInfo && (
+        <>
+          <hr className={styles.divider} />
+          <div className={styles.userInfo}>
+            <Text as="p" size="small" className={styles.faded}>{userInfo.name || '—'}</Text>
+            <Text as="p" size="small" className={styles.faded}>{userInfo.role || '—'}</Text>
+          </div>
+        </>
+      )}
+    </div>
   )
 }

@@ -1,50 +1,33 @@
-import {
-  Badge,
-  Calendar,
-  Card,
-  Checkbox,
-  Divider,
-  Progress,
-  Reshaped,
-  Text,
-  View,
-} from 'reshaped'
-import 'reshaped/themes/reshaped/theme.css'
-import 'reshaped/themes/reshaped/media.css'
+import { Label, ProgressBar, Text, Checkbox as PrimerCheckbox } from '@primer/react'
 import { useFlowData } from '@dfosco/storyboard-react'
 import AppSidebar from '@/components/AppSidebar/AppSidebar.jsx'
+import styles from './Dashboard.module.css'
 
 function display(v) {
   if (v == null || v === '') return '—'
   return String(v)
 }
 
-function StatCard({ label, value, change, color }) {
+function StatCard({ label, value, change, accent }) {
   return (
-    <Card padding={5}>
-      <View direction="column" gap={2}>
-        <Text variant="body-3" color="neutral-faded">{label}</Text>
-        <Text variant="featured-2" weight="bold">{value}</Text>
-        <Text variant="caption-1" color={color || 'positive'}>{change}</Text>
-      </View>
-    </Card>
+    <div className={styles.card}>
+      <Text as="p" size="small" className={styles.muted}>{label}</Text>
+      <Text as="p" size="large" weight="bold">{value}</Text>
+      <Text as="p" size="small" className={accent ? styles.accent : styles.muted}>{change}</Text>
+    </div>
   )
 }
 
-function MetricRow({ label, value, max, color }) {
+function MetricRow({ label, value, max }) {
+  const pct = typeof max === 'number' ? (parseFloat(value) / max) * 100 : parseFloat(value)
   return (
-    <View direction="column" gap={1}>
-      <View direction="row" justify="space-between">
-        <Text variant="body-3">{label}</Text>
-        <Text variant="body-3" weight="medium">{value}</Text>
-      </View>
-      <Progress
-        value={typeof max === 'number' ? (parseFloat(value) / max) * 100 : parseFloat(value)}
-        color={color}
-        size="small"
-        attributes={{ 'aria-label': label }}
-      />
-    </View>
+    <div className={styles.metricRow}>
+      <div className={styles.metricHeader}>
+        <Text as="span" size="small">{label}</Text>
+        <Text as="span" size="small" weight="semibold">{value}</Text>
+      </div>
+      <ProgressBar progress={pct} aria-label={label} />
+    </div>
   )
 }
 
@@ -65,115 +48,88 @@ export default function Dashboard() {
   const plan = useFlowData('signup.workspace.plan')
 
   return (
-    <Reshaped defaultTheme="reshaped" defaultColorMode="dark">
-      <View backgroundColor="page" minHeight="100vh" padding={12}>
-        <View direction="row" align="start" gap={8} wrap="no-wrap">
+    <div className={styles.page}>
+      <div className={styles.layout}>
 
-          {/* Sidebar */}
-          <View.Item columns={2}>
-            <AppSidebar
-              orgName={display(orgName)}
-              activePage="Overview"
-              userInfo={{ name: display(fullName), role: display(role) }}
-            />
-          </View.Item>
+        {/* Sidebar */}
+        <aside className={styles.sidebar}>
+          <AppSidebar
+            orgName={display(orgName)}
+            activePage="Overview"
+            userInfo={{ name: display(fullName), role: display(role) }}
+          />
+        </aside>
 
-          {/* Main content */}
-          <View.Item columns={10} direction="column" align="center" justify="center">
-            <View direction="column" maxWidth="80%" gap={4}>
+        {/* Main content */}
+        <main className={styles.main}>
 
-              {/* Top bar */}
-              <View direction="row" justify="space-between" align="center">
-                <Text variant="featured-2" weight="bold">Overview</Text>
-                <View direction="row" gap={2} align="center">
-                  <Badge color="positive">{display(plan)} plan</Badge>
-                  <Badge variant="faded">{display(region)}</Badge>
-                </View>
-              </View>
+          {/* Top bar */}
+          <div className={styles.topBar}>
+            <Text as="h1" size="large" weight="bold">Overview</Text>
+            <div className={styles.badges}>
+              <Label variant="accent">{display(plan)} plan</Label>
+              <Label>{display(region)}</Label>
+            </div>
+          </div>
 
-              {/* Stat cards row */}
-              <View direction="row" gap={3}>
-                <View.Item columns={3}>
-                  <StatCard label="Active Users" value="0" change="No data yet" color="neutral-faded" />
-                </View.Item>
-                <View.Item columns={3}>
-                  <StatCard label="Deployments" value="0" change="No data yet" color="neutral-faded" />
-                </View.Item>
-                <View.Item columns={3}>
-                  <StatCard label="New Members" value="1" change="That's you!" color="primary" />
-                </View.Item>
-                <View.Item columns={3}>
-                  <StatCard
-                    label="Team Size"
-                    value={display(orgSize)}
-                    change="Current plan capacity"
-                    color="primary"
-                  />
-                </View.Item>
-              </View>
+          {/* Stat cards row */}
+          <div className={styles.statsGrid}>
+            <StatCard label="Active Users" value="0" change="No data yet" />
+            <StatCard label="Deployments" value="0" change="No data yet" />
+            <StatCard label="New Members" value="1" change="That's you!" accent />
+            <StatCard label="Team Size" value={display(orgSize)} change="Current plan capacity" accent />
+          </div>
 
-              {/* Second row: Calendar + Schedule | Metrics */}
-              <View direction="row" gap={4}>
+          {/* Second row */}
+          <div className={styles.secondRow}>
 
-                {/* Calendar + Schedule */}
-                <View.Item columns={5}>
-                  <View direction="column" gap={4}>
-                    <Card padding={4}>
-                      <Calendar />
-                    </Card>
-                    <Card padding={5}>
-                      <View direction="column" gap={3}>
-                        <Text variant="body-2" weight="bold">Schedule</Text>
-                        <View direction="column" gap={2}>
-                          {schedule.map((item) => (
-                            <Checkbox key={item.label} name={`schedule-${item.label}`}>
-                              <View direction="column">
-                                <Text variant="body-3">{item.label}</Text>
-                                <Text variant="caption-1" color="neutral-faded">{item.time}</Text>
-                              </View>
-                            </Checkbox>
-                          ))}
-                        </View>
-                      </View>
-                    </Card>
-                  </View>
-                </View.Item>
+            {/* Schedule */}
+            <div className={styles.scheduleCol}>
+              <div className={styles.card}>
+                <Text as="h2" size="medium" weight="bold">Schedule</Text>
+                <div className={styles.scheduleList}>
+                  {schedule.map((item) => (
+                    <label key={item.label} className={styles.scheduleItem}>
+                      <PrimerCheckbox />
+                      <span>
+                        <Text as="span" size="small">{item.label}</Text>
+                        <br />
+                        <Text as="span" size="small" className={styles.muted}>{item.time}</Text>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
 
-                {/* Metrics + Articles */}
-                <View.Item grow>
-                  <View direction="column" gap={4}>
-                    <Card padding={5}>
-                      <View direction="column" gap={4}>
-                        <Text variant="body-2" weight="bold">Metrics</Text>
-                        <MetricRow label="Performance" value="0" max={100} color="neutral-faded" />
-                        <MetricRow label="Monthly revenue goal" value="0" max={100} color="neutral-faded" />
-                        <MetricRow label="Error rate" value="0" max={100} color="neutral-faded" />
-                        <MetricRow label="User acquisition" value="0" max={100} color="neutral-faded" />
-                        <MetricRow label="Releases shipped" value="0" max={100} color="neutral-faded" />
-                      </View>
-                    </Card>
+            {/* Metrics + Activity */}
+            <div className={styles.metricsCol}>
+              <div className={styles.card}>
+                <Text as="h2" size="medium" weight="bold">Metrics</Text>
+                <div className={styles.metricsList}>
+                  <MetricRow label="Performance" value="0" max={100} />
+                  <MetricRow label="Monthly revenue goal" value="0" max={100} />
+                  <MetricRow label="Error rate" value="0" max={100} />
+                  <MetricRow label="User acquisition" value="0" max={100} />
+                  <MetricRow label="Releases shipped" value="0" max={100} />
+                </div>
+              </div>
 
-                    <Card padding={5}>
-                      <View direction="column" gap={3}>
-                        <Text variant="body-2" weight="bold">Recent activity</Text>
-                        <Divider />
-                        <View direction="column" gap={4} align="center" paddingBlock={6}>
-                          <Text variant="body-3" color="neutral-faded">No activity yet</Text>
-                          <Text variant="caption-1" color="neutral-faded">
-                            Deployments and events will appear here once your workspace is active.
-                          </Text>
-                        </View>
-                      </View>
-                    </Card>
-                  </View>
-                </View.Item>
-              </View>
+              <div className={styles.card}>
+                <Text as="h2" size="medium" weight="bold">Recent activity</Text>
+                <hr className={styles.divider} />
+                <div className={styles.emptyState}>
+                  <Text as="p" size="small" className={styles.muted}>No activity yet</Text>
+                  <Text as="p" size="small" className={styles.muted}>
+                    Deployments and events will appear here once your workspace is active.
+                  </Text>
+                </div>
+              </div>
+            </div>
+          </div>
 
-            </View>
-          </View.Item>
-
-        </View>
-      </View>
-    </Reshaped>
+        </main>
+      </div>
+    </div>
   )
 }

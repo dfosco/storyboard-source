@@ -1,20 +1,8 @@
 import { useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  Button,
-  Card,
-  Checkbox,
-  FormControl,
-  Reshaped,
-  Select,
-  Stepper,
-  Text,
-  TextField,
-  View,
-} from 'reshaped'
-import 'reshaped/themes/reshaped/theme.css'
-import 'reshaped/themes/reshaped/media.css'
+import { Button, FormControl, TextInput, Select, Checkbox, Text } from '@primer/react'
 import { useOverride } from '@dfosco/storyboard-react'
+import styles from './Signup.module.css'
 
 const steps = ['Account', 'Organization', 'Workspace', 'Review']
 
@@ -30,15 +18,17 @@ function asBoolean(value) {
  * Uncontrolled text field that only persists to the hash on blur.
  * Uses key={defaultValue} to reset when navigating back to a step.
  */
-function BlurTextField({ name, defaultValue, onCommit, ...props }) {
+function BlurTextField({ name, defaultValue, onCommit, type = 'text', placeholder }) {
   const ref = useRef(defaultValue)
   return (
-    <TextField
+    <TextInput
       name={name}
+      type={type}
       defaultValue={defaultValue}
-      onChange={({ value }) => { ref.current = value }}
+      placeholder={placeholder}
+      onChange={(e) => { ref.current = e.target.value }}
       onBlur={() => onCommit(ref.current)}
-      {...props}
+      block
     />
   )
 }
@@ -153,39 +143,30 @@ export default function Signup() {
   }
 
   return (
-    <Reshaped defaultTheme="reshaped" defaultColorMode="dark">
-    <View
-      backgroundColor="page"
-      minHeight="100vh"
-      padding={6}
-      align="center"
-      justify="center"
-    >
-      <View maxWidth="560px" width="100%" direction="column" gap={6}>
-        <View direction="column" gap={2}>
-          <Text variant="featured-1" weight="bold">Create your cloud account</Text>
-          <Text variant="body-2" color="neutral-faded">
+    <div className={styles.page}>
+      <div className={styles.container}>
+        <header className={styles.header}>
+          <Text as="h1" size="large" weight="bold">Create your cloud account</Text>
+          <Text as="p" className={styles.subtitle}>
             Complete the onboarding flow to configure your account and organization.
           </Text>
-        </View>
+        </header>
 
-        <Stepper activeId={String(stepIndex)}>
+        {/* Step indicator */}
+        <nav className={styles.stepper}>
           {steps.map((title, index) => (
-            <Stepper.Item
-              key={title}
-              id={String(index)}
-              title={title}
-              completed={index < stepIndex}
-              subtitle={`Step ${index + 1}`}
-            />
+            <div key={title} className={`${styles.step} ${index === stepIndex ? styles.stepActive : ''} ${index < stepIndex ? styles.stepDone : ''}`}>
+              <span className={styles.stepNumber}>{index < stepIndex ? '✓' : index + 1}</span>
+              <span className={styles.stepLabel}>{title}</span>
+            </div>
           ))}
-        </Stepper>
+        </nav>
 
-        <Card padding={6}>
-          <View direction="column" gap={5}>
+        <div className={styles.card}>
+          <div className={styles.fields}>
             {stepIndex === 0 && (
               <>
-                <FormControl hasError={!!errors.fullName}>
+                <FormControl>
                   <FormControl.Label>Full name</FormControl.Label>
                   <BlurTextField
                     name="fullName"
@@ -193,10 +174,10 @@ export default function Signup() {
                     placeholder="Jane Doe"
                     onCommit={setFullName}
                   />
-                  {errors.fullName && <FormControl.Error>{errors.fullName}</FormControl.Error>}
+                  {errors.fullName && <FormControl.Validation variant="error">{errors.fullName}</FormControl.Validation>}
                 </FormControl>
 
-                <FormControl hasError={!!errors.email}>
+                <FormControl>
                   <FormControl.Label>Email</FormControl.Label>
                   <BlurTextField
                     name="email"
@@ -204,25 +185,25 @@ export default function Signup() {
                     placeholder="jane@acme.cloud"
                     onCommit={setEmail}
                   />
-                  {errors.email && <FormControl.Error>{errors.email}</FormControl.Error>}
+                  {errors.email && <FormControl.Validation variant="error">{errors.email}</FormControl.Validation>}
                 </FormControl>
 
-                <FormControl hasError={!!errors.password}>
+                <FormControl>
                   <FormControl.Label>Password</FormControl.Label>
                   <BlurTextField
                     name="password"
                     defaultValue={values.password}
                     onCommit={setPassword}
-                    inputAttributes={{ type: 'password' }}
+                    type="password"
                   />
-                  {errors.password && <FormControl.Error>{errors.password}</FormControl.Error>}
+                  {errors.password && <FormControl.Validation variant="error">{errors.password}</FormControl.Validation>}
                 </FormControl>
               </>
             )}
 
             {stepIndex === 1 && (
               <>
-                <FormControl hasError={!!errors.orgName}>
+                <FormControl>
                   <FormControl.Label>Organization name</FormControl.Label>
                   <BlurTextField
                     name="orgName"
@@ -230,140 +211,115 @@ export default function Signup() {
                     placeholder="Acme Cloud"
                     onCommit={setOrgName}
                   />
-                  {errors.orgName && <FormControl.Error>{errors.orgName}</FormControl.Error>}
+                  {errors.orgName && <FormControl.Validation variant="error">{errors.orgName}</FormControl.Validation>}
                 </FormControl>
 
-                <FormControl hasError={!!errors.orgSize}>
+                <FormControl>
                   <FormControl.Label>Organization size</FormControl.Label>
-                  <Select name="orgSize" value={values.orgSize} placeholder="Select size" onChange={({ value }) => setOrgSize(value)}>
-                    <option value="1-10">1–10 employees</option>
-                    <option value="11-50">11–50 employees</option>
-                    <option value="51-250">51–250 employees</option>
-                    <option value="251+">251+ employees</option>
+                  <Select value={values.orgSize} onChange={(e) => setOrgSize(e.target.value)}>
+                    <Select.Option value="">Select size</Select.Option>
+                    <Select.Option value="1-10">1–10 employees</Select.Option>
+                    <Select.Option value="11-50">11–50 employees</Select.Option>
+                    <Select.Option value="51-250">51–250 employees</Select.Option>
+                    <Select.Option value="251+">251+ employees</Select.Option>
                   </Select>
-                  {errors.orgSize && <FormControl.Error>{errors.orgSize}</FormControl.Error>}
+                  {errors.orgSize && <FormControl.Validation variant="error">{errors.orgSize}</FormControl.Validation>}
                 </FormControl>
 
-                <FormControl hasError={!!errors.role}>
+                <FormControl>
                   <FormControl.Label>Your role</FormControl.Label>
-                  <Select name="role" value={values.role} placeholder="Select role" onChange={({ value }) => setRole(value)}>
-                    <option value="founder">Founder</option>
-                    <option value="engineering-manager">Engineering Manager</option>
-                    <option value="developer">Developer</option>
-                    <option value="platform-admin">Platform Admin</option>
+                  <Select value={values.role} onChange={(e) => setRole(e.target.value)}>
+                    <Select.Option value="">Select role</Select.Option>
+                    <Select.Option value="founder">Founder</Select.Option>
+                    <Select.Option value="engineering-manager">Engineering Manager</Select.Option>
+                    <Select.Option value="developer">Developer</Select.Option>
+                    <Select.Option value="platform-admin">Platform Admin</Select.Option>
                   </Select>
-                  {errors.role && <FormControl.Error>{errors.role}</FormControl.Error>}
+                  {errors.role && <FormControl.Validation variant="error">{errors.role}</FormControl.Validation>}
                 </FormControl>
               </>
             )}
 
             {stepIndex === 2 && (
               <>
-                <FormControl hasError={!!errors.region}>
+                <FormControl>
                   <FormControl.Label>Primary region</FormControl.Label>
-                  <Select name="region" value={values.region} placeholder="Select region" onChange={({ value }) => setRegion(value)}>
-                    <option value="us-east-1">US East</option>
-                    <option value="us-west-2">US West</option>
-                    <option value="eu-west-1">EU West</option>
-                    <option value="ap-southeast-1">AP Southeast</option>
+                  <Select value={values.region} onChange={(e) => setRegion(e.target.value)}>
+                    <Select.Option value="">Select region</Select.Option>
+                    <Select.Option value="us-east-1">US East</Select.Option>
+                    <Select.Option value="us-west-2">US West</Select.Option>
+                    <Select.Option value="eu-west-1">EU West</Select.Option>
+                    <Select.Option value="ap-southeast-1">AP Southeast</Select.Option>
                   </Select>
-                  {errors.region && <FormControl.Error>{errors.region}</FormControl.Error>}
+                  {errors.region && <FormControl.Validation variant="error">{errors.region}</FormControl.Validation>}
                 </FormControl>
 
-                <FormControl hasError={!!errors.plan}>
+                <FormControl>
                   <FormControl.Label>Starting plan</FormControl.Label>
-                  <Select name="plan" value={values.plan} onChange={({ value }) => setPlan(value)}>
-                    <option value="starter">Starter</option>
-                    <option value="growth">Growth</option>
-                    <option value="enterprise">Enterprise</option>
+                  <Select value={values.plan} onChange={(e) => setPlan(e.target.value)}>
+                    <Select.Option value="starter">Starter</Select.Option>
+                    <Select.Option value="growth">Growth</Select.Option>
+                    <Select.Option value="enterprise">Enterprise</Select.Option>
                   </Select>
-                  {errors.plan && <FormControl.Error>{errors.plan}</FormControl.Error>}
+                  {errors.plan && <FormControl.Validation variant="error">{errors.plan}</FormControl.Validation>}
                 </FormControl>
 
-                <Checkbox
-                  name="newsletter"
-                  checked={values.newsletter}
-                  onChange={({ checked }) => setNewsletter(checked ? 'true' : 'false')}
-                >
-                  Email me product updates and onboarding tips
-                </Checkbox>
-
-                <FormControl hasError={!!errors.agreeTerms}>
+                <FormControl>
                   <Checkbox
-                    name="agreeTerms"
+                    checked={values.newsletter}
+                    onChange={(e) => setNewsletter(e.target.checked ? 'true' : 'false')}
+                  />
+                  <FormControl.Label>Email me product updates and onboarding tips</FormControl.Label>
+                </FormControl>
+
+                <FormControl>
+                  <Checkbox
                     checked={values.agreeTerms}
-                    onChange={({ checked }) => setAgreeTerms(checked ? 'true' : 'false')}
-                  >
-                    I agree to the Terms of Service and Privacy Policy
-                  </Checkbox>
-                  {errors.agreeTerms && <FormControl.Error>{errors.agreeTerms}</FormControl.Error>}
+                    onChange={(e) => setAgreeTerms(e.target.checked ? 'true' : 'false')}
+                  />
+                  <FormControl.Label>I agree to the Terms of Service and Privacy Policy</FormControl.Label>
+                  {errors.agreeTerms && <FormControl.Validation variant="error">{errors.agreeTerms}</FormControl.Validation>}
                 </FormControl>
               </>
             )}
 
             {stepIndex === 3 && (
-              <View direction="column" gap={4}>
-                <Text variant="featured-3" weight="bold">Review your configuration</Text>
-                <View direction="column" gap={3}>
-                  <View direction="row" align="center">
-                    <View.Item columns={4}><Text variant="body-3" color="neutral-faded">Name</Text></View.Item>
-                    <View.Item grow><Text variant="body-2">{values.fullName}</Text></View.Item>
-                  </View>
-                  <View direction="row" align="center">
-                    <View.Item columns={4}><Text variant="body-3" color="neutral-faded">Email</Text></View.Item>
-                    <View.Item grow><Text variant="body-2">{values.email}</Text></View.Item>
-                  </View>
-                  <View direction="row" align="center">
-                    <View.Item columns={4}><Text variant="body-3" color="neutral-faded">Organization</Text></View.Item>
-                    <View.Item grow><Text variant="body-2">{values.orgName}</Text></View.Item>
-                  </View>
-                  <View direction="row" align="center">
-                    <View.Item columns={4}><Text variant="body-3" color="neutral-faded">Team size</Text></View.Item>
-                    <View.Item grow><Text variant="body-2">{values.orgSize}</Text></View.Item>
-                  </View>
-                  <View direction="row" align="center">
-                    <View.Item columns={4}><Text variant="body-3" color="neutral-faded">Role</Text></View.Item>
-                    <View.Item grow><Text variant="body-2">{values.role}</Text></View.Item>
-                  </View>
-                  <View direction="row" align="center">
-                    <View.Item columns={4}><Text variant="body-3" color="neutral-faded">Region</Text></View.Item>
-                    <View.Item grow><Text variant="body-2">{values.region}</Text></View.Item>
-                  </View>
-                  <View direction="row" align="center">
-                    <View.Item columns={4}><Text variant="body-3" color="neutral-faded">Plan</Text></View.Item>
-                    <View.Item grow><Text variant="body-2">{values.plan}</Text></View.Item>
-                  </View>
-                  <View direction="row" align="center">
-                    <View.Item columns={4}><Text variant="body-3" color="neutral-faded">Newsletter</Text></View.Item>
-                    <View.Item grow><Text variant="body-2">{values.newsletter ? 'Yes' : 'No'}</Text></View.Item>
-                  </View>
-                </View>
-              </View>
+              <div className={styles.review}>
+                <Text as="h2" weight="bold">Review your configuration</Text>
+                <dl className={styles.reviewList}>
+                  {[
+                    ['Name', values.fullName],
+                    ['Email', values.email],
+                    ['Organization', values.orgName],
+                    ['Team size', values.orgSize],
+                    ['Role', values.role],
+                    ['Region', values.region],
+                    ['Plan', values.plan],
+                    ['Newsletter', values.newsletter ? 'Yes' : 'No'],
+                  ].map(([label, val]) => (
+                    <div key={label} className={styles.reviewRow}>
+                      <dt className={styles.reviewLabel}>{label}</dt>
+                      <dd className={styles.reviewValue}>{val}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
             )}
 
-            <View direction="row" justify="end" gap={3}>
+            <div className={styles.actions}>
               {stepIndex > 0 && (
-                <Button variant="ghost" onClick={goBack}>
-                  Back
-                </Button>
+                <Button variant="invisible" onClick={goBack}>Back</Button>
               )}
-
               {stepIndex < 3 && (
-                <Button color="primary" onClick={goNext}>
-                  Continue
-                </Button>
+                <Button variant="primary" onClick={goNext}>Continue</Button>
               )}
-
               {stepIndex === 3 && (
-                <Button color="primary" onClick={completeSignup}>
-                  Create account
-                </Button>
+                <Button variant="primary" onClick={completeSignup}>Create account</Button>
               )}
-            </View>
-          </View>
-        </Card>
-      </View>
-    </View>
-    </Reshaped>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }

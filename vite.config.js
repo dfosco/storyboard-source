@@ -69,7 +69,7 @@ export default defineConfig(() => {
             '@dfosco/storyboard-react/hooks/useFeatureFlag': path.resolve(__dirname, 'packages/react/src/hooks/useFeatureFlag.js'),
             '@dfosco/storyboard-react': path.resolve(__dirname, 'packages/react/src/index.js'),
             '@dfosco/storyboard-react-primer': path.resolve(__dirname, 'packages/react-primer/src/index.js'),
-            '@dfosco/storyboard-react-reshaped': path.resolve(__dirname, 'packages/react-reshaped/src/index.js'),
+
             '@dfosco/tiny-canvas/style.css': path.resolve(__dirname, 'packages/tiny-canvas/src/style.css'),
             '@dfosco/tiny-canvas': path.resolve(__dirname, 'packages/tiny-canvas/src/index.js'),
         },
@@ -140,7 +140,7 @@ export default defineConfig(() => {
         },
     },
     optimizeDeps: {
-        include: ['reshaped', '@primer/react', '@primer/octicons-react', 'use-sync-external-store/shim', 'use-sync-external-store/shim/with-selector'],
+        include: ['@primer/react', '@primer/octicons-react', 'use-sync-external-store/shim', 'use-sync-external-store/shim/with-selector'],
     },
     esbuild: {
         // Preserve function names so the storyboard inspector shows
@@ -168,7 +168,7 @@ export default defineConfig(() => {
                     'vendor-react': ['react', 'react-dom', 'react-router-dom'],
                     'vendor-primer': ['@primer/react'],
                     'vendor-octicons': ['@primer/octicons-react'],
-                    'vendor-reshaped': ['reshaped'],
+
                 },
             },
         },
