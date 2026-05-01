@@ -199,6 +199,15 @@ document.documentElement.setAttribute('data-color-mode', theme.startsWith('dark'
 document.documentElement.setAttribute('data-dark-theme', theme.startsWith('dark') ? theme : '')
 document.documentElement.setAttribute('data-light-theme', theme.startsWith('dark') ? '' : theme || 'light')
 
+// Suppress HMR full-reloads — this iframe is embedded inside a canvas page
+// that manages its own reload lifecycle. Without this guard, every file change
+// causes the iframe to flash/reload.
+if (import.meta.hot) {
+  const msg = { active: true }
+  import.meta.hot.send('storyboard:canvas-hmr-guard', msg)
+  setInterval(() => import.meta.hot.send('storyboard:canvas-hmr-guard', msg), 3000)
+}
+
 const root = createRoot(document.getElementById('root'))
 
 async function mount() {
