@@ -65,7 +65,7 @@
  * @property {number}  [default_max_pool_size] — default surge cap per pool (default: 3)
  * @property {boolean} [load_balancer] — enable auto-scaling (default: true)
  * @property {number}  [load_balancer_cooldown_mins] — minutes idle before scale-down (default: 10)
- * @property {Record<string, { pool_size?: number, max_pool_size?: number }>} [pools] — per-pool overrides (terminal, prompt, copilot, claude, codex)
+ * @property {Record<string, { pool_size?: number, max_pool_size?: number, webgl_ready_slots?: number }>} [pools] — per-pool overrides (terminal, prompt, copilot, claude, codex). webgl_ready_slots: how many front-of-queue sessions should start with PINNED WebGL priority (default: 0)
  */
 
 /**

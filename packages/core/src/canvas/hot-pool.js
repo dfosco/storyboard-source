@@ -81,6 +81,7 @@ export class HotPool {
   #healthTimer = null
   #prereqsAvailable = null
   #wsSend = null
+  #webglReadySlots = 0
 
   // Agent config (null for bare shell pools)
   #agentConfig = null
@@ -100,7 +101,7 @@ export class HotPool {
   constructor({ root, poolId = 'terminal', config = {}, agentConfig = null, wsSend = null }) {
     this.#root = root
     this.#poolId = poolId
-    this.#poolSize = Math.max(1, config.pool_size ?? DEFAULT_POOL_SIZE)
+    this.#poolSize = Math.max(0, config.pool_size ?? DEFAULT_POOL_SIZE)
     this.#maxPoolSize = Math.max(this.#poolSize, config.max_pool_size ?? DEFAULT_MAX_POOL_SIZE)
     this.#cooldownMs = (config.load_balancer_cooldown_mins ?? DEFAULT_COOLDOWN_MINS) * 60_000
     this.#enabled = config.enabled !== false
@@ -108,6 +109,7 @@ export class HotPool {
     this.#loadBalancer = config.load_balancer !== false
     this.#wsSend = wsSend
     this.#agentConfig = agentConfig
+    this.#webglReadySlots = Math.max(0, config.webgl_ready_slots ?? 0)
   }
 
   get poolId() { return this.#poolId }
@@ -177,8 +179,12 @@ export class HotPool {
       return null
     }
 
+    // Session is WebGL-ready if its queue position was within webgl_ready_slots
+    const webglReady = this.#webglReadySlots > 0 && idx < this.#webglReadySlots
+
     const session = this.#queue.splice(idx, 1)[0]
     session.state = 'acquired'
+    session.webglReady = webglReady
     this.#acquired.set(session.id, session)
     const age = ((Date.now() - session.createdAt) / 1000).toFixed(1)
     const readyCount = this.#queue.filter(s => s.state === 'ready').length
@@ -186,10 +192,10 @@ export class HotPool {
     // Scale-up: queue drained to 0 ready → enter pressure mode
     if (readyCount === 0 && !this.#pressured) {
       this.#pressured = true
-      this.#log(`→ ACQUIRED ${session.id} tmux=${session.tmuxName} (age: ${age}s) — ⚡ PRESSURE ON (scaling to max_pool_size=${this.#maxPoolSize})`)
+      this.#log(`→ ACQUIRED ${session.id} tmux=${session.tmuxName} (age: ${age}s, webglReady: ${webglReady}) — ⚡ PRESSURE ON (scaling to max_pool_size=${this.#maxPoolSize})`)
       this.#resetCooldown()
     } else {
-      this.#log(`→ ACQUIRED ${session.id} tmux=${session.tmuxName} (age: ${age}s, queue: ${readyCount}/${this.#fillTarget})`)
+      this.#log(`→ ACQUIRED ${session.id} tmux=${session.tmuxName} (age: ${age}s, webglReady: ${webglReady}, queue: ${readyCount}/${this.#fillTarget})`)
       this.#resetCooldown()
     }
 
@@ -237,6 +243,7 @@ export class HotPool {
         load_balancer: this.#loadBalancer,
         load_balancer_cooldown_mins: this.#cooldownMs / 60_000,
         verbose: this.#verbose,
+        webgl_ready_slots: this.#webglReadySlots,
       },
       agentConfig: this.#agentConfig ? {
         startupCommand: this.#agentConfig.startupCommand,
@@ -254,10 +261,11 @@ export class HotPool {
   }
 
   reconfigure(config) {
-    if (config.max_pool_size !== undefined) this.#maxPoolSize = Math.max(1, config.max_pool_size)
+    if (config.max_pool_size !== undefined) this.#maxPoolSize = Math.max(0, config.max_pool_size)
     if (config.load_balancer_cooldown_mins !== undefined) this.#cooldownMs = config.load_balancer_cooldown_mins * 60_000
     if (config.load_balancer !== undefined) this.#loadBalancer = !!config.load_balancer
-    const newSize = Math.min(Math.max(1, config.pool_size ?? this.#poolSize), this.#maxPoolSize)
+    if (config.webgl_ready_slots !== undefined) this.#webglReadySlots = Math.max(0, config.webgl_ready_slots)
+    const newSize = Math.min(Math.max(0, config.pool_size ?? this.#poolSize), this.#maxPoolSize)
     const newEnabled = config.enabled !== false
     if (config.verbose !== undefined) this.#verbose = !!config.verbose
 
@@ -644,6 +652,7 @@ export class HotPoolManager {
       load_balancer: config.load_balancer !== false,
       enabled: this.#enabled,
       verbose: !!config.verbose,
+      webgl_ready_slots: poolsConfig[poolId]?.webgl_ready_slots ?? 0,
     })
 
     // Terminal pool (bare shells)
@@ -738,6 +747,7 @@ export class HotPoolManager {
         load_balancer: config.load_balancer,
         enabled: config.enabled,
         verbose: config.verbose,
+        webgl_ready_slots: poolsConfig[id]?.webgl_ready_slots,
       }
       pool.reconfigure(poolConfig)
     }

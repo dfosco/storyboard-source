@@ -82,20 +82,21 @@
     "verbose": false,
     "default_pool_size": 1,
     "default_max_pool_size": 3,
-    "load_balancer": true,
+    "load_balancer": false,
     "load_balancer_cooldown_mins": 10,
     "pools": {
       "terminal": {
-        "pool_size": 1
+        "pool_size": 0
       },
       "copilot": {
-        "pool_size": 1
+        "pool_size": 2,
+        "webgl_ready_slots": 1
       },
       "claude": {
-        "pool_size": 1
+        "pool_size": 2
       },
       "codex": {
-        "pool_size": 1
+        "pool_size": 2
       },
       "prompt": {
         "pool_size": 1

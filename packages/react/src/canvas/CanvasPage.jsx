@@ -1087,6 +1087,9 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
         position,
       })
       if (result.success && result.widget) {
+        if (result.hotSession?.webglReady) {
+          result.widget.props = { ...result.widget.props, webglReady: true }
+        }
         setLocalWidgets((prev) => [...(prev || []), result.widget])
         setSelectedWidgetIds(new Set([result.widget.id]))
       }
@@ -1240,6 +1243,9 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
           position,
         })
         if (result.success && result.widget) {
+          if (result.hotSession?.webglReady) {
+            result.widget.props = { ...result.widget.props, webglReady: true }
+          }
           newWidgets.push(result.widget)
         }
       } catch (err) {
@@ -1997,6 +2003,10 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
         position: pos,
       })
       if (result.success && result.widget) {
+        // Hot pool WebGL-ready flag: add to props so TerminalWidget starts PINNED
+        if (result.hotSession?.webglReady) {
+          result.widget.props = { ...result.widget.props, webglReady: true }
+        }
         undoRedo.snapshot(stateRef.current, 'add')
         setLocalWidgets((prev) => [...(prev || []), result.widget])
         setSelectedWidgetIds(new Set([result.widget.id]))
@@ -2472,6 +2482,9 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
               position: { x: baseX + relX, y: baseY + relY },
             })
             if (result.success && result.widget) {
+              if (result.hotSession?.webglReady) {
+                result.widget.props = { ...result.widget.props, webglReady: true }
+              }
               newWidgets.push(result.widget)
             }
           }

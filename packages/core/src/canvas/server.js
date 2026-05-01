@@ -770,7 +770,7 @@ export function createCanvasHandler(ctx) {
         })
 
         const response = { success: true, widget }
-        if (hotSession) response.hotSession = { id: hotSession.id, tmuxName: hotSession.tmuxName || null }
+        if (hotSession) response.hotSession = { id: hotSession.id, tmuxName: hotSession.tmuxName || null, webglReady: !!hotSession.webglReady }
         sendJson(res, 201, response)
         pushCanvasUpdate(name, filePath, __viteWs)
       } catch (err) {
@@ -1334,7 +1334,7 @@ export function createCanvasHandler(ctx) {
                 if (ref) refs[ref] = widgetId
 
                 const result = { index: i, op: 'create-widget', ref: ref || undefined, widgetId, widget }
-                if (hotSession) result.hotSession = { id: hotSession.id, tmuxName: hotSession.tmuxName || null }
+                if (hotSession) result.hotSession = { id: hotSession.id, tmuxName: hotSession.tmuxName || null, webglReady: !!hotSession.webglReady }
                 results.push(result)
                 break
               }

@@ -158,6 +158,14 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
     // Priority for VISIBLE/NEAR/OFFSCREEN is set by CanvasPage via usePoolVisibilityUpdater
   }, [expanded, interactive, setPriority])
 
+  // Hot pool WebGL-ready: start PINNED so the widget gets a live WebGL slot immediately
+  const webglReadyRef = useRef(!!props?.webglReady)
+  useEffect(() => {
+    if (webglReadyRef.current) {
+      setPriority(Priority.PINNED)
+    }
+  }, [setPriority])
+
   // Request activation when user clicks a frozen terminal
   const handleFrozenActivate = useCallback(() => {
     setPriority(Priority.PINNED)
