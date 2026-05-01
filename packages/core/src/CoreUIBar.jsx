@@ -147,6 +147,9 @@ export default function CoreUIBar({ basePath = '/', toolbarConfig, customHandler
   const [visible, setVisible] = useState(
     () => !document.documentElement.classList.contains('storyboard-chrome-hidden')
   )
+  const [completelyHidden, setCompletelyHidden] = useState(
+    () => document.documentElement.classList.contains('storyboard-chrome-completely-hidden')
+  )
   const [toolComponents, setToolComponents] = useState({})
   const [toolData, setToolData] = useState({})
   const [navVersion, setNavVersion] = useState(0)
@@ -338,8 +341,23 @@ export default function CoreUIBar({ basePath = '/', toolbarConfig, customHandler
     setVisible((v) => {
       const next = !v
       document.documentElement.classList.toggle('storyboard-chrome-hidden', !next)
+      // Always clear completely-hidden when toggling via cmd+.
+      document.documentElement.classList.remove('storyboard-chrome-completely-hidden')
       return next
     })
+  }, [])
+
+  const toggleCompletelyHidden = useCallback(() => {
+    const isAnyHidden = document.documentElement.classList.contains('storyboard-chrome-hidden')
+    if (isAnyHidden) {
+      document.documentElement.classList.remove('storyboard-chrome-hidden')
+      document.documentElement.classList.remove('storyboard-chrome-completely-hidden')
+      setVisible(true)
+    } else {
+      document.documentElement.classList.add('storyboard-chrome-hidden')
+      document.documentElement.classList.add('storyboard-chrome-completely-hidden')
+      setVisible(false)
+    }
   }, [])
 
   function showFlowInfoDialog(name, json, error) {
@@ -497,13 +515,15 @@ export default function CoreUIBar({ basePath = '/', toolbarConfig, customHandler
 
     setRoutingBasePath(basePath)
 
-    // Sync visible state when storyboard-chrome-hidden is toggled externally
+    // Sync visible + completelyHidden state when classes are toggled externally
     const chromeObserver = new MutationObserver(() => {
       const hidden = document.documentElement.classList.contains('storyboard-chrome-hidden')
+      const fully = document.documentElement.classList.contains('storyboard-chrome-completely-hidden')
       setVisible((v) => {
         if (v === !hidden) return v
         return !hidden
       })
+      setCompletelyHidden(fully)
     })
     chromeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
 
@@ -690,10 +710,21 @@ export default function CoreUIBar({ basePath = '/', toolbarConfig, customHandler
     function handleKeydown(e) {
       const hideKey = shortcutsConfig.hideChrome?.key || '.'
 
-      if (e.key === hideKey && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault()
-        toggleToolsVisibility()
+      if ((e.metaKey || e.ctrlKey) && !e.shiftKey) {
+        // Alt+Cmd+. — completely hide (use e.code since alt changes e.key on macOS)
+        if (e.altKey && e.code === 'Period') {
+          e.preventDefault()
+          toggleCompletelyHidden()
+          return
+        }
+        // Cmd+. — regular hide/show
+        if (!e.altKey && e.key === hideKey) {
+          e.preventDefault()
+          toggleToolsVisibility()
+          return
+        }
       }
+
       for (const menu of cleanedMenus) {
         const shortcut = menu.shortcut
         if (!shortcut?.key) continue
@@ -711,14 +742,14 @@ export default function CoreUIBar({ basePath = '/', toolbarConfig, customHandler
 
     window.addEventListener('keydown', handleKeydown)
     return () => window.removeEventListener('keydown', handleKeydown)
-  }, [shortcutsConfig, cleanedMenus, toggleToolsVisibility])
+  }, [shortcutsConfig, cleanedMenus, toggleToolsVisibility, toggleCompletelyHidden])
 
   if (isEmbed) return null
 
   return (
     <>
       {/* Canvas toolbar */}
-      {canvasActive && canvasMenus.length > 0 && (
+      {canvasActive && !completelyHidden && canvasMenus.length > 0 && (
         <div
           className="fixed bottom-6 left-6 z-[9999] font-sans flex items-center gap-3"
           role="toolbar"

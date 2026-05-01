@@ -17,6 +17,7 @@ export async function handler() {
         execute: () => {
           const isHidden = document.documentElement.classList.contains('storyboard-chrome-hidden')
           document.documentElement.classList.toggle('storyboard-chrome-hidden', !isHidden)
+          document.documentElement.classList.remove('storyboard-chrome-completely-hidden')
         },
       }]
     },

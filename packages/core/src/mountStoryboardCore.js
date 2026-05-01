@@ -28,6 +28,7 @@ import {
 let _mounted = false
 
 const CHROME_HIDDEN_KEY = 'sb-chrome-hidden'
+const CHROME_COMPLETELY_HIDDEN_KEY = 'sb-chrome-completely-hidden'
 
 /**
  * Migrate localStorage keys renamed in 4.3.0.
@@ -54,20 +55,26 @@ function migrateLocalStorageKeys() {
 function applyEarlyChromeState() {
   if (typeof document === 'undefined' || typeof localStorage === 'undefined') return
   const hidden = localStorage.getItem(CHROME_HIDDEN_KEY) === '1'
+  const completelyHidden = localStorage.getItem(CHROME_COMPLETELY_HIDDEN_KEY) === '1'
   if (hidden) {
     document.documentElement.classList.add('storyboard-chrome-hidden')
+  }
+  if (completelyHidden) {
+    document.documentElement.classList.add('storyboard-chrome-completely-hidden')
   }
 }
 
 /**
- * Watch for changes to the storyboard-chrome-hidden class and persist to
- * localStorage. Works regardless of which code path toggles the class.
+ * Watch for changes to chrome-hidden / chrome-completely-hidden classes
+ * and persist to localStorage. Works regardless of which code path toggles them.
  */
 function installChromeStatePersistence() {
   if (typeof document === 'undefined' || typeof localStorage === 'undefined') return
   const observer = new MutationObserver(() => {
     const hidden = document.documentElement.classList.contains('storyboard-chrome-hidden')
+    const completelyHidden = document.documentElement.classList.contains('storyboard-chrome-completely-hidden')
     localStorage.setItem(CHROME_HIDDEN_KEY, hidden ? '1' : '0')
+    localStorage.setItem(CHROME_COMPLETELY_HIDDEN_KEY, completelyHidden ? '1' : '0')
   })
   observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
 }

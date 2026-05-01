@@ -57,6 +57,31 @@ function AvatarIcon({ username }) {
 }
 
 /**
+ * Alt-reactive label for the "Hide toolbars" command palette item.
+ * Shows "Completely hide toolbars" when alt is held, "Hide toolbars" otherwise.
+ */
+function HideToolbarsLabel({ isHidden }) {
+  const [altHeld, setAltHeld] = useState(false)
+  useEffect(() => {
+    const onKey = (e) => setAltHeld(e.altKey)
+    const onUp = () => setAltHeld(false)
+    document.addEventListener('keydown', onKey, true)
+    document.addEventListener('keyup', onUp, true)
+    return () => {
+      document.removeEventListener('keydown', onKey, true)
+      document.removeEventListener('keyup', onUp, true)
+    }
+  }, [])
+
+  return (
+    <span style={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
+      <span>{altHeld ? 'Completely hide toolbars' : 'Hide toolbars'}</span>
+      <span>{isHidden ? '✓' : ''}</span>
+    </span>
+  )
+}
+
+/**
  * Check if a tool should be hidden from the command palette on the current route.
  * Uses the same pattern-matching logic as excludeRoutes.
  */
@@ -228,10 +253,15 @@ function buildConfigSections(prefix, onNavigateToPage, onCreateAction) {
         remainingItems.push({
           id: `cfg:${section.id}:${toolId}`,
           children: label,
-          keywords: [label, toolId, 'hide', 'show', 'toolbar'].filter(Boolean),
+          keywords: [label, toolId, 'hide', 'show', 'toolbar', 'completely'].filter(Boolean),
           showType: false,
           onClick: () => {
+            document.documentElement.classList.remove('storyboard-chrome-completely-hidden')
             document.documentElement.classList.toggle('storyboard-chrome-hidden')
+          },
+          onAltClick: () => {
+            document.documentElement.classList.add('storyboard-chrome-hidden')
+            document.documentElement.classList.add('storyboard-chrome-completely-hidden')
           },
         })
         continue
@@ -666,16 +696,18 @@ function buildToolsSection(section, prefix, onNavigateToPage) {
       const isHidden = document.documentElement.classList.contains('storyboard-chrome-hidden')
       items.push({
         id: `cfg:${section.id}:${toolId}`,
-        toolIcon: isHidden ? 'primer/light-bulb' : 'primer/light-bulb',
-        children: <span style={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span>Hide toolbars</span>
-          <span>{isHidden ? '✓' : ''}</span>
-        </span>,
-        keywords: [label, toolId, 'hide', 'show', 'toolbar'].filter(Boolean),
+        toolIcon: 'primer/light-bulb',
+        children: <HideToolbarsLabel isHidden={isHidden} />,
+        keywords: [label, toolId, 'hide', 'show', 'toolbar', 'completely'].filter(Boolean),
         showType: false,
         closeOnSelect: entryCloseOnSelect,
         onClick: () => {
+          document.documentElement.classList.remove('storyboard-chrome-completely-hidden')
           document.documentElement.classList.toggle('storyboard-chrome-hidden')
+        },
+        onAltClick: () => {
+          document.documentElement.classList.add('storyboard-chrome-hidden')
+          document.documentElement.classList.add('storyboard-chrome-completely-hidden')
         },
       })
       continue
@@ -1218,7 +1250,7 @@ export default function StoryboardCommandPalette({ basePath }) {
                 !search && <Command.Separator key={list.id} />
               ) : (
                 <Command.Group key={list.id} heading={list.heading}>
-                  {list.items.map(({ id, children, keywords, onClick, itemType, toolIcon, toolMeta, closeOnSelect, hideFromSearch, url }) => {
+                  {list.items.map(({ id, children, keywords, onClick, onAltClick, itemType, toolIcon, toolMeta, closeOnSelect, hideFromSearch, url }) => {
                     if (search && hideFromSearch) return null
                     if (hiddenFromSearchIds.size > 0) {
                       for (const toolId of hiddenFromSearchIds) {
@@ -1234,6 +1266,8 @@ export default function StoryboardCommandPalette({ basePath }) {
                             copyLinkToClipboard(url, itemType)
                           } else if (url && modifierHeldRef.current) {
                             window.open(url, '_blank')
+                          } else if (onAltClick && altHeldRef.current) {
+                            onAltClick()
                           } else {
                             onClick?.()
                           }
