@@ -140,11 +140,11 @@ export default function FrozenTerminalOverlay({ widgetId, onActivate }) {
 
       {/* Status + action */}
       <div className={styles.statusLayer}>
+        <span className={styles.actionButton}>Click to resume</span>
         <span className={styles.statusBadge}>
           Running in background
           <span className={styles.orbitSpinner} />
         </span>
-        <span className={styles.actionText}>Click to resume</span>
       </div>
     </div>
   )
