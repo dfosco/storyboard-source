@@ -23,15 +23,13 @@ function GridIcon({ size = 16 }) {
 
 function resolveComponentSetUrl(storyId, layout, selected) {
   const story = getStoryData(storyId)
-  if (!story?._route) return ''
+  if (!story?._storyModule) return ''
   const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '')
   const params = new URLSearchParams()
-  params.set('_sb_embed', '')
-  params.set('_sb_hide_branch_bar', '')
-  params.set('_sb_component_set', '')
+  params.set('module', story._storyModule)
   if (layout) params.set('layout', layout)
   if (selected) params.set('selected', selected)
-  return `${base}${story._route}?${params}`
+  return `${base}/_storyboard/canvas/isolate-set?${params}`
 }
 
 export default forwardRef(function ComponentSetWidget({ id: widgetId, props, onUpdate, resizable }, ref) {

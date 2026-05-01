@@ -1038,6 +1038,8 @@ export default function storyboardDataPlugin() {
       // The iframe loads componentIsolate.jsx which reads query params
       // (module, export, theme) and renders a single story export.
       const isolateEntryPath = new URL('../canvas/componentIsolate.jsx', import.meta.url).pathname
+      // Component-set isolate — renders all exports in a grid, bypassing the full SPA.
+      const componentSetIsolateEntryPath = new URL('../canvas/componentSetIsolate.jsx', import.meta.url).pathname
       server.middlewares.use(async (req, res, next) => {
         if (!req.url) return next()
         let url = req.url
@@ -1045,15 +1047,19 @@ export default function storyboardDataPlugin() {
         if (baseNoTrail && url.startsWith(baseNoTrail)) {
           url = url.slice(baseNoTrail.length) || '/'
         }
-        if (!url.startsWith('/_storyboard/canvas/isolate')) return next()
+        // Match both single-component and component-set isolate routes
+        const isComponentSet = url.startsWith('/_storyboard/canvas/isolate-set')
+        const isSingle = !isComponentSet && url.startsWith('/_storyboard/canvas/isolate')
+        if (!isSingle && !isComponentSet) return next()
 
+        const entryPath = isComponentSet ? componentSetIsolateEntryPath : isolateEntryPath
         const rawHtml = [
           '<!DOCTYPE html>',
           '<html><head>',
           '<style>html,body{margin:0;padding:0;width:100%;height:100%;background:var(--bgColor-default,transparent)}#root{width:100%;height:100%}</style>',
           '</head><body>',
           '<div id="root"></div>',
-          `<script type="module" src="/@fs${isolateEntryPath}"></script>`,
+          `<script type="module" src="/@fs${entryPath}"></script>`,
           '</body></html>',
         ].join('\n')
 

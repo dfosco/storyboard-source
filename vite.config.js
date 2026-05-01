@@ -65,6 +65,8 @@ export default defineConfig(() => {
             '@dfosco/storyboard-react/vite': path.resolve(__dirname, 'packages/react/src/vite/data-plugin.js'),
             '@dfosco/storyboard-react/hash-preserver': path.resolve(__dirname, 'packages/react/src/hashPreserver.js'),
             '@dfosco/storyboard-react/canvas/CanvasPage': path.resolve(__dirname, 'packages/react/src/canvas/CanvasPage.jsx'),
+            '@dfosco/storyboard-react/context': path.resolve(__dirname, 'packages/react/src/context.jsx'),
+            '@dfosco/storyboard-react/hooks/useFeatureFlag': path.resolve(__dirname, 'packages/react/src/hooks/useFeatureFlag.js'),
             '@dfosco/storyboard-react': path.resolve(__dirname, 'packages/react/src/index.js'),
             '@dfosco/storyboard-react-primer': path.resolve(__dirname, 'packages/react-primer/src/index.js'),
             '@dfosco/storyboard-react-reshaped': path.resolve(__dirname, 'packages/react-reshaped/src/index.js'),

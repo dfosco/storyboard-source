@@ -19,26 +19,40 @@ patterns.route = [/^.*\/src\/prototypes\/|^\/prototypes\/|[^/]*\.folder\/|\.(jsx
 
 const PRESERVED = import.meta.glob('/src/prototypes/(_app|404).{jsx,tsx}', { eager: true })
 const MODALS = import.meta.glob('/src/prototypes/**/[+]*.{jsx,tsx}', { eager: true })
+
+// Lazy-load prototype routes — only the matched route's module is fetched.
+// This prevents story/canvas URLs from paying for every prototype page's
+// imports (Primer, Reshaped, user components, etc.) on first load.
 const ROUTES = import.meta.glob(
   ['/src/prototypes/**/[\\w[-]*.{jsx,tsx,mdx}', '!/src/prototypes/**/(_!(layout)*(/*)?|_app|404)*'],
-  { eager: true },
 )
 
 const preservedRoutes = generatePreservedRoutes(PRESERVED)
 const modalRoutes = generateModalRoutes(MODALS)
 
-const regularRoutes = generateRegularRoutes(ROUTES, (module, key) => {
+const regularRoutes = generateRegularRoutes(ROUTES, (importFn, key) => {
   const index = /index\.(jsx|tsx|mdx)$/.test(key) && !key.includes('prototypes/index') ? { index: true } : {}
-  const Default = module?.default || Fragment
-  const Page = () =>
-    module?.Pending ? (
-      <Suspense fallback={<module.Pending />}>
-        <Default />
-      </Suspense>
-    ) : (
-      <Default />
-    )
-  return { ...index, Component: Page, ErrorBoundary: module?.Catch, loader: module?.Loader, action: module?.Action }
+  return {
+    ...index,
+    lazy: async () => {
+      const module = await importFn()
+      const Default = module?.default || Fragment
+      const Page = () =>
+        module?.Pending ? (
+          <Suspense fallback={<module.Pending />}>
+            <Default />
+          </Suspense>
+        ) : (
+          <Default />
+        )
+      return {
+        Component: Page,
+        ErrorBoundary: module?.Catch,
+        loader: module?.Loader,
+        action: module?.Action,
+      }
+    },
+  }
 })
 
 const _app = preservedRoutes?.['_app']
