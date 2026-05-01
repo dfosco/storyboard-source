@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import styles from './FrozenTerminalOverlay.module.css'
 
 /**
@@ -6,8 +6,8 @@ import styles from './FrozenTerminalOverlay.module.css'
  * Shown when a terminal widget loses its live WebGL slot but the
  * server-side tmux session is still running.
  *
- * Layout: faded snapshot background + centered status badge + action text.
- * The entire overlay is the click target.
+ * The snapshot text is rendered at a base font size then CSS-scaled to
+ * fill the widget width — matching the live ghostty terminal's sizing.
  */
 
 let Convert = null
@@ -39,6 +39,9 @@ function getBaseUrl() {
 export default function FrozenTerminalOverlay({ widgetId, onActivate }) {
   const [html, setHtml] = useState(null)
   const [plainText, setPlainText] = useState(null)
+  const [scale, setScale] = useState(1)
+  const containerRef = useRef(null)
+  const preRef = useRef(null)
 
   useEffect(() => {
     let cancelled = false
@@ -77,6 +80,27 @@ export default function FrozenTerminalOverlay({ widgetId, onActivate }) {
     return () => { cancelled = true }
   }, [widgetId])
 
+  // Scale the pre to fill the container width
+  useEffect(() => {
+    const container = containerRef.current
+    const pre = preRef.current
+    if (!container || !pre) return
+
+    function updateScale() {
+      const availableWidth = container.clientWidth
+      const naturalWidth = pre.offsetWidth
+      if (naturalWidth > 0 && availableWidth > 0) {
+        setScale(availableWidth / naturalWidth)
+      }
+    }
+
+    const observer = new ResizeObserver(updateScale)
+    observer.observe(container)
+    updateScale()
+
+    return () => observer.disconnect()
+  }, [html, plainText])
+
   const hasSnapshot = !!(html || plainText)
 
   return (
@@ -88,17 +112,25 @@ export default function FrozenTerminalOverlay({ widgetId, onActivate }) {
       onKeyDown={(e) => { if (e.key === 'Enter') onActivate?.() }}
       aria-label="Click to resume terminal"
     >
-      {/* Faded snapshot background */}
+      {/* Faded snapshot background — scaled to fill widget width */}
       {hasSnapshot && (
-        <div className={styles.snapshotContent}>
+        <div ref={containerRef} className={styles.snapshotContent}>
           {html && (
             <pre
+              ref={preRef}
               className={styles.snapshotPre}
+              style={{ transform: `scale(${scale})` }}
               dangerouslySetInnerHTML={{ __html: html }}
             />
           )}
           {!html && plainText && (
-            <pre className={styles.snapshotPre}>{plainText}</pre>
+            <pre
+              ref={preRef}
+              className={styles.snapshotPre}
+              style={{ transform: `scale(${scale})` }}
+            >
+              {plainText}
+            </pre>
           )}
         </div>
       )}

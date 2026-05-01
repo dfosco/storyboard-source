@@ -12,7 +12,6 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  padding: 8px 12px;
   font-family: 'Ghostty', 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
   font-size: 12px;
   line-height: 1.4;
@@ -23,11 +22,12 @@
 
 .snapshotPre {
   margin: 0;
-  white-space: pre-wrap;
-  word-break: break-all;
+  white-space: pre;
+  display: inline-block;
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
+  transform-origin: top left;
 }
 
 /* ── Status + action layer ── */
