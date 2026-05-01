@@ -147,8 +147,9 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
   const dragHintTimer = useRef(null)
 
   // ── WebGL context pool integration ──
-  // Hot pool WebGL-ready widgets register as PINNED to avoid frozen flash
-  const initialPriority = props?.webglReady ? Priority.PINNED : undefined
+  // webglReady: PINNED (bypass cap, guaranteed live — no frozen flash)
+  // All others: VISIBLE (auto-requests a live slot — no manual click needed)
+  const initialPriority = props?.webglReady ? Priority.PINNED : Priority.VISIBLE
   const { isLive, generation, setPriority } = useWebGLSlot(id, initialPriority)
 
   // Update pool priority based on widget state
