@@ -470,12 +470,14 @@ export function buildSecondaryIframeUrl(widget) {
     const exportName = widget.props?.exportName
     if (!storyId) return null
     const storyData = getStoryData(storyId)
-    if (storyData?._route) {
+    if (storyData?._storyModule) {
       const params = new URLSearchParams()
-      if (exportName) params.set('export', exportName)
-      params.set('_sb_embed', '')
-      params.set('_sb_hide_branch_bar', '')
-      return `${baseClean}${storyData._route}?${params}`
+      params.set('module', storyData._storyModule)
+      if (exportName) {
+        params.set('export', exportName)
+        return `${baseClean}/_storyboard/canvas/isolate?${params}`
+      }
+      return `${baseClean}/_storyboard/canvas/isolate-set?${params}`
     }
     return null
   }

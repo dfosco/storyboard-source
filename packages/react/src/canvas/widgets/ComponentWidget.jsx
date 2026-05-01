@@ -40,13 +40,14 @@ export default function ComponentWidget({
 
   const enterInteractive = useCallback(() => setInteractive(true), [])
 
-  // Exit interactive mode when clicking outside the component
+  // Exit interactive mode when clicking outside the component.
+  // Keep the iframe mounted (don't reset showIframe) to avoid a full
+  // reload cost every time the user clicks away and back.
   useEffect(() => {
     if (!interactive) return
     function handlePointerDown(e) {
       if (containerRef.current && !containerRef.current.contains(e.target)) {
         setInteractive(false)
-        setShowIframe(false)
       }
     }
     document.addEventListener('pointerdown', handlePointerDown)

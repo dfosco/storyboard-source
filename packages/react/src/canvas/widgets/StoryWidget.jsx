@@ -26,13 +26,17 @@ function ComponentIcon({ size = 36 }) {
 
 function resolveStoryUrl(storyId, exportName) {
   const story = getStoryData(storyId)
-  if (!story?._route) return ''
+  if (!story?._storyModule) return ''
   const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '')
   const params = new URLSearchParams()
-  if (exportName) params.set('export', exportName)
-  params.set('_sb_embed', '')
-  params.set('_sb_hide_branch_bar', '')
-  return `${base}${story._route}?${params}`
+  params.set('module', story._storyModule)
+  if (exportName) {
+    // Single export — lightweight isolate (no full SPA bootstrap)
+    params.set('export', exportName)
+    return `${base}/_storyboard/canvas/isolate?${params}`
+  }
+  // All exports — lightweight isolate-set grid
+  return `${base}/_storyboard/canvas/isolate-set?${params}`
 }
 
 const _storySourcesCache = {}
