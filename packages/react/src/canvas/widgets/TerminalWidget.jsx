@@ -504,8 +504,6 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
         {!isLive && (
           <FrozenTerminalOverlay
             widgetId={id}
-            width={snappedWidth ?? width}
-            height={snappedHeight ?? height}
             onActivate={handleFrozenActivate}
             prettyName={prettyName}
           />

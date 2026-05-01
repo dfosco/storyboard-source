@@ -34,7 +34,7 @@ function getBaseUrl() {
   return base.endsWith('/') ? base : base + '/'
 }
 
-export default function FrozenTerminalOverlay({ widgetId, width, height, onActivate, prettyName }) {
+export default function FrozenTerminalOverlay({ widgetId, onActivate, prettyName }) {
   const [html, setHtml] = useState(null)
   const [plainText, setPlainText] = useState(null)
   const [loaded, setLoaded] = useState(false)
@@ -88,13 +88,7 @@ export default function FrozenTerminalOverlay({ widgetId, width, height, onActiv
   }, [html, plainText])
 
   return (
-    <div
-      className={styles.overlay}
-      style={{
-        width: typeof width === 'number' ? `${width}px` : undefined,
-        height: typeof height === 'number' ? `${height}px` : undefined,
-      }}
-    >
+    <div className={styles.overlay}>
       <div ref={contentRef} className={styles.snapshotContent}>
         {html && (
           <pre
