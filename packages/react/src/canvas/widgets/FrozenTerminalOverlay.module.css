@@ -1,7 +1,7 @@
 .overlay {
   position: absolute;
   inset: 0;
-  background: var(--term-bg, #0d1117);
+  background: var(--term-bg, #181b22);
   overflow: hidden;
   cursor: pointer;
 }
@@ -12,6 +12,7 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
+  padding: var(--base-size-16, 16px);
   font-family: 'Ghostty', 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
   font-size: 12px;
   line-height: 1.4;

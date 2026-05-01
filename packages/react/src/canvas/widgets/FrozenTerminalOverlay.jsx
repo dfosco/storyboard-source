@@ -80,15 +80,18 @@ export default function FrozenTerminalOverlay({ widgetId, onActivate }) {
     return () => { cancelled = true }
   }, [widgetId])
 
-  // Scale the pre to fill the container width
+  // Scale the pre to fill the padded content area width
   useEffect(() => {
     const container = containerRef.current
     const pre = preRef.current
     if (!container || !pre) return
 
     function updateScale() {
-      const availableWidth = container.clientWidth
-      const naturalWidth = pre.offsetWidth
+      const style = getComputedStyle(container)
+      const padL = parseFloat(style.paddingLeft) || 0
+      const padR = parseFloat(style.paddingRight) || 0
+      const availableWidth = container.clientWidth - padL - padR
+      const naturalWidth = pre.scrollWidth
       if (naturalWidth > 0 && availableWidth > 0) {
         setScale(availableWidth / naturalWidth)
       }
