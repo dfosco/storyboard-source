@@ -92,8 +92,8 @@ document.documentElement.setAttribute('data-light-theme', theme.startsWith('dark
 const root = createRoot(document.getElementById('root'))
 
 async function mount() {
-  if (!modulePath || !exportName) {
-    root.render(createElement('div', { style: errorStyle }, 'Missing module or export param'))
+  if (!modulePath) {
+    root.render(createElement('div', { style: errorStyle }, 'Missing module param'))
     return
   }
 
@@ -106,25 +106,46 @@ async function mount() {
   try {
     const resolved = resolveModulePath(modulePath)
     const mod = await import(/* @vite-ignore */ resolved)
-    const Component = mod[exportName]
 
-    if (!Component || typeof Component !== 'function') {
-      throw new Error(`Export "${exportName}" not found or is not a component`)
-    }
-
-    root.render(
-      createElement(ThemeProvider, { colorMode },
-        createElement(BaseStyles, null,
-          createElement(IsolateErrorBoundary, { name: exportName },
-            createElement(Component),
+    if (exportName) {
+      // Single export mode
+      const Component = mod[exportName]
+      if (!Component || typeof Component !== 'function') {
+        throw new Error(`Export "${exportName}" not found or is not a component`)
+      }
+      root.render(
+        createElement(ThemeProvider, { colorMode },
+          createElement(BaseStyles, null,
+            createElement(IsolateErrorBoundary, { name: exportName },
+              createElement(Component),
+            ),
           ),
         ),
-      ),
-    )
+      )
+    } else {
+      // All exports mode — render every named function export stacked
+      const entries = Object.entries(mod).filter(
+        ([key, value]) => key !== 'default' && typeof value === 'function',
+      )
+      if (entries.length === 0) {
+        throw new Error('No named exports found in story module')
+      }
+      root.render(
+        createElement(ThemeProvider, { colorMode },
+          createElement(BaseStyles, null,
+            ...entries.map(([name, Component]) =>
+              createElement(IsolateErrorBoundary, { key: name, name },
+                createElement(Component),
+              ),
+            ),
+          ),
+        ),
+      )
+    }
   } catch (err) {
     root.render(
       createElement('div', { style: errorStyle },
-        createElement('strong', null, exportName),
+        createElement('strong', null, exportName || 'Component'),
         createElement('br'),
         String(err.message || err),
       ),

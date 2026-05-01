@@ -30,13 +30,8 @@ function resolveStoryUrl(storyId, exportName) {
   const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '')
   const params = new URLSearchParams()
   params.set('module', story._storyModule)
-  if (exportName) {
-    // Single export — lightweight isolate (no full SPA bootstrap)
-    params.set('export', exportName)
-    return `${base}/_storyboard/canvas/isolate?${params}`
-  }
-  // All exports — lightweight isolate-set grid
-  return `${base}/_storyboard/canvas/isolate-set?${params}`
+  if (exportName) params.set('export', exportName)
+  return `${base}/_storyboard/canvas/isolate?${params}`
 }
 
 const _storySourcesCache = {}

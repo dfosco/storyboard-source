@@ -473,11 +473,8 @@ export function buildSecondaryIframeUrl(widget) {
     if (storyData?._storyModule) {
       const params = new URLSearchParams()
       params.set('module', storyData._storyModule)
-      if (exportName) {
-        params.set('export', exportName)
-        return `${baseClean}/_storyboard/canvas/isolate?${params}`
-      }
-      return `${baseClean}/_storyboard/canvas/isolate-set?${params}`
+      if (exportName) params.set('export', exportName)
+      return `${baseClean}/_storyboard/canvas/isolate?${params}`
     }
     return null
   }
