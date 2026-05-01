@@ -108,17 +108,16 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
   const cfg = getTerminalConfig()
   const fontSize = cfg.fontSize ?? 13
   const agentId = props?.agentId || null
+  // Config dimensions are authoritative — always use them as the base
   const dims = getTerminalDimensions(agentId, {
     width: readProp(props, 'width', terminalSchema),
     height: readProp(props, 'height', terminalSchema),
   })
-  const rawWidth = props?.width ?? dims.width
-  const rawHeight = props?.height ?? dims.height
+  const width = dims.width
+  const height = dims.height
   const prettyName = props?.prettyName || null
   const startupCommand = props?.startupCommand || null
 
-  const width = rawWidth
-  const height = rawHeight
   // Snapped dimensions computed from ghostty's actual cell metrics (set after open)
   const [snappedHeight, setSnappedHeight] = useState(null)
   const [snappedWidth, setSnappedWidth] = useState(null)
@@ -148,7 +147,9 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
   const dragHintTimer = useRef(null)
 
   // ── WebGL context pool integration ──
-  const { isLive, generation, setPriority } = useWebGLSlot(id)
+  // Hot pool WebGL-ready widgets register as PINNED to avoid frozen flash
+  const initialPriority = props?.webglReady ? Priority.PINNED : undefined
+  const { isLive, generation, setPriority } = useWebGLSlot(id, initialPriority)
 
   // Update pool priority based on widget state
   useEffect(() => {
@@ -157,14 +158,6 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
     }
     // Priority for VISIBLE/NEAR/OFFSCREEN is set by CanvasPage via usePoolVisibilityUpdater
   }, [expanded, interactive, setPriority])
-
-  // Hot pool WebGL-ready: start PINNED so the widget gets a live WebGL slot immediately
-  const webglReadyRef = useRef(!!props?.webglReady)
-  useEffect(() => {
-    if (webglReadyRef.current) {
-      setPriority(Priority.PINNED)
-    }
-  }, [setPriority])
 
   // Request activation when user clicks a frozen terminal
   const handleFrozenActivate = useCallback(() => {

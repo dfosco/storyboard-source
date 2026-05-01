@@ -51,13 +51,13 @@ class ContextPool {
   }
 
   /** Register a widget. Returns its initial generation. */
-  register(widgetId) {
+  register(widgetId, initialPriority = Priority.OFFSCREEN) {
     if (this._slots.has(widgetId)) return this._slots.get(widgetId).generation
     this._slots.set(widgetId, {
-      priority: Priority.OFFSCREEN,
+      priority: initialPriority,
       generation: 0,
       live: false,
-      lastVisible: 0,
+      lastVisible: initialPriority >= Priority.VISIBLE ? Date.now() : 0,
     })
     this._recompute()
     return 0
@@ -182,15 +182,15 @@ export function WebGLContextPoolProvider({ maxLive = DEFAULT_MAX_LIVE, children 
  * @param {string} widgetId
  * @returns {{ isLive: boolean, generation: number, setPriority: (p: number) => void }}
  */
-export function useWebGLSlot(widgetId) {
+export function useWebGLSlot(widgetId, initialPriority) {
   const pool = useContext(WebGLPoolContext)
 
   // Register on mount, unregister on unmount
   useEffect(() => {
     if (!pool) return
-    pool.register(widgetId)
+    pool.register(widgetId, initialPriority)
     return () => pool.unregister(widgetId)
-  }, [pool, widgetId])
+  }, [pool, widgetId]) // initialPriority intentionally excluded — only used on first register
 
   // Subscribe to pool state for reactivity.
   // getSnapshot returns the pool's version counter — a primitive that changes
