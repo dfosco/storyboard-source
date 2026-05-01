@@ -39,7 +39,6 @@ function getBaseUrl() {
 export default function FrozenTerminalOverlay({ widgetId, onActivate }) {
   const [html, setHtml] = useState(null)
   const [plainText, setPlainText] = useState(null)
-  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -67,13 +66,11 @@ export default function FrozenTerminalOverlay({ widgetId, onActivate }) {
           } else {
             setPlainText(stripAnsi(text))
           }
-          setLoaded(true)
           return
         } catch {
           continue
         }
       }
-      if (!cancelled) setLoaded(true)
     }
 
     fetchSnapshot()

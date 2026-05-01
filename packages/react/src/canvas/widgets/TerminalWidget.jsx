@@ -505,7 +505,6 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
           <FrozenTerminalOverlay
             widgetId={id}
             onActivate={handleFrozenActivate}
-            prettyName={prettyName}
           />
         )}
 
@@ -582,7 +581,7 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
               </div>
             )}
 
-            {/* Session ended — normal (zzz) */}
+            {/* Session ended — normal */}
             {sessionEnded && !resourceLimited && (
               <div
                 className={overlayStyles.interactOverlay}
@@ -594,15 +593,21 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
                 onKeyDown={(e) => { if (e.key === 'Enter') handleStartSession() }}
               >
                 {!waking && (
-                  <div className={styles.buddyZzz}>
-                    <span className={styles.z1}>z</span>
-                    <span className={styles.z2}>z</span>
-                    <span className={styles.z3}>z</span>
-                  </div>
+                  <>
+                    <div className={styles.buddyZzz}>
+                      <span className={styles.z1}>z</span>
+                      <span className={styles.z2}>z</span>
+                      <span className={styles.z3}>z</span>
+                    </div>
+                    <span className={styles.sessionEndedBadge}>Session ended</span>
+                    <span className={styles.sessionEndedAction}>Click to start</span>
+                  </>
                 )}
-                <span className={overlayStyles.interactHint}>
-                  {waking ? 'Waking up...' : connectAttempt > 0 ? 'Continue terminal session' : 'Start terminal session'}
-                </span>
+                {waking && (
+                  <span className={overlayStyles.interactHint} style={{ opacity: 1 }}>
+                    Waking up...
+                  </span>
+                )}
               </div>
             )}
 
