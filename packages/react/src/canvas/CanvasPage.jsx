@@ -18,6 +18,7 @@ import { isGitHubEmbedUrl } from './widgets/githubUrl.js'
 import { WebGLContextPoolProvider, usePoolVisibilityUpdater } from './WebGLContextPool.jsx'
 
 import WidgetChrome from './widgets/WidgetChrome.jsx'
+import ComponentWidget from './widgets/ComponentWidget.jsx'
 import useUndoRedo from './useUndoRedo.js'
 import useMarqueeSelect from './useMarqueeSelect.js'
 import MarqueeOverlay from './MarqueeOverlay.jsx'
