@@ -1,8 +1,8 @@
-import { useState, useEffect, useMemo, Suspense, lazy } from 'react'
+import { useState, useEffect, useMemo, useRef, Suspense, lazy } from 'react'
 import { useParams, useLocation } from 'react-router-dom'
 // Named import seeds the core data index via init() AND provides canvas/story route data
 import { canvases, stories } from 'virtual:storyboard-data-index'
-import { loadFlow, flowExists, findRecord, deepMerge, setFlowClass, installBodyClassSync, resolveFlowName, resolveRecordName, isModesEnabled } from '@dfosco/storyboard-core'
+import { loadFlow, flowExists, findRecord, deepMerge, setFlowClass, installBodyClassSync, resolveFlowName, resolveRecordName, isModesEnabled, getPrototypeMetadata } from '@dfosco/storyboard-core'
 import { StoryboardContext } from './StoryboardContext.js'
 import usePrototypeReloadGuard from './hooks/usePrototypeReloadGuard.js'
 import styles from './FlowError.module.css'
@@ -270,11 +270,18 @@ function StoryboardProviderInner({ flowName, sceneName, recordName, recordParam,
   }, [])
 
   // Skip flow loading for canvas/story pages and flow-less pages
-  const { data, error } = useMemo(() => {
-    if (canvasId || isMissingCanvasRoute || storyName || isMissingStoryRoute) return { data: null, error: null }
-    if (!activeFlowName) return { data: {}, error: null }
+  const { data, error, flowTokens } = useMemo(() => {
+    if (canvasId || isMissingCanvasRoute || storyName || isMissingStoryRoute) return { data: null, error: null, flowTokens: null }
+    if (!activeFlowName) return { data: {}, error: null, flowTokens: null }
     try {
       let flowData = loadFlow(activeFlowName)
+
+      // Extract tokens before passing data to consumers (reserved metadata key)
+      const extractedTokens = flowData?.tokens || null
+      if (flowData?.tokens) {
+        flowData = { ...flowData }
+        delete flowData.tokens
+      }
 
       // Merge record data if configured (with scoped resolution)
       if (recordName && recordParam && params[recordParam]) {
@@ -286,11 +293,67 @@ function StoryboardProviderInner({ flowName, sceneName, recordName, recordParam,
       }
 
       setFlowClass(activeFlowName)
-      return { data: flowData, error: null }
+      return { data: flowData, error: null, flowTokens: extractedTokens }
     } catch (err) {
-      return { data: null, error: err.message }
+      return { data: null, error: err.message, flowTokens: null }
     }
   }, [canvasId, isMissingCanvasRoute, storyName, isMissingStoryRoute, activeFlowName, recordName, recordParam, params, prototypeName])
+
+  // Resolve prototype-level tokens from .prototype.json metadata
+  const protoTokens = useMemo(() => {
+    if (!prototypeName) return null
+    const meta = getPrototypeMetadata(prototypeName)
+    return meta?.tokens || null
+  }, [prototypeName])
+
+  // Merge prototype + flow tokens (flow wins). Stable reference when tokens don't change.
+  const mergedTokens = useMemo(() => {
+    if (!protoTokens && !flowTokens) return null
+    return { ...(protoTokens || {}), ...(flowTokens || {}) }
+  }, [protoTokens, flowTokens])
+
+  // Track which URL params were set by tokens (vs. user-explicit params)
+  const managedParamsRef = useRef({})
+
+  // Apply merged tokens to URL search params via replaceState.
+  // Only sets params not already present (user-explicit wins on first load).
+  // Cleans up stale managed params when flow/prototype tokens change.
+  useEffect(() => {
+    const url = new URL(window.location.href)
+    const managed = managedParamsRef.current
+    const nextManaged = {}
+    let changed = false
+
+    // Remove stale managed params no longer in merged tokens
+    for (const key of Object.keys(managed)) {
+      if (!mergedTokens || !(key in mergedTokens)) {
+        url.searchParams.delete(key)
+        changed = true
+      }
+    }
+
+    // Apply current tokens
+    if (mergedTokens) {
+      const reserved = new Set(['flow', 'scene'])
+      for (const [key, value] of Object.entries(mergedTokens)) {
+        if (value == null || typeof value === 'object' || reserved.has(key)) continue
+        const strValue = String(value)
+        if (!url.searchParams.has(key) || (key in managed && managed[key] !== strValue)) {
+          url.searchParams.set(key, strValue)
+          nextManaged[key] = strValue
+          changed = true
+        } else if (key in managed) {
+          nextManaged[key] = strValue
+        }
+      }
+    }
+
+    managedParamsRef.current = nextManaged
+
+    if (changed) {
+      window.history.replaceState(window.history.state, '', url.toString())
+    }
+  }, [mergedTokens])
 
   // Canvas pages get their own rendering path — no flow data needed
   if (canvasId) {

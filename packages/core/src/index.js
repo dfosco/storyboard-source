@@ -62,7 +62,7 @@ export { mountSceneDebug } from './sceneDebug.js'
 export { mountStoryboardCore } from './mountStoryboardCore.js'
 
 // Viewfinder utilities
-export { hash, resolveFlowRoute, getFlowMeta, buildPrototypeIndex } from './viewfinder.js'
+export { hash, resolveFlowRoute, getFlowMeta, buildPrototypeIndex, appendTokens } from './viewfinder.js'
 // Deprecated aliases
 export { resolveSceneRoute, getSceneMeta } from './viewfinder.js'
 

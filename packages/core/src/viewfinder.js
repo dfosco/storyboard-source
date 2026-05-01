@@ -14,6 +14,26 @@ export function hash(str) {
 }
 
 /**
+ * Append `tokens` from flow/prototype data as URL search params.
+ * Filters out reserved keys (`flow`, `scene`) and non-scalar values.
+ *
+ * @param {string} url - Base URL (may already contain query params)
+ * @param {object|null|undefined} tokens - Key-value pairs to append
+ * @returns {string} URL with token params appended
+ */
+export function appendTokens(url, tokens) {
+  if (!tokens || typeof tokens !== 'object') return url
+  const reserved = new Set(['flow', 'scene'])
+  const entries = Object.entries(tokens).filter(
+    ([k, v]) => v != null && !reserved.has(k) && typeof v !== 'object',
+  )
+  if (entries.length === 0) return url
+  const sep = url.includes('?') ? '&' : '?'
+  const qs = entries.map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&')
+  return `${url}${sep}${qs}`
+}
+
+/**
  * Resolve the target route path for a flow.
  *
  * Priority:
@@ -23,42 +43,51 @@ export function hash(str) {
  * 4. Fall back to root "/"
  *
  * Flows with `meta.default: true` targeting a route omit the `?flow=` param.
+ * If the flow data contains a `tokens` object, its entries are appended as query params.
  *
  * @param {string} flowName
  * @param {string[]} knownRoutes - Array of route names (e.g. ["Dashboard", "Repositories"])
  * @returns {string} Full path with optional ?flow= param
  */
 export function resolveFlowRoute(flowName, knownRoutes = []) {
+  let routeUrl
+  let data = null
+
   // Case-insensitive match against known routes
-  for (const route of knownRoutes) {
-    if (route.toLowerCase() === flowName.toLowerCase()) {
-      // Flow name matches the route — no ?flow= needed,
-      // StoryboardProvider auto-matches by page name
-      return `/${route}`
+  const matchedRoute = knownRoutes.find(r => r.toLowerCase() === flowName.toLowerCase())
+
+  if (matchedRoute) {
+    routeUrl = `/${matchedRoute}`
+  } else {
+    try {
+      data = loadFlow(flowName)
+
+      // Check for explicit route: top-level `route`, then meta.route, then legacy sceneMeta.route
+      const explicitRoute = data?.route || data?.meta?.route || data?.flowMeta?.route || data?.sceneMeta?.route
+      if (explicitRoute) {
+        const normalized = explicitRoute.startsWith('/') ? explicitRoute : `/${explicitRoute}`
+        routeUrl = data?.meta?.default === true
+          ? normalized
+          : `${normalized}?flow=${encodeURIComponent(flowName)}`
+      } else if (data?._route) {
+        // Use inferred route from file path (injected by Vite data plugin)
+        routeUrl = data?.meta?.default === true
+          ? data._route
+          : `${data._route}?flow=${encodeURIComponent(flowName)}`
+      } else {
+        routeUrl = `/?flow=${encodeURIComponent(flowName)}`
+      }
+    } catch {
+      routeUrl = `/?flow=${encodeURIComponent(flowName)}`
     }
   }
 
-  try {
-    const data = loadFlow(flowName)
-
-    // Check for explicit route: top-level `route`, then meta.route, then legacy sceneMeta.route
-    const explicitRoute = data?.route || data?.meta?.route || data?.flowMeta?.route || data?.sceneMeta?.route
-    if (explicitRoute) {
-      const normalized = explicitRoute.startsWith('/') ? explicitRoute : `/${explicitRoute}`
-      if (data?.meta?.default === true) return normalized
-      return `${normalized}?flow=${encodeURIComponent(flowName)}`
-    }
-
-    // Use inferred route from file path (injected by Vite data plugin)
-    if (data?._route) {
-      if (data?.meta?.default === true) return data._route
-      return `${data._route}?flow=${encodeURIComponent(flowName)}`
-    }
-  } catch {
-    // ignore load errors
+  // Load flow data for tokens if not already loaded (e.g. known-route early match)
+  if (!data) {
+    try { data = loadFlow(flowName) } catch { /* ignore */ }
   }
 
-  return `/?flow=${encodeURIComponent(flowName)}`
+  return appendTokens(routeUrl, data?.tokens)
 }
 
 /** @deprecated Use resolveFlowRoute() */

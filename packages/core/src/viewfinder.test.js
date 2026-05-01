@@ -1,5 +1,5 @@
 import { init } from './loader.js'
-import { hash, resolveFlowRoute, getFlowMeta, resolveSceneRoute, getSceneMeta, buildPrototypeIndex } from './viewfinder.js'
+import { hash, resolveFlowRoute, getFlowMeta, resolveSceneRoute, getSceneMeta, buildPrototypeIndex, appendTokens } from './viewfinder.js'
 
 const makeIndex = () => ({
   flows: {
@@ -341,5 +341,116 @@ describe('buildPrototypeIndex', () => {
     })
     const result = buildPrototypeIndex([])
     expect(result.prototypes[0].lastModified).toBeNull()
+  })
+})
+
+// ── appendTokens ──
+
+describe('appendTokens', () => {
+  it('returns url unchanged when tokens is null', () => {
+    expect(appendTokens('/foo', null)).toBe('/foo')
+  })
+
+  it('returns url unchanged when tokens is undefined', () => {
+    expect(appendTokens('/foo', undefined)).toBe('/foo')
+  })
+
+  it('returns url unchanged when tokens is empty', () => {
+    expect(appendTokens('/foo', {})).toBe('/foo')
+  })
+
+  it('appends single token with ?', () => {
+    expect(appendTokens('/foo', { token: 'abc' })).toBe('/foo?token=abc')
+  })
+
+  it('appends multiple tokens', () => {
+    const result = appendTokens('/foo', { token: 'abc', model: 'gpt-4' })
+    expect(result).toBe('/foo?token=abc&model=gpt-4')
+  })
+
+  it('uses & separator when url already has query params', () => {
+    expect(appendTokens('/foo?flow=bar', { token: 'abc' })).toBe('/foo?flow=bar&token=abc')
+  })
+
+  it('filters out reserved key "flow"', () => {
+    expect(appendTokens('/foo', { flow: 'bad', token: 'good' })).toBe('/foo?token=good')
+  })
+
+  it('filters out reserved key "scene"', () => {
+    expect(appendTokens('/foo', { scene: 'bad', token: 'good' })).toBe('/foo?token=good')
+  })
+
+  it('filters out null and undefined values', () => {
+    expect(appendTokens('/foo', { a: null, b: undefined, c: 'ok' })).toBe('/foo?c=ok')
+  })
+
+  it('filters out object and array values', () => {
+    expect(appendTokens('/foo', { a: { nested: true }, b: [1, 2], c: 'ok' })).toBe('/foo?c=ok')
+  })
+
+  it('encodes special characters', () => {
+    expect(appendTokens('/foo', { key: 'hello world' })).toBe('/foo?key=hello%20world')
+  })
+
+  it('handles numeric and boolean values', () => {
+    expect(appendTokens('/foo', { count: 42, active: true })).toBe('/foo?count=42&active=true')
+  })
+})
+
+// ── resolveFlowRoute with tokens ──
+
+describe('resolveFlowRoute with tokens', () => {
+  it('appends tokens to a flow with explicit route', () => {
+    init({
+      flows: { 'with-tokens': { route: '/Overview', tokens: { token: 'sk-abc' } } },
+      objects: {},
+      records: {},
+    })
+    expect(resolveFlowRoute('with-tokens', [])).toBe('/Overview?flow=with-tokens&token=sk-abc')
+  })
+
+  it('appends tokens to a known-route match', () => {
+    init({
+      flows: { Dashboard: { heading: 'Hi', tokens: { model: 'gpt-4' } } },
+      objects: {},
+      records: {},
+    })
+    expect(resolveFlowRoute('Dashboard', ['Dashboard'])).toBe('/Dashboard?model=gpt-4')
+  })
+
+  it('appends tokens to inferred route', () => {
+    init({
+      flows: { 'inferred': { _route: '/Settings', tokens: { key: 'val' } } },
+      objects: {},
+      records: {},
+    })
+    expect(resolveFlowRoute('inferred', [])).toBe('/Settings?flow=inferred&key=val')
+  })
+
+  it('appends tokens to default flow fallback', () => {
+    init({
+      flows: { 'no-route': { title: 'No route', tokens: { api: '123' } } },
+      objects: {},
+      records: {},
+    })
+    expect(resolveFlowRoute('no-route', [])).toBe('/?flow=no-route&api=123')
+  })
+
+  it('does not append tokens when flow has none', () => {
+    init({
+      flows: { simple: { route: '/Page' } },
+      objects: {},
+      records: {},
+    })
+    expect(resolveFlowRoute('simple', [])).toBe('/Page?flow=simple')
+  })
+
+  it('appends tokens with meta.default route (no ?flow=)', () => {
+    init({
+      flows: { 'default-tokens': { _route: '/Home', meta: { default: true }, tokens: { key: 'val' } } },
+      objects: {},
+      records: {},
+    })
+    expect(resolveFlowRoute('default-tokens', [])).toBe('/Home?key=val')
   })
 })
