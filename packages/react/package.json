@@ -1,11 +1,11 @@
 {
   "name": "@dfosco/storyboard-react",
-  "version": "4.2.4",
+  "version": "4.2.5",
   "type": "module",
   "dependencies": {
     "@base-ui/react": "^1.4.0",
-    "@dfosco/storyboard-core": "4.2.4",
-    "@dfosco/tiny-canvas": "4.2.4",
+    "@dfosco/storyboard-core": "4.2.5",
+    "@dfosco/tiny-canvas": "4.2.5",
     "@neodrag/react": "^2.3.1",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-visually-hidden": "^1.2.4",

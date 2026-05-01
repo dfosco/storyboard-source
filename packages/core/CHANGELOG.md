@@ -1,5 +1,21 @@
 # @dfosco/storyboard-core
 
+## 4.2.5
+
+### Patch Changes
+
+-   Lightweight isolate iframes for canvas widgets, tokens URL params, and terminal UX improvements
+
+    -   Story and component-set widgets now use lightweight isolate iframes instead of full SPA bootstrap — significantly faster load times
+    -   Removed legacy ComponentWidget; renamed ComponentSetWidget → StorySetWidget (user-facing labels unchanged)
+    -   Added HMR guard to isolate iframes to prevent reload blinking
+    -   Added `tokens` object support in prototype and flow JSON for default URL query params
+    -   WebGL context virtualization for terminal widgets
+    -   Frozen terminal overlay UX consolidation and layout fixes
+    -   Hot pool: `webgl_ready_slots` config and load balancer removal
+    -   Command palette: submenu tool resolution and prototype flow expansion
+    -   Viewfinder respects `meta.default` flow for landing route
+
 ## 4.2.4
 
 ### Patch Changes
