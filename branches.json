@@ -1,4 +1,5 @@
 [
+  {"folder":"branch--0.5.0-messaging-bus","branch":"0.5.0-messaging-bus"},
   {"folder":"branch--0.5.0","branch":"0.5.0"},
   {"folder":"branch--3.11.0-auto-sync","branch":"3.11.0-auto-sync"},
   {"folder":"branch--3.11.0-canvas-hmr","branch":"3.11.0-canvas-hmr"},
