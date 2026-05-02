@@ -182,18 +182,22 @@ Builds directly on `room-mates` `cursorsPlugin` and `y-protocols/awareness`.
   role:    'host' | 'participant',
   cursor:  { x, y, a } | null,          // page-space coords, opacity
   sparkle: { x, y, t } | null,
-  route:   '/MyPrototype/Settings',      // current pathname
-  viewport: {                            // current scroll + zoom (canvas pages only)
-    scrollLeft: number,
-    scrollTop: number,
-    zoom: number,
+  route:   '/MyPrototype/Settings',      // current pathname + hash
+  viewport: {                            // scroll + zoom, ALL page types
+    scrollX:   number,                   // window.scrollX  (prototype pages)
+    scrollY:   number,                   // window.scrollY  (prototype pages)
+    scrollLeft: number,                  // canvas container scroll (canvas pages)
+    scrollTop:  number,                  // canvas container scroll (canvas pages)
+    zoom:       number,                  // canvas zoom % (canvas pages only; 100 otherwise)
+    pageType:   'prototype' | 'canvas',  // so receivers know which fields to use
   } | null,
-  following: string | null,             // clientId being followed, or null
+  hash:     string | null,               // current URL hash (session overrides) for all pages
+  following: string | null,              // clientId being followed, or null
 }
 ```
 
-The `cursorsPlugin` already handles cursor rendering. Route and viewport fields
-are added by the new `roomPlugin` (see §13).
+The `cursorsPlugin` already handles cursor rendering. Route, viewport, and hash
+fields are added by the new `roomPlugin` (see §13).
 
 ### Presence bar
 
@@ -207,10 +211,13 @@ popover with name, current route, and a "Follow" button.
 
 ### Host side
 
-The host's `viewport` and `route` are published to awareness on every:
-- `hashchange` / React Router navigation
-- canvas scroll (`scrollLeft`, `scrollTop`)
-- canvas zoom change
+The host's `viewport`, `route`, and `hash` are published to awareness on every:
+- `hashchange` / React Router navigation → updates `route` and `hash`
+- `scroll` on `window` (prototype pages) → updates `viewport.scrollX/Y`
+- canvas container scroll (canvas pages) → updates `viewport.scrollLeft/Top`
+- canvas zoom change → updates `viewport.zoom`
+
+All viewport events are throttled to ~30 Hz before writing to awareness.
 
 ### Participant side
 
@@ -220,25 +227,29 @@ bar or from the participant's own toolbar button.
 While following:
 1. **Route sync** — when the host's `awareness.route` changes, the participant's
    React Router navigates to that route (`router.navigate(route)`).
-2. **Viewport sync** — the participant's canvas `scrollLeft`, `scrollTop`, and
-   `zoom` are updated to match the host's `viewport` awareness field.
+2. **Hash/override sync** — when the host's `awareness.hash` changes, the
+   participant's URL hash is updated to match, broadcasting the same session
+   overrides (theme, active tab, etc.) to every follower. The write is made
+   via `setParam` with a `{ remote: true }` flag so it does not re-broadcast
+   and is tagged as `source: 'remote'` in session history.
+3. **Viewport sync — prototype pages** — when `pageType === 'prototype'`, the
+   participant's `window.scrollTo(scrollX, scrollY)` is called.
+   - A `scroll` event fired by this imperative call is suppressed (flag guard)
+     so it does not re-broadcast and does not auto-eject.
+4. **Viewport sync — canvas pages** — when `pageType === 'canvas'`, the
+   participant's canvas `scrollLeft`, `scrollTop`, and `zoom` are updated.
    - Scroll is applied via `canvasRef.current.scrollTo(...)` inside `CanvasPage`.
    - Zoom is updated via the existing `setZoom` callback.
-   - Updates are throttled to the awareness update rate (~30 Hz); UI applies
-     them with a short CSS transition (100 ms) so the experience isn't jarring.
-3. **Eject** — the participant can stop following at any time by:
+5. **Updates are throttled** to the awareness update rate (~30 Hz); the UI
+   applies them with a short CSS transition (100 ms) so the experience isn't
+   jarring.
+6. **Eject** — the participant can stop following at any time by:
    - Clicking "Stop following" in the toolbar
-   - Scrolling or panning the canvas (a `pointerdown` on the canvas surface
-     detects manual intent and auto-ejects)
+   - Scrolling manually (a native `wheel` or touch event on any page, or a
+     `pointerdown` on the canvas surface, detects manual intent and auto-ejects)
    - Pressing `Escape`
    Once ejected, `following` is set to `null` in awareness; the host's UI
    shows the participant has ejected (avatar dot goes grey).
-
-### Non-canvas pages
-
-On prototype pages (not canvas), route sync works the same way. Viewport sync
-is skipped (no canvas) — but the page scroll position (`window.scrollY`) is
-optionally synced via a separate awareness field `pageScroll: { y }`.
 
 ---
 
@@ -483,9 +494,10 @@ multiplayer.
 | File | Change |
 |---|---|
 | `packages/core/src/mountStoryboardCore.js` | Initialise `RoomProvider` after feature-flag check |
-| `packages/react/src/canvas/CanvasPage.jsx` | Integrate `useCanvasRoom`; pass `roomWriteGuard` to mutation handlers; apply remote viewport from host awareness |
+| `packages/react/src/canvas/CanvasPage.jsx` | Integrate `useCanvasRoom`; pass `roomWriteGuard` to mutation handlers; apply remote canvas viewport from host awareness |
 | `packages/react/src/canvas/CanvasToolbar.jsx` | Hide restricted actions for non-host participants |
 | `packages/core/src/CoreUIBar.svelte` | Add "Open Room" button (host-only when rooms enabled) |
+| `packages/core/src/session.js` | Hook `setParam`/`removeParam` to publish `hash` field to awareness when in a room |
 | `storyboard.config.json` | Add `rooms` config block |
 
 ---
@@ -507,12 +519,17 @@ All phases behind `rooms.enabled: true`.
 
 ### Phase B — Cursors & follow-me
 
-- Publish `route` + `viewport` to awareness (update `cursorsPlugin` or add
-  `roomPlugin` alongside it)
+- Publish `route` + `hash` + `viewport` to awareness for all page types:
+  - Prototype pages: `window.scrollX/Y` on throttled `scroll` listener
+  - Canvas pages: container `scrollLeft/Top` + `zoom` on existing events
+  - All pages: `hash` updated on every `setParam` / `hashchange`
+- New `roomPlugin` alongside `cursorsPlugin` owns route/hash/viewport publication
 - `FollowBanner` strip
 - Participant router follows host route
-- Participant canvas scroll/zoom follows host viewport
-- Eject on pointer/key interaction
+- Participant `window.scrollTo` follows host `viewport.scrollX/Y` (prototype pages)
+- Participant canvas scroll/zoom follows host `viewport.scrollLeft/Top/zoom` (canvas pages)
+- Participant hash follows host hash (all pages, tagged `remote` to avoid re-broadcast)
+- Eject on manual scroll (`wheel` / touch) on any page type, or `pointerdown` on canvas surface
 - Host shows "N following" indicator
 
 ### Phase C — Canvas editing (CRDT)
