@@ -343,11 +343,16 @@ if (isCaddyInstalled()) {
     p.log.info(dim('Skipping npm install — dev server is running (would cause restart)'))
     p.log.info(dim('Run `npm install` manually after stopping the dev server if needed'))
   } else {
-    await withSpin(
-      'Installing dependencies...',
-      'Dependencies installed',
-      () => { run('npm install', { stdio: 'ignore' }) }
-    )
+    try {
+      await withSpin(
+        'Installing dependencies...',
+        'Dependencies installed',
+        () => { run('npm install', { stdio: 'ignore' }) }
+      )
+    } catch {
+      p.log.warning('npm install failed — run it manually to see details')
+      p.log.info(`  ${dim('npm install')}`)
+    }
   }
 }
 
