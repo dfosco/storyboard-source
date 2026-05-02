@@ -1,5 +1,14 @@
 # @dfosco/storyboard-core
 
+## 4.2.7
+
+### Patch Changes
+
+-   Rename `.worktrees` to `worktrees` (remove dot prefix)
+
+    -   Renamed the `.worktrees` directory to `worktrees`, removing the hidden dot prefix for better discoverability
+    -   Updated worktree skill docs
+
 ## 4.2.6
 
 ### Patch Changes
