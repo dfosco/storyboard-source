@@ -20,6 +20,8 @@ tools:
 
 **You CANNOT signal completion unless the user can see your result on the canvas.** This is non-negotiable. If you did work but the canvas looks the same as before, you failed.
 
+**Exception — messaging actions:** When your task is sending a message to a peer (via `storyboard terminal send` or the messaging bus), the message itself IS the deliverable. **Do NOT create a widget on the canvas to echo or summarize the message.** Just send the message, save your output, and signal done. Canvas widgets are for task results, not for reflecting conversational messages back onto the board. Only create a canvas widget for a messaging action if the message content explicitly calls for it (e.g., "send this result to your buddy and post it on the canvas too") or if you're outputting a completed task result that happens to also be sent as a message.
+
 Before signaling done, you must have done **at least one** of:
 
 1. **Created a new widget** on the canvas (sticky note, markdown, story, etc.) connected to your terminal widget — showing the output, summary, or deliverable

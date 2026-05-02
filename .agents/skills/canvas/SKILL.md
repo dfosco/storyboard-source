@@ -11,6 +11,10 @@ description: Work with Storyboard canvases — add, move, update, remove, and ar
 
 Reads, manipulates, and arranges widgets on a Storyboard canvas. Supports absolute and relational positioning, bulk layout, content updates, and widget removal.
 
+## ⚠️ Do NOT create widgets to echo messages
+
+**Message requests between agents (via `storyboard terminal send` or the messaging bus) should NOT result in new widgets on the canvas.** Sending a message is a communication action, not a content-creation action. Do not create sticky notes, markdown blocks, or any other widget to reflect, echo, or summarize a sent message — unless the message or surrounding context explicitly calls for canvas output (e.g., the agent is posting a completed task result alongside the message).
+
 ## ⚠️ CLI-First — Mandatory
 
 **Always use `npx storyboard canvas` CLI commands as your primary tool.** The CLI resolves the correct dev server port automatically via the Caddy proxy or `ports.json` — you never need to know the port number. All commands work from any worktree directory.
