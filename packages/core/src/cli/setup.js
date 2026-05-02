@@ -2,6 +2,11 @@
  * storyboard setup — One-time setup for the Storyboard dev environment.
  *
  * Idempotent: safe to run multiple times, only does what's needed.
+ *
+ * Usage:
+ *   npx storyboard setup                          # interactive
+ *   npx storyboard setup --skip-branch             # non-interactive, skip branch prompt
+ *   npx storyboard setup --branch=<name>           # non-interactive, switch to branch after setup
  */
 
 import * as p from '@clack/prompts'
@@ -9,7 +14,15 @@ import { existsSync, writeFileSync, readFileSync, mkdirSync, readdirSync, symlin
 import path from 'path'
 import { execSync } from 'child_process'
 import { generateCaddyfile, isCaddyInstalled, isCaddyRunning, startCaddy, reloadCaddy } from './proxy.js'
-import { gettingStartedLines, dim, magenta, bold, yellow } from './intro.js'
+import { gettingStartedLines, dim, magenta, bold, yellow, green } from './intro.js'
+import { parseFlags } from './flags.js'
+
+const flagSchema = {
+  'skip-branch': { type: 'boolean', default: false, description: 'Skip the branch prompt at the end' },
+  branch: { type: 'string', description: 'Switch to a branch after setup (non-interactive)' },
+}
+
+const { flags } = parseFlags(process.argv.slice(3), flagSchema)
 
 /**
  * Run a potentially slow task with a spinner that only appears after 500ms.
@@ -349,26 +362,38 @@ p.note(
 
 // Offer branch guide
 {
-  let currentBranchName = 'main'
-  try {
-    currentBranchName = execSync('git branch --show-current', { encoding: 'utf8' }).trim() || 'main'
-  } catch { /* empty */ }
-
-  const wantBranch = await p.select({
-    message: 'Want to work from a different branch?',
-    options: [
-      { value: true, label: 'Yes (help me create it)' },
-      { value: false, label: `No (stay on current branch ${bold(currentBranchName)})` },
-    ],
-    initialValue: false,
-  })
-
-  if (!p.isCancel(wantBranch) && wantBranch) {
+  // Non-interactive: --branch=<name> or --skip-branch
+  if (flags.branch) {
     const { runBranchGuide } = await import('./branch.js')
-    await runBranchGuide()
-  } else {
+    await runBranchGuide(flags.branch)
+  } else if (flags['skip-branch']) {
     console.log()
     console.log(mascot())
     p.outro('')
+  } else {
+    // Interactive: ask the user
+    let currentBranchName = 'main'
+    try {
+      currentBranchName = execSync('git branch --show-current', { encoding: 'utf8' }).trim() || 'main'
+    } catch { /* empty */ }
+
+    const wantBranch = await p.select({
+      message: 'Want to work from a different branch?',
+      options: [
+        { value: true, label: 'Yes (help me create it)' },
+        { value: false, label: `No (stay on current branch ${bold(currentBranchName)})` },
+      ],
+      initialValue: false,
+    })
+
+    if (!p.isCancel(wantBranch) && wantBranch) {
+      const { runBranchGuide } = await import('./branch.js')
+      await runBranchGuide()
+    } else {
+      console.log()
+      console.log(mascot())
+      p.log.info(`${dim('Non-interactive:')} ${green('npx sb setup --skip-branch')}`)
+      p.outro('')
+    }
   }
 }

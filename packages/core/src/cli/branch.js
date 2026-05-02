@@ -349,7 +349,12 @@ export async function runBranchGuide(branchArg) {
     }
   }
 
-  // 2. Route to existing or new worktree flow
+  // 2. Show equivalent non-interactive command (when user used TUI to select)
+  if (!branchArg) {
+    p.log.info(`${dim('Non-interactive:')} ${green(`npx sb branch --worktree=${targetBranch}`)}`)
+  }
+
+  // 3. Route to existing or new worktree flow
   const wtDir = worktreeDir(targetBranch)
   if (existsSync(resolve(wtDir, '.git'))) {
     return switchToExistingWorktree(targetBranch, { sourceDir, fromBranch })

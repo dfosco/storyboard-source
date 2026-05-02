@@ -93,6 +93,8 @@ function helpScreen(version) {
     '',
     `  ${bold(cyan('Setup'))}`,
     cmd('setup', 'Install deps, Caddy proxy, start proxy'),
+    cmd('setup --skip-branch', 'Non-interactive setup (skip branch prompt)'),
+    cmd('setup --branch=<name>', 'Setup + switch to a branch'),
     cmd('branch', 'Switch to a branch (interactive worktree guide)'),
     cmd('branch <name>', 'Switch to a specific branch directly'),
     cmd('branch --worktree=<name>', 'Non-interactive branch switch'),
