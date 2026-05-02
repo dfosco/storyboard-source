@@ -1,7 +1,8 @@
 /**
  * Messaging Bus — Public API
  *
- * Re-exports the core bus API, schema utilities, and storage adapter.
+ * Re-exports the core bus API, schema utilities, storage adapter,
+ * presence registry, and delivery bridge.
  */
 
 // Core bus
@@ -33,3 +34,28 @@ export { createMessagingRoutes, closeAllSseConnections } from './routes.js'
 
 // TOON
 export { negotiateFormat, serializeResponse, parseRequestBody } from './toon.js'
+
+// Presence
+export {
+  initPresence,
+  rehydratePresence,
+  joinPresence,
+  getPresent,
+  isPresent,
+  getAllPresent,
+  resetPresence,
+  HEARTBEAT_INTERVAL,
+  EXPIRY_TTL,
+} from './presence.js'
+
+// Delivery Bridge
+export {
+  initDeliveryBridge,
+  bindWidget,
+  unbindWidget,
+  rebindWidget,
+  terminalChannel,
+  isBound,
+  getBindings,
+  resetDeliveryBridge,
+} from './delivery.js'

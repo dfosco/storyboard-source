@@ -81,22 +81,42 @@ export async function handleSend() {
 
   const serverUrl = getServerUrl()
   try {
-    const res = await fetch(`${serverUrl}/_storyboard/canvas/terminal/send`, {
+    // Publish to the messaging bus via the server's publish endpoint
+    const res = await fetch(`${serverUrl}/_storyboard/messages/publish`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ widgetId: targetWidgetId, message, from: senderWidgetId }),
+      body: JSON.stringify({
+        channel: `terminal:unknown:unknown:${targetWidgetId}`,
+        type: 'message:request',
+        senderId: senderWidgetId || 'cli',
+        senderName: senderWidgetId || 'cli',
+        body: message,
+        widgetId: targetWidgetId,
+      }),
       signal: AbortSignal.timeout(10000),
     })
     const data = await res.json()
-    if (data.success) {
-      if (data.queued) {
-        console.log(`Message queued for ${targetWidgetId} (agent not running, will deliver on start)`)
-      } else {
-        console.log(`Message delivered to ${targetWidgetId}`)
-      }
+    if (data.ok) {
+      console.log(`Message published to bus for ${targetWidgetId} (event: ${data.event?.id || 'unknown'})`)
     } else {
-      console.error(`Failed: ${data.error}`)
-      process.exit(1)
+      // Fallback: try the legacy terminal/send endpoint
+      const legacyRes = await fetch(`${serverUrl}/_storyboard/canvas/terminal/send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ widgetId: targetWidgetId, message, from: senderWidgetId }),
+        signal: AbortSignal.timeout(10000),
+      })
+      const legacyData = await legacyRes.json()
+      if (legacyData.success) {
+        if (legacyData.queued) {
+          console.log(`Message queued for ${targetWidgetId} (agent not running, will deliver on start)`)
+        } else {
+          console.log(`Message delivered to ${targetWidgetId}`)
+        }
+      } else {
+        console.error(`Failed: ${legacyData.error}`)
+        process.exit(1)
+      }
     }
   } catch (err) {
     if (err.name === 'TimeoutError') {

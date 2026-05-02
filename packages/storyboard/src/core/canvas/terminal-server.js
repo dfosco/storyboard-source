@@ -52,6 +52,8 @@ import {
 } from './terminal-config.js'
 import { findByWorktree } from '../worktree/serverRegistry.js'
 import { detectWorktreeName } from '../worktree/port.js'
+import { bindWidget, unbindWidget } from '../messaging/delivery.js'
+import { joinPresence } from '../messaging/presence.js'
 
 let pty
 try {
@@ -999,7 +1001,15 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
         // Inject identity via [System] message so the agent knows who it is.
         setTimeout(() => {
           injectIdentityMessage(tmuxName, { widgetId, displayName: prettyName, canvasId, branch, serverUrl })
-          setTimeout(() => deliverPendingMessages(tmuxName, widgetId), 1000)
+          // Bind to messaging bus for live delivery + backfill missed messages
+          setTimeout(() => {
+            migratePendingMessages(widgetId, branch, canvasId).then(() => {
+              bindWidget({ widgetId, tmuxName, branch, canvasId, displayName: prettyName }).catch(() => {})
+            }).catch(() => {
+              bindWidget({ widgetId, tmuxName, branch, canvasId, displayName: prettyName }).catch(() => {})
+            })
+            joinPresence({ widgetId, senderName: prettyName || widgetId, branch, canvasId }).catch(() => {})
+          }, 1000)
         }, 500)
       } else {
         // ── Cold path: standard startup flow ──
@@ -1095,19 +1105,33 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
                             execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
                           } catch { /* empty */ }
                         }
-                        // Inject identity, then deliver pending messages
+                        // Inject identity, then bind to messaging bus
                         injectIdentityMessage(tmuxName, { widgetId, displayName: prettyName, canvasId, branch, serverUrl })
-                        setTimeout(() => deliverPendingMessages(tmuxName, widgetId), 2000)
+                        setTimeout(() => {
+                          migratePendingMessages(widgetId, branch, canvasId).then(() => {
+                            bindWidget({ widgetId, tmuxName, branch, canvasId, displayName: prettyName }).catch(() => {})
+                          }).catch(() => {
+                            bindWidget({ widgetId, tmuxName, branch, canvasId, displayName: prettyName }).catch(() => {})
+                          })
+                          joinPresence({ widgetId, senderName: prettyName || widgetId, branch, canvasId }).catch(() => {})
+                        }, 2000)
                       }, 500)
                     }
                   } catch { /* empty */ }
                 }, 2000)
                 setTimeout(() => { if (!sent) { sent = true; clearInterval(pollInterval) } }, 30000)
               } else {
-                // No readiness signal — inject identity and deliver messages after a delay
+                // No readiness signal — inject identity and bind to bus after a delay
                 setTimeout(() => {
                   injectIdentityMessage(tmuxName, { widgetId, displayName: prettyName, canvasId, branch, serverUrl })
-                  setTimeout(() => deliverPendingMessages(tmuxName, widgetId), 2000)
+                  setTimeout(() => {
+                    migratePendingMessages(widgetId, branch, canvasId).then(() => {
+                      bindWidget({ widgetId, tmuxName, branch, canvasId, displayName: prettyName }).catch(() => {})
+                    }).catch(() => {
+                      bindWidget({ widgetId, tmuxName, branch, canvasId, displayName: prettyName }).catch(() => {})
+                    })
+                    joinPresence({ widgetId, senderName: prettyName || widgetId, branch, canvasId }).catch(() => {})
+                  }, 2000)
                 }, 5000)
               }
             }, 900)
@@ -1236,6 +1260,7 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
       try { ptyProcess.kill() } catch { /* empty */ }
       ptyProcesses.delete(tmuxName)
     }
+    unbindWidget(widgetId)
     disconnectSession(tmuxName, generation)
   })
 
@@ -1246,6 +1271,7 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
     }
     try { ptyProcess.kill() } catch { /* empty */ }
     ptyProcesses.delete(tmuxName)
+    unbindWidget(widgetId)
     disconnectSession(tmuxName, generation)
   })
 }
@@ -1258,35 +1284,43 @@ function sendJson(ws, data) {
 }
 
 /**
- * Deliver any pending messages queued for this terminal.
- * Called after agent startup is complete.
+ * Migrate any old pendingMessages from terminal config to the messaging bus.
+ * One-time migration — reads and clears pendingMessages, publishes to bus.
+ * Called automatically when binding a widget to the delivery bridge.
  */
-function deliverPendingMessages(tmuxName, widgetId) {
-  if (!hasTmux) return
+async function migratePendingMessages(widgetId, branch, canvasId) {
   try {
     const config = readTerminalConfigById(widgetId)
     if (!config?.pendingMessages?.length) return
+
+    const { publish } = await import('../messaging/bus.js')
+    const { terminalChannel } = await import('../messaging/delivery.js')
+    const channel = terminalChannel(branch, canvasId, widgetId)
 
     const messages = config.pendingMessages
     // Clear pending messages from config
     config.pendingMessages = []
     config.updatedAt = new Date().toISOString()
 
-    // Write back via symlink path
     const symPath = join(process.cwd(), '.storyboard', 'terminals', `${widgetId}.json`)
     try { writeFileSync(symPath, JSON.stringify(config, null, 2)) } catch { /* empty */ }
 
-    // Deliver each message with a small delay between them
-    messages.forEach((msg, i) => {
-      setTimeout(() => {
-        try {
-          const excerpt = msg.message.length > 200 ? msg.message.slice(0, 200) + '…' : msg.message
-          const formatted = `📩 [${msg.fromName || msg.from || 'unknown'} → you]\n\`\`\`\n${excerpt}\n\`\`\`${msg.from ? `\nFull context: cat .storyboard/terminals/${msg.from}.json | jq '.latestOutput.content'` : ''}`
-          execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(formatted)}`, { stdio: 'ignore' })
-          execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
-        } catch { /* empty */ }
-      }, i * 1500)
-    })
+    // Publish each to the bus
+    for (const msg of messages) {
+      try {
+        await publish(channel, {
+          type: 'message:request',
+          senderId: msg.from || 'legacy',
+          senderName: msg.fromName || msg.from || 'unknown',
+          body: msg.message,
+          widgetId,
+          migratedFrom: 'pendingMessages',
+          originalTimestamp: msg.createdAt,
+        })
+      } catch { /* empty */ }
+    }
+
+    devLog().logEvent('info', `Migrated ${messages.length} pending messages to bus for ${widgetId}`)
   } catch { /* empty */ }
 }
 

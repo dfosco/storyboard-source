@@ -28,6 +28,8 @@ import { list as listRunningServers } from '../worktree/serverRegistry.js'
 import { initBus, subscribeAll } from '../messaging/bus.js'
 import { JsonlAdapter } from '../messaging/storage/jsonl-adapter.js'
 import { createMessagingRoutes } from '../messaging/routes.js'
+import { initPresence } from '../messaging/presence.js'
+import { initDeliveryBridge } from '../messaging/delivery.js'
 
 const API_PREFIX = '/_storyboard/'
 
@@ -308,6 +310,8 @@ export default function storyboardServer() {
       const messagingAdapter = new JsonlAdapter({ root })
       messagingAdapter.initSync()
       initBus(messagingAdapter)
+      initPresence()
+      initDeliveryBridge({ root })
       routeHandlers.set('messages', createMessagingRoutes({ sendJson: sendJsonLogged }))
 
       // Push all bus events to browser clients via Vite HMR WebSocket

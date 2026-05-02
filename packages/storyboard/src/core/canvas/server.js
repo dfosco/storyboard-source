@@ -2625,7 +2625,7 @@ export function Default() {
 
     // ── Terminal Messaging API ──────────────────────────────────────────
 
-    // POST /terminal/send — send a message to a terminal via tmux send-keys
+    // POST /terminal/send — send a message via the messaging bus
     if (routePath === '/terminal/send' && method === 'POST') {
       const { widgetId: targetWidgetId, message, from: senderWidgetId } = body
 
@@ -2635,22 +2635,11 @@ export function Default() {
       }
 
       try {
-        const { execSync } = await import('node:child_process')
-        const { findTmuxNameForWidget } = await import('./terminal-registry.js')
-        const { readTerminalConfigById, updatePendingMessages, initTerminalConfig } = await import('./terminal-config.js')
+        const { publish, subscribe } = await import('../messaging/bus.js')
+        const { terminalChannel, isBound } = await import('../messaging/delivery.js')
+        const { readTerminalConfigById, initTerminalConfig } = await import('./terminal-config.js')
 
         initTerminalConfig(root)
-
-        const tmuxName = findTmuxNameForWidget(targetWidgetId)
-        if (!tmuxName) {
-          sendJson(res, 404, { error: `No active session for widget ${targetWidgetId}` })
-          return
-        }
-
-        // Check session is live (widget open in browser)
-        const { getSession } = await import('./terminal-registry.js')
-        const session = getSession(tmuxName)
-        const isLive = session?.status === 'live'
 
         // Resolve sender display name
         let senderName = senderWidgetId || 'unknown'
@@ -2661,54 +2650,51 @@ export function Default() {
           } catch { /* use widgetId as fallback */ }
         }
 
-        // Deterministic agent detection: get the pane's shell PID, then
-        // check its child process. Known agent CLIs (copilot, claude) run
-        // as direct children of the shell. We match against the process
-        // name (comm) to identify which agent is running.
-        let runningAgent = null // null = no agent, 'copilot' | 'claude' | 'codex' = which one
+        // Resolve target branch/canvas from config
+        const targetConfig = readTerminalConfigById(targetWidgetId)
+        let currentBranch = 'unknown'
         try {
-          const panePid = execSync(
-            `tmux list-panes -t "${tmuxName}" -F '#{pane_pid}'`,
-            { encoding: 'utf8', timeout: 2000 }
-          ).trim()
-          if (panePid && isLive) {
-            const children = execSync(
-              `ps -o comm= -p $(pgrep -P ${panePid} 2>/dev/null | tr '\\n' ',') 2>/dev/null || true`,
-              { encoding: 'utf8', timeout: 2000 }
-            ).trim().split('\n').map(s => s.trim()).filter(Boolean)
-            for (const cmd of children) {
-              if (cmd === 'copilot') { runningAgent = 'copilot'; break }
-              if (cmd === 'claude') { runningAgent = 'claude'; break }
-              if (cmd === 'codex') { runningAgent = 'codex'; break }
-            }
-          }
-        } catch { /* tmux/ps not available */ }
+          const { execSync: ex } = await import('node:child_process')
+          currentBranch = ex('git branch --show-current', { encoding: 'utf8', cwd: root }).trim()
+        } catch { /* empty */ }
+        const targetBranch = targetConfig?.branch || currentBranch
+        const targetCanvasId = targetConfig?.canvasId || 'unknown'
+        const channel = terminalChannel(targetBranch, targetCanvasId, targetWidgetId)
 
-        const isAgentRunning = runningAgent !== null
+        // Publish to the bus — delivery bridge handles tmux injection
+        const event = await publish(channel, {
+          type: 'message:request',
+          senderId: senderWidgetId || 'cli',
+          senderName,
+          body: message,
+          widgetId: targetWidgetId,
+        })
 
-        if (isAgentRunning) {
-          // Agent is running — send the full message directly (like a chat bubble)
-          const formatted = `📩 ${senderName}: ${message}`
-
-          try {
-            execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(formatted)}`, { stdio: 'ignore' })
-            execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
-          } catch (err) {
-            sendJson(res, 500, { error: `Failed to send via tmux: ${err.message}` })
-            return
-          }
-
-          sendJson(res, 200, { success: true, delivered: true })
-        } else {
-          // Shell prompt or unknown — queue the message
-          updatePendingMessages(targetWidgetId, {
-            from: senderWidgetId || null,
-            fromName: senderName,
-            message,
-            createdAt: new Date().toISOString(),
+        // If the delivery bridge is bound, wait briefly for delivery ack
+        if (isBound(targetWidgetId)) {
+          const ackPromise = new Promise((resolve) => {
+            let timer
+            const unsub = subscribe(channel, (ack) => {
+              if (ack.correlationId === event.id && (ack.type === 'message:delivered' || ack.type === 'message:failed')) {
+                clearTimeout(timer)
+                unsub()
+                resolve(ack)
+              }
+            })
+            timer = setTimeout(() => { unsub(); resolve(null) }, 5000)
           })
 
-          sendJson(res, 200, { success: true, queued: true })
+          const ack = await ackPromise
+          if (ack?.type === 'message:delivered') {
+            sendJson(res, 200, { success: true, delivered: true, eventId: event.id })
+          } else if (ack?.type === 'message:failed') {
+            sendJson(res, 200, { success: true, queued: true, eventId: event.id, note: 'tmux delivery failed, message persisted on bus' })
+          } else {
+            sendJson(res, 200, { success: true, queued: true, eventId: event.id, note: 'delivery timeout, message persisted on bus' })
+          }
+        } else {
+          // No binding — message is on the bus, will be delivered when agent binds
+          sendJson(res, 200, { success: true, queued: true, eventId: event.id })
         }
       } catch (err) {
         sendJson(res, 500, { error: `Failed to send message: ${err.message}` })

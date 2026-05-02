@@ -13,6 +13,8 @@
 
 import { publish, subscribe, read, readMulti } from './bus.js'
 import { negotiateFormat, serializeResponse, parseRequestBody } from './toon.js'
+import { getPresent, isPresent, getAllPresent } from './presence.js'
+import { getBindings } from './delivery.js'
 
 /** @type {Set<{ res: any, unsub: () => void, timer: NodeJS.Timeout }>} Active SSE connections */
 const sseConnections = new Set()
@@ -52,6 +54,16 @@ export function createMessagingRoutes({ sendJson }) {
       // GET /read — read events (channel from query or path)
       if (method === 'GET' && (subpath === 'read' || subpath.startsWith('read/'))) {
         return await handleRead(req, res, ctx, sendJson)
+      }
+
+      // GET /presence — list present agents (optionally filtered by canvas)
+      if (method === 'GET' && (subpath === 'presence' || subpath.startsWith('presence/'))) {
+        return await handlePresence(req, res, ctx, sendJson)
+      }
+
+      // GET /bindings — list active delivery bridge bindings
+      if (method === 'GET' && subpath === 'bindings') {
+        return await sendNegotiated(req, res, 200, { bindings: getBindings() })
       }
 
       sendJson(res, 404, { error: `Unknown messaging route: ${method} ${subpath}` })
@@ -301,6 +313,48 @@ async function handleRead(req, res, ctx, sendJson) {
 
   const events = await read(channel, opts)
   return await sendNegotiated(req, res, 200, { channel, events })
+}
+
+// ---------------------------------------------------------------------------
+// Presence endpoint
+// ---------------------------------------------------------------------------
+
+/**
+ * GET /presence — List currently-present agents.
+ * Path variants:
+ *   /presence                         — all present agents across all canvases
+ *   /presence/:branch/:canvasId       — agents on a specific canvas
+ *   /presence/:branch/:canvasId/:wid  — check if a specific agent is present
+ */
+async function handlePresence(req, res, ctx, sendJson) {
+  const subpath = (ctx.path || '/').replace(/^\//, '').split('?')[0]
+  const parts = subpath.split('/').slice(1) // remove 'presence' prefix
+
+  if (parts.length === 0 || (parts.length === 1 && !parts[0])) {
+    // All present agents
+    return await sendNegotiated(req, res, 200, { agents: getAllPresent() })
+  }
+
+  if (parts.length >= 2) {
+    const branch = decodeURIComponent(parts[0])
+    const canvasId = decodeURIComponent(parts[1])
+
+    if (parts.length >= 3 && parts[2]) {
+      // Specific widget
+      const widgetId = decodeURIComponent(parts[2])
+      const entry = isPresent(widgetId)
+      if (entry && entry.branch === branch && entry.canvasId === canvasId) {
+        return await sendNegotiated(req, res, 200, { present: true, agent: entry })
+      }
+      return await sendNegotiated(req, res, 200, { present: false, agent: null })
+    }
+
+    // All agents on a canvas
+    const agents = getPresent(branch, canvasId)
+    return await sendNegotiated(req, res, 200, { agents })
+  }
+
+  sendJson(res, 400, { error: 'Use /presence, /presence/:branch/:canvasId, or /presence/:branch/:canvasId/:widgetId' })
 }
 
 // ---------------------------------------------------------------------------
