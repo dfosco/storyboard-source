@@ -79,8 +79,16 @@ awareness ping (so joiners get the real roomId without it being guessable from
 the URL).
 
 > **Security note:** closed rooms are not cryptographically access-controlled —
-> they rely on the obscurity of the pretty name + room ID. For production use the
-> `y-webrtc` `password` option (see §12) adds AES-GCM encryption on top.
+> they rely on the obscurity of the pretty name + room ID. Guessing the room ID
+> (UUID v4) directly from the outside is infeasible.
+>
+> **Network model:** the public signaling server is used **only** for the initial
+> WebRTC ICE/SDP handshake. Once peers are connected, all data (awareness,
+> CRDT ops, cursor positions, viewport sync, hash params) flows exclusively over
+> the encrypted WebRTC data channel — P2P, never through the signaling server.
+> The signaling server never sees any awareness or room payload.
+> The `password` option (§12) adds an additional application-level AES-GCM layer
+> on top of WebRTC's built-in DTLS encryption, for extra defence-in-depth.
 
 ---
 
@@ -198,6 +206,11 @@ Builds directly on `room-mates` `cursorsPlugin` and `y-protocols/awareness`.
 
 The `cursorsPlugin` already handles cursor rendering. Route, viewport, and hash
 fields are added by the new `roomPlugin` (see §13).
+
+> **Privacy note:** all awareness fields (cursors, route, viewport, hash) are
+> sent exclusively over the WebRTC data channel between peers — they never
+> transit the public signaling server. The signaling server is contacted only
+> during the initial ICE/SDP handshake and carries no room payload.
 
 ### Presence bar
 
@@ -451,12 +464,16 @@ When canvas editing is enabled, participants see a restricted toolbar:
 {
   "rooms": {
     "enabled": true,               // false = feature entirely disabled
-    "signaling": [                 // y-webrtc signaling servers
+    "signaling": [                 // y-webrtc signaling servers (used only for
+                                   // initial WebRTC ICE/SDP handshake; no room
+                                   // data ever transits these servers)
       "wss://signaling.yjs.dev"
     ],
-    "password": "",                // AES-GCM shared secret for y-webrtc; leave
-                                   // empty to disable (shows a console warning
-                                   // when a room is opened without a password)
+    "password": "",                // Optional AES-GCM application-layer secret
+                                   // layered on top of WebRTC's built-in DTLS.
+                                   // When set, all y-webrtc payloads are
+                                   // additionally encrypted before transmission.
+                                   // All peers in a room must use the same value.
     "canvasEdit": {
       "allowByDefault": false      // host can override per-room; this is the
                                    // default when opening the popover
@@ -548,9 +565,12 @@ All phases behind `rooms.enabled: true`.
 ## 15. Open questions
 
 1. **Bootstrap room security:** The bootstrap channel (`sb-bootstrap-{slug}`) is
-   public and unencrypted. An eavesdropper on the signaling server could reply to
-   a `resolve-room` request with a fake roomId. Is this threat model acceptable,
-   or should the prettyName→roomId mapping be signed?
+   used only for the initial `prettyName → roomId` resolution and transits the
+   signaling server (no room payload, just the prettyName+roomId mapping). An
+   eavesdropper could reply with a fake roomId, redirecting a participant to an
+   attacker-controlled room. Mitigations: sign the resolution reply with the
+   host's client ID (already visible in awareness once joined); or embed the
+   roomId directly in a short-lived signed URL. Is this threat model acceptable?
 
 2. **Open room and branch deploys:** With branch-prefixed base paths, the
    `?openRoom=` param travels with the URL. Does this work correctly across
@@ -565,11 +585,6 @@ All phases behind `rooms.enabled: true`.
    `Ctrl+Z` undo only their change, or the last change from any participant?
    Recommend: local undo stack per client; remote ops are not undoable from
    another client's undo stack. Needs a clear UX affordance.
-
-5. **Awareness encryption:** `y-protocols/awareness` updates are sent over the
-   same signaling + WebRTC channel as CRDT ops. With `password` set, they are
-   AES-GCM encrypted. Without it, cursor positions and routes are visible to the
-   signaling server. Document this clearly in the UI ("⚠ Room not encrypted").
 
 6. **`room-names.json` refresh:** 100 names is a small pool for large teams.
    Should names be recycled after a session ends? Add a `usedNames` set in
