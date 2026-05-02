@@ -29,7 +29,7 @@ import { resolve } from 'path'
 import { repoRoot, worktreeDir, listWorktrees, getPort, detectWorktreeName } from '../worktree/port.js'
 import { hasUncommittedChanges, localBranchExists } from './dev-helpers.js'
 import { parseFlags } from './flags.js'
-import { dim, green, bold, cyan } from './intro.js'
+import { dim, green, bold } from './intro.js'
 
 const flagSchema = {
   worktree: { type: 'string', description: 'Target worktree/branch name (non-interactive)' },

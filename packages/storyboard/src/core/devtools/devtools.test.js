@@ -45,31 +45,31 @@ describe('mountDevTools', () => {
 
   it('creates a wrapper element in the DOM', async () => {
     await mountDevTools()
-    expect(document.getElementById('sb-command-menu')).not.toBeNull()
+    expect(document.getElementById('sb-core-ui')).not.toBeNull()
   })
 
   it('appends to document.body by default', async () => {
     await mountDevTools()
-    expect(document.getElementById('sb-command-menu')).toBeInTheDocument()
+    expect(document.getElementById('sb-core-ui')).toBeInTheDocument()
   })
 
   it('accepts a custom container', async () => {
     const container = document.createElement('div')
     document.body.appendChild(container)
     await mountDevTools({ container })
-    expect(container.querySelector('#sb-command-menu')).not.toBeNull()
+    expect(container.querySelector('#sb-core-ui')).not.toBeNull()
   })
 
   it('is idempotent — calling twice does not double-mount', async () => {
     await mountDevTools()
     await mountDevTools()
-    expect(document.querySelectorAll('#sb-command-menu').length).toBe(1)
+    expect(document.querySelectorAll('#sb-core-ui').length).toBe(1)
   })
 
   it('unmountDevTools removes the wrapper', async () => {
     await mountDevTools()
-    expect(document.getElementById('sb-command-menu')).not.toBeNull()
+    expect(document.getElementById('sb-core-ui')).not.toBeNull()
     await unmountDevTools()
-    expect(document.getElementById('sb-command-menu')).toBeNull()
+    expect(document.getElementById('sb-core-ui')).toBeNull()
   })
 })
