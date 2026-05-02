@@ -1,13 +1,11 @@
 import { Text, FormControl, Button, Stack } from '@primer/react'
 import Application from '@/templates/Application/Application.jsx'
-import {
-  StoryboardForm,
-  TextInput,
-  Checkbox,
-  Select,
-  Textarea,
-} from '@dfosco/storyboard-react-primer'
-import { useOverride } from '@dfosco/storyboard-react'
+import StoryboardForm from '@/components/StoryboardForm/StoryboardForm.jsx'
+import TextInput from '@/components/TextInput/TextInput.jsx'
+import Checkbox from '@/components/Checkbox/Checkbox.jsx'
+import Select from '@/components/Select/Select.jsx'
+import Textarea from '@/components/Textarea/Textarea.jsx'
+import { useOverride } from '@dfosco/storyboard'
 import {
   HomeIcon,
   GearIcon,

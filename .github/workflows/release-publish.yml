@@ -3,11 +3,11 @@ name: Release Publish
 on:
   push:
     tags:
-      - '@dfosco/storyboard-core@*'
+      - '@dfosco/storyboard@*'
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Core package tag (e.g. @dfosco/storyboard-core@1.25.0)'
+        description: 'Package tag (e.g. @dfosco/storyboard@0.5.0)'
         required: true
 
 concurrency:
@@ -45,7 +45,7 @@ jobs:
       - name: Determine version and dist-tag
         id: meta
         run: |
-          VERSION=$(node -p "require('./packages/core/package.json').version")
+          VERSION=$(node -p "require('./packages/storyboard/package.json').version")
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
           if [[ "$VERSION" == *"-beta."* ]]; then
@@ -65,11 +65,7 @@ jobs:
           VERSION="${{ steps.meta.outputs.version }}"
 
           WORKSPACES=(
-            "@dfosco/storyboard-core"
-            "@dfosco/tiny-canvas"
-            "@dfosco/storyboard-react"
-            "@dfosco/storyboard-react-primer"
-            "@dfosco/storyboard-react-reshaped"
+            "@dfosco/storyboard"
           )
 
           PUBLISH_ARGS=(--access public --provenance)
@@ -95,9 +91,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION="${{ steps.meta.outputs.version }}"
-          TAG="@dfosco/storyboard-core@${VERSION}"
+          TAG="@dfosco/storyboard@${VERSION}"
           TITLE="v${VERSION}"
-          CHANGELOG="packages/core/CHANGELOG.md"
+          CHANGELOG="packages/storyboard/CHANGELOG.md"
 
           if gh release view "$TAG" &>/dev/null; then
             echo "⏭️  Release ${TITLE} already exists, skipping"

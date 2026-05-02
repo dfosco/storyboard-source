@@ -1,7 +1,7 @@
 import { useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button, FormControl, TextInput, Select, Checkbox, Text } from '@primer/react'
-import { useOverride } from '@dfosco/storyboard-react'
+import { useOverride } from '@dfosco/storyboard'
 import styles from './Signup.module.css'
 
 const steps = ['Account', 'Organization', 'Workspace', 'Review']

@@ -8,7 +8,7 @@
  * - Multiple actions
  * - Actions without close button (left pane in split)
  */
-import ExpandedPaneTopBar from '../../../packages/react/src/canvas/widgets/ExpandedPaneTopBar.jsx'
+import ExpandedPaneTopBar from '../../../packages/storyboard/src/internals/canvas/widgets/ExpandedPaneTopBar.jsx'
 import { useState, useCallback } from 'react'
 
 const barWrapperStyle = {

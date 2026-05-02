@@ -32,7 +32,7 @@ for arg in "$@"; do
 done
 
 # Read the version from the already-bumped packages
-VERSION=$(node -p "require('./packages/core/package.json').version")
+VERSION=$(node -p "require('./packages/storyboard/package.json').version")
 
 if [ -n "$PRE_TAG" ]; then
   echo "🏷️  Resuming prerelease: $PRE_TAG (v${VERSION})"
@@ -73,7 +73,7 @@ if [ -n "$PRE_TAG" ]; then
   fi
 fi
 
-TAG="@dfosco/storyboard-core@${VERSION}"
+TAG="@dfosco/storyboard@${VERSION}"
 
 echo "⬆️  Pushing branch..."
 git push --set-upstream origin "$(git branch --show-current)" 2>/dev/null || git push

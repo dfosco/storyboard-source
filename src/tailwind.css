@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@source "../packages/core/src/**/*.{svelte,js,ts}";
+@source "../packages/storyboard/src/**/*.{js,jsx,ts}";
 @custom-variant dark (&:where([data-sb-theme^="dark"], [data-sb-theme^="dark"] *));
 
 @theme {

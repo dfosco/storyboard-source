@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Release script for @dfosco/storyboard-* packages
+# Release script for @dfosco/storyboard package
 # Runs lint + tests + build before creating a versioned release.
 #
 # Usage:
@@ -76,7 +76,7 @@ fi
 CHANGESET_ID=$(node -p "'changeset-' + Date.now().toString(36)")
 cat > ".changeset/${CHANGESET_ID}.md" <<EOF
 ---
-"@dfosco/storyboard-core": ${BUMP_TYPE}
+"@dfosco/storyboard": ${BUMP_TYPE}
 ---
 
 ${SUMMARY}
@@ -87,7 +87,7 @@ echo "📦 Bumping versions..."
 npm run version
 
 # Read the version that was just set
-VERSION=$(node -p "require('./packages/core/package.json').version")
+VERSION=$(node -p "require('./packages/storyboard/package.json').version")
 
 # Sanity check: prerelease versions must contain the tag
 if [ -n "$PRE_TAG" ] && [[ "$VERSION" != *"-${PRE_TAG}."* ]]; then
@@ -141,7 +141,7 @@ if [ -n "$PRE_TAG" ]; then
   git commit -m "chore: exit prerelease mode" --allow-empty
 fi
 
-TAG="@dfosco/storyboard-core@${VERSION}"
+TAG="@dfosco/storyboard@${VERSION}"
 
 echo "⬆️  Pushing branch..."
 git push --set-upstream origin "$(git branch --show-current)" 2>/dev/null || git push

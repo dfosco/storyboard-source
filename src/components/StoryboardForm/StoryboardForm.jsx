@@ -1,5 +1,5 @@
 import { useRef, useCallback } from 'react'
-import { setParam, isHideMode, setShadow } from '@dfosco/storyboard-core'
+import { setParam, isHideMode, setShadow } from '@dfosco/storyboard/core'
 import { FormContext } from '../FormContext/FormContext.jsx'
 
 /**

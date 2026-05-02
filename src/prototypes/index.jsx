@@ -1,4 +1,4 @@
-import { Workspace } from '@dfosco/storyboard-react'
+import { Workspace } from '@dfosco/storyboard'
 
 const pageModules = import.meta.glob('/src/prototypes/*/*.jsx')
 

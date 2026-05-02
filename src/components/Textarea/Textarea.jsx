@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from 'react'
 import { Textarea as PrimerTextarea } from '@primer/react'
 import { FormContext } from '../FormContext/FormContext.jsx'
-import { useOverride } from '@dfosco/storyboard-react'
+import { useOverride } from '@dfosco/storyboard'
 
 /**
  * Wrapped Primer Textarea that integrates with StoryboardForm.

@@ -9,7 +9,7 @@
         "dev": "storyboard dev",
         "dev:vite": "vite",
         "build": "vite build",
-        "lint": "eslint . && npm run check:imports -w @dfosco/storyboard-core",
+        "lint": "eslint . && npm run check:imports -w @dfosco/storyboard",
         "preview": "vite preview",
         "prepare": "git config core.hooksPath .githooks",
         "changeset": "changeset",
@@ -18,8 +18,8 @@
         "test": "vitest run",
         "test:integration": "vitest run --config vitest.integration.config.js",
         "test:watch": "vitest",
-        "test:core": "vitest run packages/core",
-        "test:react": "vitest run packages/react",
+        "test:core": "vitest run packages/storyboard/src/core",
+        "test:react": "vitest run packages/storyboard/src/internals",
         "sync": "./scripts/sync-local.sh",
         "sync:no-build": "./scripts/sync-local.sh --no-build",
         "release": "./scripts/release.sh",
@@ -28,9 +28,8 @@
         "release:resume": "./scripts/release-resume.sh",
         "release:resume:beta": "PRERELEASE_TAG=beta ./scripts/release-resume.sh",
         "release:resume:alpha": "PRERELEASE_TAG=alpha ./scripts/release-resume.sh",
-        "test:svelte": "vitest run --config packages/svelte-ui/vitest.config.ts",
-        "build:ui": "npm run build:ui -w @dfosco/storyboard-core",
-        "dev:ui": "npm run dev:ui -w @dfosco/storyboard-core",
+        "build:ui": "npm run build:ui -w @dfosco/storyboard",
+        "dev:ui": "npm run dev:ui -w @dfosco/storyboard",
         "link": "npm run build:ui && ./scripts/link.sh && npm run dev",
         "unlink": "./scripts/unlink.sh",
         "setup": "./scripts/setup.sh",
@@ -98,5 +97,5 @@
         "vite": "^7.3.1",
         "vitest": "^4.0.18"
     },
-    "version": "4.2.8"
+    "version": "0.5.0"
 }

@@ -1,5 +1,5 @@
 import { Label, ProgressBar, Text, Checkbox as PrimerCheckbox } from '@primer/react'
-import { useFlowData } from '@dfosco/storyboard-react'
+import { useFlowData } from '@dfosco/storyboard'
 import AppSidebar from '@/components/AppSidebar/AppSidebar.jsx'
 import styles from './Dashboard.module.css'
 

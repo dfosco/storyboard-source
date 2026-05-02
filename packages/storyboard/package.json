@@ -1,0 +1,119 @@
+{
+  "name": "@dfosco/storyboard",
+  "version": "0.5.0",
+  "type": "module",
+  "license": "MIT",
+  "description": "Storyboard prototyping framework — core engine, React integration, and canvas",
+  "bin": {
+    "storyboard-scaffold": "./src/core/scaffold.js",
+    "storyboard": "./src/core/cli/index.js",
+    "sb": "./src/core/cli/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dfosco/storyboard.git",
+    "directory": "packages/storyboard"
+  },
+  "files": [
+    "src",
+    "dist",
+    "scaffold",
+    "toolbar.config.json",
+    "widgets.config.json",
+    "paste.config.json",
+    "commandpalette.config.json"
+  ],
+  "scripts": {
+    "build:css": "tailwindcss -i src/core/styles/tailwind.css -o dist/tailwind.css --minify",
+    "build:ui": "vite build --config vite.ui.config.js",
+    "build:canvas": "vite build --config vite.canvas.config.js",
+    "dev:ui": "vite build --config vite.ui.config.js --watch",
+    "prepublishOnly": "npm run build:css && npm run build:ui && npm run build:canvas",
+    "check:imports": "echo 'no svelte checks needed'"
+  },
+  "exports": {
+    ".": "./src/internals/index.js",
+    "./core": "./src/core/index.js",
+    "./canvas": {
+      "import": "./dist/tiny-canvas.js",
+      "types": "./src/canvas/index.d.ts"
+    },
+    "./canvas/style.css": "./dist/tiny-canvas.css",
+    "./canvas/CanvasPage": "./src/internals/canvas/CanvasPage.jsx",
+    "./vite": "./src/internals/vite/data-plugin.js",
+    "./vite/server": "./src/core/vite/server-plugin.js",
+    "./hash-preserver": "./src/internals/hashPreserver.js",
+    "./context": "./src/internals/context.jsx",
+    "./hooks/useFeatureFlag": "./src/internals/hooks/useFeatureFlag.js",
+    "./config": "./src/core/configSchema.js",
+    "./toolbar.config.json": "./toolbar.config.json",
+    "./widgets.config.json": "./widgets.config.json",
+    "./paste.config.json": "./paste.config.json",
+    "./commandpalette.config.json": "./commandpalette.config.json",
+    "./ui-runtime": "./dist/storyboard-ui.js",
+    "./ui-runtime/style.css": "./dist/storyboard-ui.css",
+    "./canvas/materializer": "./src/core/canvas/materializer.js",
+    "./canvas/collision": "./src/core/canvas/collision.js",
+    "./canvas/identity": "./src/core/canvas/identity.js",
+    "./canvas/writeGuard": "./src/core/canvas/writeGuard.js",
+    "./comments": "./src/core/comments/index.js",
+    "./comments/ui/comments.css": "./src/core/comments/ui/comment-layout.css",
+    "./comments/ui/comment-layout.css": "./src/core/comments/ui/comment-layout.css",
+    "./workshop/ui/mount.js": "./src/core/workshop/ui/mount.ts",
+    "./modes.css": "./src/core/modes.css",
+    "./ui/design-modes": "./src/core/ui/design-modes.ts",
+    "./ui/viewfinder": "./src/core/ui/viewfinder.ts",
+    "./styles/tailwind.css": "./dist/tailwind.css",
+    "./worktree/port": "./src/core/worktree/port.js",
+    "./worktree/serverRegistry": "./src/core/worktree/serverRegistry.js",
+    "./inspector/highlighter": "./src/core/inspector/highlighter.js",
+    "./smooth-corners": "./src/core/smoothCorners.js"
+  },
+  "dependencies": {
+    "@base-ui/react": "^1.4.0",
+    "@clack/prompts": "^1.2.0",
+    "@neodrag/react": "^2.3.1",
+    "@primer/octicons": "^19.22.0",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-visually-hidden": "^1.2.4",
+    "ansi-to-html": "^0.7.2",
+    "cmdk": "^1.1.1",
+    "feather-icons": "^4.29.2",
+    "ghostty-web": "^0.4.0",
+    "glob": "^11.0.0",
+    "highlight.js": "^11.11.1",
+    "html-to-image": "^1.11.13",
+    "iconoir": "^7.11.0",
+    "jsonc-parser": "^3.3.1",
+    "lucide-react": "^1.8.0",
+    "remark": "^15.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-html": "^16.0.1",
+    "ws": "^8.0.0"
+  },
+  "peerDependencies": {
+    "@primer/octicons-react": ">=19",
+    "react": ">=18",
+    "react-dom": ">=18",
+    "react-router-dom": ">=6",
+    "vite": ">=5"
+  },
+  "peerDependenciesMeta": {
+    "vite": { "optional": true }
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.2.2",
+    "@tailwindcss/vite": "^4.2.2",
+    "@vitejs/plugin-react": "^4.3.4",
+    "clsx": "^2.1.1",
+    "marked": "^17.0.5",
+    "tailwind-merge": "^3.5.0",
+    "tailwind-variants": "^3.2.2",
+    "tailwindcss": "^4.2.2",
+    "tw-animate-css": "^1.4.0",
+    "vite": "^7.3.1"
+  },
+  "optionalDependencies": {
+    "node-pty": "^1.0.0"
+  }
+}

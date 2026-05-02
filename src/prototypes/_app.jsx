@@ -1,13 +1,13 @@
 import { Suspense } from 'react'
 import { Outlet } from 'react-router-dom'
-// Direct imports bypass the barrel re-export in @dfosco/storyboard-react/index.js.
+// Direct imports bypass the barrel re-export in @dfosco/storyboard/index.js.
 // The barrel eagerly re-exports CanvasPage (3K lines), CommandPalette (1.3K lines),
 // and Viewfinder (1.5K lines) — all resolved by Vite dev even though _app only
 // needs StoryboardProvider and useFeatureFlag.
-import StoryboardProvider from '@dfosco/storyboard-react/context'
-import { useFeatureFlag } from '@dfosco/storyboard-react/hooks/useFeatureFlag'
+import StoryboardProvider from '@dfosco/storyboard/context'
+import { useFeatureFlag } from '@dfosco/storyboard/hooks/useFeatureFlag'
 import appStyles from './_app.module.css'
-import '@dfosco/tiny-canvas/style.css'
+import '@dfosco/storyboard/canvas/style.css'
 
 function PageLoading() {
   return (
