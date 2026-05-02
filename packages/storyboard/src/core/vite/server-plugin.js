@@ -25,7 +25,7 @@ import { setupTerminalServer } from '../canvas/terminal-server.js'
 import { listSessions, detachSession, killSession, orphanSession, bulkCleanup, getSessionStats } from '../canvas/terminal-registry.js'
 import { execSync as cpExecSync } from 'node:child_process'
 import { list as listRunningServers } from '../worktree/serverRegistry.js'
-import { initBus } from '../messaging/bus.js'
+import { initBus, subscribeAll } from '../messaging/bus.js'
 import { JsonlAdapter } from '../messaging/storage/jsonl-adapter.js'
 import { createMessagingRoutes } from '../messaging/routes.js'
 
@@ -309,6 +309,15 @@ export default function storyboardServer() {
       messagingAdapter.initSync()
       initBus(messagingAdapter)
       routeHandlers.set('messages', createMessagingRoutes({ sendJson: sendJsonLogged }))
+
+      // Push all bus events to browser clients via Vite HMR WebSocket
+      subscribeAll((channel, event) => {
+        server.ws.send({
+          type: 'custom',
+          event: 'storyboard:message',
+          data: { channel, event },
+        })
+      })
 
       // Terminal sessions API — list, detach, kill sessions
       routeHandlers.set('terminal', async (req, res, ctx) => {

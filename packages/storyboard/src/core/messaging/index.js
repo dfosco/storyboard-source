@@ -29,7 +29,7 @@ export {
 export { JsonlAdapter } from './storage/jsonl-adapter.js'
 
 // Routes
-export { createMessagingRoutes } from './routes.js'
+export { createMessagingRoutes, closeAllSseConnections } from './routes.js'
 
 // TOON
 export { negotiateFormat, serializeResponse, parseRequestBody } from './toon.js'
