@@ -1,0 +1,28 @@
+{
+  "name": "room-mates",
+  "version": "0.1.0",
+  "description": "Framework-agnostic realtime session management with Y.js — presence, cursors, shared state",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./plugins/cursors": "./src/plugins/cursors.js"
+  },
+  "files": [
+    "src/"
+  ],
+  "keywords": [
+    "yjs",
+    "realtime",
+    "presence",
+    "cursors",
+    "collaboration",
+    "webrtc",
+    "p2p"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "yjs": "^13.6.0",
+    "y-webrtc": "^10.3.0"
+  }
+}
