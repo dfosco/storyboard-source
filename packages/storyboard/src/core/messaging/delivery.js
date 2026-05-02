@@ -95,8 +95,12 @@ export async function bindWidget({ widgetId, tmuxName, branch, canvasId, display
     const missed = await read(channel, opts)
     for (const event of missed) {
       if (shouldDeliver(event, widgetId)) {
-        await deliverToTmux(tmuxName, event)
-        saveCursor(widgetId, event.id)
+        const ok = await deliverToTmux(tmuxName, event)
+        if (ok) {
+          saveCursor(widgetId, event.id)
+        } else {
+          break // Stop backfill on first failure — retry on next bind
+        }
       }
     }
   } catch {

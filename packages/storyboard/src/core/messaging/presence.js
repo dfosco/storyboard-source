@@ -131,6 +131,9 @@ export async function joinPresence({ widgetId, senderName, branch, canvasId, age
     capabilities: capabilities || null,
   })
 
+  // Also update registry directly (in case no subscription exists for this channel yet)
+  applyPresenceEvent({ type: 'presence:join', widgetId, senderName, branch, canvasId, agentType, capabilities, timestamp: new Date().toISOString() }, channel)
+
   // Start heartbeat
   const timer = setInterval(async () => {
     try {
@@ -160,6 +163,20 @@ export async function joinPresence({ widgetId, senderName, branch, canvasId, age
       registry.delete(widgetId)
     },
   }
+}
+
+/**
+ * Remove an agent from the presence registry and stop its heartbeat.
+ * Call on disconnect/close — does not require storing the stop() handle.
+ * @param {string} widgetId
+ */
+export function leavePresence(widgetId) {
+  const timer = heartbeatTimers.get(widgetId)
+  if (timer) {
+    clearInterval(timer)
+    heartbeatTimers.delete(widgetId)
+  }
+  registry.delete(widgetId)
 }
 
 // ---------------------------------------------------------------------------
