@@ -95,6 +95,7 @@ function helpScreen(version) {
     cmd('setup', 'Install deps, Caddy proxy, start proxy'),
     cmd('branch', 'Switch to a branch (interactive worktree guide)'),
     cmd('branch <name>', 'Switch to a specific branch directly'),
+    cmd('branch --worktree=<name>', 'Non-interactive branch switch'),
     cmd('proxy start', 'Start or reload Caddy proxy'),
     cmd('proxy close', 'Stop Caddy proxy'),
     '',
