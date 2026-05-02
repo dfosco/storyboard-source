@@ -106,8 +106,7 @@ export default defineConfig({
     cssFileName: 'storyboard-ui',
     rollupOptions: {
       external: [
-        '@dfosco/storyboard/core',
-        '@dfosco/storyboard/comments',
+        /^@dfosco\/storyboard(\/|$)/,
         /^react($|\/)/,
         /^react-dom($|\/)/,
         'node:fs',
