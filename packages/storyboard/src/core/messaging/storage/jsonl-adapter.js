@@ -31,6 +31,11 @@ export class JsonlAdapter {
     fs.mkdirSync(this.baseDir, { recursive: true })
   }
 
+  /** Synchronous init — for use in non-async contexts like Vite configureServer */
+  initSync() {
+    fs.mkdirSync(this.baseDir, { recursive: true })
+  }
+
   /**
    * Get the file path for a channel.
    * @param {string} channel

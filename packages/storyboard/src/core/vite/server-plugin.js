@@ -306,7 +306,7 @@ export default function storyboardServer() {
 
       // Wire messaging bus (shared event log for multi-agent communication)
       const messagingAdapter = new JsonlAdapter({ root })
-      await messagingAdapter.init()
+      messagingAdapter.initSync()
       initBus(messagingAdapter)
       routeHandlers.set('messages', createMessagingRoutes({ sendJson: sendJsonLogged }))
 
