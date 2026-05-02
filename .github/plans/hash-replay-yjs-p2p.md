@@ -217,14 +217,29 @@ session" workshop action (which copies the full room name / session link).
 {
   "realtime": {
     "enabled": false,
-    "signaling": []       // empty = disabled with warning; fill to enable
+    "signaling": ["wss://signaling.yjs.dev"],  // public server, required for static/GH Pages deployments
+    "password": ""                              // set to enable AES-GCM encryption on signaling payloads
   }
 }
 ```
 
-The provider is never instantiated when `enabled: false`. When `signaling` is
-empty and `enabled: true`, a clear console warning is shown and realtime is
-silently skipped.
+**Signaling default: `wss://signaling.yjs.dev`**
+
+Because Storyboard is deployed as a static site on GitHub Pages (no backend to
+run a custom signaling server), the public `y-webrtc` signaling server is the
+only viable default. The `password` field enables `y-webrtc`'s built-in AES-GCM
+encryption so that signaling metadata is opaque to the public server — only peers
+with the same room name + password can communicate.
+
+Security posture with public signaling + password:
+- Room names are high-entropy UUIDs, not guessable slugs
+- AES-GCM encryption prevents the signaling server from reading payload content
+- WebRTC data channels are DTLS-encrypted at the transport layer
+- The signaling server sees only encrypted blobs and connection metadata
+
+The provider is never instantiated when `enabled: false`. When `enabled: true`
+and `password` is empty, a console warning is shown recommending a password be
+set before sharing the session link.
 
 ### Awareness (cursors + presence)
 
@@ -271,9 +286,6 @@ canvas.
 
 ## Open questions
 
-- **Signaling default:** public `wss://signaling.yjs.dev` + random room + password
-  (zero infra, third-party signaling metadata only) vs. self-hosted. Plan supports
-  both via config; need to pick the out-of-box default.
 - **Global ⌘Z:** Should hash undo be available globally, not just in DevTools?
   Risks: hijacking undo in prototype content (iframes, text inputs). Proposal:
   DevTools-only for now; revisit if demand warrants a user-facing undo button.
