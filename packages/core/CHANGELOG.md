@@ -1,5 +1,18 @@
 # @dfosco/storyboard-core
 
+## 4.2.8
+
+### Patch Changes
+
+-   Improved branch and worktree management in the Storyboard CLI.
+
+    -   Full worktree switching with stash management, branch checks, and `--worktree` flag
+    -   New `--cd` flag for shell directory change after switching branches
+    -   Non-interactive flags for `setup` and `branch` commands, with equivalent command display
+    -   Graceful handling of npm install failures during setup
+    -   Better UX for existing worktree selection with select menu and improved cd messaging
+    -   Worktree skill now always branches from the current branch instead of main
+
 ## 4.2.7
 
 ### Patch Changes
