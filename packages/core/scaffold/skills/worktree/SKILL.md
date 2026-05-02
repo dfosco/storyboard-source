@@ -20,11 +20,14 @@ If the branch already exists locally or on the remote:
 git worktree add worktrees/<branch-name> <branch-name>
 ```
 
-If the branch does NOT exist yet, create it from the current HEAD:
+If the branch does NOT exist yet, create it **from the current branch** (NOT from main):
 
 ```bash
-git worktree add worktrees/<branch-name> -b <branch-name>
+CURRENT_BRANCH=$(git branch --show-current)
+git worktree add worktrees/<branch-name> -b <branch-name> "$CURRENT_BRANCH"
 ```
+
+> **⚠️ CRITICAL:** Always pass the current branch as the start-point. Without it, git defaults to HEAD of the main worktree, which may be a completely different branch.
 
 ### Step 2: Register a dev-server port
 
