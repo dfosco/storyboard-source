@@ -1,23 +1,17 @@
 SESSION: agent-cwovi6 | maple-shrike
 CANVAS:  storyboarding/terminal-widget-prompts
-BRANCH:  4.2.5
-TIME:    2026-05-01T19:15:42.474Z
+BRANCH:  0.5.0--messaging-bus
+TIME:    2026-05-02T21:49:21.756Z
 
 ================================================================================
 SCREEN
 ================================================================================
 
-ompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
-│
-●  name: maple-shrike  branch: 4.2.5  canvas: terminal-widget-prompts
-│
-└  Starting Codex CLI...
-
 ╭─────────────────────────────────────────────────────────╮
 │ >_ OpenAI Codex (v0.128.0)                              │
 │                                                         │
 │ model:     o4-mini medium   /model to change            │
-│ directory: ~/workspace/storyboard-core/.worktrees/4.2.5 │
+│ directory: ~/workspace/…/worktrees/0.5.0--messaging-bus │
 ╰─────────────────────────────────────────────────────────╯
 
   Tip: New Build faster with the Codex App. Run 'codex app' or visit
@@ -26,7 +20,7 @@ ompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
 
 › [System] Your terminal identity has been set. widgetId=agent-cwovi6 displayName=maple-
   shrike canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/
-  terminals/agent-cwovi6.json serverUrl=http://localhost:1236 — this is a configuration
+  terminals/agent-cwovi6.json serverUrl=http://localhost:1240 — this is a configuration
   step, no response needed.
 
 
@@ -34,26 +28,42 @@ ompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
   degrade performance and cause issues.
 
 
-› Implement {feature}
+› Run /review on my current changes
 
-  o4-mini medium · ~/workspace/storyboard-core/.worktrees/4.2.5
+  o4-mini medium · ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
 
 ================================================================================
 SCROLLBACK (last 60s)
 ================================================================================
 
-[lost tty]
-[?996n[>c[>qompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
-│
-●  name: maple-shrike  branch: 4.2.5  canvas: terminal-widget-prompts
-│
-└  Starting Codex CLI...
+[?996n[>c[>q
+░▒▓   …/0.5.0--messaging-bus   0.5.0--messaging-bus $   23:48  
+❯ codex --ask-for-approval never
+╭─────────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.128.0)                              │
+│                                                         │
+│ model:     o4-mini medium   /model to change            │
+│ directory: ~/workspace/…/worktrees/0.5.0--messaging-bus │
+╰─────────────────────────────────────────────────────────╯
+
+  Tip: New Build faster with the Codex App. Run 'codex app' or visit
+  https://chatgpt.com/codex?app-landing-page=true
+
+
+›Run /review on my current changes
+
+  o4-mini medium · ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+
+
+
+
+
 
 ╭─────────────────────────────────────────────────────────╮
 │ >_ OpenAI Codex (v0.128.0)                              │
 │                                                         │
 │ model:     o4-mini medium   /model to change            │
-│ directory: ~/workspace/storyboard-core/.worktrees/4.2.5 │
+│ directory: ~/workspace/…/worktrees/0.5.0--messaging-bus │
 ╰─────────────────────────────────────────────────────────╯
 
   Tip: New Build faster with the Codex App. Run 'codex app' or visit
@@ -62,29 +72,29 @@ SCROLLBACK (last 60s)
 
 › [System] Your terminal identity has been set. widgetId=agent-cwovi6 displayName=maple-
   shrike canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/
-  terminals/agent-cwovi6.json serverUrl=http://localhost:1236 — this is a configuration
+  terminals/agent-cwovi6.json serverUrl=http://localhost:1240 — this is a configuration
   step, no response needed.
 
 
 ⚠ Model metadata for `o4-mini` not found. Defaulting to fallback metadata; this can
   degrade performance and cause issues.
 
+•Working(0s • esc to interrupt)
 
-›Implement {feature}
 
-  o4-mini medium · ~/workspace/storyboard-core/.worktrees/4.2.5
+›Run /review on my current changes
 
-ompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
-│
-●  name: maple-shrike  branch: 4.2.5  canvas: terminal-widget-prompts
-│
-└  Starting Codex CLI...
+  o4-mini medium · ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+
+
+
+
 
 ╭─────────────────────────────────────────────────────────╮
 │ >_ OpenAI Codex (v0.128.0)                              │
 │                                                         │
 │ model:     o4-mini medium   /model to change            │
-│ directory: ~/workspace/storyboard-core/.worktrees/4.2.5 │
+│ directory: ~/workspace/…/worktrees/0.5.0--messaging-bus │
 ╰─────────────────────────────────────────────────────────╯
 
   Tip: New Build faster with the Codex App. Run 'codex app' or visit
@@ -93,29 +103,29 @@ ompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
 
 › [System] Your terminal identity has been set. widgetId=agent-cwovi6 displayName=maple-
   shrike canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/
-  terminals/agent-cwovi6.json serverUrl=http://localhost:1236 — this is a configuration
+  terminals/agent-cwovi6.json serverUrl=http://localhost:1240 — this is a configuration
   step, no response needed.
 
 
 ⚠ Model metadata for `o4-mini` not found. Defaulting to fallback metadata; this can
   degrade performance and cause issues.
 
+•Working(2s • esc to interrupt)
 
-›Implement {feature}
 
-  o4-mini medium · ~/workspace/storyboard-core/.worktrees/4.2.5
+›Run /review on my current changes
 
-ompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
-│
-●  name: maple-shrike  branch: 4.2.5  canvas: terminal-widget-prompts
-│
-└  Starting Codex CLI...
+  o4-mini medium · ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+
+
+
+
 
 ╭─────────────────────────────────────────────────────────╮
 │ >_ OpenAI Codex (v0.128.0)                              │
 │                                                         │
 │ model:     o4-mini medium   /model to change            │
-│ directory: ~/workspace/storyboard-core/.worktrees/4.2.5 │
+│ directory: ~/workspace/…/worktrees/0.5.0--messaging-bus │
 ╰─────────────────────────────────────────────────────────╯
 
   Tip: New Build faster with the Codex App. Run 'codex app' or visit
@@ -124,200 +134,22 @@ ompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
 
 › [System] Your terminal identity has been set. widgetId=agent-cwovi6 displayName=maple-
   shrike canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/
-  terminals/agent-cwovi6.json serverUrl=http://localhost:1236 — this is a configuration
+  terminals/agent-cwovi6.json serverUrl=http://localhost:1240 — this is a configuration
   step, no response needed.
 
 
 ⚠ Model metadata for `o4-mini` not found. Defaulting to fallback metadata; this can
   degrade performance and cause issues.
 
-
-›Implement {feature}
-
-  o4-mini medium · ~/workspace/storyboard-core/.worktrees/4.2.5
-
-ompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
-│
-●  name: maple-shrike  branch: 4.2.5  canvas: terminal-widget-prompts
-│
-└  Starting Codex CLI...
-
-╭─────────────────────────────────────────────────────────╮
-│ >_ OpenAI Codex (v0.128.0)                              │
-│                                                         │
-│ model:     o4-mini medium   /model to change            │
-│ directory: ~/workspace/storyboard-core/.worktrees/4.2.5 │
-╰─────────────────────────────────────────────────────────╯
-
-  Tip: New Build faster with the Codex App. Run 'codex app' or visit
-  https://chatgpt.com/codex?app-landing-page=true
+•Working(2s • esc to interrupt)
 
 
-› [System] Your terminal identity has been set. widgetId=agent-cwovi6 displayName=maple-
-  shrike canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/
-  terminals/agent-cwovi6.json serverUrl=http://localhost:1236 — this is a configuration
-  step, no response needed.
+›Run /review on my current changes
+
+  o4-mini medium · ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
 
 
-⚠ Model metadata for `o4-mini` not found. Defaulting to fallback metadata; this can
-  degrade performance and cause issues.
 
 
-›Implement {feature}
 
-  o4-mini medium · ~/workspace/storyboard-core/.worktrees/4.2.5
-
-ompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
-│
-●  name: maple-shrike  branch: 4.2.5  canvas: terminal-widget-prompts
-│
-└  Starting Codex CLI...
-
-╭─────────────────────────────────────────────────────────╮
-│ >_ OpenAI Codex (v0.128.0)                              │
-│                                                         │
-│ model:     o4-mini medium   /model to change            │
-│ directory: ~/workspace/storyboard-core/.worktrees/4.2.5 │
-╰─────────────────────────────────────────────────────────╯
-
-  Tip: New Build faster with the Codex App. Run 'codex app' or visit
-  https://chatgpt.com/codex?app-landing-page=true
-
-
-› [System] Your terminal identity has been set. widgetId=agent-cwovi6 displayName=maple-
-  shrike canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/
-  terminals/agent-cwovi6.json serverUrl=http://localhost:1236 — this is a configuration
-  step, no response needed.
-
-
-⚠ Model metadata for `o4-mini` not found. Defaulting to fallback metadata; this can
-  degrade performance and cause issues.
-
-
-›Implement {feature}
-
-  o4-mini medium · ~/workspace/storyboard-core/.worktrees/4.2.5
-
-ompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
-│
-●  name: maple-shrike  branch: 4.2.5  canvas: terminal-widget-prompts
-│
-└  Starting Codex CLI...
-
-╭─────────────────────────────────────────────────────────╮
-│ >_ OpenAI Codex (v0.128.0)                              │
-│                                                         │
-│ model:     o4-mini medium   /model to change            │
-│ directory: ~/workspace/storyboard-core/.worktrees/4.2.5 │
-╰─────────────────────────────────────────────────────────╯
-
-  Tip: New Build faster with the Codex App. Run 'codex app' or visit
-  https://chatgpt.com/codex?app-landing-page=true
-
-
-› [System] Your terminal identity has been set. widgetId=agent-cwovi6 displayName=maple-
-  shrike canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/
-  terminals/agent-cwovi6.json serverUrl=http://localhost:1236 — this is a configuration
-  step, no response needed.
-
-
-⚠ Model metadata for `o4-mini` not found. Defaulting to fallback metadata; this can
-  degrade performance and cause issues.
-
-
-›Implement {feature}
-
-  o4-mini medium · ~/workspace/storyboard-core/.worktrees/4.2.5
-
-ompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
-│
-●  name: maple-shrike  branch: 4.2.5  canvas: terminal-widget-prompts
-│
-└  Starting Codex CLI...
-
-╭─────────────────────────────────────────────────────────╮
-│ >_ OpenAI Codex (v0.128.0)                              │
-│                                                         │
-│ model:     o4-mini medium   /model to change            │
-│ directory: ~/workspace/storyboard-core/.worktrees/4.2.5 │
-╰─────────────────────────────────────────────────────────╯
-
-  Tip: New Build faster with the Codex App. Run 'codex app' or visit
-  https://chatgpt.com/codex?app-landing-page=true
-
-
-› [System] Your terminal identity has been set. widgetId=agent-cwovi6 displayName=maple-
-  shrike canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/
-  terminals/agent-cwovi6.json serverUrl=http://localhost:1236 — this is a configuration
-  step, no response needed.
-
-
-⚠ Model metadata for `o4-mini` not found. Defaulting to fallback metadata; this can
-  degrade performance and cause issues.
-
-
-›Implement {feature}
-
-  o4-mini medium · ~/workspace/storyboard-core/.worktrees/4.2.5
-
-ompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
-│
-●  name: maple-shrike  branch: 4.2.5  canvas: terminal-widget-prompts
-│
-└  Starting Codex CLI...
-
-╭─────────────────────────────────────────────────────────╮
-│ >_ OpenAI Codex (v0.128.0)                              │
-│                                                         │
-│ model:     o4-mini medium   /model to change            │
-│ directory: ~/workspace/storyboard-core/.worktrees/4.2.5 │
-╰─────────────────────────────────────────────────────────╯
-
-  Tip: New Build faster with the Codex App. Run 'codex app' or visit
-  https://chatgpt.com/codex?app-landing-page=true
-
-
-› [System] Your terminal identity has been set. widgetId=agent-cwovi6 displayName=maple-
-  shrike canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/
-  terminals/agent-cwovi6.json serverUrl=http://localhost:1236 — this is a configuration
-  step, no response needed.
-
-
-⚠ Model metadata for `o4-mini` not found. Defaulting to fallback metadata; this can
-  degrade performance and cause issues.
-
-
-›Implement {feature}
-
-  o4-mini medium · ~/workspace/storyboard-core/.worktrees/4.2.5
-
-ompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
-│
-●  name: maple-shrike  branch: 4.2.5  canvas: terminal-widget-prompts
-│
-└  Starting Codex CLI...
-
-╭─────────────────────────────────────────────────────────╮
-│ >_ OpenAI Codex (v0.128.0)                              │
-│                                                         │
-│ model:     o4-mini medium   /model to change            │
-│ directory: ~/workspace/storyboard-core/.worktrees/4.2.5 │
-╰─────────────────────────────────────────────────────────╯
-
-  Tip: New Build faster with the Codex App. Run 'codex app' or visit
-  https://chatgpt.com/codex?app-landing-page=true
-
-
-› [System] Your terminal identity has been set. widgetId=agent-cwovi6 displayName=maple-
-  shrike canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/
-  terminals/agent-cwovi6.json serverUrl=http://localhost:1236 — this is a configuration
-  step, no response needed.
-
-
-⚠ Model metadata for `o4-mini` not found. Defaulting to fallback metadata; this can
-  degrade performance and cause issues.
-
-
-›Implement {feature}
-
-  o4-mini medium · ~/workspace/storyboard-core/.worktrees/4.2.5
+WWo•Wor3•WorkWorki•Workin•Working•Working›Run /review on my current changes  o4-mini medium · ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
