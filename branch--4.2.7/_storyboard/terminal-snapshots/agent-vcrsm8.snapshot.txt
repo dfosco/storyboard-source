@@ -1,0 +1,245 @@
+SESSION: agent-vcrsm8 | scarlet-heron
+CANVAS:  storyboarding/terminal-widget-prompts
+BRANCH:  4.2.5
+TIME:    2026-05-01T19:12:10.006Z
+
+================================================================================
+SCREEN
+================================================================================
+
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└

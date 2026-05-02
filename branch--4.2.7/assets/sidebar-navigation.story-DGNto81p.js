@@ -1,0 +1,1 @@
+var m=Object.defineProperty;var i=(t,o)=>m(t,"name",{value:o,configurable:!0});import{j as r}from"./vendor-primer-CmAYE8LH.js";import{S as a}from"./SidebarNavigation-CVxJsZw0.js";import"./vendor-react-grIG8pzi.js";import"./vendor-octicons-KR0WEBb9.js";function x(){return r.jsx("div",{style:{maxWidth:280,padding:"1rem"},children:r.jsx(a,{})})}i(x,"Default");export{x as Default};
