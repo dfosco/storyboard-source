@@ -76,6 +76,7 @@
     "@primer/octicons": "^19.22.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-visually-hidden": "^1.2.4",
+    "@toon-format/toon": "^2.1.0",
     "ansi-to-html": "^0.7.2",
     "cmdk": "^1.1.1",
     "feather-icons": "^4.29.2",

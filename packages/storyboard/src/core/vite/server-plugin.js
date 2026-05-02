@@ -25,6 +25,9 @@ import { setupTerminalServer } from '../canvas/terminal-server.js'
 import { listSessions, detachSession, killSession, orphanSession, bulkCleanup, getSessionStats } from '../canvas/terminal-registry.js'
 import { execSync as cpExecSync } from 'node:child_process'
 import { list as listRunningServers } from '../worktree/serverRegistry.js'
+import { initBus } from '../messaging/bus.js'
+import { JsonlAdapter } from '../messaging/storage/jsonl-adapter.js'
+import { createMessagingRoutes } from '../messaging/routes.js'
 
 const API_PREFIX = '/_storyboard/'
 
@@ -296,9 +299,16 @@ export default function storyboardServer() {
       server.watcher.unwatch(path.join(root, 'assets', 'canvas', 'images'))
       server.watcher.unwatch(path.join(root, 'assets', 'canvas', 'snapshots'))
       server.watcher.unwatch(path.join(root, 'assets', '.storyboard-public', 'terminal-snapshots'))
+      server.watcher.unwatch(path.join(root, '.storyboard', 'messages'))
 
       // Wire autosync API routes (always enabled — git automation for dev)
       routeHandlers.set('autosync', createAutosyncHandler({ root, sendJson: sendJsonLogged }))
+
+      // Wire messaging bus (shared event log for multi-agent communication)
+      const messagingAdapter = new JsonlAdapter({ root })
+      await messagingAdapter.init()
+      initBus(messagingAdapter)
+      routeHandlers.set('messages', createMessagingRoutes({ sendJson: sendJsonLogged }))
 
       // Terminal sessions API — list, detach, kill sessions
       routeHandlers.set('terminal', async (req, res, ctx) => {
