@@ -97,7 +97,6 @@ pwd && git branch --show-current
 - **Worktrees MUST live in `worktrees/` at the REPOSITORY ROOT — never anywhere else.** The repository root is the top-level git directory (use `git rev-parse --show-toplevel` to find it). If you are currently inside a worktree (e.g. `worktrees/4.0.0/`), do NOT create nested worktrees inside it (e.g. `worktrees/4.0.0/worktrees/`). Always `cd` to the repo root or use an absolute path to the root `worktrees/` directory.
 - **⚠️ Nesting detection:** Before creating a worktree, check if your current working directory is already inside a `worktrees/` directory. If `pwd` contains `/worktrees/`, you are inside a worktree — resolve the true repo root with `git -C "$(git rev-parse --show-toplevel)" rev-parse --show-superproject-working-tree` or walk up the path to find the first directory that is NOT inside `worktrees/`. Never trust `git rev-parse --show-toplevel` alone when inside a worktree — it returns the worktree root, not the repo root.
 - The branch name comes from the user's request (e.g., "create worktree comments-redo" → branch is `comments-redo`).
-- **Always slugify** the branch name (Step 0) before creating the worktree. Dots cause issues with subdomain routing and are replaced with hyphens.
 - If the worktree already exists, inform the user and `cd` into it instead of recreating it.
 - Port assignments are stable — once a worktree gets a port, it keeps it across restarts.
 - To see all assigned ports, check `worktrees/ports.json`.
