@@ -105,7 +105,7 @@ export async function runBranchGuide(branchArg) {
     p.log.success(`Worktree ${bold(targetBranch)} already exists`)
     p.note(
       [
-        `  ${green('cd')} ${dim(`.worktrees/${targetBranch}`)}`,
+        `  ${green('cd')} ${dim(`worktrees/${targetBranch}`)}`,
         `  ${green('npx storyboard dev')}  ${dim('to start developing')}`,
       ].join('\n'),
       'Ready to go'
@@ -156,7 +156,7 @@ export async function runBranchGuide(branchArg) {
   }
 
   // Create the worktree
-  const targetDir = resolve(root, '.worktrees', targetBranch)
+  const targetDir = resolve(root, 'worktrees', targetBranch)
   const spin = p.spinner()
 
   try {
@@ -164,9 +164,9 @@ export async function runBranchGuide(branchArg) {
       ? ['worktree', 'add', targetDir, '-b', targetBranch]
       : ['worktree', 'add', targetDir, targetBranch]
 
-    spin.start(`Creating worktree .worktrees/${targetBranch}`)
+    spin.start(`Creating worktree worktrees/${targetBranch}`)
     execFileSync('git', gitArgs, { cwd: root, stdio: 'pipe' })
-    spin.stop(`Worktree created: .worktrees/${targetBranch}`)
+    spin.stop(`Worktree created: worktrees/${targetBranch}`)
   } catch (err) {
     spin.stop('Failed to create worktree')
     p.log.error(err.message || 'git worktree add failed')
@@ -211,13 +211,13 @@ export async function runBranchGuide(branchArg) {
 
   // 7. Summary
   const lines = [
-    `  Your branch is set up as a worktree in ${green(`.worktrees/${targetBranch}`)}`,
+    `  Your branch is set up as a worktree in ${green(`worktrees/${targetBranch}`)}`,
   ]
   if (didStash) {
     lines.push(`  Your uncommitted work has been safely moved`)
   }
   lines.push('')
-  lines.push(`  ${green('cd')} ${dim(`.worktrees/${targetBranch}`)}`)
+  lines.push(`  ${green('cd')} ${dim(`worktrees/${targetBranch}`)}`)
   lines.push(`  ${green('npx storyboard dev')}  ${dim('to start developing')}`)
   lines.push('')
   lines.push(`  ${dim('Tip: ask your AI agent about worktrees — they\'re great!')}`)

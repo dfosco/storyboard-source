@@ -32,7 +32,7 @@ yarn-error.log*
 .github/skills/primer-screenshot-patterns
 .github/skills/primer-url-builder
 .github/skills/playwright-cli
-.worktrees
+worktrees
 # Agent symlinks are build targets — source of truth is .agents/agents/
 # storyboard setup creates symlinks for Copilot CLI and Claude Code
 .github/agents/_buddy-rails.md

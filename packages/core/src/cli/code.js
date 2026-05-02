@@ -4,7 +4,7 @@
  * Usage:
  *   storyboard code              # open current worktree or repo root
  *   storyboard code main         # open repo root
- *   storyboard code <branch>     # open .worktrees/<branch>/
+ *   storyboard code <branch>     # open worktrees/<branch>/
  */
 
 import * as p from '@clack/prompts'
@@ -33,7 +33,7 @@ if (!branch) {
   const name = detectWorktreeName()
   const dir = name === 'main' ? root : worktreeDir(name)
   if (openInCode(dir)) {
-    p.outro(`Opened ${name === 'main' ? 'repo root' : `.worktrees/${name}/`}`)
+    p.outro(`Opened ${name === 'main' ? 'repo root' : `worktrees/${name}/`}`)
   } else {
     p.log.error('Could not open VS Code. Is the `code` CLI installed?')
     p.log.info('Run `npx storyboard setup` to install it, or open VS Code and run:')
@@ -59,7 +59,7 @@ if (!branch) {
     process.exit(1)
   }
   if (openInCode(dir)) {
-    p.outro(`Opened .worktrees/${branch}/`)
+    p.outro(`Opened worktrees/${branch}/`)
   } else {
     p.log.error('Could not open VS Code.')
     process.exit(1)

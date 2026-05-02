@@ -42,9 +42,9 @@ function readDevDomain() {
 /** Detect worktree name */
 function getWorktreeName() {
   try {
-    // Check if we're in a .worktrees/ directory
+    // Check if we're in a worktrees/ directory
     const cwd = rootDir
-    const match = cwd.match(/\.worktrees\/([^/]+)/)
+    const match = cwd.match(/worktrees\/([^/]+)/)
     return match ? match[1] : 'main'
   } catch { return 'main' }
 }

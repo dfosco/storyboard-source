@@ -27,7 +27,7 @@ Before discovery, identify **every** `package.json` in the repo (root + workspac
 find . -name package.json \
   -not -path './node_modules/*' \
   -not -path './packages/*/node_modules/*' \
-  -not -path './.worktrees/*' \
+  -not -path './worktrees/*' \
   | sort
 ```
 

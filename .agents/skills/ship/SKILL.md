@@ -34,7 +34,7 @@ Invoke the **worktree** skill to create a git worktree for the feature branch.
 - If the user provided an explicit branch name, use that instead.
 - Use `ask_user` to confirm the branch name before creating the worktree.
 
-After the worktree is created, all subsequent work happens inside `.worktrees/<branch-name>` **at the repository root** (use `git rev-parse --show-toplevel` to find the root). Never create worktrees nested inside other worktrees.
+After the worktree is created, all subsequent work happens inside `worktrees/<branch-name>` **at the repository root** (use `git rev-parse --show-toplevel` to find the root). Never create worktrees nested inside other worktrees.
 
 ### Step 2: Plan the feature
 

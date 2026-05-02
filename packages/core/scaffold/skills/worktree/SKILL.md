@@ -4,7 +4,7 @@
 
 ## What This Does
 
-Creates a git worktree for a given branch name inside `.worktrees/` and switches into it.
+Creates a git worktree for a given branch name inside `worktrees/` and switches into it.
 
 ---
 
@@ -34,13 +34,13 @@ Use the slugified name for both the **branch name** and **worktree directory** t
 If the branch already exists locally or on the remote:
 
 ```bash
-git worktree add .worktrees/<branch-name> <branch-name>
+git worktree add worktrees/<branch-name> <branch-name>
 ```
 
 If the branch does NOT exist yet, create it from the current HEAD:
 
 ```bash
-git worktree add .worktrees/<branch-name> -b <branch-name>
+git worktree add worktrees/<branch-name> -b <branch-name>
 ```
 
 ### Step 2: Register a dev-server port
@@ -59,12 +59,12 @@ Or if the project has `scripts/worktree-port.js`:
 node scripts/worktree-port.js <branch-name>
 ```
 
-This writes to `.worktrees/ports.json` (gitignored). The dev server (`npx storyboard-dev`) reads from this file automatically.
+This writes to `worktrees/ports.json` (gitignored). The dev server (`npx storyboard-dev`) reads from this file automatically.
 
 ### Step 3: Change into the worktree directory
 
 ```bash
-cd .worktrees/<branch-name>
+cd worktrees/<branch-name>
 ```
 
 All subsequent commands in the session should run from this directory.
@@ -99,9 +99,9 @@ The dev server automatically uses the port assigned in Step 2.
 
 ## Notes
 
-- Worktrees live in `.worktrees/` at the repo root — this directory is already gitignored.
+- Worktrees live in `worktrees/` at the repo root — this directory is already gitignored.
 - The branch name comes from the user's request (e.g., "create worktree comments-redo" → branch is `comments-redo`).
 - **Always slugify** the branch name (Step 0) before creating the worktree. Dots cause issues with subdomain routing and are replaced with hyphens.
 - If the worktree already exists, inform the user and `cd` into it instead of recreating it.
 - Port assignments are stable — once a worktree gets a port, it keeps it across restarts.
-- To see all assigned ports, check `.worktrees/ports.json`.
+- To see all assigned ports, check `worktrees/ports.json`.

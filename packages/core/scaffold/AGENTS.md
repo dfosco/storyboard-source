@@ -66,7 +66,7 @@ The default location is in `.agents/plans`, but the user may ask for a specific 
 
 - **create** (`.agents/skills/create/SKILL.md`) — Walks through creating Storyboard assets: prototype, external prototype, flow, page, canvas, object, or record.
 
-- **worktree** (`.agents/skills/worktree/SKILL.md`) — Creates a git worktree in `.worktrees/<branch-name>` and switches into it.
+- **worktree** (`.agents/skills/worktree/SKILL.md`) — Creates a git worktree in `worktrees/<branch-name>` and switches into it.
 
 - **tools** (`.agents/skills/tools/SKILL.md`) — Reference for creating toolbar tools: config schema, handlers, surfaces, and render types.
 

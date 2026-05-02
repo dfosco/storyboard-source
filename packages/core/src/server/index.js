@@ -89,7 +89,7 @@ async function parseBody(req) {
 function resolveWorktreeCwd(branch) {
   const root = repoRoot()
   if (branch === 'main') return root
-  const wtDir = join(root, '.worktrees', branch)
+  const wtDir = join(root, 'worktrees', branch)
   if (existsSync(wtDir)) return wtDir
   return null
 }

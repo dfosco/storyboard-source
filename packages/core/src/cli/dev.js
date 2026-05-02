@@ -60,13 +60,13 @@ function remoteBranchExists(name, cwd) {
  * @returns {string} path to the new worktree directory
  */
 function createWorktree(name, root, { newBranch = false } = {}) {
-  const targetDir = resolve(root, '.worktrees', name)
+  const targetDir = resolve(root, 'worktrees', name)
 
   const gitArgs = newBranch
     ? ['worktree', 'add', targetDir, '-b', name]
     : ['worktree', 'add', targetDir, name]
 
-  p.log.step(`Creating worktree: .worktrees/${name}`)
+  p.log.step(`Creating worktree: worktrees/${name}`)
   execFileSync('git', gitArgs, { cwd: root, stdio: 'inherit' })
 
   p.log.step('Installing dependencies…')
@@ -112,7 +112,7 @@ async function resolveDevTarget(branchArg, { allowCreate = true } = {}) {
     // No worktree exists — prompt the user to convert
     p.log.warning(`Root is on branch "${branch}" instead of main.`)
     const shouldConvert = await p.confirm({
-      message: `Convert "${branch}" to a worktree? (moves branch to .worktrees/${branch}/)`,
+      message: `Convert "${branch}" to a worktree? (moves branch to worktrees/${branch}/)`,
       initialValue: true,
     })
 
@@ -403,9 +403,9 @@ async function main() {
   const { worktreeName, targetCwd, created } = await resolveDevTarget(branchArg, { allowCreate })
 
   if (created) {
-    p.log.success(`Worktree ready: .worktrees/${worktreeName}`)
+    p.log.success(`Worktree ready: worktrees/${worktreeName}`)
   } else if (branchArg) {
-    p.log.info(`Using ${worktreeName === 'main' ? 'main repo' : `.worktrees/${worktreeName}`}`)
+    p.log.info(`Using ${worktreeName === 'main' ? 'main repo' : `worktrees/${worktreeName}`}`)
   }
 
   const domain = readDevDomain(targetCwd)

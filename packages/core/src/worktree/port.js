@@ -1,7 +1,7 @@
 /**
  * Worktree Port Registry
  *
- * Manages a JSON registry (.worktrees/ports.json) that maps worktree names
+ * Manages a JSON registry (worktrees/ports.json) that maps worktree names
  * to unique dev-server ports. Main always gets 1234; worktrees get 1235+.
  *
  * This module is published as part of @dfosco/storyboard-core so client
@@ -19,10 +19,10 @@ import { findByWorktree } from './serverRegistry.js'
 const BASE_PORT = 1234
 
 /**
- * Resolve the path to .worktrees/ports.json.
+ * Resolve the path to worktrees/ports.json.
  *
  * Derives the repo root from directory structure so it works whether
- * running from the repo root or from inside .worktrees/<name>/ — even
+ * running from the repo root or from inside worktrees/<name>/ — even
  * when ports.json does not exist yet.
  *
  * @param {string} [cwd] — override working directory
@@ -31,34 +31,34 @@ const BASE_PORT = 1234
 export function portsFilePath(cwd = process.cwd()) {
   const realCwd = realpathSync(cwd)
 
-  // Check if we're inside .worktrees/<name>/
-  const worktreeMatch = realCwd.match(/^(.+)[/\\]\.worktrees[/\\][^/\\]+/)
+  // Check if we're inside worktrees/<name>/
+  const worktreeMatch = realCwd.match(/^(.+)[/\\]worktrees[/\\][^/\\]+/)
   if (worktreeMatch) {
-    return join(worktreeMatch[1], '.worktrees', 'ports.json')
+    return join(worktreeMatch[1], 'worktrees', 'ports.json')
   }
 
   // We're at the repo root (or somewhere else) — default location
-  return join(realCwd, '.worktrees', 'ports.json')
+  return join(realCwd, 'worktrees', 'ports.json')
 }
 
 /**
  * Detect the worktree name from the current git context.
  *
- * Returns 'main' when not inside a .worktrees/<name>/ directory.
+ * Returns 'main' when not inside a worktrees/<name>/ directory.
  */
 export function detectWorktreeName() {
   try {
     const topLevel = execSync('git rev-parse --show-toplevel', { encoding: 'utf8' }).trim()
     const realTop = realpathSync(topLevel)
 
-    // Check if we're inside a .worktrees/<name> directory
-    if (realTop.includes('.worktrees/') || realTop.includes('.worktrees\\')) {
+    // Check if we're inside a worktrees/<name> directory
+    if (realTop.includes('worktrees/') || realTop.includes('worktrees\\')) {
       return basename(realTop)
     }
 
     // Also check the cwd pattern
     const realCwd = realpathSync(process.cwd())
-    const worktreeMatch = realCwd.match(/\.worktrees[/\\]([^/\\]+)/)
+    const worktreeMatch = realCwd.match(/worktrees[/\\]([^/\\]+)/)
     if (worktreeMatch) return worktreeMatch[1]
 
     // Not a worktree — check the current branch name
@@ -90,7 +90,7 @@ function isPortInUse(port) {
 /**
  * Get or assign a port for the given worktree name.
  *
- * Creates .worktrees/ports.json if it doesn't exist. Assigns ports
+ * Creates worktrees/ports.json if it doesn't exist. Assigns ports
  * starting at BASE_PORT+1 (1235) for non-main worktrees.
  * If the previously assigned port was stolen by another process,
  * reassigns to the next available port.
@@ -179,7 +179,7 @@ export function resolveRunningPort(worktreeName) {
 }
 
 /**
- * Resolve the port for a worktree from .worktrees/ports.json
+ * Resolve the port for a worktree from worktrees/ports.json
  * without assigning a new one if missing.
  *
  * @param {string} worktreeName
@@ -216,9 +216,9 @@ export function slugify(name) {
 }
 
 /**
- * Resolve the repo root — the directory that contains `.worktrees/`.
+ * Resolve the repo root — the directory that contains `worktrees/`.
  *
- * Works whether cwd is the repo root itself or inside `.worktrees/<name>/`.
+ * Works whether cwd is the repo root itself or inside `worktrees/<name>/`.
  *
  * @param {string} [cwd]
  * @returns {string} absolute path to repo root
@@ -226,7 +226,7 @@ export function slugify(name) {
 export function repoRoot(cwd = process.cwd()) {
   const realCwd = realpathSync(cwd)
 
-  const worktreeMatch = realCwd.match(/^(.+)[/\\]\.worktrees[/\\][^/\\]+/)
+  const worktreeMatch = realCwd.match(/^(.+)[/\\]worktrees[/\\][^/\\]+/)
   if (worktreeMatch) return worktreeMatch[1]
 
   return realCwd
@@ -235,7 +235,7 @@ export function repoRoot(cwd = process.cwd()) {
 /**
  * Resolve the full path to a worktree directory.
  *
- * Returns repo root for 'main', `.worktrees/<name>` otherwise.
+ * Returns repo root for 'main', `worktrees/<name>` otherwise.
  *
  * @param {string} name — worktree name
  * @param {string} [cwd]
@@ -244,11 +244,11 @@ export function repoRoot(cwd = process.cwd()) {
 export function worktreeDir(name, cwd) {
   const root = repoRoot(cwd)
   if (name === 'main') return root
-  return join(root, '.worktrees', name)
+  return join(root, 'worktrees', name)
 }
 
 /**
- * List existing worktree directory names from `.worktrees/`.
+ * List existing worktree directory names from `worktrees/`.
  *
  * Only returns directories that look like real worktrees (contain a `.git` file).
  * Does not include 'main'.
@@ -258,7 +258,7 @@ export function worktreeDir(name, cwd) {
  */
 export function listWorktrees(cwd) {
   const root = repoRoot(cwd)
-  const worktreesDir = join(root, '.worktrees')
+  const worktreesDir = join(root, 'worktrees')
 
   if (!existsSync(worktreesDir)) return []
 
