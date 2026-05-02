@@ -31,16 +31,16 @@ const srcDir = path.resolve(__dirname, 'src/core')
  */
 const sharedStateModules = {
   // Top-level stateful modules → main package export
-  'loader.js': '@dfosco/storyboard/core',
-  'viewfinder.js': '@dfosco/storyboard/core',
-  'modes.js': '@dfosco/storyboard/core',
-  'commandActions.js': '@dfosco/storyboard/core',
-  'uiConfig.js': '@dfosco/storyboard/core',
-  'toolRegistry.js': '@dfosco/storyboard/core',
-  'toolbarConfigStore.js': '@dfosco/storyboard/core',
-  'featureFlags.js': '@dfosco/storyboard/core',
-  'plugins.js': '@dfosco/storyboard/core',
-  'localStorage.js': '@dfosco/storyboard/core',
+  'data/loader.js': '@dfosco/storyboard/core',
+  'data/viewfinder.js': '@dfosco/storyboard/core',
+  'modes/modes.js': '@dfosco/storyboard/core',
+  'stores/commandActions.js': '@dfosco/storyboard/core',
+  'stores/uiConfig.js': '@dfosco/storyboard/core',
+  'stores/toolRegistry.js': '@dfosco/storyboard/core',
+  'stores/toolbarConfigStore.js': '@dfosco/storyboard/core',
+  'stores/featureFlags.js': '@dfosco/storyboard/core',
+  'stores/plugins.js': '@dfosco/storyboard/core',
+  'session/localStorage.js': '@dfosco/storyboard/core',
   // Comments subsystem → comments barrel export
   'comments/config.js': '@dfosco/storyboard/comments',
   'comments/auth.js': '@dfosco/storyboard/comments',

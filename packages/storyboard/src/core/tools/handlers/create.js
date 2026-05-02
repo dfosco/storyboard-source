@@ -34,6 +34,6 @@ export async function guard(ctx) {
 }
 
 export async function component() {
-  const mod = await import('../../CreateMenuButton.jsx')
+  const mod = await import('../../ui/CreateMenuButton.jsx')
   return mod.default
 }

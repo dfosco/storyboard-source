@@ -4,6 +4,6 @@
 export const id = 'hide-chrome'
 
 export async function component() {
-  const mod = await import('../../HideChromeTrigger.jsx')
+  const mod = await import('../../ui/HideChromeTrigger.jsx')
   return mod.default
 }

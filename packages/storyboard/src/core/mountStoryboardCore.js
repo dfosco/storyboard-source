@@ -10,9 +10,9 @@
  *   mountStoryboardCore(storyboardConfig, { basePath: import.meta.env.BASE_URL })
  */
 
-import { installHideParamListener } from './interceptHideParams.js'
-import { installHistorySync } from './hideMode.js'
-import { installBodyClassSync } from './bodyClasses.js'
+import { installHideParamListener } from './session/interceptHideParams.js'
+import { installHistorySync } from './session/hideMode.js'
+import { installBodyClassSync } from './session/bodyClasses.js'
 import {
   initCommentsConfig, isCommentsEnabled,
   initFeatureFlags,

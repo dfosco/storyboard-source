@@ -4,6 +4,6 @@
 export const id = 'theme'
 
 export async function component() {
-  const mod = await import('../../ThemeMenuButton.jsx')
+  const mod = await import('../../ui/ThemeMenuButton.jsx')
   return mod.default
 }

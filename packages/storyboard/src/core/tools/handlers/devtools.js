@@ -22,7 +22,7 @@ export async function handler(ctx) {
   try { loader = await import('../../index.js') } catch { /* optional */ }
   try { hm = await import('../../index.js') } catch { /* optional */ }
   try { commentsAuth = await import('../../comments/auth.js') } catch { /* optional */ }
-  try { prodMode = await import('../../prodMode.js') } catch { /* optional */ }
+  try { prodMode = await import('../../utils/prodMode.js') } catch { /* optional */ }
   try { ff = await import('../../index.js') } catch { /* optional */ }
 
   return {

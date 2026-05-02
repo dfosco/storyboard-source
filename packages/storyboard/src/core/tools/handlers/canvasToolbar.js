@@ -42,10 +42,10 @@ export async function handler() {
 }
 
 const componentMap = {
-  'canvas-zoom':        () => import('../../CanvasZoomControl.jsx'),
-  'canvas-zoom-to-fit': () => import('../../CanvasZoomToFit.jsx'),
-  'canvas-undo-redo':   () => import('../../CanvasUndoRedo.jsx'),
-  'canvas-snap':        () => import('../../CanvasSnap.jsx'),
+  'canvas-zoom':        () => import('../../ui/CanvasZoomControl.jsx'),
+  'canvas-zoom-to-fit': () => import('../../ui/CanvasZoomToFit.jsx'),
+  'canvas-undo-redo':   () => import('../../ui/CanvasUndoRedo.jsx'),
+  'canvas-snap':        () => import('../../ui/CanvasSnap.jsx'),
 }
 
 export async function component(renderType) {

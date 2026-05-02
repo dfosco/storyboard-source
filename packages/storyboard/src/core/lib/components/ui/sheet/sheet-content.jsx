@@ -2,7 +2,7 @@ import { forwardRef } from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import SheetOverlay from "./sheet-overlay.jsx";
 import { cn } from "../../../utils/index.js";
-import { Button } from "../../../components/ui/button/index.js";
+import { Button } from "../button/index.js";
 import { X } from "lucide-react";
 
 const SheetContent = forwardRef(function SheetContent({ className, side = "right", showCloseButton = true, children, ...props }, ref) {

@@ -6,7 +6,7 @@ import { parse as parseJsonc } from 'jsonc-parser'
 import { materializeFromText } from '../../core/canvas/materializer.js'
 import { toCanvasId } from '../../core/canvas/identity.js'
 import { isCanvasWriteInFlight } from '../../core/canvas/writeGuard.js'
-import { getConfig } from '../../core/configSchema.js'
+import { getConfig } from '../../core/stores/configSchema.js'
 import { list as listRunningServers } from '../../core/worktree/serverRegistry.js'
 
 const VIRTUAL_MODULE_ID = 'virtual:storyboard-data-index'
@@ -470,10 +470,10 @@ function readModesConfig(root) {
 
   // Try local workspace path first (monorepo), then node_modules
   const candidates = [
-    path.resolve(root, 'packages/core/toolbar.config.json'),
-    path.resolve(root, 'packages/core/configs/modes.config.json'),
-    path.resolve(root, 'node_modules/../../../toolbar.config.json'),
-    path.resolve(root, 'node_modules/../../core/configSchema.jss/modes.config.json'),
+    path.resolve(root, 'packages/storyboard/toolbar.config.json'),
+    path.resolve(root, 'packages/storyboard/configs/modes.config.json'),
+    path.resolve(root, 'node_modules/@dfosco/storyboard/toolbar.config.json'),
+    path.resolve(root, 'node_modules/@dfosco/storyboard/configs/modes.config.json'),
   ]
 
   for (const filePath of candidates) {
@@ -510,7 +510,7 @@ function readJsonFile(filePath) {
  */
 function readCoreConfigFile(root, filename) {
   const candidates = [
-    path.resolve(root, `packages/core/${filename}`),
+    path.resolve(root, `packages/storyboard/${filename}`),
     path.resolve(root, `node_modules/@dfosco/storyboard/${filename}`),
   ]
   for (const p of candidates) {

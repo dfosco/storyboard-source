@@ -1,8 +1,8 @@
 import './trigger-button.css';
 import { useMemo, forwardRef } from "react";
 import { cn } from "../../../utils/index.js";
-import { registerSmoothCorners } from '../../../../smoothCorners.js';
-import { Button } from '../../../components/ui/button/index.js';
+import { registerSmoothCorners } from '../../../../utils/smoothCorners.js';
+import { Button } from '../button/index.js';
 
 registerSmoothCorners();
 

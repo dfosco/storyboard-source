@@ -13,7 +13,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { parse as parseJsonc } from 'jsonc-parser'
-import { getConfig } from '../configSchema.js'
+import { getConfig } from '../stores/configSchema.js'
 import { createDevLogger, setDevLogger } from '../logger/devLogger.js'
 import { serverFeatures as workshopFeatures } from '../workshop/features/registry-server.js'
 import { docsHandler, collectFiles } from './docs-handler.js'

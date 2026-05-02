@@ -63,6 +63,6 @@ export async function handler(ctx) {
 }
 
 export async function component() {
-  const mod = await import('../../ActionMenuButton.jsx')
+  const mod = await import('../../ui/ActionMenuButton.jsx')
   return mod.default
 }

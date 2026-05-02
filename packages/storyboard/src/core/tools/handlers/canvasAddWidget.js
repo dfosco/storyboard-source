@@ -6,6 +6,6 @@
 export const id = 'canvas-add-widget'
 
 export async function component() {
-  const mod = await import('../../CanvasCreateMenu.jsx')
+  const mod = await import('../../ui/CanvasCreateMenu.jsx')
   return mod.default
 }

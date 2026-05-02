@@ -7,6 +7,6 @@
 export const id = 'autosync'
 
 export async function component() {
-  const mod = await import('../../AutosyncMenuButton.jsx')
+  const mod = await import('../../ui/AutosyncMenuButton.jsx')
   return mod.default
 }

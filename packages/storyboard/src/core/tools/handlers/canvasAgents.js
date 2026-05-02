@@ -15,6 +15,6 @@ export async function guard(_ctx) {
 }
 
 export async function component() {
-  const mod = await import('../../CanvasAgentsMenu.jsx')
+  const mod = await import('../../ui/CanvasAgentsMenu.jsx')
   return mod.default
 }

@@ -11,6 +11,6 @@ export async function guard() {
 }
 
 export async function component() {
-  const mod = await import('../../CommentsMenuButton.jsx')
+  const mod = await import('../../ui/CommentsMenuButton.jsx')
   return mod.default
 }

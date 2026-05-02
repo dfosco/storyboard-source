@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { cn } from "../../../utils/index.js";
-import { Button } from "../../../components/ui/button/index.js";
+import { Button } from "../button/index.js";
 
 const DialogFooter = forwardRef(function DialogFooter({ className, children, showCloseButton = false, ...props }, ref) {
 return (

@@ -2,7 +2,7 @@ import { forwardRef } from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import DialogOverlay from "./dialog-overlay.jsx";
 import { cn } from "../../../utils/index.js";
-import { Button } from "../../../components/ui/button/index.js";
+import { Button } from "../button/index.js";
 import { X } from "lucide-react";
 
 const DialogContent = forwardRef(function DialogContent({ className, children, showCloseButton = true, ...props }, ref) {

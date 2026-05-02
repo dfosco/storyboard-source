@@ -45,7 +45,7 @@
     "./hash-preserver": "./src/internals/hashPreserver.js",
     "./context": "./src/internals/context.jsx",
     "./hooks/useFeatureFlag": "./src/internals/hooks/useFeatureFlag.js",
-    "./config": "./src/core/configSchema.js",
+    "./config": "./src/core/stores/configSchema.js",
     "./toolbar.config.json": "./toolbar.config.json",
     "./widgets.config.json": "./widgets.config.json",
     "./paste.config.json": "./paste.config.json",
@@ -60,14 +60,14 @@
     "./comments/ui/comments.css": "./src/core/comments/ui/comment-layout.css",
     "./comments/ui/comment-layout.css": "./src/core/comments/ui/comment-layout.css",
     "./workshop/ui/mount.js": "./src/core/workshop/ui/mount.ts",
-    "./modes.css": "./src/core/modes.css",
+    "./modes.css": "./src/core/modes/modes.css",
     "./ui/design-modes": "./src/core/ui/design-modes.ts",
     "./ui/viewfinder": "./src/core/ui/viewfinder.ts",
     "./styles/tailwind.css": "./dist/tailwind.css",
     "./worktree/port": "./src/core/worktree/port.js",
     "./worktree/serverRegistry": "./src/core/worktree/serverRegistry.js",
     "./inspector/highlighter": "./src/core/inspector/highlighter.js",
-    "./smooth-corners": "./src/core/smoothCorners.js"
+    "./smooth-corners": "./src/core/utils/smoothCorners.js"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",
@@ -99,7 +99,9 @@
     "vite": ">=5"
   },
   "peerDependenciesMeta": {
-    "vite": { "optional": true }
+    "vite": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.2.2",

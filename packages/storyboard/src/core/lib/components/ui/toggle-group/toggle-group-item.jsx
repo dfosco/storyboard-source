@@ -2,7 +2,7 @@ import { forwardRef } from "react";
 import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group";
 import { useToggleGroupCtx } from "./toggle-group.jsx";
 import { cn } from "../../../utils/index.js";
-import { toggleVariants } from "../../../components/ui/toggle/index.js";
+import { toggleVariants } from "../toggle/index.js";
 
 const ToggleGroupItem = forwardRef(function ToggleGroupItem({ className, variant, size, ...props }, ref) {
 const ctx = useToggleGroupCtx();

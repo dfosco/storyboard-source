@@ -15,10 +15,10 @@ import './comments/ui/comment-layout.css'
 import './comments/ui/comments.css'
 
 // Modes CSS (design mode body classes)
-import './modes.css'
+import './modes/modes.css'
 
 // CoreUIBar (floating toolbar)
-export { mountDevTools, unmountDevTools } from './devtools.js'
+export { mountDevTools, unmountDevTools } from './devtools/devtools.js'
 
 // Comments UI
 export { mountComments } from './comments/ui/mount.js'
