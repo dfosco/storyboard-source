@@ -53,7 +53,7 @@ import {
 import { findByWorktree } from '../worktree/serverRegistry.js'
 import { detectWorktreeName } from '../worktree/port.js'
 import { bindWidget, unbindWidget } from '../messaging/delivery.js'
-import { joinPresence } from '../messaging/presence.js'
+import { joinPresence, leavePresence } from '../messaging/presence.js'
 
 let pty
 try {
@@ -1261,6 +1261,7 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
       ptyProcesses.delete(tmuxName)
     }
     unbindWidget(widgetId)
+    leavePresence(widgetId)
     disconnectSession(tmuxName, generation)
   })
 
@@ -1272,6 +1273,7 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
     try { ptyProcess.kill() } catch { /* empty */ }
     ptyProcesses.delete(tmuxName)
     unbindWidget(widgetId)
+    leavePresence(widgetId)
     disconnectSession(tmuxName, generation)
   })
 }

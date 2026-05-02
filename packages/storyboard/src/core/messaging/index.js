@@ -43,6 +43,7 @@ export {
   getPresent,
   isPresent,
   getAllPresent,
+  leavePresence,
   resetPresence,
   HEARTBEAT_INTERVAL,
   EXPIRY_TTL,

@@ -8,11 +8,11 @@ import {
   initPresence,
   rehydratePresence,
   joinPresence,
+  leavePresence,
   getPresent,
   isPresent,
   getAllPresent,
   resetPresence,
-  HEARTBEAT_INTERVAL,
   EXPIRY_TTL,
   presenceChannel,
 } from './presence.js'
@@ -38,6 +38,21 @@ describe('Presence Registry', () => {
   })
 
   describe('joinPresence', () => {
+    it('registers an agent and makes it visible via getPresent (without rehydrate)', async () => {
+      // joinPresence should update the registry directly — no rehydrate needed
+      await joinPresence({
+        widgetId: 'agent-direct',
+        senderName: 'Direct',
+        branch: 'main',
+        canvasId: 'canvas-1',
+      })
+
+      const present = getPresent('main', 'canvas-1')
+      expect(present).toHaveLength(1)
+      expect(present[0].widgetId).toBe('agent-direct')
+      expect(present[0].senderName).toBe('Direct')
+    })
+
     it('registers an agent and makes it visible via getPresent', async () => {
       // rehydrate subscribes to the channel so published events update the registry
       await rehydratePresence('main', 'canvas-1')
@@ -189,6 +204,25 @@ describe('Presence Registry', () => {
     it('formats channel name correctly', () => {
       expect(presenceChannel('main', 'canvas-1')).toBe('presence:main:canvas-1')
       expect(presenceChannel('0.5.0--messaging-bus', 'tiles')).toBe('presence:0.5.0--messaging-bus:tiles')
+    })
+  })
+
+  describe('leavePresence', () => {
+    it('removes agent from registry and stops heartbeat', async () => {
+      await joinPresence({
+        widgetId: 'leaving-agent',
+        senderName: 'Leaver',
+        branch: 'main',
+        canvasId: 'canvas-1',
+      })
+
+      expect(isPresent('leaving-agent')).not.toBeNull()
+      leavePresence('leaving-agent')
+      expect(isPresent('leaving-agent')).toBeNull()
+    })
+
+    it('is safe to call for unknown widget', () => {
+      expect(() => leavePresence('nonexistent')).not.toThrow()
     })
   })
 })
