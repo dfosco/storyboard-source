@@ -1,5 +1,11 @@
 # @dfosco/storyboard
 
+## 0.5.0-alpha.1
+
+### Patch Changes
+
+-   fix(vite): pre-bundle CJS-only deps (feather-icons, @primer/octicons, ansi-to-html) for consumer apps
+
 ## 0.5.0-alpha.0
 
 ### Major Changes
