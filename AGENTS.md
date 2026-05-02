@@ -92,6 +92,8 @@ The default location is in `.agents/plans`, but the user may ask for a specific 
 
 - **migrate** (`.agents/skills/migrate/SKILL.md`) — Migrates client projects between storyboard versions. Handles breaking changes in config, routes, and features.
 
+- **migrate-0.5.0** (`.agents/skills/migrate-0.5.0/SKILL.md`) — Migrates a client project from embedded storyboard/ source to the `@dfosco/storyboard` npm package (0.5.0+). Import rewrites, vite config, scaffold, and config.
+
 ---
 
 ## Build & Development
