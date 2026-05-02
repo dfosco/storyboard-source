@@ -4,7 +4,7 @@
 // The jsx- system is dormant (no canvases define a `jsx` field).
 import WidgetWrapper from './WidgetWrapper.jsx'
 
-export default function ComponentWidget({ component: Component, exportName }) {
+export default function ComponentWidget({ component: Component }) {
   if (!Component) return null
   return (
     <WidgetWrapper>

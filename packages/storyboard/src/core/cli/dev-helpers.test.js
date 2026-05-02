@@ -20,8 +20,12 @@ describe('hasUncommittedChanges', () => {
 
 describe('localBranchExists', () => {
   it('returns true for a branch that exists', () => {
-    // The current branch must exist
-    const branch = execSync('git rev-parse --abbrev-ref HEAD', { cwd: repoRoot, encoding: 'utf8' }).trim()
+    // The current branch must exist — but in CI (detached HEAD) we fall back to 'main' or '0.5.0'
+    let branch = execSync('git rev-parse --abbrev-ref HEAD', { cwd: repoRoot, encoding: 'utf8' }).trim()
+    if (branch === 'HEAD') {
+      // Detached HEAD (e.g. CI checkout) — pick a branch we know exists
+      branch = localBranchExists('main', repoRoot) ? 'main' : '0.5.0'
+    }
     expect(localBranchExists(branch, repoRoot)).toBe(true)
   })
 

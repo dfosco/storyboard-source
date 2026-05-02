@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { render, act } from '@testing-library/react'
 import { WebGLContextPoolProvider, useWebGLSlot, usePoolVisibilityUpdater, Priority } from './WebGLContextPool.jsx'
 
@@ -54,11 +54,11 @@ describe('WebGLContextPool', () => {
   })
 
   it('prioritizes PINNED widgets over OFFSCREEN', () => {
-    let slot1, slot2, slot3
+    let slot3
     render(
       <WebGLContextPoolProvider maxLive={2}>
-        <TestWidget widgetId="t1" onSlot={(s) => { slot1 = s }} />
-        <TestWidget widgetId="t2" onSlot={(s) => { slot2 = s }} />
+        <TestWidget widgetId="t1" onSlot={() => {}} />
+        <TestWidget widgetId="t2" onSlot={() => {}} />
         <TestWidget widgetId="t3" onSlot={(s) => { slot3 = s }} />
       </WebGLContextPoolProvider>
     )
@@ -93,11 +93,11 @@ describe('WebGLContextPool', () => {
   })
 
   it('tracks generation across live-frozen-live transitions', () => {
-    let slot1, slot2, slot3
+    let slot3
     render(
       <WebGLContextPoolProvider maxLive={2}>
-        <TestWidget widgetId="t1" onSlot={(s) => { slot1 = s }} />
-        <TestWidget widgetId="t2" onSlot={(s) => { slot2 = s }} />
+        <TestWidget widgetId="t1" onSlot={() => {}} />
+        <TestWidget widgetId="t2" onSlot={() => {}} />
         <TestWidget widgetId="t3" onSlot={(s) => { slot3 = s }} />
       </WebGLContextPoolProvider>
     )
@@ -141,10 +141,10 @@ describe('WebGLContextPool', () => {
   })
 
   it('selected widgets get PINNED priority via visibility updater', () => {
-    let slot1, slot2, updater
+    let slot2, updater
     render(
       <WebGLContextPoolProvider maxLive={1}>
-        <TestWidget widgetId="t1" onSlot={(s) => { slot1 = s }} />
+        <TestWidget widgetId="t1" onSlot={() => {}} />
         <TestWidget widgetId="t2" onSlot={(s) => { slot2 = s }} />
         <TestUpdater onUpdater={(u) => { updater = u }} />
       </WebGLContextPoolProvider>
