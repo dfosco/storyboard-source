@@ -1,0 +1,14 @@
+.frame {
+  margin: 0;
+  padding: 24px;
+  width: fit-content;
+  border-radius: 28px;
+  background: #0b0e17;
+}
+
+.icon {
+  display: block;
+  width: 320px;
+  height: 320px;
+  filter: drop-shadow(0 24px 40px rgba(0, 0, 0, 0.45));
+}
