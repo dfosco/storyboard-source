@@ -180,6 +180,8 @@ function switchToExistingWorktree(targetBranch, { sourceDir, fromBranch }) {
   lines.push('')
   lines.push(`  ${green('cd')} ${dim(`worktrees/${targetBranch}`)}`)
   lines.push(`  ${green('npx storyboard dev')}  ${dim('to start developing')}`)
+  lines.push('')
+  lines.push(`  ${dim('Tip: auto-cd with')} ${green('eval "$(npx sb branch --cd)"')}`)
 
   p.note(lines.join('\n'), `Branch ${bold(targetBranch)} is ready`)
   p.outro('')
@@ -279,7 +281,7 @@ function createNewWorktree(targetBranch, { sourceDir, fromBranch, root }) {
   lines.push(`  ${green('cd')} ${dim(`worktrees/${targetBranch}`)}`)
   lines.push(`  ${green('npx storyboard dev')}  ${dim('to start developing')}`)
   lines.push('')
-  lines.push(`  ${dim('Tip: ask your AI agent about worktrees — they\'re great!')}`)
+  lines.push(`  ${dim('Tip: auto-cd with')} ${green('eval "$(npx sb branch --cd)"')}`)
 
   p.note(lines.join('\n'), `Branch ${bold(targetBranch)} is ready`)
   p.outro('')
@@ -295,41 +297,56 @@ export async function runBranchGuide(branchArg) {
   const sourceDir = fromWorktree === 'main' ? root : worktreeDir(fromWorktree)
   const fromBranch = currentBranch(sourceDir)
 
-  // 1. Get branch name
+  // 1. Get branch name — select from existing or type a new one
   let targetBranch = branchArg?.trim()
 
   if (!targetBranch) {
     if (existing.length > 0) {
-      const maxLen = Math.max(...existing.map(w => w.length))
-      const colWidth = maxLen + 2
-      const termWidth = process.stdout.columns || 80
-      const cols = Math.max(1, Math.floor(termWidth / colWidth))
-      const rows = Math.ceil(existing.length / cols)
-      const lines = []
-      for (let r = 0; r < rows; r++) {
-        const parts = []
-        for (let c = 0; c < cols; c++) {
-          const idx = c * rows + r
-          if (idx < existing.length) {
-            parts.push(cyan(existing[idx].padEnd(colWidth)))
-          }
-        }
-        lines.push(`  ${parts.join('')}`)
+      // Build select options from existing worktrees + "new branch" option
+      const NEW_BRANCH = Symbol('new')
+      const options = [
+        ...existing.map(name => ({ value: name, label: name })),
+        { value: NEW_BRANCH, label: dim('Create a new branch…') },
+      ]
+
+      const selected = await p.select({
+        message: 'Which branch do you want to work on?',
+        options,
+      })
+
+      if (p.isCancel(selected)) {
+        p.cancel('Cancelled')
+        process.exit(0)
       }
-      p.log.info(`${dim('Existing worktrees:')}\n${lines.join('\n')}`)
-    }
 
-    const result = await p.text({
-      message: 'Which branch do you want to work on? Select one from above or type a new one',
-      placeholder: 'e.g. 4.3.0--my-feature',
-      validate: isValidBranchName,
-    })
+      if (selected === NEW_BRANCH) {
+        const newName = await p.text({
+          message: 'New branch name:',
+          placeholder: 'e.g. 4.3.0--my-feature',
+          validate: isValidBranchName,
+        })
+        if (p.isCancel(newName)) {
+          p.cancel('Cancelled')
+          process.exit(0)
+        }
+        targetBranch = newName.trim()
+      } else {
+        targetBranch = selected
+      }
+    } else {
+      // No existing worktrees — just ask for a name
+      const result = await p.text({
+        message: 'Branch name for new worktree:',
+        placeholder: 'e.g. 4.3.0--my-feature',
+        validate: isValidBranchName,
+      })
 
-    if (p.isCancel(result)) {
-      p.cancel('Cancelled')
-      process.exit(0)
+      if (p.isCancel(result)) {
+        p.cancel('Cancelled')
+        process.exit(0)
+      }
+      targetBranch = result.trim()
     }
-    targetBranch = result.trim()
   }
 
   // 2. Route to existing or new worktree flow
