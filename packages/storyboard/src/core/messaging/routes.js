@@ -14,6 +14,9 @@
 import { publish, subscribe, read, readMulti } from './bus.js'
 import { negotiateFormat, serializeResponse, parseRequestBody } from './toon.js'
 
+/** @type {Set<{ res: any, unsub: () => void, timer: NodeJS.Timeout }>} Active SSE connections */
+const sseConnections = new Set()
+
 /**
  * Create the messaging route handler.
  *
@@ -41,6 +44,11 @@ export function createMessagingRoutes({ sendJson }) {
         return await handleBatch(req, res, body, sendJson)
       }
 
+      // GET /subscribe — SSE stream of live events
+      if (method === 'GET' && (subpath === 'subscribe' || subpath.startsWith('subscribe/'))) {
+        return handleSubscribe(req, res, ctx, sendJson)
+      }
+
       // GET /read — read events (channel from query or path)
       if (method === 'GET' && (subpath === 'read' || subpath.startsWith('read/'))) {
         return await handleRead(req, res, ctx, sendJson)
@@ -50,6 +58,101 @@ export function createMessagingRoutes({ sendJson }) {
     } catch (err) {
       sendJson(res, 500, { error: err.message || 'Internal messaging error' })
     }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// SSE subscribe
+// ---------------------------------------------------------------------------
+
+const SSE_HEARTBEAT_INTERVAL = 30_000 // 30s keepalive
+
+/**
+ * GET /subscribe/:channel — Stream live events as Server-Sent Events.
+ *
+ * Supports reconnection:
+ *   - `Last-Event-ID` header → replay missed events before going live
+ *   - `?since=ULID` query param → same as Last-Event-ID
+ *   - `?type=prefix` → filter events by type prefix
+ *
+ * Each SSE message uses the event id as the SSE `id:` field so clients can
+ * reconnect with `Last-Event-ID`.
+ */
+function handleSubscribe(req, res, ctx, sendJson) {
+  const url = new URL(`http://localhost${ctx.path || '/'}`)
+  const subpath = (ctx.path || '/').replace(/^\//, '').split('?')[0]
+  const channel = subpath.startsWith('subscribe/') ? decodeURIComponent(subpath.slice(10)) : url.searchParams.get('channel')
+
+  if (!channel) {
+    return sendJson(res, 400, { error: 'Missing channel. Use /subscribe/{channel} or ?channel=name' })
+  }
+
+  const typeFilter = url.searchParams.get('type') || undefined
+  const since = req.headers['last-event-id'] || url.searchParams.get('since') || undefined
+
+  // Start SSE stream
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive',
+    'X-Accel-Buffering': 'no', // disable nginx buffering
+  })
+  if (typeof res.flushHeaders === 'function') res.flushHeaders()
+
+  // Backfill missed events if reconnecting
+  if (since) {
+    read(channel, { since, type: typeFilter }).then((missed) => {
+      for (const event of missed) {
+        if (!res.destroyed) {
+          writeSseEvent(res, event)
+        }
+      }
+    }).catch((err) => {
+      console.error('[messaging-bus] SSE backfill error:', err)
+    })
+  }
+
+  // Subscribe to live events
+  const unsub = subscribe(channel, (event) => {
+    if (res.destroyed) { unsub(); return }
+    if (typeFilter && (!event.type || !event.type.startsWith(typeFilter))) return
+    writeSseEvent(res, event)
+  })
+
+  // Periodic heartbeat to keep connection alive through proxies
+  const timer = setInterval(() => {
+    if (res.destroyed) { clearInterval(timer); unsub(); return }
+    res.write(':\n\n')
+  }, SSE_HEARTBEAT_INTERVAL)
+
+  // Track connection for cleanup
+  const conn = { res, unsub, timer }
+  sseConnections.add(conn)
+
+  // Cleanup on disconnect
+  res.on('close', () => {
+    unsub()
+    clearInterval(timer)
+    sseConnections.delete(conn)
+  })
+
+  res.on('error', () => {
+    unsub()
+    clearInterval(timer)
+    sseConnections.delete(conn)
+  })
+}
+
+/**
+ * Write a single SSE event frame.
+ */
+function writeSseEvent(res, event) {
+  try {
+    res.write(`id: ${event.id}\n`)
+    res.write(`event: message\n`)
+    res.write(`data: ${JSON.stringify(event)}\n\n`)
+  } catch {
+    // Connection likely dead — cleanup will happen via res.on('close')
   }
 }
 
@@ -174,7 +277,7 @@ async function handleRead(req, res, ctx, sendJson) {
   const subpath = (ctx.path || '/').replace(/^\//, '').split('?')[0]
 
   // Extract channel from path (/read/{channel}) or query
-  const pathChannel = subpath.startsWith('read/') ? subpath.slice(5) : null
+  const pathChannel = subpath.startsWith('read/') ? decodeURIComponent(subpath.slice(5)) : null
   const queryChannel = url.searchParams.get('channel')
   const queryChannels = url.searchParams.get('channels')
 
@@ -212,4 +315,16 @@ async function sendNegotiated(req, res, status, data) {
   const { body, contentType } = await serializeResponse(data, format)
   res.writeHead(status, { 'Content-Type': contentType })
   res.end(body)
+}
+
+/**
+ * Close all active SSE connections. Call during server shutdown.
+ */
+export function closeAllSseConnections() {
+  for (const conn of sseConnections) {
+    conn.unsub()
+    clearInterval(conn.timer)
+    if (!conn.res.destroyed) conn.res.end()
+  }
+  sseConnections.clear()
 }
