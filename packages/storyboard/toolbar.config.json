@@ -242,6 +242,7 @@
       "surface": "command-palette",
       "modes": ["*"],
       "prod": true,
+      "hideFromCommandPaletteSearch": true,
       "handler": "core:feature-flags"
     },
     "hide-toolbars": {
