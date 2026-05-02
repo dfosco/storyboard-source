@@ -33,6 +33,7 @@ import { dim, green, bold, cyan } from './intro.js'
 
 const flagSchema = {
   worktree: { type: 'string', description: 'Target worktree/branch name (non-interactive)' },
+  cd: { type: 'boolean', default: false, description: 'Output shell-evaluable cd command (for eval)' },
 }
 
 /** Check if a remote branch exists on origin. */
@@ -182,6 +183,7 @@ function switchToExistingWorktree(targetBranch, { sourceDir, fromBranch }) {
 
   p.note(lines.join('\n'), `Branch ${bold(targetBranch)} is ready`)
   p.outro('')
+  return targetDir
 }
 
 /**
@@ -281,6 +283,7 @@ function createNewWorktree(targetBranch, { sourceDir, fromBranch, root }) {
 
   p.note(lines.join('\n'), `Branch ${bold(targetBranch)} is ready`)
   p.outro('')
+  return targetDir
 }
 
 // ─── Main ───
@@ -332,9 +335,9 @@ export async function runBranchGuide(branchArg) {
   // 2. Route to existing or new worktree flow
   const wtDir = worktreeDir(targetBranch)
   if (existsSync(resolve(wtDir, '.git'))) {
-    switchToExistingWorktree(targetBranch, { sourceDir, fromBranch })
+    return switchToExistingWorktree(targetBranch, { sourceDir, fromBranch })
   } else {
-    createNewWorktree(targetBranch, { sourceDir, fromBranch, root })
+    return createNewWorktree(targetBranch, { sourceDir, fromBranch, root })
   }
 }
 
@@ -343,5 +346,19 @@ export async function runBranchGuide(branchArg) {
 const { flags, positional } = parseFlags(process.argv.slice(3), flagSchema)
 const branchArg = flags.worktree || positional[0] || undefined
 
+// When --cd is set, redirect all TUI output (Clack) to stderr so that
+// stdout contains only the shell-evaluable `cd <path>` command.
+// Usage: eval "$(npx sb branch --worktree=<name> --cd)"
+const realStdoutWrite = process.stdout.write.bind(process.stdout)
+if (flags.cd) {
+  process.stdout.write = (chunk, encoding, callback) =>
+    process.stderr.write(chunk, encoding, callback)
+}
+
 p.intro('storyboard branch')
-runBranchGuide(branchArg)
+runBranchGuide(branchArg).then((targetDir) => {
+  if (flags.cd && targetDir) {
+    process.stdout.write = realStdoutWrite
+    realStdoutWrite(`cd ${JSON.stringify(targetDir)}\n`)
+  }
+})
