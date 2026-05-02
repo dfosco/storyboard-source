@@ -128,6 +128,31 @@ function readTerminalConfig() {
   }
 }
 
+/**
+ * Resolve a startup command to a configured canvas agent entry.
+ * Returns `{ id, cfg }` or null when no match is found.
+ */
+function resolveAgentConfig(startupCommand) {
+  if (!startupCommand || startupCommand === 'shell') return null
+  try {
+    const raw = readFileSync(resolve(process.cwd(), 'storyboard.config.json'), 'utf8')
+    const agentsConfig = JSON.parse(raw)?.canvas?.agents
+    if (!agentsConfig || typeof agentsConfig !== 'object') return null
+    for (const [id, cfg] of Object.entries(agentsConfig)) {
+      if (!cfg?.startupCommand) continue
+      // Prefer exact/prefix match for deterministic routing; keep binary fallback for backwards compat.
+      if (
+        startupCommand === cfg.startupCommand
+        || startupCommand.startsWith(`${cfg.startupCommand} `)
+        || startupCommand.startsWith(cfg.startupCommand.split(' ')[0])
+      ) {
+        return { id, cfg }
+      }
+    }
+  } catch { /* empty */ }
+  return null
+}
+
 /** Active PTY processes keyed by tmuxName (not tmux sessions — those persist independently) */
 const ptyProcesses = new Map()
 
@@ -814,20 +839,8 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
       const startupCommand = widgetStartupCommand ?? readTerminalConfig().startupCommand ?? null
 
       // Resolve startup command to agent ID for pool lookup
-      if (startupCommand && startupCommand !== 'shell') {
-        try {
-          const raw = readFileSync(resolve(process.cwd(), 'storyboard.config.json'), 'utf8')
-          const agentsConfig = JSON.parse(raw)?.canvas?.agents
-          if (agentsConfig && typeof agentsConfig === 'object') {
-            for (const [id, cfg] of Object.entries(agentsConfig)) {
-              if (cfg.startupCommand && startupCommand.startsWith(cfg.startupCommand.split(' ')[0])) {
-                poolId = id
-                break
-              }
-            }
-          }
-        } catch { /* empty */ }
-      }
+      const resolvedAgent = resolveAgentConfig(startupCommand)
+      if (resolvedAgent?.id) poolId = resolvedAgent.id
 
       // Try agent pool first, then fall back to terminal pool for bare shells
       const targetPool = poolId || (startupCommand ? null : 'terminal')
@@ -989,6 +1002,8 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
     // For new sessions, either run startupCommand (skip welcome) or show the welcome screen
     if (isNewSession) {
       const startupCommand = widgetStartupCommand ?? termCfg.startupCommand ?? null
+      const resolvedAgent = resolveAgentConfig(startupCommand)
+      const resolvedAgentCfg = resolvedAgent?.cfg || null
 
       // Build the welcome command base — used by all paths below
       const canvasArg = canvasId !== 'unknown' ? canvasId : ''
@@ -996,20 +1011,57 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
       const welcomeBase = `storyboard terminal-welcome --branch "${branch}" --canvas "${canvasArg}"${nameArg}`
 
       if (usedWarmAgent) {
-        // ── Hot pool path: agent is already running and ready ──
-        // Skip agent launch, readiness polling, and postStartup (all done by pool).
-        // Inject identity via [System] message so the agent knows who it is.
+        // ── Hot pool path: session came from a pre-warmed agent pool ──
+        // Re-apply postStartup at handoff and wait for readiness if configured.
+        // This keeps reassigned sessions robust when warm-up readiness is flaky.
+        const postStartup = resolvedAgentCfg?.postStartup || null
+        const readinessSignal = resolvedAgentCfg?.readinessSignal || null
         setTimeout(() => {
-          injectIdentityMessage(tmuxName, { widgetId, displayName: prettyName, canvasId, branch, serverUrl })
-          // Bind to messaging bus for live delivery + backfill missed messages
-          setTimeout(() => {
-            migratePendingMessages(widgetId, branch, canvasId).then(() => {
-              bindWidget({ widgetId, tmuxName, branch, canvasId, displayName: prettyName }).catch(() => {})
-            }).catch(() => {
-              bindWidget({ widgetId, tmuxName, branch, canvasId, displayName: prettyName }).catch(() => {})
-            })
-            joinPresence({ widgetId, senderName: prettyName || widgetId, branch, canvasId }).catch(() => {})
-          }, 1000)
+          let completed = false
+          const finalize = () => {
+            if (completed) return
+            completed = true
+            if (postStartup) {
+              try {
+                execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(postStartup)}`, { stdio: 'ignore' })
+                execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
+              } catch { /* empty */ }
+            }
+            injectIdentityMessage(tmuxName, { widgetId, displayName: prettyName, canvasId, branch, serverUrl })
+            // Bind to messaging bus for live delivery + backfill missed messages
+            setTimeout(() => {
+              migratePendingMessages(widgetId, branch, canvasId).then(() => {
+                bindWidget({ widgetId, tmuxName, branch, canvasId, displayName: prettyName }).catch(() => {})
+              }).catch(() => {
+                bindWidget({ widgetId, tmuxName, branch, canvasId, displayName: prettyName }).catch(() => {})
+              })
+              joinPresence({ widgetId, senderName: prettyName || widgetId, branch, canvasId }).catch(() => {})
+            }, 1000)
+          }
+
+          if (readinessSignal) {
+            const pollInterval = setInterval(() => {
+              if (completed) { clearInterval(pollInterval); return }
+              try {
+                const paneContent = execSync(
+                  `tmux capture-pane -t "${tmuxName}" -p`,
+                  { encoding: 'utf8', timeout: 1000 }
+                )
+                if (paneContent.includes(readinessSignal)) {
+                  clearInterval(pollInterval)
+                  finalize()
+                }
+              } catch { /* empty */ }
+            }, 2000)
+            setTimeout(() => {
+              if (!completed) {
+                clearInterval(pollInterval)
+                finalize()
+              }
+            }, 30000)
+          } else {
+            setTimeout(finalize, 500)
+          }
         }, 500)
       } else {
         // ── Cold path: standard startup flow ──
@@ -1049,17 +1101,7 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
         if (startupCommand) {
 
           // Look up agent config for this startup command
-          const agentCfg = (() => {
-            try {
-              const raw = readFileSync(resolve(process.cwd(), 'storyboard.config.json'), 'utf8')
-              const agentsConfig = JSON.parse(raw)?.canvas?.agents
-              if (!agentsConfig || typeof agentsConfig !== 'object') return null
-              for (const cfg of Object.values(agentsConfig)) {
-                if (cfg.startupCommand && startupCommand.startsWith(cfg.startupCommand.split(' ')[0])) return cfg
-              }
-            } catch { /* empty */ }
-            return null
-          })()
+          const agentCfg = resolvedAgentCfg
 
           if (startupCommand === 'shell') {
             // Plain shell — route through welcome with --startup shell so it
