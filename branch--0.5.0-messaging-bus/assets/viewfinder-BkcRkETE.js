@@ -1,0 +1,1 @@
+var a=Object.defineProperty;var o=(e,r)=>a(e,"name",{value:r,configurable:!0});import{b as t}from"./vendor-react-grIG8pzi.js";function c(){return t.useEffect(()=>{const e="/storyboard/branch--0.5.0-messaging-bus/".replace(/\/+$/,"");window.location.replace(`${e}/workspace${window.location.hash}`)},[]),null}o(c,"ViewfinderRedirect");export{c as default};
