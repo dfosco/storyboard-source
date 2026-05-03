@@ -66,9 +66,120 @@ if (subcommand === 'signal') {
     // Server not reachable — write directly to terminal config file
     await fallbackWrite({ branch, canvasId, widgetId, status, message })
   }
+} else if (subcommand === 'spawn') {
+  // POST /agent/spawn — spawn a headless agent session
+  const { flags: spawnFlags } = parseFlags(process.argv.slice(4), {
+    widget: { type: 'string', description: 'Widget ID' },
+    canvas: { type: 'string', description: 'Canvas ID' },
+    prompt: { type: 'string', required: true, description: 'Prompt / task for the agent' },
+    'agent-id': { type: 'string', description: 'Agent binary key (copilot, claude, codex)' },
+    autopilot: { type: 'boolean', description: 'Run in autopilot mode', default: true },
+    branch: { type: 'string', description: 'Git branch override' },
+  })
+
+  const widgetId = spawnFlags.widget || process.env.STORYBOARD_WIDGET_ID
+  const canvasId = spawnFlags.canvas || process.env.STORYBOARD_CANVAS_ID
+  const prompt = spawnFlags.prompt
+  const agentId = spawnFlags['agent-id'] || undefined
+  const autopilot = spawnFlags.autopilot !== false
+  const branchOverride = spawnFlags.branch || undefined
+  const serverUrl = process.env.STORYBOARD_SERVER_URL || 'http://localhost:1234'
+
+  if (!canvasId || !widgetId || !prompt) {
+    console.error(`${bold('Usage:')} npx storyboard agent spawn --prompt "task description"`)
+    console.error(`${dim('Canvas and widget IDs are read from environment if not provided.')}`)
+    process.exit(1)
+  }
+
+  try {
+    const res = await fetch(`${serverUrl}/_storyboard/canvas/agent/spawn`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ canvasId, widgetId, prompt, autopilot, agentId, branch: branchOverride }),
+    })
+    const data = await res.json().catch(() => ({}))
+    if (res.ok) {
+      console.log(`${cyan('✓')} Agent spawned: ${bold(data.tmuxName || widgetId)} (status: ${data.status || 'running'})`)
+    } else {
+      console.error(`${yellow('⚠')} Server returned ${res.status}: ${data.error || 'unknown error'}`)
+      process.exit(1)
+    }
+  } catch (err) {
+    console.error(`Error: ${err.message}`)
+    process.exit(1)
+  }
+
+} else if (subcommand === 'status') {
+  // GET /agent/status — poll agent status
+  const { flags: statusFlags } = parseFlags(process.argv.slice(4), {
+    widget: { type: 'string', description: 'Widget ID' },
+    canvas: { type: 'string', description: 'Canvas ID' },
+    branch: { type: 'string', description: 'Git branch' },
+  })
+
+  const widgetId = statusFlags.widget || process.env.STORYBOARD_WIDGET_ID
+  const canvasId = statusFlags.canvas || process.env.STORYBOARD_CANVAS_ID || 'unknown'
+  const branch = statusFlags.branch || process.env.STORYBOARD_BRANCH || 'unknown'
+  const serverUrl = process.env.STORYBOARD_SERVER_URL || 'http://localhost:1234'
+
+  if (!widgetId) {
+    console.error(`${bold('Usage:')} npx storyboard agent status --widget <id>`)
+    process.exit(1)
+  }
+
+  try {
+    const res = await fetch(`${serverUrl}/_storyboard/canvas/agent/status?widgetId=${encodeURIComponent(widgetId)}&canvasId=${encodeURIComponent(canvasId)}&branch=${encodeURIComponent(branch)}`, {
+      signal: AbortSignal.timeout(10000),
+    })
+    const data = await res.json().catch(() => ({}))
+    if (res.ok) {
+      console.log(JSON.stringify(data, null, 2))
+    } else {
+      console.error(`${yellow('⚠')} ${data.error || `Status ${res.status}`}`)
+      process.exit(1)
+    }
+  } catch (err) {
+    console.error(`Error: ${err.message}`)
+    process.exit(1)
+  }
+
+} else if (subcommand === 'peek') {
+  // POST /agent/peek — check if a headless tmux session exists for a widget
+  const { flags: peekFlags } = parseFlags(process.argv.slice(4), {
+    widget: { type: 'string', required: true, description: 'Widget ID' },
+    canvas: { type: 'string', description: 'Canvas ID' },
+  })
+
+  const widgetId = peekFlags.widget || process.env.STORYBOARD_WIDGET_ID
+  const canvasId = peekFlags.canvas || process.env.STORYBOARD_CANVAS_ID
+  const serverUrl = process.env.STORYBOARD_SERVER_URL || 'http://localhost:1234'
+
+  if (!widgetId) {
+    console.error(`${bold('Usage:')} npx storyboard agent peek --widget <id>`)
+    process.exit(1)
+  }
+
+  try {
+    const res = await fetch(`${serverUrl}/_storyboard/canvas/agent/peek`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ widgetId, canvasId }),
+    })
+    const data = await res.json().catch(() => ({}))
+    if (res.ok) {
+      console.log(JSON.stringify(data, null, 2))
+    } else {
+      console.error(`${yellow('⚠')} ${data.error || `Status ${res.status}`}`)
+      process.exit(1)
+    }
+  } catch (err) {
+    console.error(`Error: ${err.message}`)
+    process.exit(1)
+  }
+
 } else {
-  console.error(`${bold('Usage:')} npx storyboard agent <signal>`)
-  console.error(`${dim('Subcommands: signal')}`)
+  console.error(`${bold('Usage:')} npx storyboard agent <signal|spawn|status|peek>`)
+  console.error(`${dim('Subcommands: signal, spawn, status, peek')}`)
   process.exit(1)
 }
 

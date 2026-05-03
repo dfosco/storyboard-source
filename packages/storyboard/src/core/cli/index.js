@@ -69,10 +69,15 @@ function helpScreen(version) {
     '',
     `  ${bold(cyan('Canvas'))}`,
     cmd('canvas add <type>', 'Add widget to a canvas'),
-    `                              ${dim('types: sticky-note, markdown, prototype')}`,
+    `                              ${dim('types: sticky-note, markdown, prototype, agent')}`,
     cmd('canvas update <id>', 'Update a widget\'s props or position'),
+    cmd('canvas delete <id>', 'Delete a widget from a canvas'),
     cmd('canvas read [name]', 'Read canvas state and list widgets'),
+    cmd('canvas connector <op>', 'Create, update, or delete connectors'),
     cmd('canvas broadcast', 'Toggle broadcast messaging for a widget'),
+    cmd('canvas duplicate', 'Duplicate a canvas'),
+    cmd('canvas delete-canvas', 'Delete a canvas and its directory'),
+    cmd('canvas roles', 'List available hub roles'),
     cmd('canvas batch', 'Execute multiple canvas operations in one call'),
     cmd('compact [name]', 'Compact canvas JSONL files (removes bloat)'),
     cmd('compact --all', 'Force compact all canvases'),
@@ -84,8 +89,26 @@ function helpScreen(version) {
     cmd('terminal open --id <name>', 'Attach to a session'),
     cmd('terminal remove --id <name>', 'Permanently destroy a session'),
     cmd('terminal read <id>', 'Read terminal buffer ' + dim('(+ --length N)')),
+    cmd('terminal kill <id>', 'Kill a terminal/agent tmux session'),
     cmd('terminal --all', 'Show sessions across all branches'),
     cmd('terminal reset', 'Kill tmux server, clear registry & snapshots'),
+    '',
+    `  ${bold(cyan('Agent'))}`,
+    cmd('agent signal --status <s>', 'Signal agent status (done, error, running)'),
+    cmd('agent spawn --prompt "..."', 'Spawn a headless agent session'),
+    cmd('agent status --widget <id>', 'Check agent status'),
+    cmd('agent peek --widget <id>', 'Peek at a headless agent session'),
+    '',
+    `  ${bold(cyan('Hub & Messaging'))}`,
+    cmd('hub state --canvas <id>', 'Get hub state for a canvas'),
+    cmd('hub send --hub <id> ...', 'Send a message to hub peers'),
+    cmd('hub goal --hub <id> ...', 'Set hub goal'),
+    cmd('hub conversation start', 'Start a hub conversation'),
+    cmd('hub dissolve --canvas <id>', 'Dissolve all hubs for a canvas'),
+    cmd('hub presence', 'List present agents'),
+    cmd('messages publish ...', 'Publish to a channel'),
+    cmd('messages read --channel <ch>', 'Read events from a channel'),
+    cmd('prompt spawn --prompt "..."', 'Spawn a prompt agent session'),
     '',
     `  ${dim('Inside a storyboard terminal, shortcuts are available:')}`,
     cmd('start', 'Open the welcome screen'),
@@ -148,6 +171,16 @@ switch (command) {
       import('./canvasBounds.js')
     } else if (process.argv[3] === 'broadcast') {
       import('./canvasBroadcast.js')
+    } else if (process.argv[3] === 'connector') {
+      import('./canvasConnector.js')
+    } else if (process.argv[3] === 'delete') {
+      import('./canvasDelete.js')
+    } else if (process.argv[3] === 'duplicate') {
+      import('./canvasDuplicate.js')
+    } else if (process.argv[3] === 'delete-canvas') {
+      import('./canvasDeleteCanvas.js')
+    } else if (process.argv[3] === 'roles') {
+      import('./canvasRoles.js')
     } else if (process.argv[3] === 'batch') {
       import('./canvasBatch.js')
     } else {
@@ -180,6 +213,7 @@ switch (command) {
         cmd('terminal output --summary "..."', 'Save latest output (+ --content)'),
         cmd('terminal status <widgetId>', 'Check terminal status'),
         cmd('terminal read <widgetId>', 'Read terminal buffer (+ --length N)'),
+        cmd('terminal kill <widgetId>', 'Kill a terminal/agent tmux session'),
       ].join('\n')
       console.log(`\n${cmds}\n`)
     } else if (process.argv[3] === 'close' || process.argv[3] === 'archive') {
@@ -196,6 +230,8 @@ switch (command) {
       import('./terminal-messaging.js').then(m => m.handleStatus())
     } else if (process.argv[3] === 'read') {
       import('./terminal-messaging.js').then(m => m.handleRead())
+    } else if (process.argv[3] === 'kill') {
+      import('./terminal-messaging.js').then(m => m.handleKill())
     } else {
       // Default: session browser (formerly `storyboard sessions`)
       import('./sessions.js')
@@ -214,6 +250,15 @@ switch (command) {
     break
   case 'agent':
     import('./agent.js')
+    break
+  case 'hub':
+    import('./hubCommands.js')
+    break
+  case 'messages':
+    import('./messagesCommands.js')
+    break
+  case 'prompt':
+    import('./promptSpawn.js')
     break
   case 'code':
     import('./code.js')
