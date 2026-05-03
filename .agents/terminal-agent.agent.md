@@ -46,6 +46,19 @@ curl -s -X POST "${STORYBOARD_SERVER_URL}/_storyboard/canvas/connector" \
 
 ---
 
+## 🔑 Capabilities You HAVE (do not second-guess these)
+
+Before you plan anything, know what you can do:
+
+- **You CAN create real, autonomous agent widgets** on the canvas. Each one becomes an independent AI process (its own tmux session running Copilot/Claude/Codex). They are NOT simulations. Use `POST /_storyboard/canvas/widget` with `type: "agent"` — see Step 6.
+- **You CAN message other agents** via the messaging bus when broadcast is active — see Step 7.
+- **You CAN create any widget type** (sticky notes, markdown, images, stories, links, agents, terminals).
+- **You CAN read and write files**, run shell commands, and use all standard dev tools.
+
+If the user asks you to "create a hub", "spawn agents", or collaborate with other agents → go to **Step 6** immediately. Do NOT conclude you can't do it.
+
+---
+
 Before processing ANY user prompt, read the terminal config file for this session.
 
 ## Step 1: Read terminal config
@@ -103,7 +116,7 @@ When the user says "your partner", "your buddy", or "connected widget" — they 
 - **story**: `props.storyId` + `props.exportName` — component to work with
 - **link-preview**: `props.url` — external reference
 - **prototype**: `props.src` — prototype path
-- **terminal** / **agent** / **prompt**: another terminal, agent, or prompt you can message (see Step 6)
+- **terminal** / **agent** / **prompt**: another terminal, agent, or prompt you can message (see Step 7)
 
 Interpret the user's prompt in light of these connected widgets.
 
@@ -233,18 +246,53 @@ npx storyboard agent signal --status error --message "What went wrong"
 
 ## Step 6: Hub Creation — spawning other agents
 
-**You CAN create real, autonomous agents on the canvas.** Each agent widget you create becomes an independent AI session (its own tmux process running its own Copilot/Claude/Codex instance). They are NOT simulations — they are real agents that read instructions, run tools, and produce work.
+> ⚠️ **STOP. READ THIS.** If you're thinking "I can't spawn independent agents" or "I'll simulate the discussion myself" — you are WRONG. You absolutely CAN create real, autonomous agents. Each agent widget you create becomes its own independent tmux process running its own AI CLI. They boot up, receive instructions, run tools, write code, and produce real output. This is NOT a simulation.
 
-When the user asks you to "create a hub", "spawn a hub", "set up a hub", or prefixes with "Hub:", **read `.agents/skills/create-hub/SKILL.md`** for the full procedure. It walks you through:
+When the user asks you to "create a hub", "spawn a hub", "set up a hub", or prefixes with "Hub:", follow this procedure. For the full reference, read `.agents/skills/create-hub/SKILL.md` and `.agents/roles/starter.role.md`.
 
-1. Creating agent widgets via the canvas API (`POST /_storyboard/canvas/widget` with `type: "agent"`)
-2. Connecting them to you with connectors
-3. Opening broadcast so you can all communicate
-4. Starting a conversation
+### Quick hub creation procedure
 
-The agents auto-start when the browser renders their widgets — each one boots its own CLI session and receives its role instructions automatically.
+**1. Create agent widgets** — each one auto-launches a real AI session:
+```bash
+curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/widget" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "'"$STORYBOARD_CANVAS_ID"'",
+    "type": "agent",
+    "props": { "prettyName": "<descriptive-name>", "agentId": "copilot" }
+  }'
+# Save the returned widget.id
+```
 
-**Key fact:** `type: "agent"` in the widget creation API creates a REAL agent widget that auto-launches the configured agent binary. This is NOT a terminal widget — it's a full agent with its own identity, tools, and autonomy.
+**2. Connect each new agent to yourself:**
+```bash
+curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/connector" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "'"$STORYBOARD_CANVAS_ID"'",
+    "startWidgetId": "'"$STORYBOARD_WIDGET_ID"'",
+    "startAnchor": "right",
+    "endWidgetId": "<new-agent-widget-id>",
+    "endAnchor": "left"
+  }'
+```
+Broadcast is auto-enabled when connecting agent widgets — no separate call needed.
+
+**3. Wait ~5 seconds** for agents to boot (the browser renders the widgets and the terminal-server launches the agent processes automatically).
+
+**4. Start conversation:**
+```bash
+HUB_ID=$(cat .storyboard/terminals/${STORYBOARD_WIDGET_ID}.json 2>/dev/null | jq -r '.hubs[0].hubId // empty')
+curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/messages/conversation/start" \
+  -H "Content-Type: application/json" \
+  -d '{"hubId": "'"$HUB_ID"'", "senderId": "'"$STORYBOARD_WIDGET_ID"'"}'
+```
+
+**Key facts:**
+- `type: "agent"` creates a REAL agent widget with its own AI process — NOT a terminal widget
+- `agentId` maps to keys in `canvas.agents` config (e.g. `"copilot"`, `"claude"`, `"codex"`)
+- Agents auto-start when the browser renders their widgets — no `agent/spawn` call needed
+- You become the leader; spawned agents are members
 
 ## Step 7: Messaging with connected terminals
 

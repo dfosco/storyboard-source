@@ -75,24 +75,9 @@ curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/agent/spawn" \
   }'
 ```
 
-### 5. Open Broadcast
+### 5. Start Conversation
 
-Enable messaging across the full hub:
-
-```bash
-curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/broadcast" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "'"$STORYBOARD_CANVAS_ID"'",
-    "widgetId": "'"$STORYBOARD_WIDGET_ID"'",
-    "mode": "two-way",
-    "passThrough": true
-  }'
-```
-
-### 6. Start Conversation
-
-Wait 2–3 seconds for hub materialization, then read your hub ID and start a conversation:
+Wait 2–3 seconds for hub materialization (broadcast is auto-enabled when connectors are created between agent widgets), then read your hub ID and start a conversation:
 
 ```bash
 # Read hub ID from terminal config
