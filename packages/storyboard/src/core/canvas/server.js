@@ -2585,7 +2585,7 @@ export function Default() {
 
     // POST /agent/spawn — spawn a headless agent session
     if (routePath === '/agent/spawn' && method === 'POST') {
-      const { canvasId, widgetId, prompt, autopilot = true, branch: reqBranch } = body
+      const { canvasId, widgetId, prompt, autopilot = true, branch: reqBranch, agentId } = body
 
       if (!canvasId || !widgetId || !prompt) {
         sendJson(res, 400, { error: 'canvasId, widgetId, and prompt are required' })
@@ -2656,25 +2656,30 @@ export function Default() {
         const envContent = Object.entries(envMap).map(([k, v]) => `export ${k}=${JSON.stringify(v)}`).join('\n') + '\n'
         fsModule.writeFileSync(envFile, envContent)
 
+        // Resolve agent config from storyboard.config.json
+        let agentConfig = null
+        try {
+          const configPath = path.join(root, 'storyboard.config.json')
+          const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'))
+          const agents = config?.canvas?.agents || {}
+          if (agentId && agents[agentId]) {
+            agentConfig = agents[agentId]
+          } else {
+            agentConfig = Object.values(agents).find(a => a.default) || Object.values(agents)[0] || null
+          }
+        } catch { /* empty */ }
+
         // Build command from widgets.config.json (prompt mode) or storyboard.config.json (interactive)
         let copilotCmd
         if (autopilot) {
-          copilotCmd = buildPromptCmd({ prompt, envFile })
+          copilotCmd = buildPromptCmd({ prompt, envFile, agentId })
           if (!copilotCmd) {
             const execution = getPromptExecution()
-            sendJson(res, 400, { error: `Default agent "${execution?.default || 'unknown'}" has no prompt command configured` })
+            sendJson(res, 400, { error: `Agent "${agentId || execution?.default || 'unknown'}" has no prompt command configured` })
             return
           }
         } else {
-          // Interactive mode — read startupCommand from storyboard.config.json
-          let startupCmd = 'copilot'
-          try {
-            const configPath = path.join(root, 'storyboard.config.json')
-            const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'))
-            const agents = config?.canvas?.agents || {}
-            const defaultAgent = Object.values(agents).find(a => a.default) || Object.values(agents)[0]
-            if (defaultAgent?.startupCommand) startupCmd = defaultAgent.startupCommand
-          } catch { /* empty */ }
+          const startupCmd = agentConfig?.startupCommand || 'copilot'
           copilotCmd = `source ${envFile} && ${startupCmd}`
         }
 
@@ -2685,21 +2690,25 @@ export function Default() {
           } catch (err) {
             devLog().logEvent('warn', 'Failed to launch copilot', { tmuxName, error: err.message })
           }
-          // Poll for copilot readiness, then send /autopilot + Enter once
+          // Poll for agent readiness using configured readinessSignal
+          const readinessSignal = agentConfig?.readinessSignal || 'Environment loaded:'
+          const postStartup = agentConfig?.postStartup || '/allow-all on'
           let sent = false
           const poll = setInterval(() => {
             if (sent) { clearInterval(poll); return }
             try {
               const pane = execSync(`tmux capture-pane -t "${tmuxName}" -p`, { encoding: 'utf8', timeout: 1000 })
-              if (pane.includes('Environment loaded:')) {
+              if (pane.includes(readinessSignal)) {
                 sent = true
                 clearInterval(poll)
-                setTimeout(() => {
-                  try {
-                    execSync(`tmux send-keys -t "${tmuxName}" -l "/allow-all on"`, { stdio: 'ignore' })
-                    execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
-                  } catch { /* empty */ }
-                }, 500)
+                if (postStartup) {
+                  setTimeout(() => {
+                    try {
+                      execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(postStartup)}`, { stdio: 'ignore' })
+                      execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
+                    } catch { /* empty */ }
+                  }, 500)
+                }
               }
             } catch { /* empty */ }
           }, 1000)
