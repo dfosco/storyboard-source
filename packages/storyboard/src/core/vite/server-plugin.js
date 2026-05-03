@@ -285,6 +285,12 @@ export default function storyboardServer() {
         devLogger.logEvent('error', 'Hot pool failed to start', { error: err.message })
       })
 
+      // Kill pool sessions on shutdown (prevents zombie tmux accumulation)
+      const shutdownPool = () => { hotPool.stop() }
+      process.on('SIGINT', shutdownPool)
+      process.on('SIGTERM', shutdownPool)
+      server.httpServer?.on('close', shutdownPool)
+
       // Wire canvas API routes (always enabled — CRUD for .canvas.jsonl files)
       routeHandlers.set('canvas', createCanvasHandler({ root, sendJson: sendJsonLogged, hotPool }))
 

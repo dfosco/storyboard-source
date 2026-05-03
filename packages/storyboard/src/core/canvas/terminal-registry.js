@@ -179,6 +179,12 @@ function reconcile() {
 
   // Import unknown sb- sessions (tmux exists but not in registry)
   for (const name of liveTmux) {
+    // Kill orphaned pool sessions — they have no user state and are worthless after restart
+    if (name.startsWith('sb-pool-')) {
+      killTmuxSession(name)
+      continue
+    }
+
     if (name.startsWith(TMUX_PREFIX)) {
       sessions.set(name, {
         tmuxName: name,
