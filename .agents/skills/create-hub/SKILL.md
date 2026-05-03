@@ -90,26 +90,9 @@ curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/agent/spawn" \
   }'
 ```
 
-### Step 5: Open broadcast
+### Step 5: Start a conversation
 
-Enable messaging across the entire hub using the existing broadcast endpoint:
-
-```bash
-curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/broadcast" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "<canvasName>",
-    "widgetId": "<leaderWidgetId>",
-    "mode": "two-way",
-    "passThrough": true
-  }'
-```
-
-`passThrough: true` ensures all connected agents in the hub get messaging enabled, not just direct neighbors.
-
-### Step 6: Start a conversation
-
-Once broadcast is active, start a conversation on the hub:
+Broadcast is **automatically enabled** when connectors are created between agent/terminal widgets — no explicit broadcast call is needed. Wait 2-3 seconds for hub materialization, then start a conversation:
 
 ```bash
 curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/messages/conversation/start" \
@@ -120,9 +103,9 @@ curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/messages/conversation/start"
   }'
 ```
 
-The `hubId` can be read from the leader's terminal config (`.storyboard/terminals/<widgetId>.json` → `hubs[0].hubId`) after broadcast is opened and hub materialization completes.
+The `hubId` can be read from the leader's terminal config (`.storyboard/terminals/<widgetId>.json` → `hubs[0].hubId`) after connectors are created and hub materialization completes.
 
-### Step 7: Return hub context
+### Step 6: Return hub context
 
 After all agents are spawned and broadcast is open, output the hub summary:
 
