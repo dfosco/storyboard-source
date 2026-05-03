@@ -9,7 +9,9 @@ description: Creates a multi-agent hub on the canvas — spawns agents, connects
 
 ## What This Does
 
-Creates a multi-agent hub on the current canvas: determines which agent roles are needed, spawns agent widgets, connects them to the requesting agent (leader), assigns roles, and opens broadcast so messaging can begin.
+Creates a multi-agent hub on the current canvas. Each agent you create is a **real, autonomous AI session** — an independent process running its own Copilot/Claude/Codex CLI instance in its own tmux session. They are NOT simulations or stubs. They boot up, receive role instructions, read the codebase, run tools, and produce real work.
+
+The procedure: determine which agents are needed → create agent widgets on the canvas → connect them to you → open broadcast messaging → start a conversation.
 
 ## First Step
 

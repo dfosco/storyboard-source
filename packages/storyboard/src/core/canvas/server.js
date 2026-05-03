@@ -477,6 +477,12 @@ export function createCanvasHandler(ctx) {
       const terminalWidgets = widgets.filter((w) => w.type === 'terminal' || w.type === 'agent' || w.type === 'prompt')
       const { defaultRole, roleByWidget, hubsByWidget } = computeHubRoleState(canvasName, widgets, connectors)
 
+      // Sync hub-manager's in-memory state so messaging routes can find hubs
+      try {
+        const { materializeHubs } = await import('../messaging/hub-manager.js')
+        materializeHubs(canvasName, widgets, connectors, { roleByWidget, defaultRole })
+      } catch { /* messaging module may not be loaded */ }
+
       for (const tw of terminalWidgets) {
         const prevConfig = readTerminalConfigById(tw.id)
         const prevRole = prevConfig?.role || null
