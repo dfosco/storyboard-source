@@ -1,0 +1,269 @@
+SESSION: agent-nftydq | cyan-dove
+CANVAS:  storyboarding/terminal-bus
+BRANCH:  0.5.0--messaging-bus
+TIME:    2026-05-03T18:20:41.180Z
+
+================================================================================
+SCREEN
+================================================================================
+
+
+● Signal completion (shell)
+  │ npx storyboard agent signal --status done --message "Research delivered: 4 principles
+  │ for sustainable design systems (token architecture, governance, versioning, adoption
+  │ metrics)"
+  └ 2 lines...
+
+● Research complete and posted to the canvas. Here's what I sent to gold-egret:
+
+  ------------------------------------------------------------------------------------
+
+  4 Key Principles for Sustainable Design Systems
+
+  1. Token Architecture as the Foundation — 3-tier hierarchy (Primitive → Semantic →
+  Component). Rebrands touch only primitives; component APIs stay stable.
+
+  2. Governance Without Gatekeeping — Contribution ladder (propose → RFC → ratify) with
+  domain stewards outside the core team to prevent bottlenecks.
+
+  3. Versioning & the Breaking Change Contract — Semantic versioning with explicit
+  policies + automated codemods turns upgrades from projects into routine maintenance.
+
+  4. Adoption Metrics Over Usage Metrics — Track adoption rate and drift rate, not raw
+  usage counts. Drift = the system isn't meeting real needs; fix before building new
+  components.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
+─────────────────────────────────────────────────────────────────────────────────────────
+❯
+─────────────────────────────────────────────────────────────────────────────────────────
+ / commands · ? help                                    terminal-agent · Claude Opus 4.6
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+
+● Signal completion (shell)
+  │ npx storyboard agent signal --status done --message "Research delivered: 4 principles  │ for sustainable design systems (token architecture, governance, versioning, adoption
+  │ metrics)"
+  └ 2 lines...
+
+● Research complete and posted to the canvas. Here's what I sent to gold-egret:
+
+  ------------------------------------------------------------------------------------
+
+  4 Key Principles for Sustainable Design Systems
+
+  1. Token Architecture as the Foundation — 3-tier hierarchy (Primitive → Semantic →
+  Component). Rebrands touch only primitives; component APIs stay stable.
+
+  2. Governance Without Gatekeeping — Contribution ladder (propose → RFC → ratify) with
+  domain stewards outside the core team to prevent bottlenecks.
+
+  3. Versioning & the Breaking Change Contract — Semantic versioning with explicit
+  policies + automated codemods turns upgrades from projects into routine maintenance.
+
+  4. Adoption Metrics Over Usage Metrics — Track adoption rate and drift rate, not raw
+  usage counts. Drift = the system isn't meeting real needs; fix before building new
+  components.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                    terminal-agent · Claude Opus 4.6
+
+● Signal completion (shell)
+  │ npx storyboard agent signal --status done --message "Research delivered: 4 principles  │ for sustainable design systems (token architecture, governance, versioning, adoption
+  │ metrics)"
+  └ 2 lines...
+
+● Research complete and posted to the canvas. Here's what I sent to gold-egret:
+
+  ------------------------------------------------------------------------------------
+
+  4 Key Principles for Sustainable Design Systems
+
+  1. Token Architecture as the Foundation — 3-tier hierarchy (Primitive → Semantic →
+  Component). Rebrands touch only primitives; component APIs stay stable.
+
+  2. Governance Without Gatekeeping — Contribution ladder (propose → RFC → ratify) with
+  domain stewards outside the core team to prevent bottlenecks.
+
+  3. Versioning & the Breaking Change Contract — Semantic versioning with explicit
+  policies + automated codemods turns upgrades from projects into routine maintenance.
+
+  4. Adoption Metrics Over Usage Metrics — Track adoption rate and drift rate, not raw
+  usage counts. Drift = the system isn't meeting real needs; fix before building new
+  components.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                    terminal-agent · Claude Opus 4.6
+
+● Signal completion (shell)
+  │ npx storyboard agent signal --status done --message "Research delivered: 4 principles  │ for sustainable design systems (token architecture, governance, versioning, adoption
+  │ metrics)"
+  └ 2 lines...
+
+● Research complete and posted to the canvas. Here's what I sent to gold-egret:
+
+  ------------------------------------------------------------------------------------
+
+  4 Key Principles for Sustainable Design Systems
+
+  1. Token Architecture as the Foundation — 3-tier hierarchy (Primitive → Semantic →
+  Component). Rebrands touch only primitives; component APIs stay stable.
+
+  2. Governance Without Gatekeeping — Contribution ladder (propose → RFC → ratify) with
+  domain stewards outside the core team to prevent bottlenecks.
+
+  3. Versioning & the Breaking Change Contract — Semantic versioning with explicit
+  policies + automated codemods turns upgrades from projects into routine maintenance.
+
+  4. Adoption Metrics Over Usage Metrics — Track adoption rate and drift rate, not raw
+  usage counts. Drift = the system isn't meeting real needs; fix before building new
+  components.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                    terminal-agent · Claude Opus 4.6
+
+● Signal completion (shell)
+  │ npx storyboard agent signal --status done --message "Research delivered: 4 principles  │ for sustainable design systems (token architecture, governance, versioning, adoption
+  │ metrics)"
+  └ 2 lines...
+
+● Research complete and posted to the canvas. Here's what I sent to gold-egret:
+
+  ------------------------------------------------------------------------------------
+
+  4 Key Principles for Sustainable Design Systems
+
+  1. Token Architecture as the Foundation — 3-tier hierarchy (Primitive → Semantic →
+  Component). Rebrands touch only primitives; component APIs stay stable.
+
+  2. Governance Without Gatekeeping — Contribution ladder (propose → RFC → ratify) with
+  domain stewards outside the core team to prevent bottlenecks.
+
+  3. Versioning & the Breaking Change Contract — Semantic versioning with explicit
+  policies + automated codemods turns upgrades from projects into routine maintenance.
+
+  4. Adoption Metrics Over Usage Metrics — Track adoption rate and drift rate, not raw
+  usage counts. Drift = the system isn't meeting real needs; fix before building new
+  components.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                    terminal-agent · Claude Opus 4.6
+
+● Signal completion (shell)
+  │ npx storyboard agent signal --status done --message "Research delivered: 4 principles  │ for sustainable design systems (token architecture, governance, versioning, adoption
+  │ metrics)"
+  └ 2 lines...
+
+● Research complete and posted to the canvas. Here's what I sent to gold-egret:
+
+  ------------------------------------------------------------------------------------
+
+  4 Key Principles for Sustainable Design Systems
+
+  1. Token Architecture as the Foundation — 3-tier hierarchy (Primitive → Semantic →
+  Component). Rebrands touch only primitives; component APIs stay stable.
+
+  2. Governance Without Gatekeeping — Contribution ladder (propose → RFC → ratify) with
+  domain stewards outside the core team to prevent bottlenecks.
+
+  3. Versioning & the Breaking Change Contract — Semantic versioning with explicit
+  policies + automated codemods turns upgrades from projects into routine maintenance.
+
+  4. Adoption Metrics Over Usage Metrics — Track adoption rate and drift rate, not raw
+  usage counts. Drift = the system isn't meeting real needs; fix before building new
+  components.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                    terminal-agent · Claude Opus 4.6
+
+● Signal completion (shell)
+  │ npx storyboard agent signal --status done --message "Research delivered: 4 principles  │ for sustainable design systems (token architecture, governance, versioning, adoption
+  │ metrics)"
+  └ 2 lines...
+
+● Research complete and posted to the canvas. Here's what I sent to gold-egret:
+
+  ------------------------------------------------------------------------------------
+
+  4 Key Principles for Sustainable Design Systems
+
+  1. Token Architecture as the Foundation — 3-tier hierarchy (Primitive → Semantic →
+  Component). Rebrands touch only primitives; component APIs stay stable.
+
+  2. Governance Without Gatekeeping — Contribution ladder (propose → RFC → ratify) with
+  domain stewards outside the core team to prevent bottlenecks.
+
+  3. Versioning & the Breaking Change Contract — Semantic versioning with explicit
+  policies + automated codemods turns upgrades from projects into routine maintenance.
+
+  4. Adoption Metrics Over Usage Metrics — Track adoption rate and drift rate, not raw
+  usage counts. Drift = the system isn't meeting real needs; fix before building new
+  components.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                    terminal-agent · Claude Opus 4.6
+
+● Signal completion (shell)
+  │ npx storyboard agent signal --status done --message "Research delivered: 4 principles  │ for sustainable design systems (token architecture, governance, versioning, adoption
+  │ metrics)"
+  └ 2 lines...
+
+● Research complete and posted to the canvas. Here's what I sent to gold-egret:
+
+  ------------------------------------------------------------------------------------
+
+  4 Key Principles for Sustainable Design Systems
+
+  1. Token Architecture as the Foundation — 3-tier hierarchy (Primitive → Semantic →
+  Component). Rebrands touch only primitives; component APIs stay stable.
+
+  2. Governance Without Gatekeeping — Contribution ladder (propose → RFC → ratify) with
+  domain stewards outside the core team to prevent bottlenecks.
+
+  3. Versioning & the Breaking Change Contract — Semantic versioning with explicit
+  policies + automated codemods turns upgrades from projects into routine maintenance.
+
+  4. Adoption Metrics Over Usage Metrics — Track adoption rate and drift rate, not raw
+  usage counts. Drift = the system isn't meeting real needs; fix before building new
+  components.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                    terminal-agent · Claude Opus 4.6
+
+● Signal completion (shell)
+  │ npx storyboard agent signal --status done --message "Research delivered: 4 principles  │ for sustainable design systems (token architecture, governance, versioning, adoption
+  │ metrics)"
+  └ 2 lines...
+
+● Research complete and posted to the canvas. Here's what I sent to gold-egret:
+
+  ------------------------------------------------------------------------------------
+
+  4 Key Principles for Sustainable Design Systems
+
+  1. Token Architecture as the Foundation — 3-tier hierarchy (Primitive → Semantic →
+  Component). Rebrands touch only primitives; component APIs stay stable.
+
+  2. Governance Without Gatekeeping — Contribution ladder (propose → RFC → ratify) with
+  domain stewards outside the core team to prevent bottlenecks.
+
+  3. Versioning & the Breaking Change Contract — Semantic versioning with explicit
+  policies + automated codemods turns upgrades from projects into routine maintenance.
+
+  4. Adoption Metrics Over Usage Metrics — Track adoption rate and drift rate, not raw
+  usage counts. Drift = the system isn't meeting real needs; fix before building new
+  components.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                    terminal-agent · Claude Opus 4.6

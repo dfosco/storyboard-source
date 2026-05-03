@@ -1,0 +1,10 @@
+{
+  "widgetId": "agent-2jm3k7",
+  "canvasId": "storyboarding/terminal-bus",
+  "prettyName": "coral-finch",
+  "timestamp": "2026-05-03T09:12:26.180Z",
+  "cols": 89,
+  "rows": 32,
+  "paneContent": "rding/terminal-bus\" --name \"coral-finch\"\n┌  storyboard terminal\n│\n◆  How would you like to start?\n│  ● ✦ Start a new agent session\n│  ○ ▸ Start a new terminal session\n│  ○ ⊞ Browse existing sessions\n└\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+  "scrollback": "\u001b[?996n\u001b[>c\u001b[>qrding/terminal-bus\" --name \"coral-finch\"\r\n┌  storyboard terminal\r\n│\r\n◆  How would you like to start?\r\n│  ● ✦ Start a new agent session\r\n│  ○ ▸ Start a new terminal session\r\n│  ○ ⊞ Browse existing sessions\r\n└\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n"
+}

@@ -1,0 +1,73 @@
+SESSION: agent-sbthuy | dawn-lark
+CANVAS:  storyboarding/terminal-bus
+BRANCH:  0.5.0--messaging-bus
+TIME:    2026-05-03T09:12:26.116Z
+
+================================================================================
+SCREEN
+================================================================================
+
+  Note: The hub messaging endpoints on this branch aren't fully wired — materializeHubs
+  is defined but never called by the canvas server. The hub state in terminal configs
+  is computed by the canvas server's own computeHubRoleState, but the messaging routes
+  query the hub-manager's in-memory map (which stays empty). That's likely a gap to
+  bridge on this branch.
+
+❯ Create a copilot agent widget
+
+● Create copilot agent widget on canvas (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus && source
+  │ .storyboard/terminals/sb-b192d82e983b.env && npx storyboard canvas add agent --canvas
+  │ "${STORYBOARD_CANVAS_ID}" --near "${STORYBOARD_WIDGET_ID}" --direction right --props
+  │ '{"prettyName":"copilot-agent"}' --json
+  └ 2 lines...
+
+● Connect agent widget to terminal (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus && source
+  │ .storyboard/terminals/sb-b192d82e983b.env && curl -s -X POST
+  │ "${STORYBOARD_SERVER_URL}/_storyboard/canvas/connector" \
+  │ -H "Content-Type: application/json" \
+  │ -d "{\"name\":\"${STORYBOARD_CANVAS_ID}\",\"startWidgetId\":\"${STORYBOARD_WIDGET…
+  └ 20 lines...
+
+● Done — created agent widget copilot-agent (agent-5ug6dk) to the right of my terminal,
+  connected via connector-5tj91q.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
+─────────────────────────────────────────────────────────────────────────────────────────
+❯
+─────────────────────────────────────────────────────────────────────────────────────────
+ / commands · ? help                                    terminal-agent · Claude Opus 4.6
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+[?996n[>c[>q  Note: The hub messaging endpoints on this branch aren't fully wired — materializeHubs
+  is defined but never called by the canvas server. The hub state in terminal configs
+  is computed by the canvas server's own computeHubRoleState, but the messaging routes
+  query the hub-manager's in-memory map (which stays empty). That's likely a gap to
+  bridge on this branch.
+
+❯ Create a copilot agent widget
+
+● Create copilot agent widget on canvas (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus && source
+  │ .storyboard/terminals/sb-b192d82e983b.env && npx storyboard canvas add agent --canvas  │ "${STORYBOARD_CANVAS_ID}" --near "${STORYBOARD_WIDGET_ID}" --direction right --props
+  │ '{"prettyName":"copilot-agent"}' --json
+  └ 2 lines...
+
+● Connect agent widget to terminal (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus && source
+  │ .storyboard/terminals/sb-b192d82e983b.env && curl -s -X POST
+  │ "${STORYBOARD_SERVER_URL}/_storyboard/canvas/connector" \
+  │ -H "Content-Type: application/json" \
+  │ -d "{\"name\":\"${STORYBOARD_CANVAS_ID}\",\"startWidgetId\":\"${STORYBOARD_WIDGET…
+  └ 20 lines...
+
+● Done — created agent widget copilot-agent (agent-5ug6dk) to the right of my terminal,
+  connected via connector-5tj91q.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯
+────────────────────────────────────────────────────────────────────
