@@ -490,3 +490,35 @@ export function resetHubs() {
   hubs.clear()
   canvasHubs.clear()
 }
+
+// ---------------------------------------------------------------------------
+// Hub dissolution
+// ---------------------------------------------------------------------------
+
+/**
+ * Dissolve all hubs for a canvas. Cleans up token state and removes hub records.
+ * @param {string} canvasId
+ */
+export function dissolveHubsForCanvas(canvasId) {
+  const hubIds = canvasHubs.get(canvasId)
+  if (!hubIds) return
+
+  // Lazy import to avoid circular dependency
+  import('./token-manager.js').then(({ cleanupHub }) => {
+    for (const hubId of hubIds) {
+      cleanupHub(hubId)
+      hubs.delete(hubId)
+    }
+  })
+  canvasHubs.delete(canvasId)
+}
+
+// ---------------------------------------------------------------------------
+// Internal state access (for maintenance module)
+// ---------------------------------------------------------------------------
+
+/** @returns {Map<string, HubState>} */
+export function getHubsMap() { return hubs }
+
+/** @returns {Map<string, Set<string>>} */
+export function getCanvasHubsMap() { return canvasHubs }

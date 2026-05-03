@@ -30,6 +30,8 @@ import { JsonlAdapter } from '../messaging/storage/jsonl-adapter.js'
 import { createMessagingRoutes } from '../messaging/routes.js'
 import { initPresence } from '../messaging/presence.js'
 import { initDeliveryBridge } from '../messaging/delivery.js'
+import { getHubsMap } from '../messaging/hub-manager.js'
+import { startMaintenance, stopMaintenance } from '../messaging/hub-maintenance.js'
 
 const API_PREFIX = '/_storyboard/'
 
@@ -187,6 +189,7 @@ export default function storyboardServer() {
           }
         }, 10000)
         server.httpServer?.on('close', () => clearInterval(cleanup))
+        server.httpServer?.on('close', () => stopMaintenance())
 
         function isClientGuarded(client) {
           const cu = canvasGuardedClients.get(client)
@@ -321,6 +324,11 @@ export default function storyboardServer() {
           event: 'storyboard:message',
           data: { channel, event },
         })
+      })
+
+      // Start hub maintenance (conversation timeouts, cleanup)
+      startMaintenance(getHubsMap(), {
+        conversationTimeoutMinutes: 30,
       })
 
       // Terminal sessions API — list, detach, kill sessions
