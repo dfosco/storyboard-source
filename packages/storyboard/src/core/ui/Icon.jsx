@@ -123,9 +123,10 @@ const iconoirIcons = {
     content: '<path d="M3 21V3.6C3 3.26863 3.26863 3 3.6 3H21" stroke="currentColor"/><path d="M17 21H20.4C20.7314 21 21 20.7314 21 20.4V17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 7V9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12V14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 21H9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 21H14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 4C3.55228 4 4 3.55228 4 3C4 2.44772 3.55228 2 3 2C2.44772 2 2 2.44772 2 3C2 3.55228 2.44772 4 3 4Z" fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 22C3.55228 22 4 21.5523 4 21C4 20.4477 3.55228 20 3 20C2.44772 20 2 20.4477 2 21C2 21.5523 2.44772 22 3 22Z" fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 4C21.5523 4 22 3.55228 22 3C22 2.44772 21.5523 2 21 2C20.4477 2 20 2.44772 20 3C20 3.55228 20.4477 4 21 4Z" fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>',
   },
   'crown': {
-    viewBox: '0 0 24 24',
-    strokeWidth: '1.5',
-    content: '<path d="M3 17L2.5 6.5L7 10L12 4L17 10L21.5 6.5L21 17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 21H20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17H20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>',
+    viewBox: '0 0 476 342',
+    strokeWidth: '0',
+    fill: true,
+    content: '<path d="M237.662 5.06897e-06C234.508 -0.00234318 231.407 0.811233 228.661 2.36166C225.915 3.91209 223.616 6.14664 221.989 8.84813L143.696 138.937L28.232 63.8869C25.2791 61.9709 21.8359 60.9481 18.3159 60.9415C14.796 60.9348 11.3489 61.9445 8.38878 63.8492C5.42868 65.754 3.08142 68.4728 1.62894 71.6792C0.176467 74.8855 -0.319454 78.443 0.200748 81.9244L36.7632 325.674C37.4116 330.007 39.5942 333.963 42.9136 336.821C46.2331 339.68 50.4688 341.252 54.8495 341.25H420.475C424.855 341.252 429.091 339.68 432.41 336.821C435.73 333.963 437.912 330.007 438.561 325.674L475.123 81.9244C475.643 78.443 475.148 74.8855 473.695 71.6792C472.243 68.4728 469.895 65.754 466.935 63.8492C463.975 61.9445 460.528 60.9348 457.008 60.9415C453.488 60.9481 450.045 61.9709 447.092 63.8869L331.628 138.937L253.335 8.8725C251.711 6.16648 249.414 3.92709 246.667 2.37228C243.92 0.817458 240.818 0.000185041 237.662 5.06897e-06Z" fill="currentColor"/>',
   },
   'white-flag': {
     viewBox: '0 0 24 24',
