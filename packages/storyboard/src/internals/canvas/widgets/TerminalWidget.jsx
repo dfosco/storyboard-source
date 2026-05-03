@@ -119,6 +119,7 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
   const prettyName = props?.prettyName || null
   const displayLabel = alias || prettyName || null
   const startupCommand = props?.startupCommand || null
+  const isAgent = id.startsWith('agent-')
 
   // Inline alias editing (double-click Easter egg)
   const [editingAlias, setEditingAlias] = useState(false)
@@ -411,7 +412,6 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
     return () => clearTimeout(timer)
   }, [ready])
 
-  const isAgent = id.startsWith('agent-')
   const typeLabel = isAgent ? 'Agent' : 'Terminal'
   const showLeaderCrown = isAgent && props?.role === 'leader'
 
