@@ -491,7 +491,7 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
     <>
     <div className={styles.container}>
       <div className={`tc-drag-handle ${styles.titleBar}`}>
-        <span>{typeLabel} · {prettyName || '…'}</span>
+        <span><span className={styles.typeLabel}>{typeLabel}</span><span className={styles.nameSeparator}> · </span>{prettyName || '…'}</span>
         {showLeaderCrown && <span className={styles.leaderCrown} aria-label="Hub leader">👑</span>}
       </div>
       <div

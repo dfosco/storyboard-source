@@ -31,6 +31,14 @@
   border-radius: 4px;
 }
 
+.titleBar .typeLabel {
+  color: #e6edf3;
+}
+
+.titleBar .nameSeparator {
+  color: #6e7681;
+}
+
 [data-widget-selected] .leaderCrown {
   filter: saturate(1.1);
 }
@@ -41,7 +49,9 @@
   line-height: 1;
 }
 
-[data-widget-selected] .titleBar {
+[data-widget-selected] .titleBar,
+[data-widget-selected] .titleBar .typeLabel,
+[data-widget-selected] .titleBar .nameSeparator {
   color: var(--borderColor-accent-emphasis, #0969da);
 }
 
