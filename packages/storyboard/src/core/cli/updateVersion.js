@@ -36,19 +36,19 @@ try {
   process.exit(1)
 }
 
-// Collect all @dfosco/storyboard-* packages from deps and devDeps
+// Collect all @dfosco/storyboard* packages from deps and devDeps
 const storyboardPkgs = new Set()
 for (const depField of ['dependencies', 'devDependencies']) {
   if (!pkg[depField]) continue
   for (const name of Object.keys(pkg[depField])) {
-    if (name.startsWith('@dfosco/storyboard-') || name === '@dfosco/tiny-canvas') {
+    if (name === '@dfosco/storyboard' || name.startsWith('@dfosco/storyboard-') || name === '@dfosco/tiny-canvas') {
       storyboardPkgs.add(name)
     }
   }
 }
 
 if (storyboardPkgs.size === 0) {
-  p.log.warn('No @dfosco/storyboard-* packages found in package.json')
+  p.log.warn('No @dfosco/storyboard packages found in package.json')
   process.exit(0)
 }
 
@@ -91,9 +91,18 @@ try {
 
 // Auto-commit the version update (only if package.json or lock file changed)
 try {
-  // Read the installed version from the core package
-  const corePkg = JSON.parse(readFileSync(resolve(process.cwd(), 'node_modules', '@dfosco', 'storyboard-core', 'package.json'), 'utf8'))
-  const installedVersion = corePkg.version || suffix.slice(1)
+  // Read the installed version from the storyboard package (try unified first, then legacy core)
+  let installedVersion
+  try {
+    const unified = JSON.parse(readFileSync(resolve(process.cwd(), 'node_modules', '@dfosco', 'storyboard', 'package.json'), 'utf8'))
+    installedVersion = unified.version
+  } catch {
+    try {
+      const core = JSON.parse(readFileSync(resolve(process.cwd(), 'node_modules', '@dfosco', 'storyboard-core', 'package.json'), 'utf8'))
+      installedVersion = core.version
+    } catch { /* empty */ }
+  }
+  installedVersion = installedVersion || suffix.slice(1)
   const commitMsg = `[storyboard-update] Update storyboard to ${installedVersion}`
 
   // Only stage update-related files (package.json, lock files, scaffold outputs)
