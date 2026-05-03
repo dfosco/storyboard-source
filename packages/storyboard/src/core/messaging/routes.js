@@ -14,7 +14,7 @@
 import { publish, subscribe, read, readMulti } from './bus.js'
 import { negotiateFormat, serializeResponse, parseRequestBody } from './toon.js'
 import { getPresent, isPresent, getAllPresent } from './presence.js'
-import { getBindings, isBound, terminalChannel, getBinding } from './delivery.js'
+import { getBindings, getBinding } from './delivery.js'
 import {
   getHub,
   getHubsForCanvas,

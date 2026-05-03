@@ -118,7 +118,6 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
   const height = dims.height
   const alias = props?.alias || null
   const prettyName = props?.prettyName || null
-  const displayLabel = alias || prettyName || null
   const startupCommand = props?.startupCommand || null
   const isAgent = id.startsWith('agent-')
 

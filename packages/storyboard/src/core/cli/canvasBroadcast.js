@@ -19,7 +19,7 @@
  */
 
 import * as p from '@clack/prompts'
-import { ensureDevServer, serverPost, getServerUrl } from './create.js'
+import { ensureDevServer, serverPost } from './create.js'
 import { parseFlags, hasFlags, formatFlagHelp } from './flags.js'
 
 const broadcastSchema = {

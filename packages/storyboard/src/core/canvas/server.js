@@ -268,6 +268,7 @@ export function createCanvasHandler(ctx) {
     const refBounds = getWidgetBounds(refWidget)
     const newDefaults = getWidgetBounds({ type: newType, props: newProps, position: { x: 0, y: 0 } })
     const refCenterY = refBounds.y + refBounds.height / 2
+    // eslint-disable-next-line no-unused-vars
     const refCenterX = refBounds.x + refBounds.width / 2
     switch (direction) {
       case 'left':

@@ -12,7 +12,7 @@
  */
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, realpathSync } from 'fs'
-import { join, dirname, basename } from 'path'
+import { join, dirname } from 'path'
 import { execSync } from 'child_process'
 import { findByWorktree } from './serverRegistry.js'
 
