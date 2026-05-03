@@ -56,6 +56,13 @@ describe('portsFilePath', () => {
     expect(result).toBe(join(tempRoot, 'worktrees', 'ports.json'))
   })
 
+  it('returns shared ports.json from inside a .worktrees/ dir (legacy)', () => {
+    const legacyDir = join(tempRoot, '.worktrees', 'my-branch')
+    mkdirSync(legacyDir, { recursive: true })
+    const result = portsFilePath(legacyDir)
+    expect(result).toBe(join(tempRoot, 'worktrees', 'ports.json'))
+  })
+
   it('returns shared ports.json from worktree even when ports.json does not exist', () => {
     // This is the key bug fix — first run from a worktree with no ports.json
     const worktreeDir = join(tempRoot, 'worktrees', 'first-run')
@@ -137,6 +144,7 @@ describe('repoRoot', () => {
   beforeEach(() => {
     tempRoot = realpathSync(mkdtempSync(join(tmpdir(), 'sb-root-test-')))
     mkdirSync(join(tempRoot, 'worktrees', 'my-branch'), { recursive: true })
+    mkdirSync(join(tempRoot, '.worktrees', 'legacy-branch'), { recursive: true })
   })
 
   afterEach(() => {
@@ -149,6 +157,11 @@ describe('repoRoot', () => {
 
   it('returns parent of worktrees when inside a worktree', () => {
     const wt = join(tempRoot, 'worktrees', 'my-branch')
+    expect(repoRoot(wt)).toBe(tempRoot)
+  })
+
+  it('returns parent of .worktrees when inside a legacy worktree', () => {
+    const wt = join(tempRoot, '.worktrees', 'legacy-branch')
     expect(repoRoot(wt)).toBe(tempRoot)
   })
 })
@@ -171,6 +184,24 @@ describe('worktreeDir', () => {
 
   it('returns worktrees/<name> for branches', () => {
     expect(worktreeDir('my-feature', tempRoot)).toBe(join(tempRoot, 'worktrees', 'my-feature'))
+  })
+
+  it('returns .worktrees/<name> when only legacy dir exists', () => {
+    const legacyDir = join(tempRoot, '.worktrees', 'legacy-branch')
+    mkdirSync(legacyDir, { recursive: true })
+    expect(worktreeDir('legacy-branch', tempRoot)).toBe(legacyDir)
+  })
+
+  it('prefers worktrees/<name> over .worktrees/<name> when both exist', () => {
+    const currentDir = join(tempRoot, 'worktrees', 'both-branch')
+    const legacyDir = join(tempRoot, '.worktrees', 'both-branch')
+    mkdirSync(currentDir, { recursive: true })
+    mkdirSync(legacyDir, { recursive: true })
+    expect(worktreeDir('both-branch', tempRoot)).toBe(currentDir)
+  })
+
+  it('falls back to worktrees/<name> when neither exists', () => {
+    expect(worktreeDir('new-branch', tempRoot)).toBe(join(tempRoot, 'worktrees', 'new-branch'))
   })
 })
 
@@ -218,5 +249,33 @@ describe('listWorktrees', () => {
 
     const result = listWorktrees(tempRoot)
     expect(result.sort()).toEqual(['alpha', 'beta', 'gamma'])
+  })
+
+  it('includes worktrees from .worktrees/ (legacy)', () => {
+    const legacyDir = join(tempRoot, '.worktrees')
+    mkdirSync(legacyDir)
+
+    mkdirSync(join(legacyDir, 'legacy-branch'))
+    writeFileSync(join(legacyDir, 'legacy-branch', '.git'), 'gitdir: /some/path')
+
+    const result = listWorktrees(tempRoot)
+    expect(result).toEqual(['legacy-branch'])
+  })
+
+  it('deduplicates names found in both worktrees/ and .worktrees/', () => {
+    const currentDir = join(tempRoot, 'worktrees')
+    const legacyDir = join(tempRoot, '.worktrees')
+    mkdirSync(currentDir)
+    mkdirSync(legacyDir)
+
+    mkdirSync(join(currentDir, 'shared'))
+    writeFileSync(join(currentDir, 'shared', '.git'), 'gitdir: /some/path')
+    mkdirSync(join(legacyDir, 'shared'))
+    writeFileSync(join(legacyDir, 'shared', '.git'), 'gitdir: /some/path')
+    mkdirSync(join(legacyDir, 'legacy-only'))
+    writeFileSync(join(legacyDir, 'legacy-only', '.git'), 'gitdir: /some/path')
+
+    const result = listWorktrees(tempRoot)
+    expect(result.sort()).toEqual(['legacy-only', 'shared'])
   })
 })

@@ -109,7 +109,12 @@ async function resolveDevTarget(branchArg, { allowCreate = true } = {}) {
       return { worktreeName: branch, targetCwd: existingDir, created: false }
     }
 
-    // No worktree exists — prompt the user to convert
+    // No worktree exists — prompt the user to convert (TTY only)
+    if (!process.stdin.isTTY) {
+      // Non-interactive — proceed with root as-is (legacy behavior)
+      return { worktreeName: detectedName, targetCwd: process.cwd(), created: false }
+    }
+
     p.log.warning(`Root is on branch "${branch}" instead of main.`)
     const shouldConvert = await p.confirm({
       message: `Convert "${branch}" to a worktree? (moves branch to worktrees/${branch}/)`,
