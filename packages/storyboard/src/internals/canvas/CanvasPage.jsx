@@ -887,8 +887,16 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
   // with deletes and other writes, preventing stale data from overwriting.
   const debouncedSave = useRef(
     debounce((canvasId, widgets) => {
+      // De-duplicate widgets by ID — race conditions between HMR pushes
+      // and optimistic adds can introduce duplicates in localWidgets.
+      const seen = new Set()
+      const deduped = widgets.filter((w) => {
+        if (seen.has(w.id)) return false
+        seen.add(w.id)
+        return true
+      })
       queueWrite(() =>
-        updateCanvas(canvasId, { widgets })
+        updateCanvas(canvasId, { widgets: deduped })
           .catch((err) => console.error('[canvas] Failed to save:', err))
       )
     }, 2000)
@@ -2095,7 +2103,13 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
           result.widget.props = { ...result.widget.props, webglReady: true }
         }
         undoRedo.snapshot(stateRef.current, 'add')
-        setLocalWidgets((prev) => [...(prev || []), result.widget])
+        // Guard against duplicates: HMR may have already pushed the new widget
+        // into localWidgets before the API response returns (race condition).
+        setLocalWidgets((prev) => {
+          const arr = prev || []
+          if (arr.some((w) => w.id === result.widget.id)) return arr
+          return [...arr, result.widget]
+        })
         setSelectedWidgetIds(new Set([result.widget.id]))
       }
     } catch (err) {
@@ -2116,7 +2130,11 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
       })
       if (result.success && result.widget) {
         undoRedo.snapshot(stateRef.current, 'add')
-        setLocalWidgets((prev) => [...(prev || []), result.widget])
+        setLocalWidgets((prev) => {
+          const arr = prev || []
+          if (arr.some((w) => w.id === result.widget.id)) return arr
+          return [...arr, result.widget]
+        })
         setSelectedWidgetIds(new Set([result.widget.id]))
       }
     } catch (err) {
