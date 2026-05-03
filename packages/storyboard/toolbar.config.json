@@ -132,6 +132,7 @@
       "surface": "canvas-toolbar",
       "handler": "core:canvas-agents",
       "modes": ["*"],
+      "prod": true,
       "menuWidth": "220px",
       "excludeRoutes": ["^/$", "^/workspace", "^/viewfinder"],
       "hideInCommandPalette": [".*"]
