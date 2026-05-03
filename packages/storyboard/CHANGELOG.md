@@ -1,5 +1,11 @@
 # @dfosco/storyboard
 
+## 0.5.0-alpha.3
+
+### Patch Changes
+
+-   Fix update:version CLI to detect unified @dfosco/storyboard package
+
 ## 0.5.0-alpha.2
 
 ### Minor Changes
