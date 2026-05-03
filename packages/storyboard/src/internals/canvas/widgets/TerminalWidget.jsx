@@ -7,6 +7,7 @@ import { getSplitPaneLabel, findAllConnectedSplitTargets, buildPaneForWidget, bu
 import ExpandedPane from './ExpandedPane.jsx'
 import { useWebGLSlot, Priority } from '../WebGLContextPool.jsx'
 import FrozenTerminalOverlay from './FrozenTerminalOverlay.jsx'
+import Icon from '../../Icon.jsx'
 import styles from './TerminalWidget.module.css'
 import overlayStyles from './embedOverlay.module.css'
 
@@ -556,7 +557,7 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
             <span onDoubleClick={handleAliasDoubleClick}></span>
           )}
         </span>
-        {showLeaderCrown && <span className={styles.leaderCrown} aria-label="Hub leader">👑</span>}
+        {showLeaderCrown && <span className={styles.leaderCrown} aria-label="Hub leader"><Icon name="iconoir/crown" size={12} color="#AE843B" /></span>}
       </div>
       <div
         ref={terminalRef}

@@ -39,13 +39,9 @@
   color: #6e7681;
 }
 
-[data-widget-selected] .leaderCrown {
-  filter: saturate(1.1);
-}
-
 .leaderCrown {
-  color: #f2cc60;
-  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
   line-height: 1;
 }
 
