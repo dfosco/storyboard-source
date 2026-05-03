@@ -32,7 +32,7 @@
 }
 
 .titleBar .typeLabel {
-  color: #e6edf3;
+  color: var(--fgColor-default, #1f2328);
 }
 
 .titleBar .nameSeparator {
