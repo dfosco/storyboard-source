@@ -472,7 +472,7 @@ export function createCanvasHandler(ctx) {
    * Finds all terminal widgets in the canvas, computes their connected widget IDs
    * from the current connector list, and updates their config files.
    */
-  async function updateTerminalConnectionsForCanvas(root, canvasName, canvasData, connectors) {
+  async function updateTerminalConnectionsForCanvas(root, canvasName, canvasData, connectors, viteWs) {
     try {
       const { updateTerminalConnections, initTerminalConfig, readTerminalConfigById } = await import('./terminal-config.js')
       const { execSync } = await import('node:child_process')
@@ -499,12 +499,12 @@ export function createCanvasHandler(ctx) {
       // widgets inside a hub component gets messagingMode defaulted to 'two-way'.
       // Explicitly set modes (including 'none') are never overridden.
       const canvasFilePath = findCanvasPath(root, canvasName)
+      let broadcastBackfilled = false
       if (canvasFilePath) {
         const agentTypes = new Set(['agent', 'terminal'])
         const components = buildComponents(widgets, connectors)
         const ts = new Date().toISOString()
         for (const comp of components) {
-          // Only process hub-sized components (2+ members, at least one agent)
           const compWidgets = [...comp].map((id) => widgetMap.get(id)).filter(Boolean)
           const hasAgents = compWidgets.some((w) => agentTypes.has(w.type))
           if (!hasAgents || comp.size < 2) continue
@@ -513,11 +513,9 @@ export function createCanvasHandler(ctx) {
             const aId = conn.start?.widgetId
             const bId = conn.end?.widgetId
             if (!aId || !bId || !comp.has(aId) || !comp.has(bId)) continue
-            // Only auto-set for agent↔agent connections
             const aW = widgetMap.get(aId)
             const bW = widgetMap.get(bId)
             if (!aW || !bW || !agentTypes.has(aW.type) || !agentTypes.has(bW.type)) continue
-            // Skip if messagingMode is already explicitly set
             if (conn.meta?.messagingMode) continue
 
             appendEventRaw(canvasFilePath, {
@@ -526,9 +524,9 @@ export function createCanvasHandler(ctx) {
               connectorId: conn.id,
               updates: { meta: { messagingMode: 'two-way' } },
             })
-            // Update in-memory connector so later reads in this cycle see the new mode
             if (!conn.meta) conn.meta = {}
             conn.meta.messagingMode = 'two-way'
+            broadcastBackfilled = true
           }
         }
       }
@@ -629,6 +627,37 @@ export function createCanvasHandler(ctx) {
             } catch { /* best-effort */ }
           }
         }
+      }
+
+      // If broadcast was auto-enabled, send a follow-up HMR push so the UI
+      // and agents see the updated messagingMode on connectors, and inject
+      // broadcast notifications into running agent tmux sessions.
+      if (broadcastBackfilled && canvasFilePath) {
+        try {
+          const freshData = readCanvas(canvasFilePath)
+          if (viteWs) {
+            viteWs.send({
+              type: 'custom',
+              event: 'storyboard:canvas-file-changed',
+              data: { canvasId: canvasName, name: canvasName, metadata: freshData },
+            })
+          }
+          // Notify agents about broadcast activation
+          for (const tw of terminalWidgets) {
+            if (tw.type !== 'agent' && tw.type !== 'terminal') continue
+            const tmuxName = findTmuxNameForWidget(tw.id)
+            if (!tmuxName) continue
+            const peers = terminalWidgets
+              .filter((other) => other.id !== tw.id && (other.type === 'agent' || other.type === 'terminal'))
+              .map((p) => p.props?.alias || p.props?.prettyName || p.id)
+            if (peers.length === 0) continue
+            const msg = `📡 [Broadcast two-way ACTIVE with ${peers.join(', ')}]`
+            try {
+              execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(msg)}`, { stdio: 'ignore' })
+              execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
+            } catch { /* session may not be active */ }
+          }
+        } catch { /* best effort */ }
       }
     } catch (err) {
       devLog().logEvent('warn', 'Failed to update terminal connections', { error: err.message })
@@ -754,7 +783,7 @@ export function createCanvasHandler(ctx) {
 
       // Refresh terminal config files on every canvas change so agents
       // always see up-to-date connectedWidgets and widget props.
-      updateTerminalConnectionsForCanvas(root, canvasName, data, data.connectors || [])
+      updateTerminalConnectionsForCanvas(root, canvasName, data, data.connectors || [], viteWs)
     } catch { /* best effort — watcher will catch it eventually */ }
   }
 

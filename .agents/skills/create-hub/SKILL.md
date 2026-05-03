@@ -68,9 +68,9 @@ storyboard canvas add agent --canvas "$STORYBOARD_CANVAS_ID" --json \
   --name "Research Agent" --near "$STORYBOARD_WIDGET_ID" --gap 8 --props '{"agentId": "copilot"}'
 ```
 
-### Step 3: Enable broadcast (optional)
+### Step 3: Ensure broadcast is active
 
-Broadcast is **automatically enabled** for all agent↔agent connectors when a hub forms. This step is only needed to override the default (e.g. set `mode: 'one-way'` or `mode: 'none'` on specific connections):
+Broadcast is automatically enabled for agent↔agent connectors when a hub forms. However, the leader **must** verify and explicitly enable it as a safety net. Always run this after creating connectors:
 
 ```bash
 storyboard canvas broadcast \
@@ -79,6 +79,8 @@ storyboard canvas broadcast \
   --mode two-way \
   --pass-through
 ```
+
+**Do not skip this step.** If auto-broadcast didn't fire (e.g. due to timing), this ensures all peers have messaging enabled before the conversation starts.
 
 ### Step 4: Wait for agents to boot
 
