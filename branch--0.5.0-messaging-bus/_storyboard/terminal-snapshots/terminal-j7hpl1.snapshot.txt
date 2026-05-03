@@ -1,0 +1,83 @@
+SESSION: terminal-j7hpl1 | honey-magpie
+CANVAS:  storyboarding/terminal-widget-plan-v6
+BRANCH:  0.5.0--messaging-bus
+TIME:    2026-05-03T18:48:54.591Z
+
+================================================================================
+SCREEN
+================================================================================
+
+(empty)
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+[?996n[>c[>q
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[sb-9879960:tmux*                                   "Daniels-MacBook-Pro" 20:48 03-May-26
+░▒▓   …/0.5.0--messaging-bus   0.5.0--messaging-bus $?   20:48  
+❯ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export STORYBOARD_WIDGET_ID="terminal-j7hpl1" && export STORYBOARD_CANVAS_ID="storyboardding/terminal-widget-plan-v6" && export STORYBOARD_BRANCH="0.5.0--messaging-bus" && export STORYB[48;2
+░▒▓   …/0.5.0--messaging-bus   0.5.0--messaging-bus $?   20:48  
+❯ export STORYBOARD_WIDGET_ID="terminal-j7hpl1" && export STORYBOARD_CANVAS_ID="storyboarding/terminal-widget-plan-v6" && export STORYBOARD_BRANCH="0.5.0--messaging-bus" && export STORYBOARD_SERVER_URL="http://localhost:1235" && export STARSHIP_CONFIG="/dev/null" && export POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD="true" && export ZSH_THEME="" && export TERM_PROGRAM="storyboard" && export COLORTERM="truecolor" && export FORCE_COLOR="3" && export PATH="/Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus/.storyboard/terminals/bin:/Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus/node_modules/.bin:/Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus/node_modules/.bin:/Users/dfosco/workspace/storyboard-core/worktrees/node_modules/.bin:/Users/dfosco/workspace/storyboard-core/node_modules/.bin:/Users/dfosco/workspace/node_modules/.bin:/Users/dfosco/node_modules/.bin:/Users/node_modules/.bin:/node_modules/.bin:/opt/homebrew/Cellar/node@22/22.22.0/lib/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/Users/dfosco/.local/bin:/Users/dfosco/.bun/bin:/usr/local/opt/python/libexec/bin:/opt/homebrew/opt/node@22/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/opt/pkg/env/active/bin:/opt/pmk/env/global/bin:/Applications/VMware Fusion.app/Contents/Public:/Users/dfosco/.cargo/bin:/Applications/Ghostty.app/Contents/MacOS"
+
+0.5.0--messaging-bus on  0.5.0--messaging-bus [$?] via  v22.22.0 
+❯ 
