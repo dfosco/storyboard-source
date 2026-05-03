@@ -88,6 +88,8 @@ const { x, y, adjusted } = findFreePosition({
 | `image` | 400×300 | `src` (filename) | `width`, `height`, `private` |
 | `link-preview` | 320×200 | `url` | `title` |
 | `component` | 300×200 | — | `width`, `height` |
+| `terminal` | 650×500 | — | `prettyName` |
+| `agent` | 650×500 | — | `prettyName`, `agentId` (key from `canvas.agents` config) |
 
 ## Reference: Widget Content, URLs, and File Paths
 
@@ -704,6 +706,92 @@ curl -X POST http://localhost:{PORT}/_storyboard/canvas/connector \
   -H 'Content-Type: application/json' \
   -d '{"name":"my-canvas","startWidgetId":"widget-c","endWidgetId":"widget-d","startAnchor":"right","endAnchor":"left"}'
 ```
+
+---
+
+## Broadcast & Messaging
+
+Broadcast enables real-time messaging between connected agent/terminal widgets. It's controlled per-connector via `meta.messagingMode`.
+
+### Enabling broadcast on a connector
+
+Set `meta.messagingMode` when creating or updating a connector:
+
+```bash
+# Option A: Set messagingMode when creating the connector
+curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/connector" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "<canvasName>",
+    "startWidgetId": "<widgetA>",
+    "endWidgetId": "<widgetB>",
+    "startAnchor": "right",
+    "endAnchor": "left",
+    "meta": { "messagingMode": "two-way" }
+  }'
+
+# Option B: Update an existing connector
+curl -s -X PATCH "$STORYBOARD_SERVER_URL/_storyboard/canvas/connector" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "<canvasName>",
+    "connectorId": "<connectorId>",
+    "meta": { "messagingMode": "two-way" }
+  }'
+```
+
+**Messaging modes:**
+- `"two-way"` — both widgets can send and receive
+- `"one-way"` — only start→end direction
+- `null` — messaging disabled (default)
+
+### Bulk broadcast toggle
+
+To enable/disable broadcast across all connectors touching a widget (and optionally its entire connected component):
+
+```bash
+curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/broadcast" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "<canvasName>",
+    "widgetId": "<widgetId>",
+    "mode": "two-way",
+    "passThrough": true
+  }'
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | string | Canvas name |
+| `widgetId` | string | Widget to broadcast from |
+| `mode` | string | `"two-way"`, `"one-way"`, or `"none"` |
+| `passThrough` | boolean | `true` = BFS entire connected component; `false` = direct neighbors only |
+
+In batch operations, use `{ "op": "broadcast", "widgetId": "...", "mode": "two-way", "passThrough": true }`.
+
+### Agent widgets
+
+An **agent widget** (`type: "agent"`) creates a real, autonomous AI session — its own tmux process running Copilot, Claude, or Codex. It is NOT a simulation.
+
+```bash
+# Create an agent widget
+curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/widget" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "<canvasName>",
+    "type": "agent",
+    "props": {
+      "prettyName": "Research Agent",
+      "agentId": "copilot"
+    }
+  }'
+```
+
+- `agentId` maps to keys in `canvas.agents` from `storyboard.config.json` (e.g. `"copilot"`, `"claude"`, `"codex"`)
+- The agent auto-starts when the browser renders the widget — no separate spawn call needed
+- If no `agentId` is provided, the first `canvas.agents` entry with `default: true` is used
+
+For creating multi-agent hubs (multiple agents working together), invoke the **create-hub** skill.
 
 ---
 

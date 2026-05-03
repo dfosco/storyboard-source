@@ -1,6 +1,6 @@
 ---
 name: create-hub
-description: Creates a multi-agent hub on the canvas — spawns agents, connects them, assigns roles, and opens broadcast. Use when asked to "create a hub", "spawn a hub", "set up a hub", or "Hub: [task]".
+description: Creates a multi-agent hub on the canvas — spawns agents, connects them, enables broadcast, and starts a conversation. Use when asked to "create a hub", "spawn a hub", "set up a hub", or "Hub: [task]".
 ---
 
 # Create Hub
@@ -11,103 +11,110 @@ description: Creates a multi-agent hub on the canvas — spawns agents, connects
 
 Creates a multi-agent hub on the current canvas. Each agent you create is a **real, autonomous AI session** — an independent process running its own Copilot/Claude/Codex CLI instance in its own tmux session. They are NOT simulations or stubs. They boot up, receive role instructions, read the codebase, run tools, and produce real work.
 
-The procedure: determine which agents are needed → create agent widgets on the canvas → connect them to you → open broadcast messaging → start a conversation.
-
-## First Step
-
-**Read `.agents/roles/starter.role.md`** — it contains the full step-by-step procedure with copy-pasteable curl commands using your env vars. The starter role is a transient role that transitions to leader once the hub is running.
-
 ## Prerequisites
 
-- The requesting agent must be on a canvas (needs `STORYBOARD_CANVAS_ID` and `STORYBOARD_WIDGET_ID` env vars)
-- The canvas server must be running (needs `STORYBOARD_SERVER_URL`)
-- tmux must be available for agent session creation
+- You must be on a canvas (`$STORYBOARD_CANVAS_ID` and `$STORYBOARD_WIDGET_ID` env vars set)
+- Canvas server must be running (`$STORYBOARD_SERVER_URL`)
 
 ## Procedure
 
 ### Step 1: Determine the hub composition
 
-Based on the user's request, decide which agents are needed. Consider:
-- What distinct roles/specializations does the task require?
-- How many agents are needed? (minimum 2 including the leader)
-- What agent type should each be? (use the canvas agent configs from `storyboard.config.json`)
+Based on the user's request, decide:
+- How many agents are needed (minimum 2 total, including yourself)
+- What each agent's name/specialization should be
+- What agent type each should be (keys from `canvas.agents` in `storyboard.config.json` — typically `"copilot"`, `"claude"`, `"codex"`)
 
-Default agent type is the first entry in `canvas.agents` config (typically "copilot").
+Default agent type is `"copilot"`. Keep hubs small (2–5 agents is typical).
 
 ### Step 2: Create agent widgets
 
-For each additional agent needed, call the canvas server. Set `agentId` in props to choose which agent binary to launch (keys from `canvas.agents` in `storyboard.config.json`):
+For each additional agent, create a widget on the canvas:
 
 ```bash
-# Create widget — type and props are top-level fields
 curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/widget" \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "<canvasName>",
+    "name": "'"$STORYBOARD_CANVAS_ID"'",
     "type": "agent",
     "props": {
-      "prettyName": "<descriptive name for this agent>",
+      "prettyName": "<descriptive name>",
       "agentId": "copilot"
     }
   }'
 ```
 
-The response includes the created widget's `id` in `result.widget.id`.
+Save the returned `widget.id` for each agent. The response is at `.widget.id` in the JSON.
 
-### Step 3: Connect agents to the leader
+### Step 3: Connect agents
 
-For each spawned agent, create a connector from the leader to the new agent:
+Create connectors from yourself (the leader) to each new agent:
 
 ```bash
 curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/connector" \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "<canvasName>",
-    "startWidgetId": "<leaderWidgetId>",
+    "name": "'"$STORYBOARD_CANVAS_ID"'",
+    "startWidgetId": "'"$STORYBOARD_WIDGET_ID"'",
     "startAnchor": "right",
-    "endWidgetId": "<newAgentWidgetId>",
+    "endWidgetId": "<new-agent-widget-id>",
     "endAnchor": "left"
   }'
 ```
 
-### Step 4: Wait for agent sessions
+### Step 4: Enable broadcast
 
-Agent widgets auto-start when the browser renders them. The TerminalWidget connects via WebSocket and the terminal-server launches the correct agent binary using the `startupCommand` resolved from the widget's `agentId` prop. **No additional API call is needed** — just wait a few seconds for the browser to render the widgets and for agents to boot.
+Turn on messaging across the full hub. `passThrough: true` traverses the entire connected component:
 
-Role injection happens automatically when the hub is materialized from connectors.
+```bash
+curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/broadcast" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "'"$STORYBOARD_CANVAS_ID"'",
+    "widgetId": "'"$STORYBOARD_WIDGET_ID"'",
+    "mode": "two-way",
+    "passThrough": true
+  }'
+```
 
-For headless agents (no browser), use `agent/spawn`:
+### Step 5: Wait for agents to boot
+
+Agent widgets auto-start when the browser renders them — the terminal-server launches the agent binary from the widget's `agentId` config. **No `agent/spawn` call needed.** Wait ~5 seconds for agents to boot.
+
+For headless operation (no browser), use `agent/spawn` instead:
 
 ```bash
 curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/agent/spawn" \
   -H "Content-Type: application/json" \
   -d '{
-    "canvasId": "<canvasId>",
-    "widgetId": "<newAgentWidgetId>",
-    "prompt": "<initial task context for this agent>",
+    "canvasId": "'"$STORYBOARD_CANVAS_ID"'",
+    "widgetId": "<new-agent-widget-id>",
+    "prompt": "<initial task context>",
     "autopilot": true,
     "agentId": "copilot"
   }'
 ```
 
-### Step 5: Start a conversation
+### Step 6: Start a conversation
 
-Broadcast is **automatically enabled** when connectors are created between agent/terminal widgets — no explicit broadcast call is needed. Wait 2-3 seconds for hub materialization, then start a conversation:
+Read the hub ID from your terminal config and start a conversation:
 
 ```bash
+HUB_ID=$(cat .storyboard/terminals/${STORYBOARD_WIDGET_ID}.json 2>/dev/null | jq -r '.hubs[0].hubId // empty')
+
+# Fallback if config hasn't updated yet
+if [ -z "$HUB_ID" ]; then
+  HUB_ID=$(curl -s "$STORYBOARD_SERVER_URL/_storyboard/messages/hub/state?canvasId=$STORYBOARD_CANVAS_ID" | jq -r '.[0].hubId // empty')
+fi
+
 curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/messages/conversation/start" \
   -H "Content-Type: application/json" \
-  -d '{
-    "hubId": "<hubId>",
-    "senderId": "<leaderWidgetId>"
-  }'
+  -d '{"hubId": "'"$HUB_ID"'", "senderId": "'"$STORYBOARD_WIDGET_ID"'"}'
 ```
 
-The `hubId` can be read from the leader's terminal config (`.storyboard/terminals/<widgetId>.json` → `hubs[0].hubId`) after connectors are created and hub materialization completes.
+### Step 7: Report
 
-### Step 6: Return hub context
-
-After all agents are spawned and broadcast is open, output the hub summary:
+Output the hub summary:
 
 ```
 Hub created with <N> agents:
@@ -117,25 +124,11 @@ Hub created with <N> agents:
 
 Hub ID: <hubId>
 Broadcast: active
-Conversation: <conversationId>
-
-The hub is ready. Use hub/send to delegate work to members.
 ```
 
 ## Guardrails
 
-- **Max hub size**: Respect `canvas.messaging.maxHubSize` from config (default: no limit, but be sensible — 2-5 agents is typical)
-- **Leader stays**: The requesting agent always becomes the leader. Spawned agents are always members.
-- **Explicit only**: This skill is only triggered by explicit user intent ("create a hub"). Agents do not autonomously decide to create hubs.
-- **One hub at a time**: If the requesting agent is already in a hub, warn the user before creating additional agents.
-
-## Environment Variables
-
-These are available in the agent's tmux session:
-
-| Variable | Description |
-|----------|-------------|
-| `STORYBOARD_WIDGET_ID` | This agent's widget ID |
-| `STORYBOARD_CANVAS_ID` | Current canvas ID |
-| `STORYBOARD_BRANCH` | Current git branch |
-| `STORYBOARD_SERVER_URL` | Server URL for API calls |
+- **Max 5 agents** — keep hubs focused unless the user specifies otherwise
+- **You are the leader** — you always become the hub leader; spawned agents are members
+- **Explicit only** — only create a hub when the user explicitly asks
+- **One hub at a time** — if you're already in a hub, warn the user before creating more agents
