@@ -377,7 +377,7 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
 
   const isAgent = id.startsWith('agent-')
   const typeLabel = isAgent ? 'Agent' : 'Terminal'
-  const titleLabel = `${typeLabel} · ${prettyName || '…'}`
+  const showLeaderCrown = isAgent && props?.role === 'leader'
 
   // Reparent terminal DOM between inline and expand container
   useEffect(() => {
@@ -490,7 +490,10 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
   return (
     <>
     <div className={styles.container}>
-      <div className={`tc-drag-handle ${styles.titleBar}`}>{titleLabel}</div>
+      <div className={`tc-drag-handle ${styles.titleBar}`}>
+        <span>{typeLabel} · {prettyName || '…'}</span>
+        {showLeaderCrown && <span className={styles.leaderCrown} aria-label="Hub leader">👑</span>}
+      </div>
       <div
         ref={terminalRef}
         className={styles.terminal}

@@ -144,7 +144,7 @@ export function duplicateCanvas(canvasId, newTitle) {
   return request('/duplicate', 'POST', { name: canvasId, newTitle })
 }
 
-export function addConnector(canvasId, { startWidgetId, startAnchor, endWidgetId, endAnchor, connectorType }) {
+export function addConnector(canvasId, { startWidgetId, startAnchor, endWidgetId, endAnchor, connectorType, meta }) {
   return request('/connector', 'POST', {
     name: canvasId,
     startWidgetId,
@@ -152,7 +152,12 @@ export function addConnector(canvasId, { startWidgetId, startAnchor, endWidgetId
     endWidgetId,
     endAnchor,
     connectorType,
+    meta,
   })
+}
+
+export function getHubRoles() {
+  return request('/roles', 'GET')
 }
 
 export function removeConnector(canvasId, connectorId) {

@@ -1099,6 +1099,10 @@
           "icon": "expand"
         },
         {
+          "id": "hub-role",
+          "type": "role-selector"
+        },
+        {
           "id": "copy",
           "type": "action",
           "action": "copy",

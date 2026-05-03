@@ -92,6 +92,8 @@ export function preReserveTerminalIdentity({ widgetId, preDisplayName, canvasId,
     reserved: true,
     connectedWidgets: [],
     messaging: null,
+    role: null,
+    clusters: [],
     agentStatus: null,
     viewport: readCurrentViewport(rootDir) || null,
     updatedAt: new Date().toISOString(),
@@ -141,6 +143,8 @@ export function writeTerminalConfig({ branch, canvasId, widgetId, canvasFile = n
     widgetProps: widgetProps || existing.widgetProps || null,
     connectedWidgets: existing.connectedWidgets || [],
     agentStatus: existing.agentStatus || null,
+    role: existing.role || null,
+    clusters: existing.clusters || [],
     viewport: readCurrentViewport(rootDir) || existing.viewport || null,
     updatedAt: new Date().toISOString(),
   }
@@ -174,7 +178,16 @@ export function writeTerminalConfig({ branch, canvasId, widgetId, canvasFile = n
  * Stores full widget objects (id, type, props, position) so agents
  * can read context directly without additional API calls.
  */
-export function updateTerminalConnections({ branch, canvasId, widgetId, connectedWidgets, widgetProps = null, messaging = null }) {
+export function updateTerminalConnections({
+  branch,
+  canvasId,
+  widgetId,
+  connectedWidgets,
+  widgetProps = null,
+  messaging = null,
+  role = null,
+  clusters = null,
+}) {
   const fp = configPath(branch, canvasId, widgetId)
   let config = {}
   try {
@@ -188,6 +201,8 @@ export function updateTerminalConnections({ branch, canvasId, widgetId, connecte
   }
   config.connectedWidgets = connectedWidgets || []
   config.messaging = messaging || null
+  if (role !== null) config.role = role
+  if (clusters !== null) config.clusters = clusters
   config.viewport = readCurrentViewport(rootDir) || config.viewport || null
   config.updatedAt = new Date().toISOString()
 

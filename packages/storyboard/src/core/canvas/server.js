@@ -37,6 +37,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { Buffer } from 'node:buffer'
+import { createHash } from 'node:crypto'
 import { materializeFromText, serializeEvent } from './materializer.js'
 import { toCanvasId, parseCanvasId } from './identity.js'
 import {
@@ -50,6 +51,7 @@ import { stampBounds, stampBoundsAll, resolvePosition, getWidgetBounds } from '.
 import { markCanvasWrite, unmarkCanvasWrite } from './writeGuard.js'
 import { devLog } from '../logger/devLogger.js'
 import widgetsConfig from '../../../widgets.config.json' with { type: 'json' }
+import { listHubRoles, getDefaultRoleId } from './hub-roles.js'
 
 /**
  * Read the prompt widget's execution config from widgets.config.json.
@@ -331,6 +333,128 @@ export function createCanvasHandler(ctx) {
     return { x: 0, y: 0 }
   }
 
+  function stableClusterId(canvasId, widgetIds) {
+    const sorted = [...widgetIds].sort()
+    const hash = createHash('sha1').update(`${canvasId}::${sorted.join(',')}`).digest('hex').slice(0, 10)
+    return `hub_${hash}`
+  }
+
+  function buildComponents(widgets, connectors) {
+    const ids = new Set(widgets.map((w) => w.id))
+    const adj = new Map()
+    for (const id of ids) adj.set(id, new Set())
+    for (const conn of connectors) {
+      const a = conn.start?.widgetId
+      const b = conn.end?.widgetId
+      if (!a || !b || !ids.has(a) || !ids.has(b) || a === b) continue
+      adj.get(a).add(b)
+      adj.get(b).add(a)
+    }
+
+    const seen = new Set()
+    const components = []
+    for (const id of ids) {
+      if (seen.has(id)) continue
+      const queue = [id]
+      const comp = new Set()
+      seen.add(id)
+      while (queue.length > 0) {
+        const cur = queue.shift()
+        comp.add(cur)
+        for (const next of adj.get(cur) || []) {
+          if (seen.has(next)) continue
+          seen.add(next)
+          queue.push(next)
+        }
+      }
+      components.push(comp)
+    }
+    return components
+  }
+
+  function computeHubRoleState(canvasName, widgets, connectors) {
+    const roles = listHubRoles(root)
+    const defaultRole = getDefaultRoleId(roles)
+    const uniqueRoles = new Set(roles.filter((r) => r.type === 'unique').map((r) => r.id))
+    const roleById = new Map(roles.map((r) => [r.id, r]))
+
+    const widgetMap = new Map(widgets.map((w) => [w.id, w]))
+    const components = buildComponents(widgets, connectors)
+
+    const roleByWidget = new Map()
+    const clustersByWidget = new Map()
+
+    for (const comp of components) {
+      const compIds = [...comp]
+      const compSet = new Set(compIds)
+      const compWidgets = compIds.map((id) => widgetMap.get(id)).filter(Boolean)
+      const agentWidgets = compWidgets.filter((w) => w.type === 'agent')
+      const terminalWidgets = compWidgets.filter((w) => w.type === 'agent' || w.type === 'terminal' || w.type === 'prompt')
+      if (terminalWidgets.length === 0) continue
+
+      // Start with requested role from props, defaulting to "member" (or configured default) for agents.
+      for (const w of agentWidgets) {
+        const requested = w.props?.role
+        const resolved = requested && roleById.has(requested) ? requested : defaultRole
+        roleByWidget.set(w.id, resolved)
+      }
+
+      // Enforce unique role semantics.
+      for (const roleId of uniqueRoles) {
+        const holders = agentWidgets.filter((w) => roleByWidget.get(w.id) === roleId)
+        if (holders.length <= 1) continue
+        // Keep first holder deterministically, revert the rest to default.
+        for (const w of holders.slice(1)) roleByWidget.set(w.id, defaultRole)
+      }
+
+      // Auto-leader bootstrap for 3+ agent hubs when no leader exists.
+      const hasLeader = agentWidgets.some((w) => roleByWidget.get(w.id) === 'leader')
+      if (!hasLeader && agentWidgets.length >= 3) {
+        const connectorLeader = connectors.find((conn) => {
+          const startId = conn.start?.widgetId
+          const endId = conn.end?.widgetId
+          if (!startId || !endId) return false
+          if (!compSet.has(startId) || !compSet.has(endId)) return false
+          const start = widgetMap.get(startId)
+          const end = widgetMap.get(endId)
+          return start?.type === 'agent' && end?.type === 'agent'
+        })?.start?.widgetId
+        if (connectorLeader && compSet.has(connectorLeader)) {
+          roleByWidget.set(connectorLeader, 'leader')
+        }
+      }
+
+      const clusterId = stableClusterId(canvasName, compIds)
+      for (const tw of terminalWidgets) {
+        const peers = terminalWidgets
+          .filter((other) => other.id !== tw.id)
+          .map((other) => ({
+            widgetId: other.id,
+            displayName: other.props?.prettyName || other.id,
+            role: roleByWidget.get(other.id) || (other.type === 'agent' ? defaultRole : 'passive'),
+            type: other.type,
+          }))
+
+        const role = roleByWidget.get(tw.id) || (tw.type === 'agent' ? defaultRole : 'passive')
+        const cluster = {
+          clusterId,
+          role,
+          goal: null,
+          peers,
+          messageLogPath: `.storyboard/messages/channels/cluster--${canvasName.replace(/\//g, '--')}--${clusterId}.jsonl`,
+          activeConversationId: null,
+          hasClusterToken: role === 'leader',
+          pendingMessageToken: null,
+        }
+
+        if (!clustersByWidget.has(tw.id)) clustersByWidget.set(tw.id, [])
+        clustersByWidget.get(tw.id).push(cluster)
+      }
+    }
+
+    return { roles, defaultRole, roleByWidget, clustersByWidget }
+  }
+
   /**
    * Update terminal configs when connectors change.
    * Finds all terminal widgets in the canvas, computes their connected widget IDs
@@ -338,8 +462,9 @@ export function createCanvasHandler(ctx) {
    */
   async function updateTerminalConnectionsForCanvas(root, canvasName, canvasData, connectors) {
     try {
-      const { updateTerminalConnections, initTerminalConfig } = await import('./terminal-config.js')
+      const { updateTerminalConnections, initTerminalConfig, readTerminalConfigById } = await import('./terminal-config.js')
       const { execSync } = await import('node:child_process')
+      const { findTmuxNameForWidget } = await import('./terminal-registry.js')
       initTerminalConfig(root)
 
       let branch = 'unknown'
@@ -350,8 +475,11 @@ export function createCanvasHandler(ctx) {
       const widgets = canvasData.widgets || []
       const widgetMap = new Map(widgets.map(w => [w.id, w]))
       const terminalWidgets = widgets.filter((w) => w.type === 'terminal' || w.type === 'agent' || w.type === 'prompt')
+      const { defaultRole, roleByWidget, clustersByWidget } = computeHubRoleState(canvasName, widgets, connectors)
 
       for (const tw of terminalWidgets) {
+        const prevConfig = readTerminalConfigById(tw.id)
+        const prevRole = prevConfig?.role || null
         const connectedIds = new Set()
         const messagingPeers = []
         for (const conn of connectors) {
@@ -397,6 +525,8 @@ export function createCanvasHandler(ctx) {
 
         // Build messaging section if there are messaging-enabled peers
         const messaging = messagingPeers.length > 0 ? { peers: messagingPeers } : null
+        const role = roleByWidget.get(tw.id) || (tw.type === 'agent' ? defaultRole : 'passive')
+        const clusters = clustersByWidget.get(tw.id) || []
 
         updateTerminalConnections({
           branch,
@@ -405,7 +535,21 @@ export function createCanvasHandler(ctx) {
           connectedWidgets,
           widgetProps: tw.props || null,
           messaging,
+          role,
+          clusters,
         })
+
+        // Push role instruction updates to running sessions when role changes.
+        if ((tw.type === 'agent' || tw.type === 'prompt') && prevRole && prevRole !== role) {
+          const tmuxName = findTmuxNameForWidget(tw.id)
+          if (tmuxName) {
+            const roleMsg = `Your role in the hub is ${role}, read .agents/roles/${role}.role.md to follow additional instructions`
+            try {
+              execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(roleMsg)}`, { stdio: 'ignore' })
+              execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
+            } catch { /* best-effort */ }
+          }
+        }
       }
     } catch (err) {
       devLog().logEvent('warn', 'Failed to update terminal connections', { error: err.message })
@@ -537,6 +681,14 @@ export function createCanvasHandler(ctx) {
         }
       } catch { /* empty */ }
       sendJson(res, 200, { folders })
+      return
+    }
+
+    // GET /roles — list hub role definitions from .agents/roles/*.role.md
+    if (routePath === '/roles' && method === 'GET') {
+      const roles = listHubRoles(root)
+      const defaultRole = getDefaultRoleId(roles)
+      sendJson(res, 200, { roles, defaultRole, defaultRoleId: defaultRole })
       return
     }
 
@@ -892,7 +1044,7 @@ export function createCanvasHandler(ctx) {
 
     // POST /connector — append a connector_added event
     if (routePath === '/connector' && method === 'POST') {
-      const { name, startWidgetId, startAnchor, endWidgetId, endAnchor, connectorType = 'default' } = body
+      const { name, startWidgetId, startAnchor, endWidgetId, endAnchor, connectorType = 'default', meta = null } = body
 
       if (!name) {
         sendJson(res, 400, { error: 'Canvas name is required' })
@@ -937,7 +1089,7 @@ export function createCanvasHandler(ctx) {
           connectorType,
           start: { widgetId: startWidgetId, anchor: startAnchor },
           end: { widgetId: endWidgetId, anchor: endAnchor },
-          meta: {},
+          meta: meta && typeof meta === 'object' ? { ...meta } : {},
         }
 
         appendEvent(filePath, {

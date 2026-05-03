@@ -287,6 +287,37 @@ function injectIdentityMessage(tmuxName, { widgetId, displayName, canvasId, bran
   } catch { /* best effort */ }
 }
 
+function injectRoleMessage(tmuxName, role) {
+  if (!hasTmux || !role) return
+  const msg = `Your role in the hub is ${role}, read .agents/roles/${role}.role.md to follow additional instructions`
+  try {
+    execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(msg)}`, { stdio: 'ignore' })
+    execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
+  } catch { /* best effort */ }
+}
+
+function injectClusterTokenMessage(tmuxName, hasToken) {
+  if (!hasTmux) return
+  const msg = hasToken
+    ? 'You hold the cluster token (speaking rights). Read .agents/roles/cluster-token.md for instructions.'
+    : 'You do not hold the cluster token. Wait for a message token before acting in the hub.'
+  try {
+    execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(msg)}`, { stdio: 'ignore' })
+    execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
+  } catch { /* best effort */ }
+}
+
+function injectRoleMessageForWidget(tmuxName, widgetId) {
+  const cfg = readTerminalConfigById(widgetId)
+  if (!cfg || (cfg.kind !== 'agent' && cfg.kind !== 'prompt')) return
+  injectRoleMessage(tmuxName, cfg.role)
+  // Inject cluster token status if this widget is in a cluster
+  if (cfg.clusters && cfg.clusters.length > 0) {
+    const hasToken = cfg.clusters.some((c) => c.hasClusterToken)
+    injectClusterTokenMessage(tmuxName, hasToken)
+  }
+}
+
 /** Safe directory name from canvasId (replace `/` with `--`) */
 function safeCanvasDir(canvasId) {
   return canvasId.replace(/\//g, '--')
@@ -1028,6 +1059,7 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
               } catch { /* empty */ }
             }
             injectIdentityMessage(tmuxName, { widgetId, displayName: prettyName, canvasId, branch, serverUrl })
+            injectRoleMessageForWidget(tmuxName, widgetId)
             // Bind to messaging bus for live delivery + backfill missed messages
             setTimeout(() => {
               migratePendingMessages(widgetId, branch, canvasId).then(() => {
@@ -1149,6 +1181,7 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
                         }
                         // Inject identity, then bind to messaging bus
                         injectIdentityMessage(tmuxName, { widgetId, displayName: prettyName, canvasId, branch, serverUrl })
+                        injectRoleMessageForWidget(tmuxName, widgetId)
                         setTimeout(() => {
                           migratePendingMessages(widgetId, branch, canvasId).then(() => {
                             bindWidget({ widgetId, tmuxName, branch, canvasId, displayName: prettyName }).catch(() => {})
@@ -1166,6 +1199,7 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
                 // No readiness signal — inject identity and bind to bus after a delay
                 setTimeout(() => {
                   injectIdentityMessage(tmuxName, { widgetId, displayName: prettyName, canvasId, branch, serverUrl })
+                  injectRoleMessageForWidget(tmuxName, widgetId)
                   setTimeout(() => {
                     migratePendingMessages(widgetId, branch, canvasId).then(() => {
                       bindWidget({ widgetId, tmuxName, branch, canvasId, displayName: prettyName }).catch(() => {})

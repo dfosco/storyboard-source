@@ -41,6 +41,15 @@
  * @property {CanvasTerminalConfig} [terminal] — terminal widget settings
  * @property {Record<string, CanvasAgentConfig>} [agents] — per-agent overrides
  * @property {CanvasZoomConfig} [zoom] — zoom min/max/step settings
+ * @property {CanvasMessagingConfig} [messaging] — cluster messaging settings
+ */
+
+/**
+ * @typedef {object} CanvasMessagingConfig
+ * @property {number} [conversationTimeoutMinutes] — timeout for idle conversations (default: 30)
+ * @property {number} [messageTokenTimeoutSeconds] — timeout for message tokens (default: 120)
+ * @property {number} [pollIntervalMs] — agent polling interval (default: 2000)
+ * @property {number} [maxMessagesPerCluster] — max messages per cluster channel (default: 200)
  */
 
 /**
@@ -173,6 +182,12 @@ export const configDefaults = {
       resizable: false,
       defaultWidth: 800,
       defaultHeight: 450,
+    },
+    messaging: {
+      conversationTimeoutMinutes: 30,
+      messageTokenTimeoutSeconds: 120,
+      pollIntervalMs: 2000,
+      maxMessagesPerCluster: 200,
     },
   },
   commandPalette: {

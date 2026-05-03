@@ -36,6 +36,7 @@ import {
   removeConnector as removeConnectorApi,
   updateConnector as updateConnectorApi,
   batchOperations,
+  getHubRoles,
 } from './canvasApi.js'
 import PageSelector from './PageSelector.jsx'
 import Icon from '../Icon.jsx'
@@ -68,6 +69,31 @@ for (const [storyId, data] of Object.entries(storyIndex || {})) {
 
 function getToolbarColorMode(theme) {
   return String(theme || 'light').startsWith('dark') ? 'dark' : 'light'
+}
+
+function getConnectedComponent(widgetId, connectors) {
+  const adj = new Map()
+  for (const c of connectors || []) {
+    const a = c.start?.widgetId
+    const b = c.end?.widgetId
+    if (!a || !b || a === b) continue
+    if (!adj.has(a)) adj.set(a, new Set())
+    if (!adj.has(b)) adj.set(b, new Set())
+    adj.get(a).add(b)
+    adj.get(b).add(a)
+  }
+
+  const queue = [widgetId]
+  const seen = new Set([widgetId])
+  while (queue.length > 0) {
+    const cur = queue.shift()
+    for (const next of adj.get(cur) || []) {
+      if (seen.has(next)) continue
+      seen.add(next)
+      queue.push(next)
+    }
+  }
+  return seen
 }
 
 function resolveCanvasThemeFromStorage() {
@@ -328,6 +354,9 @@ const ChromeWrappedWidget = memo(function ChromeWrappedWidget({
   onRefreshGitHub,
   canRefreshGitHub,
   onConnectorDragStart,
+  hubRoleOptions,
+  defaultHubRole,
+  onRoleChange,
   readOnly,
 }) {
   const widgetRef = useRef(null)
@@ -477,6 +506,9 @@ const ChromeWrappedWidget = memo(function ChromeWrappedWidget({
       onAction={handleAction}
       onUpdate={onUpdate ? handleWidgetFieldUpdate : undefined}
       onConnectorDragStart={onConnectorDragStart}
+      roleOptions={hubRoleOptions}
+      currentRole={widget.props?.role || defaultHubRole}
+      onRoleChange={onRoleChange ? (roleId) => onRoleChange(widget.id, roleId) : undefined}
       readOnly={readOnly}
     >
       <WidgetRenderer
@@ -502,7 +534,10 @@ const ChromeWrappedWidget = memo(function ChromeWrappedWidget({
     prev.onUpdate === next.onUpdate &&
     prev.onRemove === next.onRemove &&
     prev.onCopy === next.onCopy &&
-    prev.onConnectorDragStart === next.onConnectorDragStart
+    prev.onConnectorDragStart === next.onConnectorDragStart &&
+    prev.hubRoleOptions === next.hubRoleOptions &&
+    prev.defaultHubRole === next.defaultHubRole &&
+    prev.onRoleChange === next.onRoleChange
   )
 })
 
@@ -629,6 +664,8 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
   const [snapEnabled, setSnapEnabled] = useState(canvas?.snapToGrid ?? false)
   const [snapGridSize, setSnapGridSize] = useState(canvas?.gridSize || 40)
   const [showGhInstallBanner, setShowGhInstallBanner] = useState(false)
+  const [hubRoleOptions, setHubRoleOptions] = useState([])
+  const [defaultHubRole, setDefaultHubRole] = useState('member')
 
   // Scroll lock: prevents focus-triggered scroll jumps when adding terminal/agent widgets.
   // The lock captures the current scroll position and forces it back on every scroll event
@@ -638,6 +675,27 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
   // Refs for snap settings (used by drop handler inside effect closure)
   const snapEnabledRef = useRef(snapEnabled)
   const snapGridSizeRef = useRef(snapGridSize)
+
+  useEffect(() => {
+    let cancelled = false
+    async function loadRoles() {
+      try {
+        const data = await getHubRoles()
+        if (cancelled) return
+        setHubRoleOptions(Array.isArray(data?.roles) ? data.roles : [])
+        const resolvedDefaultRole = typeof data?.defaultRoleId === 'string'
+          ? data.defaultRoleId
+          : (typeof data?.defaultRole === 'string' ? data.defaultRole : 'member')
+        setDefaultHubRole(resolvedDefaultRole)
+      } catch {
+        if (cancelled) return
+        setHubRoleOptions([])
+        setDefaultHubRole('member')
+      }
+    }
+    loadRoles()
+    return () => { cancelled = true }
+  }, [canvasId])
 
   // Centralized list of component export names.
   // When jsxExports is available, use it (discovers new exports not yet in sources).
@@ -854,6 +912,35 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
       return next
     })
   }, [canvasId, debouncedSave, undoRedo, snapEnabled, snapGridSize])
+
+  const handleWidgetRoleChange = useCallback((widgetId, roleId) => {
+    const targetRole = typeof roleId === 'string' && roleId ? roleId : defaultHubRole
+    const roleMeta = hubRoleOptions.find((r) => r.id === targetRole) || null
+    const defaultMeta = hubRoleOptions.find((r) => r.id === defaultHubRole) || null
+    const fallbackRoleId = defaultMeta?.id || 'member'
+
+    undoRedo.snapshot(stateRef.current, 'edit-role', widgetId)
+    setLocalWidgets((prev) => {
+      if (!prev) return prev
+
+      const componentIds = getConnectedComponent(widgetId, localConnectors)
+      const scopeHas = (id) => componentIds.has(id)
+      const next = prev.map((widget) => {
+        if (widget.id === widgetId) {
+          return { ...widget, props: { ...widget.props, role: targetRole } }
+        }
+        if (!roleMeta || roleMeta.type !== 'unique') return widget
+        if (widget.type !== 'agent' && widget.type !== 'prompt') return widget
+        if (!scopeHas(widget.id)) return widget
+        if ((widget.props?.role || fallbackRoleId) !== targetRole) return widget
+        return { ...widget, props: { ...widget.props, role: fallbackRoleId } }
+      })
+
+      dirtyRef.current = true
+      debouncedSave(canvasId, next)
+      return next
+    })
+  }, [canvasId, debouncedSave, undoRedo, defaultHubRole, hubRoleOptions, localConnectors])
 
   const handleWidgetRemove = useCallback((widgetId) => {
     // Cancel any pending debounced save — it may contain stale data
@@ -3001,6 +3088,9 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
           onRefreshGitHub={isLocalDev ? handleRefreshGitHubWidget : undefined}
           canRefreshGitHub={isLocalDev}
           onConnectorDragStart={isLocalDev ? handleConnectorDragStart : undefined}
+          hubRoleOptions={hubRoleOptions}
+          defaultHubRole={defaultHubRole}
+          onRoleChange={isLocalDev ? handleWidgetRoleChange : undefined}
           readOnly={!isLocalDev}
         />
       </div>

@@ -17,6 +17,9 @@
   position: absolute;
   top: -28px;
   left: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 11px;
   color: #8b949e;
@@ -26,6 +29,16 @@
   cursor: grab;
   padding: 2px 6px;
   border-radius: 4px;
+}
+
+[data-widget-selected] .leaderCrown {
+  filter: saturate(1.1);
+}
+
+.leaderCrown {
+  color: #f2cc60;
+  font-size: 12px;
+  line-height: 1;
 }
 
 [data-widget-selected] .titleBar {

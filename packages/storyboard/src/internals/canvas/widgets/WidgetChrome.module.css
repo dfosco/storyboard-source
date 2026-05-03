@@ -200,6 +200,29 @@
   border-color: var(--borderColor-default, #484f58);
 }
 
+.roleSelectWrap {
+  display: inline-flex;
+  align-items: center;
+}
+
+.roleSelect {
+  height: 24px;
+  max-width: 130px;
+  border-radius: 12px;
+  border: 1.6px solid var(--borderColor-muted, #d0d7de);
+  background: var(--bgColor-default, #ffffff);
+  color: var(--fgColor-default, #1f2328);
+  font-size: 11px;
+  line-height: 1;
+  padding: 0 8px;
+}
+
+:global([data-sb-canvas-theme^='dark']) .roleSelect {
+  border-color: var(--borderColor-muted, #373e47);
+  background: var(--bgColor-muted, #161b22);
+  color: var(--fgColor-default, #e6edf3);
+}
+
 .featureBtnActive {
   background: var(--bgColor-accent-emphasis, #0969da);
   border-color: var(--bgColor-accent-emphasis, #0969da);
