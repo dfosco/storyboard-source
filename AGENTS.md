@@ -94,6 +94,8 @@ The default location is in `.agents/plans`, but the user may ask for a specific 
 
 - **migrate-0.5.0** (`.agents/skills/migrate-0.5.0/SKILL.md`) — Migrates a client project from embedded storyboard/ source to the `@dfosco/storyboard` npm package (0.5.0+). Import rewrites, vite config, scaffold, and config.
 
+- **create-hub** (`.agents/skills/create-hub/SKILL.md`) — Creates a multi-agent hub: spawns agent widgets, connects them, enables broadcast, starts a conversation.
+
 ---
 
 ## Build & Development
@@ -121,6 +123,7 @@ The `storyboard` CLI (`sb` alias) wraps dev tooling:
 | `storyboard canvas bounds [name]` | Get widget size and positional bounds (spatial queries) |
 | `storyboard canvas add <type>` | Add a widget (`--near`, `--direction`, `--resolve` for positioning) |
 | `storyboard canvas update <id>` | Update widget props, text, content, or position |
+| `storyboard canvas broadcast` | Toggle broadcast messaging for a widget and its connections |
 | `storyboard canvas batch` | Batch create/update/move/delete widgets + connectors in one command |
 
 For the full canvas CLI reference (positioning, batch ops, collision detection), invoke the **canvas** skill.

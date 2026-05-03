@@ -92,6 +92,8 @@ The default location is in `.agents/plans`, but the user may ask for a specific 
 
 - **migrate** (`.agents/skills/migrate/SKILL.md`) — Migrates client projects between storyboard versions. Handles breaking changes in config, routes, and features.
 
+- **create-hub** (`.agents/skills/create-hub/SKILL.md`) — Creates a multi-agent hub: spawns agent widgets, connects them, enables broadcast, starts a conversation.
+
 ---
 
 ## Build & Development
@@ -119,6 +121,7 @@ The `storyboard` CLI (`sb` alias) wraps dev tooling:
 | `storyboard canvas bounds [name]` | Get widget size and positional bounds (spatial queries) |
 | `storyboard canvas add <type>` | Add a widget (`--near`, `--direction`, `--resolve` for positioning) |
 | `storyboard canvas update <id>` | Update widget props, text, content, or position |
+| `storyboard canvas broadcast` | Toggle broadcast messaging for a widget and its connections |
 | `storyboard canvas batch` | Batch create/update/move/delete widgets + connectors in one command |
 
 For the full canvas CLI reference (positioning, batch ops, collision detection), invoke the **canvas** skill.

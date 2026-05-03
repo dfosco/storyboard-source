@@ -22,75 +22,36 @@ Based on the user's request, decide:
 - What each agent's specialization/name should be
 - Keep it small (2–5 agents is typical)
 
-### 2. Create Agent Widgets
+### 2. Create Agent Widgets and Connectors
 
-For each agent, create a widget on the canvas. **Use `type: "agent"` at the top level**, not nested. Set `agentId` in props to choose which agent binary to launch (matches keys in `canvas.agents` config — e.g. `"copilot"`, `"claude"`, `"codex"`):
-
-```bash
-curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/widget" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "'"$STORYBOARD_CANVAS_ID"'",
-    "type": "agent",
-    "props": {
-      "prettyName": "<agent-name>",
-      "agentId": "copilot"
-    }
-  }'
-```
-
-Save the returned `widget.id` for each agent.
-
-### 3. Connect Agents
-
-Create connectors from yourself to each new agent:
+Use `storyboard canvas batch` to create all agents and connect them in one call. Use `$0`, `$1`, etc. to reference widget IDs from earlier operations:
 
 ```bash
-curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/connector" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "'"$STORYBOARD_CANVAS_ID"'",
-    "startWidgetId": "'"$STORYBOARD_WIDGET_ID"'",
-    "startAnchor": "right",
-    "endWidgetId": "<new-agent-widget-id>",
-    "endAnchor": "left"
-  }'
+storyboard canvas batch --canvas "$STORYBOARD_CANVAS_ID" --ops '[
+  { "op": "create-widget", "type": "agent", "props": { "prettyName": "<agent-name>", "agentId": "copilot" } },
+  { "op": "create-connector", "startWidgetId": "'"$STORYBOARD_WIDGET_ID"'", "startAnchor": "right", "endWidgetId": "$0", "endAnchor": "left" }
+]'
 ```
 
-### 4. Wait for Agent Sessions
+For multiple agents, add more `create-widget` + `create-connector` pairs. Reference `$0` for the first widget, `$1` for the second, etc.
+
+### 3. Wait for Agent Sessions
 
 Agent widgets auto-start when the browser renders them — the TerminalWidget connects via WebSocket and the terminal-server launches the agent using the `startupCommand` from the widget's `agentId`. **You do not need to call `agent/spawn`** — just wait a few seconds for the browser to render the new widgets and for the agents to boot.
 
-If agents need to run headlessly (no browser), use `agent/spawn`:
-
-```bash
-curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/agent/spawn" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "canvasId": "'"$STORYBOARD_CANVAS_ID"'",
-    "widgetId": "<new-agent-widget-id>",
-    "prompt": "<task context for this agent>",
-    "autopilot": true,
-    "agentId": "copilot"
-  }'
-```
-
-### 5. Enable Broadcast
+### 4. Enable Broadcast
 
 Turn on messaging across the full hub:
 
 ```bash
-curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/broadcast" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "'"$STORYBOARD_CANVAS_ID"'",
-    "widgetId": "'"$STORYBOARD_WIDGET_ID"'",
-    "mode": "two-way",
-    "passThrough": true
-  }'
+storyboard canvas broadcast \
+  --canvas "$STORYBOARD_CANVAS_ID" \
+  --widget "$STORYBOARD_WIDGET_ID" \
+  --mode two-way \
+  --pass-through
 ```
 
-### 6. Start Conversation
+### 5. Start Conversation
 
 Wait 2–3 seconds for hub materialization, then read your hub ID and start a conversation:
 

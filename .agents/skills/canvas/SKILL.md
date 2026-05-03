@@ -747,25 +747,23 @@ curl -s -X PATCH "$STORYBOARD_SERVER_URL/_storyboard/canvas/connector" \
 
 ### Bulk broadcast toggle
 
-To enable/disable broadcast across all connectors touching a widget (and optionally its entire connected component):
+Use the CLI to enable/disable broadcast across all connectors touching a widget (and optionally its entire connected component):
 
 ```bash
-curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/broadcast" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "<canvasName>",
-    "widgetId": "<widgetId>",
-    "mode": "two-way",
-    "passThrough": true
-  }'
+storyboard canvas broadcast \
+  --canvas <canvasName> \
+  --widget <widgetId> \
+  --mode two-way \
+  --pass-through
 ```
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `name` | string | Canvas name |
-| `widgetId` | string | Widget to broadcast from |
-| `mode` | string | `"two-way"`, `"one-way"`, or `"none"` |
-| `passThrough` | boolean | `true` = BFS entire connected component; `false` = direct neighbors only |
+| Flag | Description |
+|------|-------------|
+| `--canvas`, `-c` | Canvas name (required) |
+| `--widget`, `-w` | Widget to broadcast from (defaults to `$STORYBOARD_WIDGET_ID`) |
+| `--mode`, `-m` | `two-way`, `one-way`, or `none` (default: `two-way`) |
+| `--pass-through` | BFS entire connected component (default: direct neighbors only) |
+| `--json` | Output result as JSON |
 
 In batch operations, use `{ "op": "broadcast", "widgetId": "...", "mode": "two-way", "passThrough": true }`.
 
