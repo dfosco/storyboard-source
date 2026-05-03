@@ -40,6 +40,8 @@ export function listHubRoles(rootDir) {
     try {
       const raw = readFileSync(join(dir, file), 'utf8')
       const meta = parseFrontmatter(raw)
+      // Skip transient roles (e.g. starter) — they're auto-assigned, not user-selectable
+      if (meta.transient === true) continue
       const type = meta.type === 'unique' ? 'unique' : 'shared'
       roles.push({
         id,

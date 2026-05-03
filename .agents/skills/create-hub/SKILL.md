@@ -11,6 +11,10 @@ description: Creates a multi-agent hub on the canvas — spawns agents, connects
 
 Creates a multi-agent hub on the current canvas: determines which agent roles are needed, spawns agent widgets, connects them to the requesting agent (leader), assigns roles, and opens broadcast so messaging can begin.
 
+## First Step
+
+**Read `.agents/roles/starter.role.md`** — it contains the full step-by-step procedure with copy-pasteable curl commands using your env vars. The starter role is a transient role that transitions to leader once the hub is running.
+
 ## Prerequisites
 
 - The requesting agent must be on a canvas (needs `STORYBOARD_CANVAS_ID` and `STORYBOARD_WIDGET_ID` env vars)
@@ -33,22 +37,19 @@ Default agent type is the first entry in `canvas.agents` config (typically "copi
 For each additional agent needed, call the canvas server:
 
 ```bash
-# Create widget
+# Create widget — type and props are top-level fields
 curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/widget" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "<canvasName>",
-    "widget": {
-      "type": "agent",
-      "props": {
-        "agentType": "<agentType>",
-        "prettyName": "<descriptive name for this agent>"
-      }
+    "type": "agent",
+    "props": {
+      "prettyName": "<descriptive name for this agent>"
     }
   }'
 ```
 
-The response includes the created widget's `id`.
+The response includes the created widget's `id` in `result.widget.id`.
 
 ### Step 3: Connect agents to the leader
 
@@ -59,15 +60,12 @@ curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/connector" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "<canvasName>",
-    "connector": {
-      "start": { "widgetId": "<leaderWidgetId>" },
-      "end": { "widgetId": "<newAgentWidgetId>" },
-      "meta": { "messagingMode": null }
-    }
+    "startWidgetId": "<leaderWidgetId>",
+    "startAnchor": "right",
+    "endWidgetId": "<newAgentWidgetId>",
+    "endAnchor": "left"
   }'
 ```
-
-Note: `messagingMode` starts as `null` — broadcast is opened separately in Step 5.
 
 ### Step 4: Spawn agent sessions
 
