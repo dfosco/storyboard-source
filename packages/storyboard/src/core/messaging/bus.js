@@ -67,7 +67,7 @@ export function resetBus() {
  * Register an event namespace with its known event types.
  * Domain adapters call this at startup to declare their events.
  *
- * @param {string} namespace - e.g., 'message', 'cluster', 'notification'
+ * @param {string} namespace - e.g., 'message', 'hub', 'notification'
  * @param {{ events?: string[] }} [opts]
  */
 export function registerEventNamespace(namespace, opts = {}) {

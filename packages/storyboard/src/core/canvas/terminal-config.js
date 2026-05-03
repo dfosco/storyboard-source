@@ -93,7 +93,7 @@ export function preReserveTerminalIdentity({ widgetId, preDisplayName, canvasId,
     connectedWidgets: [],
     messaging: null,
     role: null,
-    clusters: [],
+    hubs: [],
     agentStatus: null,
     viewport: readCurrentViewport(rootDir) || null,
     updatedAt: new Date().toISOString(),
@@ -144,7 +144,7 @@ export function writeTerminalConfig({ branch, canvasId, widgetId, canvasFile = n
     connectedWidgets: existing.connectedWidgets || [],
     agentStatus: existing.agentStatus || null,
     role: existing.role || null,
-    clusters: existing.clusters || [],
+    hubs: existing.hubs || [],
     viewport: readCurrentViewport(rootDir) || existing.viewport || null,
     updatedAt: new Date().toISOString(),
   }
@@ -186,7 +186,7 @@ export function updateTerminalConnections({
   widgetProps = null,
   messaging = null,
   role = null,
-  clusters = null,
+  hubs = null,
 }) {
   const fp = configPath(branch, canvasId, widgetId)
   let config = {}
@@ -202,7 +202,7 @@ export function updateTerminalConnections({
   config.connectedWidgets = connectedWidgets || []
   config.messaging = messaging || null
   if (role !== null) config.role = role
-  if (clusters !== null) config.clusters = clusters
+  if (hubs !== null) config.hubs = hubs
   config.viewport = readCurrentViewport(rootDir) || config.viewport || null
   config.updatedAt = new Date().toISOString()
 

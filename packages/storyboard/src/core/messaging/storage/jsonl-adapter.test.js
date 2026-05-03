@@ -68,7 +68,7 @@ describe('JsonlAdapter', () => {
 
   it('filters by type prefix', async () => {
     await adapter.append('ch', { id: 'a', type: 'message:request' })
-    await adapter.append('ch', { id: 'b', type: 'cluster:created' })
+    await adapter.append('ch', { id: 'b', type: 'hub:created' })
     await adapter.append('ch', { id: 'c', type: 'message:response' })
 
     const events = await adapter.read('ch', { type: 'message:' })
