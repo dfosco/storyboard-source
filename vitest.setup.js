@@ -15,6 +15,17 @@ if (!window.matchMedia) {
   })
 }
 
+// jsdom doesn't support adoptedStyleSheets — stub it for @oddbird/popover-polyfill
+if (!document.adoptedStyleSheets) {
+  document.adoptedStyleSheets = []
+}
+if (typeof ShadowRoot !== 'undefined' && !ShadowRoot.prototype.adoptedStyleSheets) {
+  Object.defineProperty(ShadowRoot.prototype, 'adoptedStyleSheets', {
+    get() { return this._adoptedStyleSheets || [] },
+    set(v) { this._adoptedStyleSheets = v },
+  })
+}
+
 // Reset URL hash and localStorage between tests
 beforeEach(() => {
   window.location.hash = ''

@@ -85,6 +85,7 @@ describe('validateToken', () => {
     globalThis.fetch.mockResolvedValueOnce({
       ok: true,
       json: () => Promise.resolve({ login: 'testuser', avatar_url: 'https://img/avatar' }),
+      headers: { get: () => 'repo' },
     })
     // GraphQL permissions probe succeeds
     globalThis.fetch.mockResolvedValueOnce({
@@ -101,7 +102,7 @@ describe('validateToken', () => {
     })
 
     const user = await validateToken('ghp_valid')
-    expect(user).toEqual({ login: 'testuser', avatarUrl: 'https://img/avatar' })
+    expect(user).toEqual({ login: 'testuser', avatarUrl: 'https://img/avatar', scopes: ['repo'] })
     expect(getCachedUser()).toEqual(user)
   })
 
@@ -115,6 +116,7 @@ describe('validateToken', () => {
     globalThis.fetch.mockResolvedValueOnce({
       ok: true,
       json: () => Promise.resolve({ login: 'testuser', avatar_url: 'https://img/avatar' }),
+      headers: { get: () => '' },
     })
     // GraphQL probe fails with permissions error
     globalThis.fetch.mockResolvedValueOnce({
@@ -141,6 +143,7 @@ describe('validateToken', () => {
     globalThis.fetch.mockResolvedValueOnce({
       ok: true,
       json: () => Promise.resolve({ login: 'testuser', avatar_url: 'https://img/avatar' }),
+      headers: { get: () => '' },
     })
     globalThis.fetch.mockResolvedValueOnce({
       ok: true,
@@ -157,6 +160,7 @@ describe('validateToken', () => {
     globalThis.fetch.mockResolvedValueOnce({
       ok: true,
       json: () => Promise.resolve({ login: 'testuser', avatar_url: 'https://img/avatar' }),
+      headers: { get: () => '' },
     })
 
     const user = await validateToken('ghp_valid')
