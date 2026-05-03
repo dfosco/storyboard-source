@@ -31,7 +31,7 @@ const sessions = new Map()
 
 let registryPath = null
 let orphanTimers = new Map()
-const defaultGracePeriod = 5 * 60 * 1000 // 5 minutes
+let defaultGracePeriod = 5 * 60 * 1000 // 5 minutes
 const defaultBackgroundGracePeriod = 30 * 60 * 1000 // 30 minutes
 
 // ── Friendly name generation ──
