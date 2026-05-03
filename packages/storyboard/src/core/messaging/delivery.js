@@ -286,6 +286,17 @@ export function isBound(widgetId) {
 }
 
 /**
+ * Get a specific widget's binding.
+ * @param {string} widgetId
+ * @returns {{ widgetId: string, tmuxName: string, channel: string } | null}
+ */
+export function getBinding(widgetId) {
+  const b = bindings.get(widgetId)
+  if (!b) return null
+  return { widgetId: b.widgetId, tmuxName: b.tmuxName, channel: b.channel }
+}
+
+/**
  * Get all current bindings (for debugging/status).
  * @returns {Array<{ widgetId: string, tmuxName: string, channel: string }>}
  */

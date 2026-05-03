@@ -14,7 +14,7 @@
 import { publish, subscribe, read, readMulti } from './bus.js'
 import { negotiateFormat, serializeResponse, parseRequestBody } from './toon.js'
 import { getPresent, isPresent, getAllPresent } from './presence.js'
-import { getBindings } from './delivery.js'
+import { getBindings, isBound, terminalChannel, getBinding } from './delivery.js'
 import {
   getHub,
   getHubsForCanvas,
@@ -530,6 +530,23 @@ async function handleHubSend(req, res, body, sendJson) {
 
   const tokens = createMessageTokens(event.id, hubId, recipientList, { timeoutMs, parentMessageId })
 
+  // Fanout: publish to each recipient's terminal channel so the delivery
+  // bridge can inject the message into their tmux session.
+  const senderMember = hub.members.get(senderId)
+  const senderName = senderMember?.name || senderMember?.prettyName || senderId
+  for (const recipient of recipientList) {
+    const binding = getBinding(recipient.widgetId)
+    if (binding) {
+      await publish(binding.channel, {
+        type: 'message:request',
+        senderId,
+        senderName,
+        body: parsed.body,
+        payload: { hubId, messageId: event.id, parentMessageId: parentMessageId || null },
+      })
+    }
+  }
+
   return await sendNegotiated(req, res, 201, {
     ok: true,
     messageId: event.id,
@@ -566,6 +583,23 @@ async function handleHubRespond(req, res, body, sendJson) {
   // Resolve the token
   const result = resolveTokenByWidget(messageId, widgetId, event.id)
   if (!result.ok) return sendJson(res, 400, { error: result.error })
+
+  // Fanout response to all other hub members' terminal channels
+  const responderMember = hub.members.get(widgetId)
+  const responderName = responderMember?.name || responderMember?.prettyName || widgetId
+  for (const [memberId] of hub.members) {
+    if (memberId === widgetId) continue
+    const binding = getBinding(memberId)
+    if (binding) {
+      await publish(binding.channel, {
+        type: 'message:request',
+        senderId: widgetId,
+        senderName: responderName,
+        body: parsed.body,
+        payload: { hubId, messageId, responseId: event.id },
+      })
+    }
+  }
 
   const roundStatus = getRoundStatus(messageId)
 
