@@ -110,10 +110,13 @@ function applyTmuxShellOverrides() {
 }
 
 /** Filter process.env, removing shell-config vars that would leak into PTY */
+/** Env vars that suppress color output in supports-color based CLIs */
+const COLOR_SUPPRESS_VARS = new Set(['CI', 'NO_COLOR', 'GITHUB_ACTIONS'])
+
 function cleanEnv() {
   const filtered = {}
   for (const [k, v] of Object.entries(process.env)) {
-    if (!isShellConfigVar(k)) filtered[k] = v
+    if (!isShellConfigVar(k) && !COLOR_SUPPRESS_VARS.has(k)) filtered[k] = v
   }
   return filtered
 }
@@ -828,6 +831,7 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
     ...cleanEnv(),
     TERM: 'xterm-256color',
     COLORTERM: 'truecolor',
+    FORCE_COLOR: '3',
     TERM_PROGRAM: 'storyboard',
     ZDOTDIR: zdotdir,
     STARSHIP_CONFIG: '/dev/null',
@@ -843,6 +847,7 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
     ...cleanEnv(),
     TERM: 'xterm-256color',
     COLORTERM: 'truecolor',
+    FORCE_COLOR: '3',
     TERM_PROGRAM: 'storyboard',
     ZDOTDIR: zdotdir,
     STARSHIP_CONFIG: '/dev/null',
