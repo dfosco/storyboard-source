@@ -2645,6 +2645,9 @@ export function Default() {
           STORYBOARD_CANVAS_ID: canvasId,
           STORYBOARD_BRANCH: branch,
           STORYBOARD_SERVER_URL: serverUrl,
+          TERM: 'xterm-256color',
+          COLORTERM: 'truecolor',
+          TERM_PROGRAM: 'storyboard',
         }
         for (const [key, val] of Object.entries(envMap)) {
           execSync(`tmux setenv -t "${tmuxName}" ${key} "${val}"`, { stdio: 'ignore' })
