@@ -530,21 +530,30 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
         <span>
           <span className={styles.typeLabel}>{typeLabel}</span>
           <span className={styles.nameSeparator}> · </span>
+          <span>{prettyName || '…'}</span>
           {editingAlias ? (
-            <input
-              ref={aliasInputRef}
-              className={styles.aliasInput}
-              value={aliasInput}
-              onChange={(e) => setAliasInput(e.target.value)}
-              onBlur={commitAlias}
-              onKeyDown={handleAliasKeyDown}
-              onClick={(e) => e.stopPropagation()}
-              onPointerDown={(e) => e.stopPropagation()}
-              placeholder={prettyName || '…'}
-              aria-label="Edit alias"
-            />
+            <>
+              <span className={styles.nameSeparator}> · </span>
+              <input
+                ref={aliasInputRef}
+                className={styles.aliasInput}
+                value={aliasInput}
+                onChange={(e) => setAliasInput(e.target.value)}
+                onBlur={commitAlias}
+                onKeyDown={handleAliasKeyDown}
+                onClick={(e) => e.stopPropagation()}
+                onPointerDown={(e) => e.stopPropagation()}
+                placeholder="alias"
+                aria-label="Edit alias"
+              />
+            </>
+          ) : alias ? (
+            <>
+              <span className={styles.nameSeparator}> · </span>
+              <span onDoubleClick={handleAliasDoubleClick}>{alias}</span>
+            </>
           ) : (
-            <span onDoubleClick={handleAliasDoubleClick}>{displayLabel || '…'}</span>
+            <span onDoubleClick={handleAliasDoubleClick}></span>
           )}
         </span>
         {showLeaderCrown && <span className={styles.leaderCrown} aria-label="Hub leader">👑</span>}
