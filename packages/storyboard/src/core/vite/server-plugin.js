@@ -353,10 +353,8 @@ export default function storyboardServer() {
 
         // POST /sessions/cleanup — bulk remove sessions by status
         if (ctx.method === 'POST' && subpath === 'sessions/cleanup') {
-          let body = ''
-          for await (const chunk of req) body += chunk
           try {
-            const { statuses } = JSON.parse(body)
+            const { statuses } = await parseJsonBody(req)
             const allowed = new Set(['archived', 'background'])
             if (!Array.isArray(statuses) || statuses.length === 0) {
               sendJsonLogged(res, 400, { error: 'statuses must be a non-empty array' })

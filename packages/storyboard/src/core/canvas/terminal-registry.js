@@ -31,7 +31,8 @@ const sessions = new Map()
 
 let registryPath = null
 let orphanTimers = new Map()
-let defaultGracePeriod = 5 * 60 * 1000 // 5 minutes
+const defaultGracePeriod = 5 * 60 * 1000 // 5 minutes
+const defaultBackgroundGracePeriod = 30 * 60 * 1000 // 30 minutes
 
 // ── Friendly name generation ──
 
@@ -151,19 +152,26 @@ function reconcile() {
     // Downgrade any "live" to "background" (server restarted, all WS connections dead)
     if (entry.status === 'live') {
       entry.status = 'background'
+      entry.expiresAt = now + defaultBackgroundGracePeriod
       entry.generation = (entry.generation || 0) + 1
     }
 
-    // Kill expired archived sessions
-    if (entry.status === 'archived' && entry.expiresAt && now >= entry.expiresAt) {
+    // Kill expired archived or background sessions
+    if ((entry.status === 'archived' || entry.status === 'background') && entry.expiresAt && now >= entry.expiresAt) {
       killTmuxSession(name)
       sessions.delete(name)
       continue
     }
 
-    // Re-arm future expirations for non-expired archived sessions
-    if (entry.status === 'archived' && entry.expiresAt && now < entry.expiresAt) {
+    // Re-arm future expirations for non-expired archived/background sessions
+    if ((entry.status === 'archived' || entry.status === 'background') && entry.expiresAt && now < entry.expiresAt) {
       armOrphanTimer(name, entry.expiresAt - now)
+    }
+
+    // Background sessions without an expiresAt (legacy) — arm a grace timer
+    if (entry.status === 'background' && !entry.expiresAt) {
+      entry.expiresAt = now + defaultBackgroundGracePeriod
+      armOrphanTimer(name, defaultBackgroundGracePeriod)
     }
 
     liveTmux.delete(name)
@@ -247,6 +255,7 @@ export function registerSession({ branch, canvasId, widgetId, prettyName }) {
 /**
  * Mark a session as "background" on WebSocket disconnect.
  * Only applies if the given generation matches (prevents stale disconnects).
+ * Arms a grace timer to kill the session if it isn't reconnected.
  */
 export function disconnectSession(tmuxName, generation) {
   const entry = sessions.get(tmuxName)
@@ -255,7 +264,10 @@ export function disconnectSession(tmuxName, generation) {
   if (entry.status !== 'live') return
 
   entry.status = 'background'
+  entry.expiresAt = Date.now() + defaultBackgroundGracePeriod
   persist()
+
+  armOrphanTimer(tmuxName, defaultBackgroundGracePeriod)
 }
 
 /**
