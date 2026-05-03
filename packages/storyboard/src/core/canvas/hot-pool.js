@@ -453,6 +453,20 @@ export class HotPool {
     }
 
     try {
+      // Inject color-safe env vars before launching the agent command
+      const envExports = [
+        'export FORCE_COLOR=3',
+        'export COLORTERM=truecolor',
+        'export TERM=xterm-256color',
+        'export TERM_PROGRAM=storyboard',
+        'unset CI NO_COLOR GITHUB_ACTIONS',
+      ].join(' && ')
+      execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(envExports)}`, { stdio: 'ignore' })
+      execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
+
+      // Small delay to ensure env exports are applied before launching agent
+      await new Promise(r => setTimeout(r, 300))
+
       execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(finalCommand)}`, { stdio: 'ignore' })
       execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
     } catch (err) {
