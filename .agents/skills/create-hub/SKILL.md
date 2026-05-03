@@ -31,13 +31,13 @@ Default agent type is `"copilot"`. Keep hubs small (2–5 agents is typical).
 
 Use `storyboard canvas batch` to create all agent widgets and connectors in a single call. Use `$0`, `$1`, etc. to reference widget IDs from earlier create ops. The `alias` prop gives agents a human-readable nickname; their auto-generated `prettyName` (e.g. `ivory-avocet`) serves as a unique fallback.
 
-**Layout:** Agents fan out from the leader in a `<` pattern — the leader is on the left, peers spread to the upper-right and lower-right. Use diagonal directions (`above-right`, `below-right`) and `gap: 10` (grid spaces) so connectors render cleanly between widgets.
+**Layout:** Agents fan out from the leader in a `<` pattern — the leader is on the left, peers spread to the upper-right and lower-right. Use diagonal directions (`above-right`, `below-right`) and `gap: 8` (grid spaces) — diagonals center on the leader vertically, so two peers end up 8gS apart. The horizontal offset is also 8gS, which gives connectors room to render cleanly.
 
 For **2 peers** (most common):
 ```bash
 storyboard canvas batch --canvas "$STORYBOARD_CANVAS_ID" --ops '[
-  { "op": "create-widget", "type": "agent", "near": "'"$STORYBOARD_WIDGET_ID"'", "direction": "above-right", "gap": 10, "props": { "alias": "Research Agent", "agentId": "copilot" } },
-  { "op": "create-widget", "type": "agent", "near": "'"$STORYBOARD_WIDGET_ID"'", "direction": "below-right", "gap": 10, "props": { "alias": "Review Agent", "agentId": "copilot" } },
+  { "op": "create-widget", "type": "agent", "near": "'"$STORYBOARD_WIDGET_ID"'", "direction": "above-right", "gap": 8, "props": { "alias": "Research Agent", "agentId": "copilot" } },
+  { "op": "create-widget", "type": "agent", "near": "'"$STORYBOARD_WIDGET_ID"'", "direction": "below-right", "gap": 8, "props": { "alias": "Review Agent", "agentId": "copilot" } },
   { "op": "create-connector", "startWidgetId": "'"$STORYBOARD_WIDGET_ID"'", "startAnchor": "right", "endWidgetId": "$0", "endAnchor": "left" },
   { "op": "create-connector", "startWidgetId": "'"$STORYBOARD_WIDGET_ID"'", "startAnchor": "right", "endWidgetId": "$1", "endAnchor": "left" }
 ]'
@@ -46,16 +46,16 @@ storyboard canvas batch --canvas "$STORYBOARD_CANVAS_ID" --ops '[
 For **3 peers**, add a `right` (center) agent:
 ```bash
 storyboard canvas batch --canvas "$STORYBOARD_CANVAS_ID" --ops '[
-  { "op": "create-widget", "type": "agent", "near": "'"$STORYBOARD_WIDGET_ID"'", "direction": "above-right", "gap": 10, "props": { "alias": "Agent A", "agentId": "copilot" } },
-  { "op": "create-widget", "type": "agent", "near": "'"$STORYBOARD_WIDGET_ID"'", "direction": "right", "gap": 10, "props": { "alias": "Agent B", "agentId": "copilot" } },
-  { "op": "create-widget", "type": "agent", "near": "'"$STORYBOARD_WIDGET_ID"'", "direction": "below-right", "gap": 10, "props": { "alias": "Agent C", "agentId": "copilot" } },
+  { "op": "create-widget", "type": "agent", "near": "'"$STORYBOARD_WIDGET_ID"'", "direction": "above-right", "gap": 8, "props": { "alias": "Agent A", "agentId": "copilot" } },
+  { "op": "create-widget", "type": "agent", "near": "'"$STORYBOARD_WIDGET_ID"'", "direction": "right", "gap": 8, "props": { "alias": "Agent B", "agentId": "copilot" } },
+  { "op": "create-widget", "type": "agent", "near": "'"$STORYBOARD_WIDGET_ID"'", "direction": "below-right", "gap": 8, "props": { "alias": "Agent C", "agentId": "copilot" } },
   { "op": "create-connector", "startWidgetId": "'"$STORYBOARD_WIDGET_ID"'", "startAnchor": "right", "endWidgetId": "$0", "endAnchor": "left" },
   { "op": "create-connector", "startWidgetId": "'"$STORYBOARD_WIDGET_ID"'", "startAnchor": "right", "endWidgetId": "$1", "endAnchor": "left" },
   { "op": "create-connector", "startWidgetId": "'"$STORYBOARD_WIDGET_ID"'", "startAnchor": "right", "endWidgetId": "$2", "endAnchor": "left" }
 ]'
 ```
 
-For **4 peers**, use all four: `above-right`, `right` (×2 stacked), `below-right`. For a single peer, use `right` with `gap: 10`.
+For **4 peers**, use all four: `above-right`, `right` (×2 stacked), `below-right`. For a single peer, use `right` with `gap: 8`.
 
 **Connector anchors:** Since the fan always places peers to the right of the leader, use `startAnchor: "right"` on the leader and `endAnchor: "left"` on each peer. This matches the 9-cell orientation table (leader is `center-left` relative to all peers).
 
@@ -65,7 +65,7 @@ For a single agent, you can use `storyboard canvas add` instead:
 
 ```bash
 storyboard canvas add agent --canvas "$STORYBOARD_CANVAS_ID" --json \
-  --name "Research Agent" --near "$STORYBOARD_WIDGET_ID" --gap 10 --props '{"agentId": "copilot"}'
+  --name "Research Agent" --near "$STORYBOARD_WIDGET_ID" --gap 8 --props '{"agentId": "copilot"}'
 ```
 
 ### Step 3: Enable broadcast (optional)

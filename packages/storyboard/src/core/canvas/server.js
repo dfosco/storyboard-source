@@ -267,6 +267,8 @@ export function createCanvasHandler(ctx) {
     gap = gap * gridSize
     const refBounds = getWidgetBounds(refWidget)
     const newDefaults = getWidgetBounds({ type: newType, props: newProps, position: { x: 0, y: 0 } })
+    const refCenterY = refBounds.y + refBounds.height / 2
+    const refCenterX = refBounds.x + refBounds.width / 2
     switch (direction) {
       case 'left':
         return { x: refBounds.x - newDefaults.width - gap, y: refBounds.y }
@@ -275,13 +277,13 @@ export function createCanvasHandler(ctx) {
       case 'below':
         return { x: refBounds.x, y: refBounds.y + refBounds.height + gap }
       case 'above-right':
-        return { x: refBounds.x + refBounds.width + gap, y: refBounds.y - newDefaults.height - gap }
+        return { x: refBounds.x + refBounds.width + gap, y: refCenterY - newDefaults.height - gap / 2 }
       case 'below-right':
-        return { x: refBounds.x + refBounds.width + gap, y: refBounds.y + refBounds.height + gap }
+        return { x: refBounds.x + refBounds.width + gap, y: refCenterY + gap / 2 }
       case 'above-left':
-        return { x: refBounds.x - newDefaults.width - gap, y: refBounds.y - newDefaults.height - gap }
+        return { x: refBounds.x - newDefaults.width - gap, y: refCenterY - newDefaults.height - gap / 2 }
       case 'below-left':
-        return { x: refBounds.x - newDefaults.width - gap, y: refBounds.y + refBounds.height + gap }
+        return { x: refBounds.x - newDefaults.width - gap, y: refCenterY + gap / 2 }
       case 'right':
       default:
         return { x: refBounds.x + refBounds.width + gap, y: refBounds.y }
