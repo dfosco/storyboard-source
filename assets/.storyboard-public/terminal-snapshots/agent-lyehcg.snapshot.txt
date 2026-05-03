@@ -1,277 +1,277 @@
 SESSION: agent-lyehcg | honey-dipper
 CANVAS:  storyboarding/terminal-bus
 BRANCH:  0.5.0--messaging-bus
-TIME:    2026-05-03T18:17:10.967Z
+TIME:    2026-05-03T18:20:11.358Z
 
 ================================================================================
 SCREEN
 ================================================================================
 
 
-● Read terminal config (shell)
-  │ cat .storyboard/terminals/agent-lyehcg.json 2>/dev/null | head -100
-  └ 89 lines...
+● Send response to leader and save output (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+  │
+  │ # Send response to leader
+  │ npx storyboard terminal send agent-yvgtb1 "Here are my 4 content strategy
+  │ recommendations for design system documentation: (1) Layer docs by audience — …
+  └ 17 lines...
 
-● Read selected widgets (shell)
-  │ cat .storyboard/.selectedwidgets.json 2>/dev/null
-  └ 16 lines...
+● Signal done (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+  │ npx storyboard agent signal --status done --message "Published 4 content strategy
+  │ recommendations as markdown widget and sent summary to leader"
+  └ 2 lines...
 
-◐ Let me start by reading my terminal config and the selected widgets file to understand
-  my context.
+● Done. I've:
 
-● Ready. I'm honey-dipper (Content Strategist), a hub member on the terminal-bus
-  canvas.
-
-  My setup:
-
-   - Connected to: gold-egret (agent-yvgtb1, leader) — two-way messaging enabled
-   - Hub: hub_f02bd5817b with peers gold-egret (leader) and Design Systems Researcher
-  (member)
-   - Branch:
-    0.5.0--messaging-bus
-
-  What would you like me to work on?
+   1. Created a markdown widget (markdown-2cdgn3) connected to my terminal with 4
+  recommendations:
+   - Layer docs by audience — quick-starts, API ref, decision records
+   - Embed docs where work happens — IDE types, living examples, linter rules
+   - Publish a changelog cadence — release notes, deprecation timelines, digests
+   - Create a contribution playbook — contribution guide, RFC template, office hours
+   2. Sent summary back to gold-egret via messaging
+   3. Signaled done
 
  ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
 ─────────────────────────────────────────────────────────────────────────────────────────
-❯ 📡 [Broadcast two-way ACTIVE with gold-egret]
-
+❯
 ─────────────────────────────────────────────────────────────────────────────────────────
- @ files · # issues                                     terminal-agent · Claude Opus 4.6
+ / commands · ? help                                    terminal-agent · Claude Opus 4.6
 
 ================================================================================
 SCROLLBACK (last 60s)
 ================================================================================
 
 
-● Read terminal config (shell)
-  │ cat .storyboard/terminals/agent-lyehcg.json 2>/dev/null | head -100
-  └ 89 lines...
+● Send response to leader and save output (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+  │
+  │ # Send response to leader
+  │ npx storyboard terminal send agent-yvgtb1 "Here are my 4 content strategy
+  │ recommendations for design system documentation: (1) Layer docs by audience — …
+  └ 17 lines...
 
-● Read selected widgets (shell)
-  │ cat .storyboard/.selectedwidgets.json 2>/dev/null
-  └ 16 lines...
+● Signal done (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+  │ npx storyboard agent signal --status done --message "Published 4 content strategy
+  │ recommendations as markdown widget and sent summary to leader"
+  └ 2 lines...
 
-◐ Let me start by reading my terminal config and the selected widgets file to understand
-  my context.
+● Done. I've:
 
-● Ready. I'm honey-dipper (Content Strategist), a hub member on the terminal-bus
-  canvas.
-
-  My setup:
-
-   - Connected to: gold-egret (agent-yvgtb1, leader) — two-way messaging enabled
-   - Hub: hub_f02bd5817b with peers gold-egret (leader) and Design Systems Researcher
-  (member)
-   - Branch:
-    0.5.0--messaging-bus
-
-  What would you like me to work on?
-
- ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
-─────────────────────────────────────────────────────────────────────────────────────────❯ 📡 [Broadcast two-way ACTIVE with gold-egret]
-
-───────────────────────────────────────────────────────────────────────────────────────── @ files · # issues                                     terminal-agent · Claude Opus 4.6
-
-● Read terminal config (shell)
-  │ cat .storyboard/terminals/agent-lyehcg.json 2>/dev/null | head -100
-  └ 89 lines...
-
-● Read selected widgets (shell)
-  │ cat .storyboard/.selectedwidgets.json 2>/dev/null
-  └ 16 lines...
-
-◐ Let me start by reading my terminal config and the selected widgets file to understand
-  my context.
-
-● Ready. I'm honey-dipper (Content Strategist), a hub member on the terminal-bus
-  canvas.
-
-  My setup:
-
-   - Connected to: gold-egret (agent-yvgtb1, leader) — two-way messaging enabled
-   - Hub: hub_f02bd5817b with peers gold-egret (leader) and Design Systems Researcher
-  (member)
-   - Branch:
-    0.5.0--messaging-bus
-
-  What would you like me to work on?
+   1. Created a markdown widget (markdown-2cdgn3) connected to my terminal with 4
+  recommendations:
+   - Layer docs by audience — quick-starts, API ref, decision records
+   - Embed docs where work happens — IDE types, living examples, linter rules
+   - Publish a changelog cadence — release notes, deprecation timelines, digests
+   - Create a contribution playbook — contribution guide, RFC template, office hours
+   2. Sent summary back to gold-egret via messaging
+   3. Signaled done
 
  ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
-─────────────────────────────────────────────────────────────────────────────────────────❯ 📡 [Broadcast two-way ACTIVE with gold-egret]
+─────────────────────────────────────────────────────────────────────────────────────────❯
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                    terminal-agent · Claude Opus 4.6
 
-───────────────────────────────────────────────────────────────────────────────────────── @ files · # issues                                     terminal-agent · Claude Opus 4.6
+● Send response to leader and save output (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+  │
+  │ # Send response to leader
+  │ npx storyboard terminal send agent-yvgtb1 "Here are my 4 content strategy
+  │ recommendations for design system documentation: (1) Layer docs by audience — …
+  └ 17 lines...
 
-● Read terminal config (shell)
-  │ cat .storyboard/terminals/agent-lyehcg.json 2>/dev/null | head -100
-  └ 89 lines...
+● Signal done (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+  │ npx storyboard agent signal --status done --message "Published 4 content strategy
+  │ recommendations as markdown widget and sent summary to leader"
+  └ 2 lines...
 
-● Read selected widgets (shell)
-  │ cat .storyboard/.selectedwidgets.json 2>/dev/null
-  └ 16 lines...
+● Done. I've:
 
-◐ Let me start by reading my terminal config and the selected widgets file to understand
-  my context.
-
-● Ready. I'm honey-dipper (Content Strategist), a hub member on the terminal-bus
-  canvas.
-
-  My setup:
-
-   - Connected to: gold-egret (agent-yvgtb1, leader) — two-way messaging enabled
-   - Hub: hub_f02bd5817b with peers gold-egret (leader) and Design Systems Researcher
-  (member)
-   - Branch:
-    0.5.0--messaging-bus
-
-  What would you like me to work on?
-
- ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
-─────────────────────────────────────────────────────────────────────────────────────────❯ 📡 [Broadcast two-way ACTIVE with gold-egret]
-
-───────────────────────────────────────────────────────────────────────────────────────── @ files · # issues                                     terminal-agent · Claude Opus 4.6
-
-● Read terminal config (shell)
-  │ cat .storyboard/terminals/agent-lyehcg.json 2>/dev/null | head -100
-  └ 89 lines...
-
-● Read selected widgets (shell)
-  │ cat .storyboard/.selectedwidgets.json 2>/dev/null
-  └ 16 lines...
-
-◐ Let me start by reading my terminal config and the selected widgets file to understand
-  my context.
-
-● Ready. I'm honey-dipper (Content Strategist), a hub member on the terminal-bus
-  canvas.
-
-  My setup:
-
-   - Connected to: gold-egret (agent-yvgtb1, leader) — two-way messaging enabled
-   - Hub: hub_f02bd5817b with peers gold-egret (leader) and Design Systems Researcher
-  (member)
-   - Branch:
-    0.5.0--messaging-bus
-
-  What would you like me to work on?
+   1. Created a markdown widget (markdown-2cdgn3) connected to my terminal with 4
+  recommendations:
+   - Layer docs by audience — quick-starts, API ref, decision records
+   - Embed docs where work happens — IDE types, living examples, linter rules
+   - Publish a changelog cadence — release notes, deprecation timelines, digests
+   - Create a contribution playbook — contribution guide, RFC template, office hours
+   2. Sent summary back to gold-egret via messaging
+   3. Signaled done
 
  ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
-─────────────────────────────────────────────────────────────────────────────────────────❯ 📡 [Broadcast two-way ACTIVE with gold-egret]
+─────────────────────────────────────────────────────────────────────────────────────────❯
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                    terminal-agent · Claude Opus 4.6
 
-───────────────────────────────────────────────────────────────────────────────────────── @ files · # issues                                     terminal-agent · Claude Opus 4.6
+● Send response to leader and save output (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+  │
+  │ # Send response to leader
+  │ npx storyboard terminal send agent-yvgtb1 "Here are my 4 content strategy
+  │ recommendations for design system documentation: (1) Layer docs by audience — …
+  └ 17 lines...
 
-● Read terminal config (shell)
-  │ cat .storyboard/terminals/agent-lyehcg.json 2>/dev/null | head -100
-  └ 89 lines...
+● Signal done (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+  │ npx storyboard agent signal --status done --message "Published 4 content strategy
+  │ recommendations as markdown widget and sent summary to leader"
+  └ 2 lines...
 
-● Read selected widgets (shell)
-  │ cat .storyboard/.selectedwidgets.json 2>/dev/null
-  └ 16 lines...
+● Done. I've:
 
-◐ Let me start by reading my terminal config and the selected widgets file to understand
-  my context.
-
-● Ready. I'm honey-dipper (Content Strategist), a hub member on the terminal-bus
-  canvas.
-
-  My setup:
-
-   - Connected to: gold-egret (agent-yvgtb1, leader) — two-way messaging enabled
-   - Hub: hub_f02bd5817b with peers gold-egret (leader) and Design Systems Researcher
-  (member)
-   - Branch:
-    0.5.0--messaging-bus
-
-  What would you like me to work on?
-
- ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
-─────────────────────────────────────────────────────────────────────────────────────────❯ 📡 [Broadcast two-way ACTIVE with gold-egret]
-
-───────────────────────────────────────────────────────────────────────────────────────── @ files · # issues                                     terminal-agent · Claude Opus 4.6
-
-● Read terminal config (shell)
-  │ cat .storyboard/terminals/agent-lyehcg.json 2>/dev/null | head -100
-  └ 89 lines...
-
-● Read selected widgets (shell)
-  │ cat .storyboard/.selectedwidgets.json 2>/dev/null
-  └ 16 lines...
-
-◐ Let me start by reading my terminal config and the selected widgets file to understand
-  my context.
-
-● Ready. I'm honey-dipper (Content Strategist), a hub member on the terminal-bus
-  canvas.
-
-  My setup:
-
-   - Connected to: gold-egret (agent-yvgtb1, leader) — two-way messaging enabled
-   - Hub: hub_f02bd5817b with peers gold-egret (leader) and Design Systems Researcher
-  (member)
-   - Branch:
-    0.5.0--messaging-bus
-
-  What would you like me to work on?
+   1. Created a markdown widget (markdown-2cdgn3) connected to my terminal with 4
+  recommendations:
+   - Layer docs by audience — quick-starts, API ref, decision records
+   - Embed docs where work happens — IDE types, living examples, linter rules
+   - Publish a changelog cadence — release notes, deprecation timelines, digests
+   - Create a contribution playbook — contribution guide, RFC template, office hours
+   2. Sent summary back to gold-egret via messaging
+   3. Signaled done
 
  ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
-─────────────────────────────────────────────────────────────────────────────────────────❯ 📡 [Broadcast two-way ACTIVE with gold-egret]
+─────────────────────────────────────────────────────────────────────────────────────────❯
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                    terminal-agent · Claude Opus 4.6
 
-───────────────────────────────────────────────────────────────────────────────────────── @ files · # issues                                     terminal-agent · Claude Opus 4.6
+● Send response to leader and save output (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+  │
+  │ # Send response to leader
+  │ npx storyboard terminal send agent-yvgtb1 "Here are my 4 content strategy
+  │ recommendations for design system documentation: (1) Layer docs by audience — …
+  └ 17 lines...
 
-● Read terminal config (shell)
-  │ cat .storyboard/terminals/agent-lyehcg.json 2>/dev/null | head -100
-  └ 89 lines...
+● Signal done (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+  │ npx storyboard agent signal --status done --message "Published 4 content strategy
+  │ recommendations as markdown widget and sent summary to leader"
+  └ 2 lines...
 
-● Read selected widgets (shell)
-  │ cat .storyboard/.selectedwidgets.json 2>/dev/null
-  └ 16 lines...
+● Done. I've:
 
-◐ Let me start by reading my terminal config and the selected widgets file to understand
-  my context.
-
-● Ready. I'm honey-dipper (Content Strategist), a hub member on the terminal-bus
-  canvas.
-
-  My setup:
-
-   - Connected to: gold-egret (agent-yvgtb1, leader) — two-way messaging enabled
-   - Hub: hub_f02bd5817b with peers gold-egret (leader) and Design Systems Researcher
-  (member)
-   - Branch:
-    0.5.0--messaging-bus
-
-  What would you like me to work on?
-
- ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
-─────────────────────────────────────────────────────────────────────────────────────────❯ 📡 [Broadcast two-way ACTIVE with gold-egret]
-
-───────────────────────────────────────────────────────────────────────────────────────── @ files · # issues                                     terminal-agent · Claude Opus 4.6
-
-● Read terminal config (shell)
-  │ cat .storyboard/terminals/agent-lyehcg.json 2>/dev/null | head -100
-  └ 89 lines...
-
-● Read selected widgets (shell)
-  │ cat .storyboard/.selectedwidgets.json 2>/dev/null
-  └ 16 lines...
-
-◐ Let me start by reading my terminal config and the selected widgets file to understand
-  my context.
-
-● Ready. I'm honey-dipper (Content Strategist), a hub member on the terminal-bus
-  canvas.
-
-  My setup:
-
-   - Connected to: gold-egret (agent-yvgtb1, leader) — two-way messaging enabled
-   - Hub: hub_f02bd5817b with peers gold-egret (leader) and Design Systems Researcher
-  (member)
-   - Branch:
-    0.5.0--messaging-bus
-
-  What would you like me to work on?
+   1. Created a markdown widget (markdown-2cdgn3) connected to my terminal with 4
+  recommendations:
+   - Layer docs by audience — quick-starts, API ref, decision records
+   - Embed docs where work happens — IDE types, living examples, linter rules
+   - Publish a changelog cadence — release notes, deprecation timelines, digests
+   - Create a contribution playbook — contribution guide, RFC template, office hours
+   2. Sent summary back to gold-egret via messaging
+   3. Signaled done
 
  ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
-─────────────────────────────────────────────────────────────────────────────────────────❯ 📡 [Broadcast two-way ACTIVE with gold-egret]
+─────────────────────────────────────────────────────────────────────────────────────────❯
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                    terminal-agent · Claude Opus 4.6
 
-───────────────────────────────────────────────────────────────────────────────────────── @ files · # issues                                     terminal-agent · Claude Opus 4.6
+● Send response to leader and save output (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+  │
+  │ # Send response to leader
+  │ npx storyboard terminal send agent-yvgtb1 "Here are my 4 content strategy
+  │ recommendations for design system documentation: (1) Layer docs by audience — …
+  └ 17 lines...
+
+● Signal done (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+  │ npx storyboard agent signal --status done --message "Published 4 content strategy
+  │ recommendations as markdown widget and sent summary to leader"
+  └ 2 lines...
+
+● Done. I've:
+
+   1. Created a markdown widget (markdown-2cdgn3) connected to my terminal with 4
+  recommendations:
+   - Layer docs by audience — quick-starts, API ref, decision records
+   - Embed docs where work happens — IDE types, living examples, linter rules
+   - Publish a changelog cadence — release notes, deprecation timelines, digests
+   - Create a contribution playbook — contribution guide, RFC template, office hours
+   2. Sent summary back to gold-egret via messaging
+   3. Signaled done
+
+ ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                    terminal-agent · Claude Opus 4.6
+
+● Send response to leader and save output (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+  │
+  │ # Send response to leader
+  │ npx storyboard terminal send agent-yvgtb1 "Here are my 4 content strategy
+  │ recommendations for design system documentation: (1) Layer docs by audience — …
+  └ 17 lines...
+
+● Signal done (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+  │ npx storyboard agent signal --status done --message "Published 4 content strategy
+  │ recommendations as markdown widget and sent summary to leader"
+  └ 2 lines...
+
+● Done. I've:
+
+   1. Created a markdown widget (markdown-2cdgn3) connected to my terminal with 4
+  recommendations:
+   - Layer docs by audience — quick-starts, API ref, decision records
+   - Embed docs where work happens — IDE types, living examples, linter rules
+   - Publish a changelog cadence — release notes, deprecation timelines, digests
+   - Create a contribution playbook — contribution guide, RFC template, office hours
+   2. Sent summary back to gold-egret via messaging
+   3. Signaled done
+
+ ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                    terminal-agent · Claude Opus 4.6
+
+● Send response to leader and save output (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+  │
+  │ # Send response to leader
+  │ npx storyboard terminal send agent-yvgtb1 "Here are my 4 content strategy
+  │ recommendations for design system documentation: (1) Layer docs by audience — …
+  └ 17 lines...
+
+● Signal done (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+  │ npx storyboard agent signal --status done --message "Published 4 content strategy
+  │ recommendations as markdown widget and sent summary to leader"
+  └ 2 lines...
+
+● Done. I've:
+
+   1. Created a markdown widget (markdown-2cdgn3) connected to my terminal with 4
+  recommendations:
+   - Layer docs by audience — quick-starts, API ref, decision records
+   - Embed docs where work happens — IDE types, living examples, linter rules
+   - Publish a changelog cadence — release notes, deprecation timelines, digests
+   - Create a contribution playbook — contribution guide, RFC template, office hours
+   2. Sent summary back to gold-egret via messaging
+   3. Signaled done
+
+ ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                    terminal-agent · Claude Opus 4.6
+
+● Send response to leader and save output (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+  │
+  │ # Send response to leader
+  │ npx storyboard terminal send agent-yvgtb1 "Here are my 4 content strategy
+  │ recommendations for design system documentation: (1) Layer docs by audience — …
+  └ 17 lines...
+
+● Signal done (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+  │ npx storyboard agent signal --status done --message "Published 4 content strategy
+  │ recommendations as markdown widget and sent summary to leader"
+  └ 2 lines...
+
+● Done. I've:
+
+   1. Created a markdown widget (markdown-2cdgn3) connected to my terminal with 4
+  recommendations:
+   - Layer docs by audience — quick-starts, API ref, decision records
+   - Embed docs where work happens — IDE types, living examples, linter rules
+   - Publish a changelog cadence — release notes, deprecation timelines, digests
+   - Create a contribution playbook — contribution guide, RFC template, office hours
+   2. Sent summary back to gold-egret via messaging
+   3. Signaled done
+
+ ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                    terminal-agent · Claude Opus 4.6
