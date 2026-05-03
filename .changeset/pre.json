@@ -1,11 +1,12 @@
 {
-  "mode": "exit",
+  "mode": "pre",
   "tag": "alpha",
   "initialVersions": {
-    "@dfosco/storyboard": "0.5.0-alpha.0"
+    "@dfosco/storyboard": "0.5.0-alpha.1"
   },
   "changesets": [
     "changeset-moojzicz",
-    "changeset-moop92eo"
+    "changeset-moop92eo",
+    "changeset-moq6mauh"
   ]
 }
