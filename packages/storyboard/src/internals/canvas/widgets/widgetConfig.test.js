@@ -59,7 +59,7 @@ describe('getFeatures', () => {
 describe('getWidgetMeta', () => {
   it('returns label and icon for known types', () => {
     const meta = getWidgetMeta('sticky-note')
-    expect(meta).toEqual({ label: 'Sticky Note', icon: '📝' })
+    expect(meta).toEqual({ label: 'Sticky Note', icon: 'sticky-note' })
   })
 
   it('returns null for unknown types', () => {

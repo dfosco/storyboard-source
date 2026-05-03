@@ -33,7 +33,7 @@
   "widgets": {
     "sticky-note": {
       "label": "Sticky Note",
-      "icon": "\ud83d\udcdd",
+      "icon": "sticky-note",
       "resize": {
         "enabled": true,
         "prod": false
@@ -133,7 +133,7 @@
     },
     "markdown": {
       "label": "Markdown",
-      "icon": "\ud83d\udcc4",
+      "icon": "primer/file",
       "expandable": true,
       "splitScreen": true,
       "resize": {
@@ -247,7 +247,7 @@
     },
     "prototype": {
       "label": "Prototype",
-      "icon": "\ud83d\udda5\ufe0f",
+      "icon": "prototype",
       "expandable": true,
       "splitScreen": true,
       "resize": {
@@ -366,7 +366,7 @@
     },
     "figma-embed": {
       "label": "Figma Embed",
-      "icon": "\ud83c\udfa8",
+      "icon": "primer/paintbrush",
       "expandable": true,
       "splitScreen": true,
       "resize": {
@@ -458,7 +458,7 @@
     },
     "codepen-embed": {
       "label": "CodePen Embed",
-      "icon": "\u270f\ufe0f",
+      "icon": "feather/codepen",
       "expandable": true,
       "splitScreen": true,
       "resize": {
@@ -550,7 +550,7 @@
     },
     "link-preview": {
       "label": "Link Preview",
-      "icon": "\ud83d\udd17",
+      "icon": "primer/link",
       "expandable": true,
       "splitScreen": true,
       "resize": {
@@ -730,7 +730,7 @@
     },
     "story": {
       "label": "Story",
-      "icon": "\ud83d\udcd6",
+      "icon": "primer/book",
       "splitScreen": true,
       "resize": {
         "enabled": true,
@@ -847,7 +847,7 @@
     },
     "component-set": {
       "label": "Component Set",
-      "icon": "\u229e",
+      "icon": "iconoir/view-grid",
       "resize": {
         "enabled": true,
         "prod": false
@@ -946,7 +946,7 @@
     },
     "prompt": {
       "label": "Prompt",
-      "icon": "zap",
+      "icon": "primer/zap",
       "resize": {
         "enabled": true,
         "prod": false
@@ -1050,7 +1050,7 @@
     },
     "image": {
       "label": "Image",
-      "icon": "\ud83d\uddbc\ufe0f",
+      "icon": "primer/image",
       "splitScreen": true,
       "expandable": true,
       "resize": {
@@ -1173,7 +1173,7 @@
     },
     "terminal": {
       "label": "Terminal",
-      "icon": "\u2b1b",
+      "icon": "primer/terminal",
       "expandable": true,
       "splitScreen": true,
       "resize": {
@@ -1260,7 +1260,7 @@
     },
     "terminal-read": {
       "label": "Terminal",
-      "icon": "\u2b1b",
+      "icon": "primer/terminal",
       "expandable": true,
       "splitScreen": true,
       "resize": {
@@ -1331,6 +1331,12 @@
         "agentId": {
           "type": "text",
           "label": "Agent",
+          "category": "settings",
+          "default": ""
+        },
+        "alias": {
+          "type": "text",
+          "label": "Alias",
           "category": "settings",
           "default": ""
         },
@@ -1407,7 +1413,7 @@
     },
     "tiles": {
       "label": "Tiles",
-      "icon": "\ud83d\udd32",
+      "icon": "iconoir/view-grid",
       "unlisted": true,
       "interactGate": true,
       "interactGateLabel": "Click to interact",
