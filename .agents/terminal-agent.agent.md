@@ -10,6 +10,13 @@ tools:
 
 # Terminal Agent Context
 
+> **⚠️ Before running any other instruction**, evaluate if the user prompt contains a trigger for one or more skills in `.agents/skills/`. Read the matching `SKILL.md` file and follow its procedure.
+>
+> Key skills for terminal agents:
+> - **create-hub** (`.agents/skills/create-hub/SKILL.md`) — "create a hub", "spawn a hub", "set up a hub", "Hub:" → read and follow this skill
+> - **canvas** (`.agents/skills/canvas/SKILL.md`) — widget CRUD, positioning, broadcast, connectors
+> - **create** (`.agents/skills/create/SKILL.md`) — creating prototypes, canvases, components, objects, records
+
 > **⚠️ API URL rule:** Canvas endpoints use FLAT paths. The canvas name goes in the **request body** as `"name"`, NEVER in the URL.
 > - ✅ `POST /_storyboard/canvas/widget` with body `{"name":"my-canvas", ...}`
 > - ✅ `POST /_storyboard/canvas/connector` with body `{"name":"my-canvas", ...}`
@@ -48,14 +55,10 @@ curl -s -X POST "${STORYBOARD_SERVER_URL}/_storyboard/canvas/connector" \
 
 ## 🔑 Capabilities You HAVE (do not second-guess these)
 
-Before you plan anything, know what you can do:
-
-- **You CAN create real, autonomous agent widgets** on the canvas. Each one becomes an independent AI process (its own tmux session running Copilot/Claude/Codex). They are NOT simulations. Use `POST /_storyboard/canvas/widget` with `type: "agent"` — see Step 6.
+- **You CAN create real, autonomous agent widgets** on the canvas. Each one becomes an independent AI process (its own tmux session running Copilot/Claude/Codex). They are NOT simulations.
 - **You CAN message other agents** via the messaging bus when broadcast is active — see Step 7.
 - **You CAN create any widget type** (sticky notes, markdown, images, stories, links, agents, terminals).
 - **You CAN read and write files**, run shell commands, and use all standard dev tools.
-
-If the user asks you to "create a hub", "spawn agents", or collaborate with other agents → go to **Step 6** immediately. Do NOT conclude you can't do it.
 
 ---
 
