@@ -61,13 +61,11 @@ HUB_ID=$(cat .storyboard/terminals/$(echo $STORYBOARD_WIDGET_ID | tr '-' '_').js
 
 # If hub ID isn't available yet, check the hub state endpoint
 if [ -z "$HUB_ID" ]; then
-  HUB_ID=$(curl -s "$STORYBOARD_SERVER_URL/_storyboard/messages/hub/state?canvasId=$STORYBOARD_CANVAS_ID" | jq -r '.[0].hubId // empty')
+  HUB_ID=$(storyboard hub state --canvas "$STORYBOARD_CANVAS_ID" 2>/dev/null | jq -r '.hubs[0].hubId // empty')
 fi
 
 # Start conversation
-curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/messages/conversation/start" \
-  -H "Content-Type: application/json" \
-  -d '{"hubId": "'"$HUB_ID"'", "senderId": "'"$STORYBOARD_WIDGET_ID"'"}'
+storyboard hub conversation start --hub "$HUB_ID" --sender "$STORYBOARD_WIDGET_ID"
 ```
 
 ## After Hub Creation

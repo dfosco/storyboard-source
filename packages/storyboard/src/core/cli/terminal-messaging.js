@@ -232,3 +232,40 @@ export async function handleRead() {
     process.exit(1)
   }
 }
+
+export async function handleKill() {
+  const args = process.argv.slice(4) // skip: node, sb, terminal, kill
+  const { positional, flags } = parseArgs(args)
+
+  const widgetId = positional[0] || flags.widget || flags.w
+
+  if (!widgetId) {
+    console.error('Usage: storyboard terminal kill <widgetId>')
+    console.error('       storyboard terminal kill --widget <widgetId>')
+    process.exit(1)
+  }
+
+  const serverUrl = getServerUrl()
+  try {
+    const res = await fetch(`${serverUrl}/_storyboard/canvas/terminal/kill`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ widgetId }),
+      signal: AbortSignal.timeout(10000),
+    })
+    const data = await res.json()
+    if (data.success) {
+      console.log(`Terminal ${widgetId} killed (tmux: ${data.killed || 'unknown'})`)
+    } else {
+      console.error(`Failed: ${data.error}`)
+      process.exit(1)
+    }
+  } catch (err) {
+    if (err.name === 'TimeoutError') {
+      console.error(`Error: request timed out — is the dev server running? (tried ${serverUrl})`)
+    } else {
+      console.error(`Error: ${err.message}`)
+    }
+    process.exit(1)
+  }
+}

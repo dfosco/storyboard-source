@@ -123,8 +123,38 @@ The `storyboard` CLI (`sb` alias) wraps dev tooling:
 | `storyboard canvas bounds [name]` | Get widget size and positional bounds (spatial queries) |
 | `storyboard canvas add <type>` | Add a widget (`--near`, `--direction`, `--resolve` for positioning) |
 | `storyboard canvas update <id>` | Update widget props, text, content, or position |
+| `storyboard canvas delete <id>` | Delete a widget from a canvas |
+| `storyboard canvas connector <op>` | Create, update, or delete connectors (create/update/delete) |
 | `storyboard canvas broadcast` | Toggle broadcast messaging for a widget and its connections |
+| `storyboard canvas duplicate` | Duplicate a canvas |
+| `storyboard canvas delete-canvas` | Delete a canvas and its directory |
+| `storyboard canvas roles` | List available hub roles |
 | `storyboard canvas batch` | Batch create/update/move/delete widgets + connectors in one command |
+| `storyboard agent signal` | Signal agent status (done, error, running) |
+| `storyboard agent spawn` | Spawn a headless agent session |
+| `storyboard agent status` | Check agent status for a widget |
+| `storyboard agent peek` | Peek at a headless agent tmux session |
+| `storyboard terminal kill <id>` | Kill a terminal/agent tmux session |
+| `storyboard prompt spawn` | Spawn a prompt agent session (from hot pool) |
+| `storyboard hub state` | Get hub state for a canvas |
+| `storyboard hub send` | Send a message to hub peers |
+| `storyboard hub goal` | Set hub goal |
+| `storyboard hub respond` | Respond to a message token |
+| `storyboard hub token` | Transfer hub token |
+| `storyboard hub delegate` | Mark a token as delegating |
+| `storyboard hub undelegate` | Mark a delegating token as active |
+| `storyboard hub dissolve` | Dissolve all hubs for a canvas |
+| `storyboard hub conversation start` | Start a hub conversation |
+| `storyboard hub conversation finality` | Signal conversation finality |
+| `storyboard hub conversation reopen` | Reopen a finalized conversation |
+| `storyboard hub presence` | List present agents |
+| `storyboard hub bindings` | List active delivery bridge bindings |
+| `storyboard messages publish` | Publish an event to a channel |
+| `storyboard messages send` | Publish and wait for correlated response |
+| `storyboard messages read` | Read events from a channel |
+| `storyboard messages batch` | Batch publish + read operations |
+
+> **Convention: Every server API endpoint must have a corresponding CLI command with 1:1 flag-to-field mapping.** Agents use CLI commands, not curl. When adding a new API endpoint, always create a matching CLI command.
 
 For the full canvas CLI reference (positioning, batch ops, collision detection), invoke the **canvas** skill.
 
