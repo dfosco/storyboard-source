@@ -63,7 +63,16 @@ function agentEnv() {
   const cleanPath = (process.env.PATH || '').split(':')
     .filter(p => !p.endsWith('.storyboard/terminals/bin'))
     .join(':')
-  return { ...process.env, PATH: cleanPath }
+  const env = { ...process.env, PATH: cleanPath }
+  // Strip env vars that suppress colors in supports-color based CLIs
+  delete env.CI
+  delete env.NO_COLOR
+  delete env.GITHUB_ACTIONS
+  // Force truecolor — ghostty-web supports full 24-bit color
+  env.FORCE_COLOR = '3'
+  env.COLORTERM = 'truecolor'
+  env.TERM = 'xterm-256color'
+  return env
 }
 
 /**
