@@ -100,3 +100,4 @@ Broadcast: active
 - **You are the leader** — you always become the hub leader; spawned agents are members
 - **Explicit only** — only create a hub when the user explicitly asks
 - **One hub at a time** — if you're already in a hub, warn the user before creating more agents
+- **Iterate, don't duplicate** — when incorporating feedback from peers, update the existing canvas widget (`storyboard canvas update <id>`) instead of creating a new one. Only create additional widgets when the output is genuinely a separate deliverable. The final canvas should have clean outputs, not a trail of drafts.
