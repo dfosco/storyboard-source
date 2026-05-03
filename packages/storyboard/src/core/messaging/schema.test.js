@@ -131,11 +131,11 @@ describe('createEnvelope', () => {
       channel: 'test',
       type: 'message:request',
       senderId: 'widget-a',
-      clusterId: 'cluster_abc',
+      hubId: 'hub_abc',
       conversationId: 'conv_01',
       messageTokens: [{ widgetId: 'b', order: 0, status: 'pending' }],
     })
-    expect(env.clusterId).toBe('cluster_abc')
+    expect(env.hubId).toBe('hub_abc')
     expect(env.conversationId).toBe('conv_01')
     expect(env.messageTokens).toHaveLength(1)
   })

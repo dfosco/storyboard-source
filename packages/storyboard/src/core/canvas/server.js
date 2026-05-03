@@ -333,7 +333,7 @@ export function createCanvasHandler(ctx) {
     return { x: 0, y: 0 }
   }
 
-  function stableClusterId(canvasId, widgetIds) {
+  function stableHubId(canvasId, widgetIds) {
     const sorted = [...widgetIds].sort()
     const hash = createHash('sha1').update(`${canvasId}::${sorted.join(',')}`).digest('hex').slice(0, 10)
     return `hub_${hash}`
@@ -382,7 +382,7 @@ export function createCanvasHandler(ctx) {
     const components = buildComponents(widgets, connectors)
 
     const roleByWidget = new Map()
-    const clustersByWidget = new Map()
+    const hubsByWidget = new Map()
 
     for (const comp of components) {
       const compIds = [...comp]
@@ -424,7 +424,7 @@ export function createCanvasHandler(ctx) {
         }
       }
 
-      const clusterId = stableClusterId(canvasName, compIds)
+      const hubId = stableHubId(canvasName, compIds)
       for (const tw of terminalWidgets) {
         const peers = terminalWidgets
           .filter((other) => other.id !== tw.id)
@@ -436,23 +436,23 @@ export function createCanvasHandler(ctx) {
           }))
 
         const role = roleByWidget.get(tw.id) || (tw.type === 'agent' ? defaultRole : 'passive')
-        const cluster = {
-          clusterId,
+        const hub = {
+          hubId,
           role,
           goal: null,
           peers,
-          messageLogPath: `.storyboard/messages/channels/cluster--${canvasName.replace(/\//g, '--')}--${clusterId}.jsonl`,
+          messageLogPath: `.storyboard/messages/channels/hub--${canvasName.replace(/\//g, '--')}--${hubId}.jsonl`,
           activeConversationId: null,
-          hasClusterToken: role === 'leader',
+          hasHubToken: role === 'leader',
           pendingMessageToken: null,
         }
 
-        if (!clustersByWidget.has(tw.id)) clustersByWidget.set(tw.id, [])
-        clustersByWidget.get(tw.id).push(cluster)
+        if (!hubsByWidget.has(tw.id)) hubsByWidget.set(tw.id, [])
+        hubsByWidget.get(tw.id).push(hub)
       }
     }
 
-    return { roles, defaultRole, roleByWidget, clustersByWidget }
+    return { roles, defaultRole, roleByWidget, hubsByWidget }
   }
 
   /**
@@ -475,7 +475,7 @@ export function createCanvasHandler(ctx) {
       const widgets = canvasData.widgets || []
       const widgetMap = new Map(widgets.map(w => [w.id, w]))
       const terminalWidgets = widgets.filter((w) => w.type === 'terminal' || w.type === 'agent' || w.type === 'prompt')
-      const { defaultRole, roleByWidget, clustersByWidget } = computeHubRoleState(canvasName, widgets, connectors)
+      const { defaultRole, roleByWidget, hubsByWidget } = computeHubRoleState(canvasName, widgets, connectors)
 
       for (const tw of terminalWidgets) {
         const prevConfig = readTerminalConfigById(tw.id)
@@ -526,7 +526,7 @@ export function createCanvasHandler(ctx) {
         // Build messaging section if there are messaging-enabled peers
         const messaging = messagingPeers.length > 0 ? { peers: messagingPeers } : null
         const role = roleByWidget.get(tw.id) || (tw.type === 'agent' ? defaultRole : 'passive')
-        const clusters = clustersByWidget.get(tw.id) || []
+        const hubs = hubsByWidget.get(tw.id) || []
 
         updateTerminalConnections({
           branch,
@@ -536,7 +536,7 @@ export function createCanvasHandler(ctx) {
           widgetProps: tw.props || null,
           messaging,
           role,
-          clusters,
+          hubs,
         })
 
         // Push role instruction updates to running sessions when role changes.

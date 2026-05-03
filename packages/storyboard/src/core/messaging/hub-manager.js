@@ -1,30 +1,30 @@
 /**
- * Cluster Manager
+ * Hub Manager
  *
- * Manages cluster lifecycle for multi-agent hubs on a canvas.
- * A cluster is a connected component of widgets linked by connectors.
+ * Manages hub lifecycle for multi-agent hubs on a canvas.
+ * A hub is a connected component of widgets linked by connectors.
  *
  * Responsibilities:
- *   - Materialize cluster state from canvas widgets + connectors
- *   - Track cluster membership, roles, and conversations
- *   - Provide cluster state queries for routes and terminal config
+ *   - Materialize hub state from canvas widgets + connectors
+ *   - Track hub membership, roles, and conversations
+ *   - Provide hub state queries for routes and terminal config
  *
- * Clusters are computed on-demand from canvas data (connectors define topology).
+ * Hubs are computed on-demand from canvas data (connectors define topology).
  * State is ephemeral — rebuilt whenever connectors change.
  */
 
 import { createHash } from 'node:crypto'
 import { publish, registerEventNamespace } from './bus.js'
 
-// Register cluster event namespace
-registerEventNamespace('cluster', {
+// Register hub event namespace
+registerEventNamespace('hub', {
   events: [
-    'cluster:created',
-    'cluster:dissolved',
-    'cluster:member:joined',
-    'cluster:member:left',
-    'cluster:role:changed',
-    'cluster:goal:set',
+    'hub:created',
+    'hub:dissolved',
+    'hub:member:joined',
+    'hub:member:left',
+    'hub:role:changed',
+    'hub:goal:set',
   ],
 })
 
@@ -37,11 +37,11 @@ registerEventNamespace('conversation', {
 })
 
 // ---------------------------------------------------------------------------
-// In-memory cluster state
+// In-memory hub state
 // ---------------------------------------------------------------------------
 
 /**
- * @typedef {Object} ClusterMember
+ * @typedef {Object} HubMember
  * @property {string} widgetId
  * @property {string} displayName
  * @property {string} type - 'agent' | 'terminal' | 'prompt' | 'passive'
@@ -58,28 +58,28 @@ registerEventNamespace('conversation', {
  */
 
 /**
- * @typedef {Object} ClusterState
- * @property {string} clusterId
+ * @typedef {Object} HubState
+ * @property {string} hubId
  * @property {string} canvasId
- * @property {Map<string, ClusterMember>} members - widgetId → member
- * @property {string|null} tokenHolder - widgetId that holds the cluster token
+ * @property {Map<string, HubMember>} members - widgetId → member
+ * @property {string|null} tokenHolder - widgetId that holds the hub token
  * @property {string|null} goal
  * @property {Conversation|null} activeConversation
- * @property {string} channel - bus channel for cluster events
+ * @property {string} channel - bus channel for hub events
  * @property {string} createdAt
  */
 
-/** @type {Map<string, ClusterState>} clusterId → state */
-const clusters = new Map()
+/** @type {Map<string, HubState>} hubId → state */
+const hubs = new Map()
 
-/** @type {Map<string, Set<string>>} canvasId → set of clusterIds */
-const canvasClusters = new Map()
+/** @type {Map<string, Set<string>>} canvasId → set of hubIds */
+const canvasHubs = new Map()
 
 // ---------------------------------------------------------------------------
-// Stable cluster ID
+// Stable hub ID
 // ---------------------------------------------------------------------------
 
-export function stableClusterId(canvasId, widgetIds) {
+export function stableHubId(canvasId, widgetIds) {
   const sorted = [...widgetIds].sort()
   const hash = createHash('sha1').update(`${canvasId}::${sorted.join(',')}`).digest('hex').slice(0, 10)
   return `hub_${hash}`
@@ -128,11 +128,11 @@ export function computeComponents(widgets, connectors) {
 }
 
 // ---------------------------------------------------------------------------
-// Cluster materialization
+// Hub materialization
 // ---------------------------------------------------------------------------
 
 /**
- * Materialize cluster state from canvas data.
+ * Materialize hub state from canvas data.
  * Called whenever connectors change on a canvas.
  *
  * @param {string} canvasId
@@ -141,13 +141,13 @@ export function computeComponents(widgets, connectors) {
  * @param {{ roleByWidget?: Map<string,string>, defaultRole?: string }} roleInfo
  * @returns {{ created: string[], dissolved: string[], updated: string[] }}
  */
-export function materializeClusters(canvasId, widgets, connectors, roleInfo = {}) {
+export function materializeHubs(canvasId, widgets, connectors, roleInfo = {}) {
   const widgetMap = new Map(widgets.map((w) => [w.id, w]))
   const agentTypes = new Set(['agent', 'terminal', 'prompt'])
   const components = computeComponents(widgets, connectors)
 
-  const prevClusterIds = canvasClusters.get(canvasId) || new Set()
-  const nextClusterIds = new Set()
+  const prevHubIds = canvasHubs.get(canvasId) || new Set()
+  const nextHubIds = new Set()
   const created = []
   const dissolved = []
   const updated = []
@@ -157,8 +157,8 @@ export function materializeClusters(canvasId, widgets, connectors, roleInfo = {}
     const hasAgents = compWidgets.some((w) => agentTypes.has(w.type))
     if (!hasAgents || comp.size < 2) continue
 
-    const clusterId = stableClusterId(canvasId, comp)
-    nextClusterIds.add(clusterId)
+    const hubId = stableHubId(canvasId, comp)
+    nextHubIds.add(hubId)
 
     const members = new Map()
     for (const w of compWidgets) {
@@ -173,13 +173,13 @@ export function materializeClusters(canvasId, widgets, connectors, roleInfo = {}
       })
     }
 
-    const channel = `cluster:${canvasId.replace(/\//g, '--')}:${clusterId}`
-    const existing = clusters.get(clusterId)
+    const channel = `hub:${canvasId.replace(/\//g, '--')}:${hubId}`
+    const existing = hubs.get(hubId)
 
     if (existing) {
       // Update membership
       existing.members = members
-      updated.push(clusterId)
+      updated.push(hubId)
     } else {
       // Determine initial token holder (leader or first agent)
       let tokenHolder = null
@@ -201,8 +201,8 @@ export function materializeClusters(canvasId, widgets, connectors, roleInfo = {}
         }
       }
 
-      clusters.set(clusterId, {
-        clusterId,
+      hubs.set(hubId, {
+        hubId,
         canvasId,
         members,
         tokenHolder,
@@ -211,147 +211,147 @@ export function materializeClusters(canvasId, widgets, connectors, roleInfo = {}
         channel,
         createdAt: new Date().toISOString(),
       })
-      created.push(clusterId)
+      created.push(hubId)
     }
   }
 
-  // Dissolve clusters that no longer exist
-  for (const prevId of prevClusterIds) {
-    if (!nextClusterIds.has(prevId)) {
-      clusters.delete(prevId)
+  // Dissolve hubs that no longer exist
+  for (const prevId of prevHubIds) {
+    if (!nextHubIds.has(prevId)) {
+      hubs.delete(prevId)
       dissolved.push(prevId)
     }
   }
 
-  canvasClusters.set(canvasId, nextClusterIds)
+  canvasHubs.set(canvasId, nextHubIds)
   return { created, dissolved, updated }
 }
 
 // ---------------------------------------------------------------------------
-// Cluster queries
+// Hub queries
 // ---------------------------------------------------------------------------
 
 /**
- * Get cluster state by ID.
- * @param {string} clusterId
- * @returns {ClusterState|null}
+ * Get hub state by ID.
+ * @param {string} hubId
+ * @returns {HubState|null}
  */
-export function getCluster(clusterId) {
-  return clusters.get(clusterId) || null
+export function getHub(hubId) {
+  return hubs.get(hubId) || null
 }
 
 /**
- * Get all clusters for a canvas.
+ * Get all hubs for a canvas.
  * @param {string} canvasId
- * @returns {ClusterState[]}
+ * @returns {HubState[]}
  */
-export function getClustersForCanvas(canvasId) {
-  const ids = canvasClusters.get(canvasId)
+export function getHubsForCanvas(canvasId) {
+  const ids = canvasHubs.get(canvasId)
   if (!ids) return []
-  return [...ids].map((id) => clusters.get(id)).filter(Boolean)
+  return [...ids].map((id) => hubs.get(id)).filter(Boolean)
 }
 
 /**
- * Get all clusters a widget belongs to.
+ * Get all hubs a widget belongs to.
  * @param {string} widgetId
- * @returns {ClusterState[]}
+ * @returns {HubState[]}
  */
-export function getClustersForWidget(widgetId) {
+export function getHubsForWidget(widgetId) {
   const result = []
-  for (const cluster of clusters.values()) {
-    if (cluster.members.has(widgetId)) result.push(cluster)
+  for (const hub of hubs.values()) {
+    if (hub.members.has(widgetId)) result.push(hub)
   }
   return result
 }
 
 /**
- * Serialize a cluster to a plain JSON-friendly object (for terminal config / API).
- * @param {ClusterState} cluster
+ * Serialize a hub to a plain JSON-friendly object (for terminal config / API).
+ * @param {HubState} hub
  * @param {string} [perspectiveWidgetId] - if set, omit this widget from peers
  * @returns {object}
  */
-export function serializeCluster(cluster, perspectiveWidgetId) {
+export function serializeHub(hub, perspectiveWidgetId) {
   const peers = []
-  for (const [id, member] of cluster.members) {
+  for (const [id, member] of hub.members) {
     if (id === perspectiveWidgetId) continue
     peers.push({ ...member })
   }
   const selfRole = perspectiveWidgetId
-    ? (cluster.members.get(perspectiveWidgetId)?.role || 'passive')
+    ? (hub.members.get(perspectiveWidgetId)?.role || 'passive')
     : null
 
   return {
-    clusterId: cluster.clusterId,
-    canvasId: cluster.canvasId,
+    hubId: hub.hubId,
+    canvasId: hub.canvasId,
     role: selfRole,
-    goal: cluster.goal,
+    goal: hub.goal,
     peers,
-    channel: cluster.channel,
-    activeConversationId: cluster.activeConversation?.id || null,
-    hasClusterToken: cluster.tokenHolder === perspectiveWidgetId,
-    tokenHolder: cluster.tokenHolder,
+    channel: hub.channel,
+    activeConversationId: hub.activeConversation?.id || null,
+    hasHubToken: hub.tokenHolder === perspectiveWidgetId,
+    tokenHolder: hub.tokenHolder,
   }
 }
 
 // ---------------------------------------------------------------------------
-// Cluster token management
+// Hub token management
 // ---------------------------------------------------------------------------
 
 /**
- * Transfer the cluster token to another widget.
- * @param {string} clusterId
+ * Transfer the hub token to another widget.
+ * @param {string} hubId
  * @param {string} fromWidgetId
  * @param {string} toWidgetId
  * @returns {{ ok: boolean, error?: string }}
  */
-export async function transferClusterToken(clusterId, fromWidgetId, toWidgetId) {
-  const cluster = clusters.get(clusterId)
-  if (!cluster) return { ok: false, error: `Cluster ${clusterId} not found` }
-  if (cluster.tokenHolder !== fromWidgetId) {
-    return { ok: false, error: `Widget ${fromWidgetId} does not hold the cluster token` }
+export async function transferHubToken(hubId, fromWidgetId, toWidgetId) {
+  const hub = hubs.get(hubId)
+  if (!hub) return { ok: false, error: `Hub ${hubId} not found` }
+  if (hub.tokenHolder !== fromWidgetId) {
+    return { ok: false, error: `Widget ${fromWidgetId} does not hold the hub token` }
   }
-  if (!cluster.members.has(toWidgetId)) {
-    return { ok: false, error: `Widget ${toWidgetId} is not a member of cluster ${clusterId}` }
+  if (!hub.members.has(toWidgetId)) {
+    return { ok: false, error: `Widget ${toWidgetId} is not a member of hub ${hubId}` }
   }
 
-  cluster.tokenHolder = toWidgetId
+  hub.tokenHolder = toWidgetId
 
-  await publish(cluster.channel, {
-    channel: cluster.channel,
-    type: 'cluster:token:transferred',
+  await publish(hub.channel, {
+    channel: hub.channel,
+    type: 'hub:token:transferred',
     senderId: fromWidgetId,
-    body: `Cluster token transferred from ${fromWidgetId} to ${toWidgetId}`,
-    payload: { fromWidgetId, toWidgetId, clusterId },
+    body: `Hub token transferred from ${fromWidgetId} to ${toWidgetId}`,
+    payload: { fromWidgetId, toWidgetId, hubId },
   })
 
   return { ok: true }
 }
 
 /**
- * Set the cluster goal.
- * @param {string} clusterId
+ * Set the hub goal.
+ * @param {string} hubId
  * @param {string} senderId
  * @param {string} goal
  * @returns {{ ok: boolean, error?: string }}
  */
-export async function setClusterGoal(clusterId, senderId, goal) {
-  const cluster = clusters.get(clusterId)
-  if (!cluster) return { ok: false, error: `Cluster ${clusterId} not found` }
+export async function setHubGoal(hubId, senderId, goal) {
+  const hub = hubs.get(hubId)
+  if (!hub) return { ok: false, error: `Hub ${hubId} not found` }
 
   // Goal-setting is a leadership responsibility, not a token privilege
-  const senderMember = cluster.members.get(senderId)
+  const senderMember = hub.members.get(senderId)
   if (!senderMember || senderMember.role !== 'leader') {
-    return { ok: false, error: `Only the leader can set the cluster goal` }
+    return { ok: false, error: `Only the leader can set the hub goal` }
   }
 
-  cluster.goal = goal
+  hub.goal = goal
 
-  await publish(cluster.channel, {
-    channel: cluster.channel,
-    type: 'cluster:goal:set',
+  await publish(hub.channel, {
+    channel: hub.channel,
+    type: 'hub:goal:set',
     senderId,
     body: goal,
-    payload: { clusterId, goal },
+    payload: { hubId, goal },
   })
 
   return { ok: true }
@@ -362,19 +362,19 @@ export async function setClusterGoal(clusterId, senderId, goal) {
 // ---------------------------------------------------------------------------
 
 /**
- * Start a new conversation in a cluster.
- * @param {string} clusterId
+ * Start a new conversation in a hub.
+ * @param {string} hubId
  * @param {string} senderId
  * @returns {{ ok: boolean, conversationId?: string, error?: string }}
  */
-export async function startConversation(clusterId, senderId) {
-  const cluster = clusters.get(clusterId)
-  if (!cluster) return { ok: false, error: `Cluster ${clusterId} not found` }
+export async function startConversation(hubId, senderId) {
+  const hub = hubs.get(hubId)
+  if (!hub) return { ok: false, error: `Hub ${hubId} not found` }
 
   const { generateId } = await import('./schema.js')
   const conversationId = `conv_${generateId()}`
 
-  cluster.activeConversation = {
+  hub.activeConversation = {
     id: conversationId,
     status: 'active',
     summary: null,
@@ -382,12 +382,12 @@ export async function startConversation(clusterId, senderId) {
     finalizedAt: null,
   }
 
-  await publish(cluster.channel, {
-    channel: cluster.channel,
+  await publish(hub.channel, {
+    channel: hub.channel,
     type: 'conversation:start',
     senderId,
     body: `Conversation ${conversationId} started`,
-    payload: { clusterId, conversationId },
+    payload: { hubId, conversationId },
   })
 
   return { ok: true, conversationId }
@@ -395,42 +395,42 @@ export async function startConversation(clusterId, senderId) {
 
 /**
  * Signal finality for the active conversation.
- * @param {string} clusterId
+ * @param {string} hubId
  * @param {string} senderId
  * @param {string} summary
  * @param {string|null} successor - next token holder
  * @returns {{ ok: boolean, error?: string }}
  */
-export async function signalFinality(clusterId, senderId, summary, successor) {
-  const cluster = clusters.get(clusterId)
-  if (!cluster) return { ok: false, error: `Cluster ${clusterId} not found` }
+export async function signalFinality(hubId, senderId, summary, successor) {
+  const hub = hubs.get(hubId)
+  if (!hub) return { ok: false, error: `Hub ${hubId} not found` }
 
-  // Finality is gated on the leader ROLE, not the cluster token.
+  // Finality is gated on the leader ROLE, not the hub token.
   // Any agent can hold the token (speaking rights), but only the leader
   // can declare the conversation complete.
-  const senderMember = cluster.members.get(senderId)
+  const senderMember = hub.members.get(senderId)
   if (!senderMember || senderMember.role !== 'leader') {
     return { ok: false, error: `Only the leader can signal finality` }
   }
-  if (!cluster.activeConversation || cluster.activeConversation.status === 'finalized') {
+  if (!hub.activeConversation || hub.activeConversation.status === 'finalized') {
     return { ok: false, error: `No active conversation to finalize` }
   }
 
-  const conversationId = cluster.activeConversation.id
-  cluster.activeConversation.status = 'finalized'
-  cluster.activeConversation.summary = summary
-  cluster.activeConversation.finalizedAt = new Date().toISOString()
+  const conversationId = hub.activeConversation.id
+  hub.activeConversation.status = 'finalized'
+  hub.activeConversation.summary = summary
+  hub.activeConversation.finalizedAt = new Date().toISOString()
 
-  if (successor && cluster.members.has(successor)) {
-    cluster.tokenHolder = successor
+  if (successor && hub.members.has(successor)) {
+    hub.tokenHolder = successor
   }
 
-  await publish(cluster.channel, {
-    channel: cluster.channel,
+  await publish(hub.channel, {
+    channel: hub.channel,
     type: 'conversation:finality',
     senderId,
     body: summary,
-    payload: { clusterId, conversationId, summary, successor },
+    payload: { hubId, conversationId, summary, successor },
   })
 
   return { ok: true }
@@ -438,32 +438,32 @@ export async function signalFinality(clusterId, senderId, summary, successor) {
 
 /**
  * Reopen a finalized conversation.
- * @param {string} clusterId
+ * @param {string} hubId
  * @param {string} senderId
  * @param {string} conversationId
  * @param {string} body
  * @returns {{ ok: boolean, error?: string }}
  */
-export async function reopenConversation(clusterId, senderId, conversationId, body) {
-  const cluster = clusters.get(clusterId)
-  if (!cluster) return { ok: false, error: `Cluster ${clusterId} not found` }
+export async function reopenConversation(hubId, senderId, conversationId, body) {
+  const hub = hubs.get(hubId)
+  if (!hub) return { ok: false, error: `Hub ${hubId} not found` }
 
-  if (!cluster.activeConversation || cluster.activeConversation.id !== conversationId) {
-    return { ok: false, error: `Conversation ${conversationId} not found in cluster` }
+  if (!hub.activeConversation || hub.activeConversation.id !== conversationId) {
+    return { ok: false, error: `Conversation ${conversationId} not found in hub` }
   }
-  if (cluster.activeConversation.status !== 'finalized') {
+  if (hub.activeConversation.status !== 'finalized') {
     return { ok: false, error: `Conversation is not finalized` }
   }
 
-  cluster.activeConversation.status = 'reopened'
-  cluster.activeConversation.finalizedAt = null
+  hub.activeConversation.status = 'reopened'
+  hub.activeConversation.finalizedAt = null
 
-  await publish(cluster.channel, {
-    channel: cluster.channel,
+  await publish(hub.channel, {
+    channel: hub.channel,
     type: 'conversation:reopen',
     senderId,
     body,
-    payload: { clusterId, conversationId },
+    payload: { hubId, conversationId },
   })
 
   return { ok: true }
@@ -473,7 +473,7 @@ export async function reopenConversation(clusterId, senderId, conversationId, bo
 // Reset (for tests)
 // ---------------------------------------------------------------------------
 
-export function resetClusters() {
-  clusters.clear()
-  canvasClusters.clear()
+export function resetHubs() {
+  hubs.clear()
+  canvasHubs.clear()
 }

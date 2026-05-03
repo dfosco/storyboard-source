@@ -296,11 +296,11 @@ function injectRoleMessage(tmuxName, role) {
   } catch { /* best effort */ }
 }
 
-function injectClusterTokenMessage(tmuxName, hasToken) {
+function injectHubTokenMessage(tmuxName, hasToken) {
   if (!hasTmux) return
   const msg = hasToken
-    ? 'You hold the cluster token (speaking rights). Read .agents/roles/cluster-token.md for instructions.'
-    : 'You do not hold the cluster token. Wait for a message token before acting in the hub.'
+    ? 'You hold the hub token (speaking rights). Read .agents/roles/cluster-token.md for instructions.'
+    : 'You do not hold the hub token. Wait for a message token before acting in the hub.'
   try {
     execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(msg)}`, { stdio: 'ignore' })
     execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
@@ -311,10 +311,10 @@ function injectRoleMessageForWidget(tmuxName, widgetId) {
   const cfg = readTerminalConfigById(widgetId)
   if (!cfg || (cfg.kind !== 'agent' && cfg.kind !== 'prompt')) return
   injectRoleMessage(tmuxName, cfg.role)
-  // Inject cluster token status if this widget is in a cluster
-  if (cfg.clusters && cfg.clusters.length > 0) {
-    const hasToken = cfg.clusters.some((c) => c.hasClusterToken)
-    injectClusterTokenMessage(tmuxName, hasToken)
+  // Inject hub token status if this widget is in a hub
+  if (cfg.hubs && cfg.hubs.length > 0) {
+    const hasToken = cfg.hubs.some((c) => c.hasHubToken)
+    injectHubTokenMessage(tmuxName, hasToken)
   }
 }
 

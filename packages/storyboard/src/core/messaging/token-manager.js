@@ -2,9 +2,9 @@
  * Token Manager
  *
  * Message-level token assignment and resolution for ordered responses
- * within cluster conversations.
+ * within hub conversations.
  *
- * When the leader sends a request to the cluster, message tokens are
+ * When the leader sends a request to the hub, message tokens are
  * created for each peer to respond in a specified order. Tokens track
  * response status and enforce timeouts.
  *
@@ -26,7 +26,7 @@ import { generateId } from './schema.js'
  * @typedef {Object} MessageToken
  * @property {string} tokenId
  * @property {string} messageId - the originating message
- * @property {string} clusterId
+ * @property {string} hubId
  * @property {string} widgetId - the peer that should respond
  * @property {number} order - response order (0-based)
  * @property {'pending'|'active'|'resolved'|'timed_out'|'skipped'} status
@@ -41,8 +41,8 @@ const tokens = new Map()
 /** @type {Map<string, string[]>} messageId → ordered array of tokenIds */
 const messageTokens = new Map()
 
-/** @type {Map<string, Set<string>>} clusterId → set of active messageIds */
-const clusterMessages = new Map()
+/** @type {Map<string, Set<string>>} hubId → set of active messageIds */
+const hubMessages = new Map()
 
 /** @type {Map<string, NodeJS.Timeout>} tokenId → timeout handle */
 const tokenTimers = new Map()
@@ -67,15 +67,15 @@ export function setTokenTimeout(ms) {
 // ---------------------------------------------------------------------------
 
 /**
- * Create message tokens for a cluster request.
+ * Create message tokens for a hub request.
  *
  * @param {string} messageId - the originating message event ID
- * @param {string} clusterId
+ * @param {string} hubId
  * @param {{ widgetId: string, order: number }[]} recipients - ordered list of peers
  * @param {{ timeoutMs?: number, onTimeout?: (token: MessageToken) => void }} opts
  * @returns {MessageToken[]} created tokens
  */
-export function createMessageTokens(messageId, clusterId, recipients, opts = {}) {
+export function createMessageTokens(messageId, hubId, recipients, opts = {}) {
   const timeoutMs = opts.timeoutMs || defaultTimeoutMs
   const sorted = [...recipients].sort((a, b) => a.order - b.order)
   const tokenIds = []
@@ -86,7 +86,7 @@ export function createMessageTokens(messageId, clusterId, recipients, opts = {})
     const token = {
       tokenId,
       messageId,
-      clusterId,
+      hubId,
       widgetId,
       order,
       status: order === 0 ? 'active' : 'pending',
@@ -107,9 +107,9 @@ export function createMessageTokens(messageId, clusterId, recipients, opts = {})
 
   messageTokens.set(messageId, tokenIds)
 
-  const msgs = clusterMessages.get(clusterId) || new Set()
+  const msgs = hubMessages.get(hubId) || new Set()
   msgs.add(messageId)
-  clusterMessages.set(clusterId, msgs)
+  hubMessages.set(hubId, msgs)
 
   return created
 }
@@ -195,13 +195,13 @@ export function getTokensForMessage(messageId) {
 }
 
 /**
- * Get the pending token for a widget in a cluster (if any).
- * @param {string} clusterId
+ * Get the pending token for a widget in a hub (if any).
+ * @param {string} hubId
  * @param {string} widgetId
  * @returns {MessageToken|null}
  */
-export function getPendingTokenForWidget(clusterId, widgetId) {
-  const msgs = clusterMessages.get(clusterId) || new Set()
+export function getPendingTokenForWidget(hubId, widgetId) {
+  const msgs = hubMessages.get(hubId) || new Set()
   for (const msgId of msgs) {
     const tokenIds = messageTokens.get(msgId) || []
     for (const id of tokenIds) {
@@ -238,7 +238,7 @@ export function getRoundStatus(messageId) {
 // ---------------------------------------------------------------------------
 
 /**
- * Skip a token (e.g., widget is no longer in the cluster).
+ * Skip a token (e.g., widget is no longer in the hub).
  * @param {string} tokenId
  * @returns {{ ok: boolean, nextToken?: MessageToken }}
  */
@@ -277,11 +277,11 @@ export function cancelMessageTokens(messageId) {
 // ---------------------------------------------------------------------------
 
 /**
- * Clean up all tokens for a cluster (e.g., on dissolution).
- * @param {string} clusterId
+ * Clean up all tokens for a hub (e.g., on dissolution).
+ * @param {string} hubId
  */
-export function cleanupCluster(clusterId) {
-  const msgs = clusterMessages.get(clusterId) || new Set()
+export function cleanupHub(hubId) {
+  const msgs = hubMessages.get(hubId) || new Set()
   for (const msgId of msgs) {
     const tokenIds = messageTokens.get(msgId) || []
     for (const id of tokenIds) {
@@ -290,7 +290,7 @@ export function cleanupCluster(clusterId) {
     }
     messageTokens.delete(msgId)
   }
-  clusterMessages.delete(clusterId)
+  hubMessages.delete(hubId)
 }
 
 /**
@@ -300,7 +300,7 @@ export function resetTokens() {
   for (const timer of tokenTimers.values()) clearTimeout(timer)
   tokens.clear()
   messageTokens.clear()
-  clusterMessages.clear()
+  hubMessages.clear()
   tokenTimers.clear()
   defaultTimeoutMs = 120_000
 }
