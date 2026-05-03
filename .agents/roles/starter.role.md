@@ -24,7 +24,7 @@ Based on the user's request, decide:
 
 ### 2. Create Agent Widgets
 
-For each agent, create a widget on the canvas. **Use `type: "agent"` at the top level**, not nested:
+For each agent, create a widget on the canvas. **Use `type: "agent"` at the top level**, not nested. Set `agentId` in props to choose which agent binary to launch (matches keys in `canvas.agents` config — e.g. `"copilot"`, `"claude"`, `"codex"`):
 
 ```bash
 curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/widget" \
@@ -33,7 +33,8 @@ curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/widget" \
     "name": "'"$STORYBOARD_CANVAS_ID"'",
     "type": "agent",
     "props": {
-      "prettyName": "<agent-name>"
+      "prettyName": "<agent-name>",
+      "agentId": "copilot"
     }
   }'
 ```
@@ -67,9 +68,12 @@ curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/agent/spawn" \
     "canvasId": "'"$STORYBOARD_CANVAS_ID"'",
     "widgetId": "<new-agent-widget-id>",
     "prompt": "<task context for this agent>",
-    "autopilot": true
+    "autopilot": true,
+    "agentId": "copilot"
   }'
 ```
+
+The `agentId` must match a key in `canvas.agents` from `storyboard.config.json` (e.g. `"copilot"`, `"claude"`, `"codex"`). It determines which binary is launched and which readiness signal to poll for. If omitted, the default agent is used.
 
 ### 5. Open Broadcast
 

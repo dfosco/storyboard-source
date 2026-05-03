@@ -34,7 +34,7 @@ Default agent type is the first entry in `canvas.agents` config (typically "copi
 
 ### Step 2: Create agent widgets
 
-For each additional agent needed, call the canvas server:
+For each additional agent needed, call the canvas server. Set `agentId` in props to choose which agent binary to launch (keys from `canvas.agents` in `storyboard.config.json`):
 
 ```bash
 # Create widget — type and props are top-level fields
@@ -44,7 +44,8 @@ curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/widget" \
     "name": "<canvasName>",
     "type": "agent",
     "props": {
-      "prettyName": "<descriptive name for this agent>"
+      "prettyName": "<descriptive name for this agent>",
+      "agentId": "copilot"
     }
   }'
 ```
@@ -78,9 +79,12 @@ curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/agent/spawn" \
     "canvasId": "<canvasId>",
     "widgetId": "<newAgentWidgetId>",
     "prompt": "<initial task context for this agent>",
-    "autopilot": true
+    "autopilot": true,
+    "agentId": "copilot"
   }'
 ```
+
+The `agentId` field must match a key in `canvas.agents` from `storyboard.config.json` (e.g. `"copilot"`, `"claude"`, `"codex"`). It determines which binary is launched, which readiness signal to poll for, and which post-startup command to send. If omitted, the default agent is used.
 
 The server creates a headless tmux session and injects environment variables. Role injection happens automatically when the hub is materialized from connectors.
 
