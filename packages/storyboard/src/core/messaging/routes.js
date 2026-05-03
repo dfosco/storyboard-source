@@ -24,6 +24,7 @@ import {
   signalFinality,
   reopenConversation,
   serializeHub,
+  dissolveHubsForCanvas,
 } from './hub-manager.js'
 import {
   createMessageTokens,
@@ -131,6 +132,11 @@ export function createMessagingRoutes({ sendJson }) {
       // POST /conversation/reopen — reopen a finalized conversation
       if (method === 'POST' && subpath === 'conversation/reopen') {
         return await handleConversationReopen(req, res, body, sendJson)
+      }
+
+      // POST /hub/dissolve — dissolve all hubs for a canvas
+      if (method === 'POST' && subpath === 'hub/dissolve') {
+        return handleHubDissolve(req, res, body, sendJson)
       }
 
       sendJson(res, 404, { error: `Unknown messaging route: ${method} ${subpath}` })
@@ -685,4 +691,20 @@ export function closeAllSseConnections() {
     if (!conn.res.destroyed) conn.res.end()
   }
   sseConnections.clear()
+}
+
+// ---------------------------------------------------------------------------
+// Hub dissolve
+// ---------------------------------------------------------------------------
+
+/**
+ * POST /hub/dissolve — Dissolve all hubs for a canvas.
+ * Body: { canvasId }
+ */
+function handleHubDissolve(req, res, body, sendJson) {
+  const { canvasId } = body || {}
+  if (!canvasId) return sendJson(res, 400, { error: 'canvasId required' })
+
+  dissolveHubsForCanvas(canvasId)
+  sendJson(res, 200, { ok: true })
 }
