@@ -256,13 +256,15 @@ export function createCanvasHandler(ctx) {
   /**
    * Compute a target position relative to a reference widget.
    * @param {object} refWidget — widget to position near (must have position + type/props)
-   * @param {string} direction — 'right' | 'left' | 'above' | 'below'
+   * @param {string} direction — 'right' | 'left' | 'above' | 'below' | 'above-right' | 'below-right' | 'above-left' | 'below-left'
    * @param {string} newType — type of the widget being created (for size defaults)
    * @param {object} newProps — props of the widget being created
-   * @param {number} gap — spacing between widgets (default 40)
+   * @param {number} gap — spacing between widgets in grid spaces (default 1)
+   * @param {number} gridSize — pixel size of one grid unit (default 24)
    * @returns {{ x: number, y: number }}
    */
-  function computeNearPosition(refWidget, direction = 'right', newType = 'sticky-note', newProps = {}, gap = 40) {
+  function computeNearPosition(refWidget, direction = 'right', newType = 'sticky-note', newProps = {}, gap = 1, gridSize = 24) {
+    gap = gap * gridSize
     const refBounds = getWidgetBounds(refWidget)
     const newDefaults = getWidgetBounds({ type: newType, props: newProps, position: { x: 0, y: 0 } })
     switch (direction) {
@@ -272,6 +274,14 @@ export function createCanvasHandler(ctx) {
         return { x: refBounds.x, y: refBounds.y - newDefaults.height - gap }
       case 'below':
         return { x: refBounds.x, y: refBounds.y + refBounds.height + gap }
+      case 'above-right':
+        return { x: refBounds.x + refBounds.width + gap, y: refBounds.y - newDefaults.height - gap }
+      case 'below-right':
+        return { x: refBounds.x + refBounds.width + gap, y: refBounds.y + refBounds.height + gap }
+      case 'above-left':
+        return { x: refBounds.x - newDefaults.width - gap, y: refBounds.y - newDefaults.height - gap }
+      case 'below-left':
+        return { x: refBounds.x - newDefaults.width - gap, y: refBounds.y + refBounds.height + gap }
       case 'right':
       default:
         return { x: refBounds.x + refBounds.width + gap, y: refBounds.y }
@@ -483,10 +493,47 @@ export function createCanvasHandler(ctx) {
         materializeHubs(canvasName, widgets, connectors, { roleByWidget, defaultRole })
       } catch { /* messaging module may not be loaded */ }
 
+      // Auto-propagate broadcast: any connector between two agent/terminal
+      // widgets inside a hub component gets messagingMode defaulted to 'two-way'.
+      // Explicitly set modes (including 'none') are never overridden.
+      const canvasFilePath = findCanvasPath(root, canvasName)
+      if (canvasFilePath) {
+        const agentTypes = new Set(['agent', 'terminal'])
+        const components = buildComponents(widgets, connectors)
+        const ts = new Date().toISOString()
+        for (const comp of components) {
+          // Only process hub-sized components (2+ members, at least one agent)
+          const compWidgets = [...comp].map((id) => widgetMap.get(id)).filter(Boolean)
+          const hasAgents = compWidgets.some((w) => agentTypes.has(w.type))
+          if (!hasAgents || comp.size < 2) continue
+
+          for (const conn of connectors) {
+            const aId = conn.start?.widgetId
+            const bId = conn.end?.widgetId
+            if (!aId || !bId || !comp.has(aId) || !comp.has(bId)) continue
+            // Only auto-set for agent↔agent connections
+            const aW = widgetMap.get(aId)
+            const bW = widgetMap.get(bId)
+            if (!aW || !bW || !agentTypes.has(aW.type) || !agentTypes.has(bW.type)) continue
+            // Skip if messagingMode is already explicitly set
+            if (conn.meta?.messagingMode) continue
+
+            appendEventRaw(canvasFilePath, {
+              event: 'connector_updated',
+              timestamp: ts,
+              connectorId: conn.id,
+              updates: { meta: { messagingMode: 'two-way' } },
+            })
+            // Update in-memory connector so later reads in this cycle see the new mode
+            if (!conn.meta) conn.meta = {}
+            conn.meta.messagingMode = 'two-way'
+          }
+        }
+      }
+
       // Persist computed roles to widget props in the canvas JSONL so the UI
       // (e.g. crown icon) reflects the role without requiring manual assignment.
       // Uses appendEventRaw to avoid triggering a full HMR cycle — treated as content.
-      const canvasFilePath = findCanvasPath(root, canvasName)
       if (canvasFilePath) {
         const ts = new Date().toISOString()
         for (const tw of terminalWidgets) {
@@ -948,7 +995,7 @@ export function createCanvasHandler(ctx) {
 
     // POST /widget — append a widget_added event
     if (routePath === '/widget' && method === 'POST') {
-      const { name, type, props = {}, pool, near, direction, resolve, source } = body
+      const { name, type, props = {}, pool, near, direction, resolve, source, gap } = body
       let position = body.position || { x: 0, y: 0 }
 
       // Detect whether the caller provided an explicit position.
@@ -988,7 +1035,7 @@ export function createCanvasHandler(ctx) {
             sendJson(res, 400, { error: `Widget "${near}" not found (--near)` })
             return
           }
-          position = computeNearPosition(refWidget, direction || 'right', type, props)
+          position = computeNearPosition(refWidget, direction || 'right', type, props, gap, (canvasData && canvasData.gridSize) || 24)
         }
 
         // Auto-position: no --near, no explicit x,y → smart default
@@ -1619,7 +1666,7 @@ export function createCanvasHandler(ctx) {
           try {
             switch (op.op) {
               case 'create-widget': {
-                const { type, props = {}, ref, pool, near, direction, resolve: doResolve, source: opSource } = op
+                const { type, props = {}, ref, pool, near, direction, resolve: doResolve, source: opSource, gap: opGap } = op
                 let position = op.position || { x: 0, y: 0 }
                 if (!type) throw new Error('type is required')
 
@@ -1633,7 +1680,7 @@ export function createCanvasHandler(ctx) {
                   const nearId = resolveRef(near)
                   const refWidget = widgetMap.get(nearId)
                   if (!refWidget) throw new Error(`Widget "${nearId}" not found (near)`)
-                  position = computeNearPosition(refWidget, direction || 'right', type, props)
+                  position = computeNearPosition(refWidget, direction || 'right', type, props, opGap, canvasData.gridSize || 24)
                 }
 
                 // Auto-position: no --near, no explicit x,y → smart default

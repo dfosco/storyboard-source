@@ -117,6 +117,7 @@ async function canvasAdd() {
   const nearOptOut = nearRaw === 'false' || nearRaw === false
   const near = (nearRaw && !nearOptOut) ? nearRaw : null
   const direction = flags.direction || 'right'
+  const gap = flags.gap != null ? Number(flags.gap) : undefined
   const resolve = flags.resolve || !!near
 
   // Pass the calling agent/terminal's widget ID so the server can auto-position near it
@@ -205,6 +206,7 @@ async function canvasAdd() {
       if (hasExplicitPosition) body.position = { x, y }
       if (nearOptOut) body.near = false
       if (near) { body.near = near; body.direction = direction }
+      if (gap != null) body.gap = gap
       if (resolve) body.resolve = true
       if (source) body.source = source
       const result = await serverPost('/_storyboard/canvas/widget', body)
@@ -225,6 +227,7 @@ async function canvasAdd() {
     if (hasExplicitPosition) body.position = { x, y }
     if (nearOptOut) body.near = false
     if (near) { body.near = near; body.direction = direction }
+    if (gap != null) body.gap = gap
     if (resolve) body.resolve = true
     if (source) body.source = source
     const result = await serverPost('/_storyboard/canvas/widget', body)

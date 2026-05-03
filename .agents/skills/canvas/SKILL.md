@@ -172,7 +172,7 @@ npx storyboard canvas add {TYPE} --canvas {NAME} --props-file /tmp/widget-props.
 4. **Last widget on canvas** — to the right of the most recently added widget
 5. **Origin (0, 0)** — only for truly empty canvases with no viewport data
 
-Use `--near {WIDGET_ID}` to override auto-positioning with a specific reference widget. The `--direction` flag defaults to `right` — valid values: `right`, `left`, `above`, `below`. Use `--near false` to disable auto-positioning and place at explicit `--x`/`--y` (or 0,0).
+Use `--near {WIDGET_ID}` to override auto-positioning with a specific reference widget. The `--direction` flag defaults to `right` — valid values: `right`, `left`, `above`, `below`, `above-right`, `below-right`, `above-left`, `below-left`. Use `--gap N` to control spacing in grid spaces (default: 1). Use `--near false` to disable auto-positioning and place at explicit `--x`/`--y` (or 0,0).
 
 **Always use `--props-file` for markdown widgets or any content with special characters.** Write the props JSON to a temp file first, then pass the path. This avoids all shell escaping issues with backticks, quotes, and newlines.
 
@@ -203,7 +203,8 @@ npx storyboard canvas update {WIDGET_ID} --canvas {NAME} --x 100 --y 200
   --x                    X position (omit for auto-positioning)
   --y                    Y position (omit for auto-positioning)
   --near                 Place near this widget ID (default: auto-selects best reference). Use --near false to disable
-  -dir, --direction      Direction from reference widget: right, left, above, below [default: right]
+  -dir, --direction      Direction from reference widget: right, left, above, below, above-right, below-right, above-left, below-left [default: right]
+  --gap                  Spacing between widgets in grid spaces [default: 1]
   --resolve              Run server-side collision detection on the target position [default: false]
   --props                Widget props as JSON string
   -pf, --props-file      Path to a JSON file containing widget props (avoids shell escaping)
@@ -831,7 +832,8 @@ POST /widget
 |-------|-------------|
 | `position` | `{ "x": N, "y": N }` — explicit coordinates, overrides auto-positioning |
 | `near` | Widget ID to position near. Set to `false` to disable auto-positioning |
-| `direction` | `right`, `left`, `above`, `below` (default: `right`) |
+| `direction` | `right`, `left`, `above`, `below`, `above-right`, `below-right`, `above-left`, `below-left` (default: `right`) |
+| `gap` | Spacing between widgets in grid spaces (default: `1`). Use higher values (e.g. `10`) for connected widgets |
 | `resolve` | `true` to run collision detection on explicit coordinates |
 | `source` | Caller's widget ID (agent/terminal) — highest auto-position priority |
 

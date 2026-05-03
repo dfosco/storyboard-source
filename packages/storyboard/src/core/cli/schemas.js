@@ -183,8 +183,12 @@ export const widgetSchema = {
   direction: {
     type: 'string',
     default: 'right',
-    description: 'Direction from reference widget: right, left, above, below',
+    description: 'Direction from reference widget: right, left, above, below, above-right, below-right, above-left, below-left',
     aliases: ['dir'],
+  },
+  gap: {
+    type: 'number',
+    description: 'Spacing between widgets in grid spaces (default: 1)',
   },
   resolve: {
     type: 'boolean',
