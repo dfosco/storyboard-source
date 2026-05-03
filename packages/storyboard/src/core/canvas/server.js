@@ -579,6 +579,35 @@ export function createCanvasHandler(ctx) {
   async function prepareTerminalWidget({ type, props, widgetId, canvasName, req }) {
     if (type !== 'terminal' && type !== 'agent') return
 
+    // For agent widgets, resolve startupCommand from canvas.agents config if not provided
+    if (type === 'agent' && props.agentId && !props.startupCommand) {
+      try {
+        const configPath = path.join(root, 'storyboard.config.json')
+        const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'))
+        const agentCfg = config?.canvas?.agents?.[props.agentId]
+        if (agentCfg?.startupCommand) {
+          props.startupCommand = agentCfg.startupCommand
+        }
+      } catch { /* best effort */ }
+    }
+
+    // For agent widgets without agentId, default to the first canvas.agents entry
+    if (type === 'agent' && !props.agentId) {
+      try {
+        const configPath = path.join(root, 'storyboard.config.json')
+        const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'))
+        const agents = config?.canvas?.agents || {}
+        const defaultEntry = Object.entries(agents).find(([, cfg]) => cfg.default) || Object.entries(agents)[0]
+        if (defaultEntry) {
+          const [id, cfg] = defaultEntry
+          props.agentId = id
+          if (!props.startupCommand && cfg.startupCommand) {
+            props.startupCommand = cfg.startupCommand
+          }
+        }
+      } catch { /* best effort */ }
+    }
+
     if (!props.prettyName) {
       try {
         const { generateFriendlyName } = await import('./terminal-registry.js')

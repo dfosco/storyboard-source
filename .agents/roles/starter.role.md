@@ -57,9 +57,11 @@ curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/connector" \
   }'
 ```
 
-### 4. Spawn Agent Sessions
+### 4. Wait for Agent Sessions
 
-For each new agent, start its session:
+Agent widgets auto-start when the browser renders them — the TerminalWidget connects via WebSocket and the terminal-server launches the agent using the `startupCommand` from the widget's `agentId`. **You do not need to call `agent/spawn`** — just wait a few seconds for the browser to render the new widgets and for the agents to boot.
+
+If agents need to run headlessly (no browser), use `agent/spawn`:
 
 ```bash
 curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/agent/spawn" \
@@ -72,8 +74,6 @@ curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/agent/spawn" \
     "agentId": "copilot"
   }'
 ```
-
-The `agentId` must match a key in `canvas.agents` from `storyboard.config.json` (e.g. `"copilot"`, `"claude"`, `"codex"`). It determines which binary is launched and which readiness signal to poll for. If omitted, the default agent is used.
 
 ### 5. Open Broadcast
 

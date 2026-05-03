@@ -68,9 +68,13 @@ curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/connector" \
   }'
 ```
 
-### Step 4: Spawn agent sessions
+### Step 4: Wait for agent sessions
 
-For each new agent widget, start its terminal session:
+Agent widgets auto-start when the browser renders them. The TerminalWidget connects via WebSocket and the terminal-server launches the correct agent binary using the `startupCommand` resolved from the widget's `agentId` prop. **No additional API call is needed** — just wait a few seconds for the browser to render the widgets and for agents to boot.
+
+Role injection happens automatically when the hub is materialized from connectors.
+
+For headless agents (no browser), use `agent/spawn`:
 
 ```bash
 curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/agent/spawn" \
@@ -83,10 +87,6 @@ curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/agent/spawn" \
     "agentId": "copilot"
   }'
 ```
-
-The `agentId` field must match a key in `canvas.agents` from `storyboard.config.json` (e.g. `"copilot"`, `"claude"`, `"codex"`). It determines which binary is launched, which readiness signal to poll for, and which post-startup command to send. If omitted, the default agent is used.
-
-The server creates a headless tmux session and injects environment variables. Role injection happens automatically when the hub is materialized from connectors.
 
 ### Step 5: Open broadcast
 
