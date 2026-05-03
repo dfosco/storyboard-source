@@ -29,6 +29,8 @@ import {
   createMessageTokens,
   resolveTokenByWidget,
   getRoundStatus,
+  delegateToken,
+  undelegateToken,
 } from './token-manager.js'
 
 /** @type {Set<{ res: any, unsub: () => void, timer: NodeJS.Timeout }>} Active SSE connections */
@@ -104,6 +106,16 @@ export function createMessagingRoutes({ sendJson }) {
       // POST /hub/respond — respond to a message token
       if (method === 'POST' && subpath === 'hub/respond') {
         return await handleHubRespond(req, res, body, sendJson)
+      }
+
+      // POST /hub/delegate — mark a token as delegating (holder is creating sub-requests)
+      if (method === 'POST' && subpath === 'hub/delegate') {
+        return await handleHubDelegate(req, res, body, sendJson)
+      }
+
+      // POST /hub/undelegate — mark a delegating token as active again
+      if (method === 'POST' && subpath === 'hub/undelegate') {
+        return await handleHubUndelegate(req, res, body, sendJson)
       }
 
       // POST /conversation/start — start a new conversation
@@ -483,11 +495,11 @@ async function handleHubGoal(req, res, body, sendJson) {
 
 /**
  * POST /hub/send — Send a message to hub peers with ordered tokens.
- * Body: { hubId, senderId, body, recipients: [{ widgetId, order }], timeoutMs? }
+ * Body: { hubId, senderId, body, recipients: [{ widgetId, order }], timeoutMs?, parentMessageId? }
  */
 async function handleHubSend(req, res, body, sendJson) {
   const parsed = await parseRequestBody(body, req.headers?.['content-type'])
-  const { hubId, senderId, recipients, timeoutMs } = parsed
+  const { hubId, senderId, recipients, timeoutMs, parentMessageId } = parsed
 
   if (!hubId || !senderId || !parsed.body) {
     return sendJson(res, 400, { error: 'Missing required fields: hubId, senderId, body' })
@@ -502,7 +514,7 @@ async function handleHubSend(req, res, body, sendJson) {
     type: 'hub:message:request',
     senderId,
     body: parsed.body,
-    payload: { hubId },
+    payload: { hubId, parentMessageId: parentMessageId || null },
   })
 
   // Create ordered message tokens for recipients
@@ -510,11 +522,12 @@ async function handleHubSend(req, res, body, sendJson) {
     .filter((id) => id !== senderId)
     .map((id, i) => ({ widgetId: id, order: i }))
 
-  const tokens = createMessageTokens(event.id, hubId, recipientList, { timeoutMs })
+  const tokens = createMessageTokens(event.id, hubId, recipientList, { timeoutMs, parentMessageId })
 
   return await sendNegotiated(req, res, 201, {
     ok: true,
     messageId: event.id,
+    parentMessageId: parentMessageId || null,
     tokens: tokens.map((t) => ({ tokenId: t.tokenId, widgetId: t.widgetId, order: t.order, status: t.status })),
   })
 }
@@ -561,6 +574,40 @@ async function handleHubRespond(req, res, body, sendJson) {
     } : null,
     allResolved: result.allResolved,
   })
+}
+
+/**
+ * POST /hub/delegate — Mark a token as delegating.
+ * Body: { tokenId }
+ */
+async function handleHubDelegate(req, res, body, sendJson) {
+  const parsed = await parseRequestBody(body, req.headers?.['content-type'])
+  const { tokenId } = parsed
+
+  if (!tokenId) {
+    return sendJson(res, 400, { error: 'Missing required field: tokenId' })
+  }
+
+  const result = delegateToken(tokenId)
+  if (!result.ok) return sendJson(res, 400, { error: result.error })
+  return await sendNegotiated(req, res, 200, { ok: true })
+}
+
+/**
+ * POST /hub/undelegate — Mark a delegating token as active again.
+ * Body: { tokenId }
+ */
+async function handleHubUndelegate(req, res, body, sendJson) {
+  const parsed = await parseRequestBody(body, req.headers?.['content-type'])
+  const { tokenId } = parsed
+
+  if (!tokenId) {
+    return sendJson(res, 400, { error: 'Missing required field: tokenId' })
+  }
+
+  const result = undelegateToken(tokenId)
+  if (!result.ok) return sendJson(res, 400, { error: result.error })
+  return await sendNegotiated(req, res, 200, { ok: true })
 }
 
 /**

@@ -64,6 +64,7 @@ registerEventNamespace('conversation', {
  * @property {Map<string, HubMember>} members - widgetId → member
  * @property {string|null} tokenHolder - widgetId that holds the hub token
  * @property {string|null} goal
+ * @property {boolean} broadcastActive - whether messaging is active (derived from connector messagingMode)
  * @property {Conversation|null} activeConversation
  * @property {string} channel - bus channel for hub events
  * @property {string} createdAt
@@ -173,12 +174,22 @@ export function materializeHubs(canvasId, widgets, connectors, roleInfo = {}) {
       })
     }
 
+    // Derive broadcast state from connector messagingMode
+    const broadcastActive = connectors.some((c) => {
+      const a = c.start?.widgetId
+      const b = c.end?.widgetId
+      if (!a || !b || !comp.has(a) || !comp.has(b)) return false
+      const mode = c.meta?.messagingMode
+      return mode === 'two-way' || mode === 'one-way'
+    })
+
     const channel = `hub:${canvasId.replace(/\//g, '--')}:${hubId}`
     const existing = hubs.get(hubId)
 
     if (existing) {
-      // Update membership
+      // Update membership and broadcast state
       existing.members = members
+      existing.broadcastActive = broadcastActive
       updated.push(hubId)
     } else {
       // Determine initial token holder (leader or first agent)
@@ -207,6 +218,7 @@ export function materializeHubs(canvasId, widgets, connectors, roleInfo = {}) {
         members,
         tokenHolder,
         goal: null,
+        broadcastActive,
         activeConversation: null,
         channel,
         createdAt: new Date().toISOString(),
@@ -285,6 +297,7 @@ export function serializeHub(hub, perspectiveWidgetId) {
     canvasId: hub.canvasId,
     role: selfRole,
     goal: hub.goal,
+    broadcastActive: hub.broadcastActive,
     peers,
     channel: hub.channel,
     activeConversationId: hub.activeConversation?.id || null,

@@ -29,8 +29,9 @@ import { generateId } from './schema.js'
  * @property {string} hubId
  * @property {string} widgetId - the peer that should respond
  * @property {number} order - response order (0-based)
- * @property {'pending'|'active'|'resolved'|'timed_out'|'skipped'} status
+ * @property {'pending'|'active'|'resolved'|'timed_out'|'skipped'|'delegating'} status
  * @property {string|null} responseId - ID of the response event
+ * @property {string|null} parentMessageId - if this token is for a sub-request, the originating message
  * @property {string} createdAt
  * @property {string|null} resolvedAt
  */
@@ -72,7 +73,7 @@ export function setTokenTimeout(ms) {
  * @param {string} messageId - the originating message event ID
  * @param {string} hubId
  * @param {{ widgetId: string, order: number }[]} recipients - ordered list of peers
- * @param {{ timeoutMs?: number, onTimeout?: (token: MessageToken) => void }} opts
+ * @param {{ timeoutMs?: number, onTimeout?: (token: MessageToken) => void, parentMessageId?: string }} opts
  * @returns {MessageToken[]} created tokens
  */
 export function createMessageTokens(messageId, hubId, recipients, opts = {}) {
@@ -91,6 +92,7 @@ export function createMessageTokens(messageId, hubId, recipients, opts = {}) {
       order,
       status: order === 0 ? 'active' : 'pending',
       responseId: null,
+      parentMessageId: opts.parentMessageId || null,
       createdAt: new Date().toISOString(),
       resolvedAt: null,
     }
@@ -128,8 +130,8 @@ export function createMessageTokens(messageId, hubId, recipients, opts = {}) {
 export function resolveToken(tokenId, responseId) {
   const token = tokens.get(tokenId)
   if (!token) return { ok: false, error: `Token ${tokenId} not found` }
-  if (token.status !== 'active') {
-    return { ok: false, error: `Token ${tokenId} is ${token.status}, not active` }
+  if (token.status !== 'active' && token.status !== 'delegating') {
+    return { ok: false, error: `Token ${tokenId} is ${token.status}, not active or delegating` }
   }
 
   token.status = 'resolved'
@@ -164,11 +166,54 @@ export function resolveTokenByWidget(messageId, widgetId, responseId) {
   const tokenIds = messageTokens.get(messageId) || []
   for (const id of tokenIds) {
     const t = tokens.get(id)
-    if (t && t.widgetId === widgetId && t.status === 'active') {
+    if (t && t.widgetId === widgetId && (t.status === 'active' || t.status === 'delegating')) {
       return resolveToken(id, responseId)
     }
   }
   return { ok: false, error: `No active token for widget ${widgetId} on message ${messageId}` }
+}
+
+// ---------------------------------------------------------------------------
+// Token delegation
+// ---------------------------------------------------------------------------
+
+/**
+ * Mark an active token as delegating — the holder is creating sub-requests
+ * and will resolve this token after collecting sub-responses.
+ *
+ * @param {string} tokenId
+ * @returns {{ ok: boolean, error?: string }}
+ */
+export function delegateToken(tokenId) {
+  const token = tokens.get(tokenId)
+  if (!token) return { ok: false, error: `Token ${tokenId} not found` }
+  if (token.status !== 'active') {
+    return { ok: false, error: `Token ${tokenId} is ${token.status}, not active` }
+  }
+
+  token.status = 'delegating'
+  // Pause the timeout — delegation may take longer than standard response
+  clearTokenTimeout(tokenId)
+  return { ok: true }
+}
+
+/**
+ * Mark a delegating token as active again (e.g., sub-request completed,
+ * holder is ready to respond).
+ *
+ * @param {string} tokenId
+ * @returns {{ ok: boolean, error?: string }}
+ */
+export function undelegateToken(tokenId) {
+  const token = tokens.get(tokenId)
+  if (!token) return { ok: false, error: `Token ${tokenId} not found` }
+  if (token.status !== 'delegating') {
+    return { ok: false, error: `Token ${tokenId} is ${token.status}, not delegating` }
+  }
+
+  token.status = 'active'
+  scheduleTimeout(tokenId, defaultTimeoutMs)
+  return { ok: true }
 }
 
 // ---------------------------------------------------------------------------
@@ -215,19 +260,21 @@ export function getPendingTokenForWidget(hubId, widgetId) {
 /**
  * Get the current round status for a message.
  * @param {string} messageId
- * @returns {{ total: number, resolved: number, active: string|null, pending: number, allDone: boolean }}
+ * @returns {{ total: number, resolved: number, active: string|null, delegating: number, pending: number, allDone: boolean }}
  */
 export function getRoundStatus(messageId) {
   const tokenIds = messageTokens.get(messageId) || []
   const all = tokenIds.map((id) => tokens.get(id)).filter(Boolean)
   const resolved = all.filter((t) => t.status === 'resolved' || t.status === 'timed_out' || t.status === 'skipped').length
   const activeToken = all.find((t) => t.status === 'active')
+  const delegating = all.filter((t) => t.status === 'delegating').length
   const pending = all.filter((t) => t.status === 'pending').length
 
   return {
     total: all.length,
     resolved,
     active: activeToken?.widgetId || null,
+    delegating,
     pending,
     allDone: resolved === all.length,
   }
