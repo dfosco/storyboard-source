@@ -231,7 +231,22 @@ On failure:
 npx storyboard agent signal --status error --message "What went wrong"
 ```
 
-## Step 6: Messaging with connected terminals
+## Step 6: Hub Creation — spawning other agents
+
+**You CAN create real, autonomous agents on the canvas.** Each agent widget you create becomes an independent AI session (its own tmux process running its own Copilot/Claude/Codex instance). They are NOT simulations — they are real agents that read instructions, run tools, and produce work.
+
+When the user asks you to "create a hub", "spawn a hub", "set up a hub", or prefixes with "Hub:", **read `.agents/skills/create-hub/SKILL.md`** for the full procedure. It walks you through:
+
+1. Creating agent widgets via the canvas API (`POST /_storyboard/canvas/widget` with `type: "agent"`)
+2. Connecting them to you with connectors
+3. Opening broadcast so you can all communicate
+4. Starting a conversation
+
+The agents auto-start when the browser renders their widgets — each one boots its own CLI session and receives its role instructions automatically.
+
+**Key fact:** `type: "agent"` in the widget creation API creates a REAL agent widget that auto-launches the configured agent binary. This is NOT a terminal widget — it's a full agent with its own identity, tools, and autonomy.
+
+## Step 7: Messaging with connected terminals
 
 If your terminal config has a `messaging` section, you can exchange messages with connected terminal/agent peers. Check your config:
 
