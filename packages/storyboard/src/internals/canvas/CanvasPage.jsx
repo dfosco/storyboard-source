@@ -2384,20 +2384,34 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
       if (e.key === 'Delete' || e.key === 'Backspace') {
         e.preventDefault()
         if (selectedWidgetIds.size > 1) {
-          // Multi-delete — snapshot once, remove all, persist via updateCanvas
+          // Multi-delete — snapshot once, remove all via individual widget_removed
+          // events (not widgets_replaced) to avoid the server's wipe guard and
+          // ensure terminal sessions are properly orphaned per widget.
           undoRedo.snapshot(stateRef.current, 'multi-remove')
           debouncedSave.cancel()
+          const idsToRemove = new Set(selectedWidgetIds)
+          // Remove from local state immediately
+          setLocalWidgets((prev) => prev ? prev.filter(w => !idsToRemove.has(w.id)) : prev)
+          setLocalConnectors((prev) => {
+            const orphaned = prev.filter((c) => idsToRemove.has(c.start.widgetId) || idsToRemove.has(c.end.widgetId))
+            for (const c of orphaned) {
+              queueWrite(() =>
+                removeConnectorApi(canvasId, c.id).catch((err) =>
+                  console.error('[canvas] Failed to remove orphaned connector:', err)
+                )
+              )
+            }
+            return prev.filter((c) => !idsToRemove.has(c.start.widgetId) && !idsToRemove.has(c.end.widgetId))
+          })
           dirtyRef.current = true
-          setLocalWidgets((prev) => {
-            if (!prev) return prev
-            const next = prev.filter(w => !selectedWidgetIds.has(w.id))
+          // Queue individual delete API calls
+          for (const widgetId of idsToRemove) {
             queueWrite(() =>
-              updateCanvas(canvasId, { widgets: next }).catch(err =>
-                console.error('[canvas] Failed to save multi-delete:', err)
+              removeWidgetApi(canvasId, widgetId).catch(err =>
+                console.error('[canvas] Failed to remove widget in multi-delete:', err)
               )
             )
-            return next
-          })
+          }
         } else {
           const widgetId = [...selectedWidgetIds][0]
           if (widgetId) handleWidgetRemove(widgetId)
