@@ -124,6 +124,7 @@ The `storyboard` CLI (`sb` alias) wraps dev tooling:
 | `storyboard canvas delete <id>` | Delete a widget from a canvas |
 | `storyboard canvas connector <op>` | Create, update, or delete connectors (create/update/delete) |
 | `storyboard canvas broadcast` | Toggle broadcast messaging for a widget and its connections |
+| `storyboard canvas alias get/set/clear` | Get, set, or clear alias (nickname) for a widget |
 | `storyboard canvas duplicate` | Duplicate a canvas |
 | `storyboard canvas delete-canvas` | Delete a canvas and its directory |
 | `storyboard canvas roles` | List available hub roles |

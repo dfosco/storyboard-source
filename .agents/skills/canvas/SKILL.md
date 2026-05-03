@@ -88,8 +88,8 @@ const { x, y, adjusted } = findFreePosition({
 | `image` | 400×300 | `src` (filename) | `width`, `height`, `private` |
 | `link-preview` | 320×200 | `url` | `title` |
 | `component` | 300×200 | — | `width`, `height` |
-| `terminal` | 650×500 | — | `prettyName` |
-| `agent` | 650×500 | — | `prettyName`, `agentId` (key from `canvas.agents` config) |
+| `terminal` | 650×500 | — | `prettyName`, `alias` |
+| `agent` | 650×500 | — | `prettyName`, `alias`, `agentId` (key from `canvas.agents` config) |
 
 ## Reference: Widget Content, URLs, and File Paths
 
@@ -772,22 +772,25 @@ In batch operations, use `{ "op": "broadcast", "widgetId": "...", "mode": "two-w
 An **agent widget** (`type: "agent"`) creates a real, autonomous AI session — its own tmux process running Copilot, Claude, or Codex. It is NOT a simulation.
 
 ```bash
-# Create an agent widget
-curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/widget" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "<canvasName>",
-    "type": "agent",
-    "props": {
-      "prettyName": "Research Agent",
-      "agentId": "copilot"
-    }
-  }'
+# Create an agent widget with a nickname
+storyboard canvas add agent --canvas "$STORYBOARD_CANVAS_ID" --json \
+  --name "Research Agent" --props '{"agentId": "copilot"}'
 ```
 
+- `--name` sets the agent's **alias** (human-readable nickname). The auto-generated `prettyName` (e.g. `ivory-avocet`) remains as a unique fallback.
 - `agentId` maps to keys in `canvas.agents` from `storyboard.config.json` (e.g. `"copilot"`, `"claude"`, `"codex"`)
 - The agent auto-starts when the browser renders the widget — no separate spawn call needed
 - If no `agentId` is provided, the first `canvas.agents` entry with `default: true` is used
+
+### Alias management
+
+```bash
+storyboard canvas alias get --widget <id> --canvas <name>    # Read alias
+storyboard canvas alias set --widget <id> --canvas <name> --alias "New Name"  # Set alias
+storyboard canvas alias clear --widget <id> --canvas <name>  # Clear alias
+```
+
+When an alias is changed, the agent and all hub peers are notified via tmux send-keys.
 
 For creating multi-agent hubs (multiple agents working together), invoke the **create-hub** skill.
 

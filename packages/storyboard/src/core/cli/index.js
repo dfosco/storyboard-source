@@ -75,6 +75,7 @@ function helpScreen(version) {
     cmd('canvas read [name]', 'Read canvas state and list widgets'),
     cmd('canvas connector <op>', 'Create, update, or delete connectors'),
     cmd('canvas broadcast', 'Toggle broadcast messaging for a widget'),
+    cmd('canvas alias <op>', 'Get, set, or clear alias for a widget'),
     cmd('canvas duplicate', 'Duplicate a canvas'),
     cmd('canvas delete-canvas', 'Delete a canvas and its directory'),
     cmd('canvas roles', 'List available hub roles'),
@@ -171,6 +172,9 @@ switch (command) {
       import('./canvasBounds.js')
     } else if (process.argv[3] === 'broadcast') {
       import('./canvasBroadcast.js')
+    } else if (process.argv[3] === 'alias') {
+      const { handleAlias } = await import('./canvasAlias.js')
+      handleAlias(process.argv.slice(4))
     } else if (process.argv[3] === 'connector') {
       import('./canvasConnector.js')
     } else if (process.argv[3] === 'delete') {

@@ -29,12 +29,12 @@ Default agent type is `"copilot"`. Keep hubs small (2–5 agents is typical).
 
 ### Step 2: Create agent widgets and connectors
 
-Use `storyboard canvas batch` to create all agent widgets and connectors in a single call. Use `$0`, `$1`, etc. to reference widget IDs from earlier create ops.
+Use `storyboard canvas batch` to create all agent widgets and connectors in a single call. Use `$0`, `$1`, etc. to reference widget IDs from earlier create ops. The `alias` prop gives agents a human-readable nickname; their auto-generated `prettyName` (e.g. `ivory-avocet`) serves as a unique fallback.
 
 ```bash
 storyboard canvas batch --canvas "$STORYBOARD_CANVAS_ID" --ops '[
-  { "op": "create-widget", "type": "agent", "props": { "prettyName": "Research Agent", "agentId": "copilot" } },
-  { "op": "create-widget", "type": "agent", "props": { "prettyName": "Review Agent", "agentId": "copilot" } },
+  { "op": "create-widget", "type": "agent", "props": { "alias": "Research Agent", "agentId": "copilot" } },
+  { "op": "create-widget", "type": "agent", "props": { "alias": "Review Agent", "agentId": "copilot" } },
   { "op": "create-connector", "startWidgetId": "'"$STORYBOARD_WIDGET_ID"'", "startAnchor": "right", "endWidgetId": "$0", "endAnchor": "left" },
   { "op": "create-connector", "startWidgetId": "'"$STORYBOARD_WIDGET_ID"'", "startAnchor": "right", "endWidgetId": "$1", "endAnchor": "left" }
 ]'
@@ -46,7 +46,7 @@ For a single agent, you can use `storyboard canvas add` instead:
 
 ```bash
 storyboard canvas add agent --canvas "$STORYBOARD_CANVAS_ID" --json \
-  --props '{"prettyName": "Research Agent", "agentId": "copilot"}'
+  --name "Research Agent" --props '{"agentId": "copilot"}'
 ```
 
 ### Step 3: Enable broadcast

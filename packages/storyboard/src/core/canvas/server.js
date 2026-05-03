@@ -430,7 +430,7 @@ export function createCanvasHandler(ctx) {
           .filter((other) => other.id !== tw.id)
           .map((other) => ({
             widgetId: other.id,
-            displayName: other.props?.prettyName || other.id,
+            displayName: other.props?.alias || other.props?.prettyName || other.id,
             role: roleByWidget.get(other.id) || (other.type === 'agent' ? defaultRole : 'passive'),
             type: other.type,
           }))
@@ -483,6 +483,30 @@ export function createCanvasHandler(ctx) {
         materializeHubs(canvasName, widgets, connectors, { roleByWidget, defaultRole })
       } catch { /* messaging module may not be loaded */ }
 
+      // Persist computed roles to widget props in the canvas JSONL so the UI
+      // (e.g. crown icon) reflects the role without requiring manual assignment.
+      // Uses appendEventRaw to avoid triggering a full HMR cycle — treated as content.
+      const canvasFilePath = findCanvasPath(root, canvasName)
+      if (canvasFilePath) {
+        const ts = new Date().toISOString()
+        for (const tw of terminalWidgets) {
+          if (tw.type !== 'agent' && tw.type !== 'prompt') continue
+          const computedRole = roleByWidget.get(tw.id) || defaultRole
+          const currentRole = tw.props?.role || null
+          if (computedRole && computedRole !== currentRole) {
+            appendEventRaw(canvasFilePath, {
+              event: 'widget_updated',
+              timestamp: ts,
+              widgetId: tw.id,
+              props: { role: computedRole },
+            })
+            // Update in-memory widget so later reads in this cycle see the new role
+            if (!tw.props) tw.props = {}
+            tw.props.role = computedRole
+          }
+        }
+      }
+
       for (const tw of terminalWidgets) {
         const prevConfig = readTerminalConfigById(tw.id)
         const prevRole = prevConfig?.role || null
@@ -509,7 +533,7 @@ export function createCanvasHandler(ctx) {
                 const canReceive = mode === 'two-way' || (mode === 'one-way' && direction === 'incoming')
                 messagingPeers.push({
                   widgetId: peerId,
-                  displayName: peerWidget.props?.prettyName || peerId,
+                  displayName: peerWidget.props?.alias || peerWidget.props?.prettyName || peerId,
                   configPath: `.storyboard/terminals/${peerId}.json`,
                   type: peerWidget.type,
                   canSend,
@@ -690,6 +714,54 @@ export function createCanvasHandler(ctx) {
   // which correctly triggers a full reload to register new routes.
   function writeNewCanvas(filePath, event) {
     fs.writeFileSync(filePath, serializeEvent(event) + '\n', 'utf-8')
+  }
+
+  /**
+   * Notify an agent and its hub peers when an alias changes.
+   * Uses tmux send-keys (same pattern as role change notifications).
+   */
+  async function notifyAliasChange(root, canvasName, widgetId, newAlias, prevAlias, prettyName) {
+    try {
+      const { execSync } = await import('node:child_process')
+      const { findTmuxNameForWidget } = await import('./terminal-registry.js')
+
+      // Notify the agent itself
+      const tmuxName = findTmuxNameForWidget(widgetId)
+      if (tmuxName) {
+        const msg = newAlias
+          ? `Your alias has been set to "${newAlias}"`
+          : `Your alias has been cleared, you are now ${prettyName}`
+        try {
+          execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(msg)}`, { stdio: 'ignore' })
+          execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
+        } catch { /* session may not be active */ }
+      }
+
+      // Notify hub peers
+      const filePath = findCanvasPath(root, canvasName)
+      if (!filePath) return
+      const data = readCanvas(filePath)
+      const connectors = data.connectors || []
+      const peerIds = new Set()
+      for (const conn of connectors) {
+        if (conn.start?.widgetId === widgetId) peerIds.add(conn.end?.widgetId)
+        if (conn.end?.widgetId === widgetId) peerIds.add(conn.start?.widgetId)
+      }
+      peerIds.delete(undefined)
+      peerIds.delete(null)
+
+      for (const peerId of peerIds) {
+        const peerTmux = findTmuxNameForWidget(peerId)
+        if (!peerTmux) continue
+        const peerMsg = newAlias
+          ? `Agent ${prettyName} is now known as "${newAlias}"`
+          : `Agent "${prevAlias}" alias has been cleared, they are now ${prettyName}`
+        try {
+          execSync(`tmux send-keys -t "${peerTmux}" -l ${JSON.stringify(peerMsg)}`, { stdio: 'ignore' })
+          execSync(`tmux send-keys -t "${peerTmux}" Enter`, { stdio: 'ignore' })
+        } catch { /* session may not be active */ }
+      }
+    } catch { /* best effort */ }
   }
 
   return async (req, res, { body, path: routePath, method, __viteWs }) => {
@@ -1077,6 +1149,85 @@ export function createCanvasHandler(ctx) {
       return
     }
 
+    // GET /alias — read alias for a widget
+    if (routePath === '/alias' && method === 'GET') {
+      const name = new URL(req.url, 'http://localhost').searchParams.get('canvas')
+      const widgetId = new URL(req.url, 'http://localhost').searchParams.get('widgetId')
+      if (!name || !widgetId) {
+        sendJson(res, 400, { error: 'canvas and widgetId query params are required' })
+        return
+      }
+      const filePath = findCanvasPath(root, name)
+      if (!filePath) { sendJson(res, 404, { error: `Canvas "${name}" not found` }); return }
+      try {
+        const data = readCanvas(filePath)
+        const widget = (data.widgets || []).find(w => w.id === widgetId)
+        if (!widget) { sendJson(res, 404, { error: `Widget "${widgetId}" not found` }); return }
+        sendJson(res, 200, { widgetId, alias: widget.props?.alias || null, prettyName: widget.props?.prettyName || null })
+      } catch (err) {
+        sendJson(res, 500, { error: err.message })
+      }
+      return
+    }
+
+    // PUT /alias — set alias for a widget
+    if (routePath === '/alias' && method === 'PUT') {
+      const { canvas: name, widgetId, alias } = body
+      if (!name || !widgetId || !alias) {
+        sendJson(res, 400, { error: 'canvas, widgetId, and alias are required' })
+        return
+      }
+      const filePath = findCanvasPath(root, name)
+      if (!filePath) { sendJson(res, 404, { error: `Canvas "${name}" not found` }); return }
+      try {
+        const data = readCanvas(filePath)
+        const widget = (data.widgets || []).find(w => w.id === widgetId)
+        if (!widget) { sendJson(res, 404, { error: `Widget "${widgetId}" not found` }); return }
+        const prevAlias = widget.props?.alias || null
+        // Persist as content (no HMR push)
+        appendEventRaw(filePath, {
+          event: 'widget_updated',
+          timestamp: new Date().toISOString(),
+          widgetId,
+          props: { alias },
+        })
+        // Notify the agent and hub peers
+        await notifyAliasChange(root, name, widgetId, alias, prevAlias, widget.props?.prettyName || widgetId)
+        sendJson(res, 200, { success: true, widgetId, alias })
+      } catch (err) {
+        sendJson(res, 500, { error: err.message })
+      }
+      return
+    }
+
+    // DELETE /alias — clear alias for a widget
+    if (routePath === '/alias' && method === 'DELETE') {
+      const { canvas: name, widgetId } = body
+      if (!name || !widgetId) {
+        sendJson(res, 400, { error: 'canvas and widgetId are required' })
+        return
+      }
+      const filePath = findCanvasPath(root, name)
+      if (!filePath) { sendJson(res, 404, { error: `Canvas "${name}" not found` }); return }
+      try {
+        const data = readCanvas(filePath)
+        const widget = (data.widgets || []).find(w => w.id === widgetId)
+        if (!widget) { sendJson(res, 404, { error: `Widget "${widgetId}" not found` }); return }
+        const prevAlias = widget.props?.alias || null
+        appendEventRaw(filePath, {
+          event: 'widget_updated',
+          timestamp: new Date().toISOString(),
+          widgetId,
+          props: { alias: '' },
+        })
+        await notifyAliasChange(root, name, widgetId, null, prevAlias, widget.props?.prettyName || widgetId)
+        sendJson(res, 200, { success: true, widgetId, alias: null })
+      } catch (err) {
+        sendJson(res, 500, { error: err.message })
+      }
+      return
+    }
+
     // POST /connector — append a connector_added event
     if (routePath === '/connector' && method === 'POST') {
       const { name, startWidgetId, startAnchor, endWidgetId, endAnchor, connectorType = 'default', meta = null } = body
@@ -1217,7 +1368,7 @@ export function createCanvasHandler(ctx) {
                 const tmuxName = findTmuxNameForWidget(w.id)
                 if (!tmuxName) continue
 
-                const peerName = peer.props?.prettyName || peer.id
+                const peerName = peer.props?.alias || peer.props?.prettyName || peer.id
                 const mode = getMode(w)
                 let skillMsg
 
@@ -1401,7 +1552,7 @@ export function createCanvasHandler(ctx) {
                   execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
                 } catch { /* session may not be active */ }
               } else {
-                const peerNames = peers.map((p) => p.props?.prettyName || p.id).join(', ')
+                const peerNames = peers.map((p) => p.props?.alias || p.props?.prettyName || p.id).join(', ')
                 const msg = `📡 [Broadcast ${mode} ACTIVE with ${peerNames}]`
                 try {
                   execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(msg)}`, { stdio: 'ignore' })

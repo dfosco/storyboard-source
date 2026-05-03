@@ -49,6 +49,20 @@
   line-height: 1;
 }
 
+.aliasInput {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--borderColor-accent-emphasis, #0969da);
+  color: inherit;
+  font: inherit;
+  font-size: inherit;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  width: 120px;
+  max-width: 200px;
+}
+
 [data-widget-selected] .titleBar,
 [data-widget-selected] .titleBar .typeLabel,
 [data-widget-selected] .titleBar .nameSeparator {
