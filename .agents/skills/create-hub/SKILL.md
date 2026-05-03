@@ -122,3 +122,10 @@ Broadcast: active
 - **Explicit only** — only create a hub when the user explicitly asks
 - **One hub at a time** — if you're already in a hub, warn the user before creating more agents
 - **Iterate, don't duplicate** — when incorporating feedback from peers, update the existing canvas widget (`storyboard canvas update <id>`) instead of creating a new one. Only create additional widgets when the output is genuinely a separate deliverable. The final canvas should have clean outputs, not a trail of drafts.
+- **Connector anchors must match spatial relationships** — always choose anchors based on where the target widget sits relative to the source:
+  - Widget to the **right** → `startAnchor: "right"`, `endAnchor: "left"`
+  - Widget **below** → `startAnchor: "bottom"`, `endAnchor: "top"`
+  - Widget **above** → `startAnchor: "top"`, `endAnchor: "bottom"`
+  - Widget to the **left** → `startAnchor: "left"`, `endAnchor: "right"`
+  
+  This applies to all connectors, including output widgets (markdown, sticky notes, etc.) that agents create during work. A connector from an agent to a widget placed below it must use `bottom`→`top`, not `right`→`left`.

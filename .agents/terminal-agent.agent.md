@@ -46,8 +46,9 @@ NEW_ID=$(echo "$RESPONSE" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
 
 curl -s -X POST "${STORYBOARD_SERVER_URL}/_storyboard/canvas/connector" \
   -H "Content-Type: application/json" \
-  -d "{\"name\":\"${STORYBOARD_CANVAS_ID}\",\"startWidgetId\":\"${STORYBOARD_WIDGET_ID}\",\"endWidgetId\":\"${NEW_ID}\",\"startAnchor\":\"right\",\"endAnchor\":\"left\"}"
+  -d "{\"name\":\"${STORYBOARD_CANVAS_ID}\",\"startWidgetId\":\"${STORYBOARD_WIDGET_ID}\",\"endWidgetId\":\"${NEW_ID}\",\"startAnchor\":\"bottom\",\"endAnchor\":\"top\"}"
 ```
+_(adjust anchors based on where the widget is placed — see Step 4 anchor table)_
 
 **If the result is not on the canvas, do not signal done.**
 
@@ -182,8 +183,8 @@ npx storyboard canvas batch --canvas ${STORYBOARD_CANVAS_ID} --ops '[
   {"op":"create-widget","ref":"s2","type":"sticky-note","near":"$s1","direction":"below","props":{"text":"Task 2","color":"blue"}},
   {"op":"create-widget","ref":"s3","type":"sticky-note","near":"$s2","direction":"below","props":{"text":"Task 3","color":"green"}},
   {"op":"create-connector","startWidgetId":"'${STORYBOARD_WIDGET_ID}'","endWidgetId":"$s1","startAnchor":"right","endAnchor":"left"},
-  {"op":"create-connector","startWidgetId":"'${STORYBOARD_WIDGET_ID}'","endWidgetId":"$s2","startAnchor":"right","endAnchor":"left"},
-  {"op":"create-connector","startWidgetId":"'${STORYBOARD_WIDGET_ID}'","endWidgetId":"$s3","startAnchor":"right","endAnchor":"left"}
+  {"op":"create-connector","startWidgetId":"'${STORYBOARD_WIDGET_ID}'","endWidgetId":"$s2","startAnchor":"bottom","endAnchor":"top"},
+  {"op":"create-connector","startWidgetId":"'${STORYBOARD_WIDGET_ID}'","endWidgetId":"$s3","startAnchor":"bottom","endAnchor":"top"}
 ]'
 ```
 
@@ -220,14 +221,56 @@ npx storyboard canvas update <widget-id> --canvas ${STORYBOARD_CANVAS_ID} --x 10
 
 **Every widget you create MUST be connected back to your terminal widget.** Use batch (shown above) for widget+connector creation in one command.
 
+**Anchor selection is mandatory.** Choose anchors based on where the target widget sits relative to the source. Use this 9-cell orientation table:
+
+```
+ ┌──────────────────┬──────────────────┬──────────────────┐
+ │    top-left      │   top-center     │    top-right     │
+ │  start: right    │  start: bottom   │  start: left     │
+ │  end:   top      │  end:   top      │  end:   top      │
+ ├──────────────────┼──────────────────┼──────────────────┤
+ │   center-left    │     [SOURCE]     │   center-right   │
+ │  start: right    │                  │  start: left     │
+ │  end:   left     │                  │  end:   right    │
+ ├──────────────────┼──────────────────┼──────────────────┤
+ │   bottom-left    │  bottom-center   │   bottom-right   │
+ │  start: right    │  start: top      │  start: left     │
+ │  end:   bottom   │  end:   bottom   │  end:   bottom   │
+ └──────────────────┴──────────────────┴──────────────────┘
+```
+
+**Quick reference:**
+
+| Target is...     | startAnchor | endAnchor |
+|------------------|-------------|-----------|
+| to the right     | right       | left      |
+| below            | bottom      | top       |
+| above            | top         | bottom    |
+| to the left      | left        | right     |
+| above-right      | right       | top       |
+| below-right      | right       | bottom    |
+| above-left       | left        | top       |
+| below-left       | left        | bottom    |
+
+**Examples:**
+
+Widget placed to the right (`direction: "right"`):
+```bash
+{"op":"create-connector","startWidgetId":"'${STORYBOARD_WIDGET_ID}'","endWidgetId":"$ref","startAnchor":"right","endAnchor":"left"}
+```
+
+Widget placed below (`direction: "below"`):
+```bash
+{"op":"create-connector","startWidgetId":"'${STORYBOARD_WIDGET_ID}'","endWidgetId":"$ref","startAnchor":"bottom","endAnchor":"top"}
+```
+
 To connect an **already existing** widget individually:
 ```bash
 curl -s -X POST "${STORYBOARD_SERVER_URL}/_storyboard/canvas/connector" \
   -H "Content-Type: application/json" \
-  -d "{\"name\":\"${STORYBOARD_CANVAS_ID}\",\"startWidgetId\":\"${STORYBOARD_WIDGET_ID}\",\"endWidgetId\":\"<target-id>\",\"startAnchor\":\"right\",\"endAnchor\":\"left\"}"
+  -d "{\"name\":\"${STORYBOARD_CANVAS_ID}\",\"startWidgetId\":\"${STORYBOARD_WIDGET_ID}\",\"endWidgetId\":\"<target-id>\",\"startAnchor\":\"bottom\",\"endAnchor\":\"top\"}"
 ```
-
-**Anchor guidance:** Use `"right"` → `"left"` by default. Adjust if layout calls for a different direction.
+_(adjust anchors based on the table above)_
 
 ### Positioning reference
 
