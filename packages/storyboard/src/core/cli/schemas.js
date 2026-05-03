@@ -200,6 +200,11 @@ export const widgetSchema = {
     description: 'Path to a JSON file containing widget props (avoids shell escaping)',
     aliases: ['pf'],
   },
+  name: {
+    type: 'string',
+    description: 'Alias for agent/terminal widgets (human-readable nickname)',
+    aliases: ['n'],
+  },
   json: {
     type: 'boolean',
     default: false,

@@ -140,6 +140,11 @@ async function canvasAdd() {
     }
   }
 
+  // --name sets the alias prop on agent/terminal widgets
+  if (flags.name) {
+    props.alias = flags.name
+  }
+
   // Story-specific: prompt for storyId and exportName if not in --props
   if (widgetType === 'story' && !props.storyId) {
     // Try to fetch available stories from the dev server

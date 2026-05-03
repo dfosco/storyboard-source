@@ -115,8 +115,44 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
   })
   const width = dims.width
   const height = dims.height
+  const alias = props?.alias || null
   const prettyName = props?.prettyName || null
+  const displayLabel = alias || prettyName || null
   const startupCommand = props?.startupCommand || null
+
+  // Inline alias editing (double-click Easter egg)
+  const [editingAlias, setEditingAlias] = useState(false)
+  const [aliasInput, setAliasInput] = useState('')
+  const aliasInputRef = useRef(null)
+
+  const handleAliasDoubleClick = useCallback((e) => {
+    if (!isAgent) return
+    e.stopPropagation()
+    setAliasInput(alias || '')
+    setEditingAlias(true)
+  }, [isAgent, alias])
+
+  const commitAlias = useCallback(() => {
+    setEditingAlias(false)
+    const trimmed = aliasInput.trim()
+    const newAlias = trimmed || ''
+    if (newAlias !== (alias || '')) {
+      onUpdate?.({ alias: newAlias })
+    }
+  }, [aliasInput, alias, onUpdate])
+
+  const handleAliasKeyDown = useCallback((e) => {
+    e.stopPropagation()
+    if (e.key === 'Enter') { e.preventDefault(); commitAlias() }
+    if (e.key === 'Escape') { e.preventDefault(); setEditingAlias(false) }
+  }, [commitAlias])
+
+  useEffect(() => {
+    if (editingAlias && aliasInputRef.current) {
+      aliasInputRef.current.focus()
+      aliasInputRef.current.select()
+    }
+  }, [editingAlias])
 
   // Snapped dimensions computed from ghostty's actual cell metrics (set after open)
   const [snappedHeight, setSnappedHeight] = useState(null)
@@ -491,7 +527,26 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
     <>
     <div className={styles.container}>
       <div className={`tc-drag-handle ${styles.titleBar}`}>
-        <span><span className={styles.typeLabel}>{typeLabel}</span><span className={styles.nameSeparator}> · </span>{prettyName || '…'}</span>
+        <span>
+          <span className={styles.typeLabel}>{typeLabel}</span>
+          <span className={styles.nameSeparator}> · </span>
+          {editingAlias ? (
+            <input
+              ref={aliasInputRef}
+              className={styles.aliasInput}
+              value={aliasInput}
+              onChange={(e) => setAliasInput(e.target.value)}
+              onBlur={commitAlias}
+              onKeyDown={handleAliasKeyDown}
+              onClick={(e) => e.stopPropagation()}
+              onPointerDown={(e) => e.stopPropagation()}
+              placeholder={prettyName || '…'}
+              aria-label="Edit alias"
+            />
+          ) : (
+            <span onDoubleClick={handleAliasDoubleClick}>{displayLabel || '…'}</span>
+          )}
+        </span>
         {showLeaderCrown && <span className={styles.leaderCrown} aria-label="Hub leader">👑</span>}
       </div>
       <div

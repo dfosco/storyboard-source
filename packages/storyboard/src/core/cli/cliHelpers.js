@@ -47,6 +47,27 @@ export async function get(path) {
 }
 
 /**
+ * PUT JSON to the dev server.
+ * @param {string} path - URL path
+ * @param {object} body - JSON body
+ * @returns {Promise<object>} Parsed JSON response
+ */
+export async function put(path, body) {
+  const base = getServerUrl()
+  const res = await fetch(`${base}${path}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(15000),
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    throw new Error(data.error || `${res.status} ${res.statusText}`)
+  }
+  return data
+}
+
+/**
  * PATCH JSON to the dev server.
  * @param {string} path - URL path
  * @param {object} body - JSON body

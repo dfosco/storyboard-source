@@ -131,7 +131,7 @@ export function writeTerminalConfig({ branch, canvasId, widgetId, canvasFile = n
   const config = {
     ...existing,
     widgetId,
-    displayName: displayName || existing.displayName || widgetProps?.prettyName || existing.widgetProps?.prettyName || null,
+    displayName: displayName || existing.displayName || widgetProps?.alias || widgetProps?.prettyName || existing.widgetProps?.prettyName || null,
     canvasId,
     canvasFile: canvasFile || existing.canvasFile || null,
     branch,
@@ -196,8 +196,9 @@ export function updateTerminalConnections({
 
   if (widgetProps) {
     config.widgetProps = widgetProps
-    // Promote displayName from prettyName
-    if (widgetProps.prettyName) config.displayName = widgetProps.prettyName
+    // Promote displayName: alias > prettyName
+    if (widgetProps.alias) config.displayName = widgetProps.alias
+    else if (widgetProps.prettyName) config.displayName = widgetProps.prettyName
   }
   config.connectedWidgets = connectedWidgets || []
   config.messaging = messaging || null
