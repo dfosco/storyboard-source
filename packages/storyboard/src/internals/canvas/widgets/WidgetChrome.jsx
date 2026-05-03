@@ -204,6 +204,34 @@ function DropdownFeature({ feature, onAction }) {
   )
 }
 
+function RoleFeature({ options, currentRole, onRoleChange }) {
+  const roleOptions = Array.isArray(options) ? options : []
+  if (!onRoleChange || roleOptions.length === 0) return null
+
+  return (
+    <Tooltip text="Hub role" direction="n">
+      <label className={styles.roleSelectWrap} onClick={(e) => e.stopPropagation()}>
+        <select
+          className={styles.roleSelect}
+          value={currentRole}
+          onChange={(e) => {
+            e.stopPropagation()
+            onRoleChange(e.target.value)
+          }}
+          onClick={(e) => e.stopPropagation()}
+          aria-label="Hub role"
+        >
+          {roleOptions.map((role) => (
+            <option key={role.id} value={role.id}>
+              {role.title || role.id}
+            </option>
+          ))}
+        </select>
+      </label>
+    </Tooltip>
+  )
+}
+
 /**
  * ColorPicker feature button — shows a dot that reveals color options on click.
  * Closes on click-outside or Escape.
@@ -297,6 +325,9 @@ export default function WidgetChrome({
   onAction,
   onUpdate,
   onConnectorDragStart,
+  roleOptions = [],
+  currentRole = '',
+  onRoleChange,
   children,
   readOnly = false,
 }) {
@@ -540,6 +571,17 @@ export default function WidgetChrome({
                       }
                       onAction?.(actionId, opts)
                     }}
+                  />
+                )
+              }
+
+              if (feature.type === 'role-selector') {
+                return (
+                  <RoleFeature
+                    key={feature.id}
+                    options={roleOptions}
+                    currentRole={currentRole}
+                    onRoleChange={onRoleChange}
                   />
                 )
               }

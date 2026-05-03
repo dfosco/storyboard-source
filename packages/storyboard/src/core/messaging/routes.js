@@ -15,6 +15,21 @@ import { publish, subscribe, read, readMulti } from './bus.js'
 import { negotiateFormat, serializeResponse, parseRequestBody } from './toon.js'
 import { getPresent, isPresent, getAllPresent } from './presence.js'
 import { getBindings } from './delivery.js'
+import {
+  getCluster,
+  getClustersForCanvas,
+  transferClusterToken,
+  setClusterGoal,
+  startConversation,
+  signalFinality,
+  reopenConversation,
+  serializeCluster,
+} from './cluster-manager.js'
+import {
+  createMessageTokens,
+  resolveTokenByWidget,
+  getRoundStatus,
+} from './token-manager.js'
 
 /** @type {Set<{ res: any, unsub: () => void, timer: NodeJS.Timeout }>} Active SSE connections */
 const sseConnections = new Set()
@@ -64,6 +79,46 @@ export function createMessagingRoutes({ sendJson }) {
       // GET /bindings — list active delivery bridge bindings
       if (method === 'GET' && subpath === 'bindings') {
         return await sendNegotiated(req, res, 200, { bindings: getBindings() })
+      }
+
+      // GET /cluster/:canvasId — get cluster state for a canvas
+      if (method === 'GET' && subpath.startsWith('cluster/')) {
+        return await handleClusterState(req, res, ctx, sendJson)
+      }
+
+      // POST /cluster/token — transfer cluster token
+      if (method === 'POST' && subpath === 'cluster/token') {
+        return await handleClusterTokenTransfer(req, res, body, sendJson)
+      }
+
+      // POST /cluster/goal — set cluster goal
+      if (method === 'POST' && subpath === 'cluster/goal') {
+        return await handleClusterGoal(req, res, body, sendJson)
+      }
+
+      // POST /cluster/send — send message with tokens to cluster peers
+      if (method === 'POST' && subpath === 'cluster/send') {
+        return await handleClusterSend(req, res, body, sendJson)
+      }
+
+      // POST /cluster/respond — respond to a message token
+      if (method === 'POST' && subpath === 'cluster/respond') {
+        return await handleClusterRespond(req, res, body, sendJson)
+      }
+
+      // POST /conversation/start — start a new conversation
+      if (method === 'POST' && subpath === 'conversation/start') {
+        return await handleConversationStart(req, res, body, sendJson)
+      }
+
+      // POST /conversation/finality — signal conversation finality
+      if (method === 'POST' && subpath === 'conversation/finality') {
+        return await handleConversationFinality(req, res, body, sendJson)
+      }
+
+      // POST /conversation/reopen — reopen a finalized conversation
+      if (method === 'POST' && subpath === 'conversation/reopen') {
+        return await handleConversationReopen(req, res, body, sendJson)
       }
 
       sendJson(res, 404, { error: `Unknown messaging route: ${method} ${subpath}` })
@@ -355,6 +410,208 @@ async function handlePresence(req, res, ctx, sendJson) {
   }
 
   sendJson(res, 400, { error: 'Use /presence, /presence/:branch/:canvasId, or /presence/:branch/:canvasId/:widgetId' })
+}
+
+// ---------------------------------------------------------------------------
+// Cluster endpoints
+// ---------------------------------------------------------------------------
+
+/**
+ * GET /cluster/:canvasId — Get cluster state for a canvas.
+ * Optional query: ?clusterId=X&widgetId=Y
+ */
+async function handleClusterState(req, res, ctx, sendJson) {
+  const subpath = (ctx.path || '/').replace(/^\//, '').split('?')[0]
+  const parts = subpath.split('/').slice(1) // remove 'cluster' prefix
+  const canvasId = decodeURIComponent(parts.join('/'))
+
+  if (!canvasId) {
+    return sendJson(res, 400, { error: 'Missing canvasId in path' })
+  }
+
+  const url = new URL(`http://localhost${ctx.path || '/'}`)
+  const clusterId = url.searchParams.get('clusterId')
+  const widgetId = url.searchParams.get('widgetId')
+
+  if (clusterId) {
+    const cluster = getCluster(clusterId)
+    if (!cluster || cluster.canvasId !== canvasId) {
+      return sendJson(res, 404, { error: `Cluster ${clusterId} not found on canvas ${canvasId}` })
+    }
+    return await sendNegotiated(req, res, 200, { cluster: serializeCluster(cluster, widgetId) })
+  }
+
+  const clusters = getClustersForCanvas(canvasId)
+  return await sendNegotiated(req, res, 200, {
+    clusters: clusters.map((c) => serializeCluster(c, widgetId)),
+  })
+}
+
+/**
+ * POST /cluster/token — Transfer the cluster token.
+ * Body: { clusterId, fromWidgetId, toWidgetId }
+ */
+async function handleClusterTokenTransfer(req, res, body, sendJson) {
+  const parsed = await parseRequestBody(body, req.headers?.['content-type'])
+  const { clusterId, fromWidgetId, toWidgetId } = parsed
+
+  if (!clusterId || !fromWidgetId || !toWidgetId) {
+    return sendJson(res, 400, { error: 'Missing required fields: clusterId, fromWidgetId, toWidgetId' })
+  }
+
+  const result = await transferClusterToken(clusterId, fromWidgetId, toWidgetId)
+  if (!result.ok) return sendJson(res, 400, { error: result.error })
+  return await sendNegotiated(req, res, 200, { ok: true })
+}
+
+/**
+ * POST /cluster/goal — Set the cluster goal.
+ * Body: { clusterId, senderId, goal }
+ */
+async function handleClusterGoal(req, res, body, sendJson) {
+  const parsed = await parseRequestBody(body, req.headers?.['content-type'])
+  const { clusterId, senderId, goal } = parsed
+
+  if (!clusterId || !senderId || !goal) {
+    return sendJson(res, 400, { error: 'Missing required fields: clusterId, senderId, goal' })
+  }
+
+  const result = await setClusterGoal(clusterId, senderId, goal)
+  if (!result.ok) return sendJson(res, 400, { error: result.error })
+  return await sendNegotiated(req, res, 200, { ok: true })
+}
+
+/**
+ * POST /cluster/send — Send a message to cluster peers with ordered tokens.
+ * Body: { clusterId, senderId, body, recipients: [{ widgetId, order }], timeoutMs? }
+ */
+async function handleClusterSend(req, res, body, sendJson) {
+  const parsed = await parseRequestBody(body, req.headers?.['content-type'])
+  const { clusterId, senderId, recipients, timeoutMs } = parsed
+
+  if (!clusterId || !senderId || !parsed.body) {
+    return sendJson(res, 400, { error: 'Missing required fields: clusterId, senderId, body' })
+  }
+
+  const cluster = getCluster(clusterId)
+  if (!cluster) return sendJson(res, 404, { error: `Cluster ${clusterId} not found` })
+
+  // Publish the message to the cluster channel
+  const event = await publish(cluster.channel, {
+    channel: cluster.channel,
+    type: 'cluster:message:request',
+    senderId,
+    body: parsed.body,
+    payload: { clusterId },
+  })
+
+  // Create ordered message tokens for recipients
+  const recipientList = recipients || [...cluster.members.keys()]
+    .filter((id) => id !== senderId)
+    .map((id, i) => ({ widgetId: id, order: i }))
+
+  const tokens = createMessageTokens(event.id, clusterId, recipientList, { timeoutMs })
+
+  return await sendNegotiated(req, res, 201, {
+    ok: true,
+    messageId: event.id,
+    tokens: tokens.map((t) => ({ tokenId: t.tokenId, widgetId: t.widgetId, order: t.order, status: t.status })),
+  })
+}
+
+/**
+ * POST /cluster/respond — Respond to a message token.
+ * Body: { clusterId, messageId, widgetId, body }
+ */
+async function handleClusterRespond(req, res, body, sendJson) {
+  const parsed = await parseRequestBody(body, req.headers?.['content-type'])
+  const { clusterId, messageId, widgetId } = parsed
+
+  if (!clusterId || !messageId || !widgetId || !parsed.body) {
+    return sendJson(res, 400, { error: 'Missing required fields: clusterId, messageId, widgetId, body' })
+  }
+
+  const cluster = getCluster(clusterId)
+  if (!cluster) return sendJson(res, 404, { error: `Cluster ${clusterId} not found` })
+
+  // Publish the response to the cluster channel
+  const event = await publish(cluster.channel, {
+    channel: cluster.channel,
+    type: 'cluster:message:response',
+    senderId: widgetId,
+    body: parsed.body,
+    correlationId: messageId,
+    payload: { clusterId, messageId },
+  })
+
+  // Resolve the token
+  const result = resolveTokenByWidget(messageId, widgetId, event.id)
+  if (!result.ok) return sendJson(res, 400, { error: result.error })
+
+  const roundStatus = getRoundStatus(messageId)
+
+  return await sendNegotiated(req, res, 200, {
+    ok: true,
+    responseId: event.id,
+    round: roundStatus,
+    nextToken: result.nextToken ? {
+      tokenId: result.nextToken.tokenId,
+      widgetId: result.nextToken.widgetId,
+      order: result.nextToken.order,
+    } : null,
+    allResolved: result.allResolved,
+  })
+}
+
+/**
+ * POST /conversation/start — Start a new conversation.
+ * Body: { clusterId, senderId }
+ */
+async function handleConversationStart(req, res, body, sendJson) {
+  const parsed = await parseRequestBody(body, req.headers?.['content-type'])
+  const { clusterId, senderId } = parsed
+
+  if (!clusterId || !senderId) {
+    return sendJson(res, 400, { error: 'Missing required fields: clusterId, senderId' })
+  }
+
+  const result = await startConversation(clusterId, senderId)
+  if (!result.ok) return sendJson(res, 400, { error: result.error })
+  return await sendNegotiated(req, res, 201, { ok: true, conversationId: result.conversationId })
+}
+
+/**
+ * POST /conversation/finality — Signal conversation finality.
+ * Body: { clusterId, senderId, summary, successor? }
+ */
+async function handleConversationFinality(req, res, body, sendJson) {
+  const parsed = await parseRequestBody(body, req.headers?.['content-type'])
+  const { clusterId, senderId, summary, successor } = parsed
+
+  if (!clusterId || !senderId) {
+    return sendJson(res, 400, { error: 'Missing required fields: clusterId, senderId' })
+  }
+
+  const result = await signalFinality(clusterId, senderId, summary || '', successor || null)
+  if (!result.ok) return sendJson(res, 400, { error: result.error })
+  return await sendNegotiated(req, res, 200, { ok: true })
+}
+
+/**
+ * POST /conversation/reopen — Reopen a finalized conversation.
+ * Body: { clusterId, senderId, conversationId, body }
+ */
+async function handleConversationReopen(req, res, body, sendJson) {
+  const parsed = await parseRequestBody(body, req.headers?.['content-type'])
+  const { clusterId, senderId, conversationId } = parsed
+
+  if (!clusterId || !senderId || !conversationId) {
+    return sendJson(res, 400, { error: 'Missing required fields: clusterId, senderId, conversationId' })
+  }
+
+  const result = await reopenConversation(clusterId, senderId, conversationId, parsed.body || '')
+  if (!result.ok) return sendJson(res, 400, { error: result.error })
+  return await sendNegotiated(req, res, 200, { ok: true })
 }
 
 // ---------------------------------------------------------------------------
