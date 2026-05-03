@@ -1107,7 +1107,8 @@ export function createCanvasHandler(ctx) {
 
       try {
         const data = readCanvas(filePath)
-        const widgetIds = new Set((data.widgets || []).map((w) => w.id))
+        const widgets = data.widgets || []
+        const widgetIds = new Set(widgets.map((w) => w.id))
         if (!widgetIds.has(startWidgetId)) {
           sendJson(res, 404, { error: `Widget "${startWidgetId}" not found` })
           return
@@ -1117,6 +1118,17 @@ export function createCanvasHandler(ctx) {
           return
         }
 
+        // Auto-enable broadcast when connecting two agent/terminal widgets
+        const widgetMap = new Map(widgets.map((w) => [w.id, w]))
+        const startW = widgetMap.get(startWidgetId)
+        const endW = widgetMap.get(endWidgetId)
+        const agentTypes = new Set(['agent', 'terminal'])
+        const autoMessaging = agentTypes.has(startW?.type) && agentTypes.has(endW?.type)
+        const resolvedMeta = meta && typeof meta === 'object' ? { ...meta } : {}
+        if (autoMessaging && !resolvedMeta.messagingMode) {
+          resolvedMeta.messagingMode = 'two-way'
+        }
+
         const connectorId = generateWidgetId('connector')
         const connector = {
           id: connectorId,
@@ -1124,7 +1136,7 @@ export function createCanvasHandler(ctx) {
           connectorType,
           start: { widgetId: startWidgetId, anchor: startAnchor },
           end: { widgetId: endWidgetId, anchor: endAnchor },
-          meta: meta && typeof meta === 'object' ? { ...meta } : {},
+          meta: resolvedMeta,
         }
 
         appendEvent(filePath, {
@@ -1587,6 +1599,15 @@ export function createCanvasHandler(ctx) {
                 if (!widgetIds.has(startWidgetId)) throw new Error(`Widget "${startWidgetId}" not found`)
                 if (!widgetIds.has(endWidgetId)) throw new Error(`Widget "${endWidgetId}" not found`)
 
+                // Auto-enable broadcast when connecting two agent/terminal widgets
+                const startW = widgetMap.get(startWidgetId)
+                const endW = widgetMap.get(endWidgetId)
+                const agentTypesSet = new Set(['agent', 'terminal'])
+                const connMeta = op.meta && typeof op.meta === 'object' ? { ...op.meta } : {}
+                if (agentTypesSet.has(startW?.type) && agentTypesSet.has(endW?.type) && !connMeta.messagingMode) {
+                  connMeta.messagingMode = 'two-way'
+                }
+
                 const connectorId = generateWidgetId('connector')
                 const connector = {
                   id: connectorId,
@@ -1594,7 +1615,7 @@ export function createCanvasHandler(ctx) {
                   connectorType,
                   start: { widgetId: startWidgetId, anchor: startAnchor },
                   end: { widgetId: endWidgetId, anchor: endAnchor },
-                  meta: {},
+                  meta: connMeta,
                 }
 
                 appendEvent(filePath, { event: 'connector_added', timestamp: ts, connector })
