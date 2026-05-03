@@ -94,7 +94,11 @@ const TMUX_SHELL_OVERRIDES = {
   ZSH_THEME: '',
   TERM_PROGRAM: 'storyboard',
   COLORTERM: 'truecolor',
+  FORCE_COLOR: '3',
 }
+
+/** Env vars that suppress color in supports-color based CLIs — must be unset in tmux global env */
+const TMUX_COLOR_SUPPRESS_UNSET = ['CI', 'NO_COLOR', 'GITHUB_ACTIONS']
 
 /** Apply shell-config overrides to the tmux server's global environment */
 function applyTmuxShellOverrides() {
@@ -106,6 +110,10 @@ function applyTmuxShellOverrides() {
     if (isShellConfigVar(key) && !(key in TMUX_SHELL_OVERRIDES)) {
       try { execSync(`tmux set-environment -g -u ${key} 2>/dev/null`, { stdio: 'ignore' }) } catch { /* empty */ }
     }
+  }
+  // Unset color-suppressing vars from tmux global env
+  for (const key of TMUX_COLOR_SUPPRESS_UNSET) {
+    try { execSync(`tmux set-environment -g -u ${key} 2>/dev/null`, { stdio: 'ignore' }) } catch { /* empty */ }
   }
 }
 
