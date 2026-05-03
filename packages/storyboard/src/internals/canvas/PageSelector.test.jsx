@@ -69,7 +69,8 @@ describe('PageSelector', () => {
     fireEvent.click(screen.getByTitle('Switch canvas page'))
     // Click the option in the menu (not the trigger label)
     const options = screen.getAllByRole('option')
-    fireEvent.click(options[1]) // Surveys
+    const link = options[1].querySelector('a')
+    fireEvent.click(link) // Surveys
 
     // Navigation uses a 300ms setTimeout for mouse clicks
     await waitFor(() => {

@@ -25,6 +25,11 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./vitest.setup.js'],
     include: ['packages/storyboard/src/**/*.test.{js,jsx}'],
+    server: {
+      deps: {
+        inline: [/@primer\//],
+      },
+    },
     exclude: [
       'packages/storyboard/src/core/comments/ui/authModal.test.js',
       'packages/storyboard/src/core/devtools.test.js',

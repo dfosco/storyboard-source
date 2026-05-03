@@ -53,6 +53,10 @@ vi.mock('./widgets/widgetConfig.js', async () => {
   return {
     getFeatures: () => [],
     isResizable: () => false,
+    isExpandable: () => false,
+    getAnchorState: () => ({}),
+    canAcceptConnection: () => false,
+    isSplitScreenCapable: () => false,
     schemas: {},
     getMenuWidgetTypes: () => [],
     getConnectorDefaults: actual.getConnectorDefaults,
