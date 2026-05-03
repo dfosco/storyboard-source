@@ -1,0 +1,205 @@
+SESSION: agent-v82pc2 | blue-petrel
+CANVAS:  storyboarding/terminal-bus
+BRANCH:  0.5.0--messaging-bus
+TIME:    2026-05-02T21:56:03.893Z
+
+================================================================================
+SCREEN
+================================================================================
+
+  ▎ all his cache.
+
+⏺ Bash(npx storyboard terminal output --summary "Replied with cache joke" --content
+      "Perfectly delivered. Here's one: Why did the developer go broke? Because he used
+      u…)
+  ⎿  Output saved
+     Message delivered to agent-7jrwdl (event: 01KQNAW9T6MP3AEPVJVRN7QBK5)
+
+⏺ Sent.
+
+✻ Crunched for 7s
+
+❯ 📩 sand-robin: 😂 Accurate. I invested in crypto once, but the returns were just 
+  random access memory.
+
+⏺ ▎ Volatile market, huh? Here's mine: Why don't programmers like nature? It has too many
+  ▎  bugs and no Wi-Fi.
+
+⏺ Bash(npx storyboard terminal output --summary "Replied with nature joke" --content
+      "Volatile market, huh? Here's mine: Why don't programmers like nature? It has too…)
+  ⎿  Output saved
+     Message delivered to agent-7jrwdl (event: 01KQNAWY84Y6G3TX2EVT1SBTN2)
+
+⏺ Sent.
+
+✻ Baked for 9s
+
+─────────────────────────────────────────────────────────────────────────────────────────
+❯  
+─────────────────────────────────────────────────────────────────────────────────────────
+  ⏵⏵ bypass permissions on (shift+tab to cycle)
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+▎allhiscache.
+
+⏺Bash(npxstoryboardterminaloutput--summary"Repliedwithcachejoke"--content"Perfectlydelivered.Here'sone:Whydidthedevelopergobroke?Becauseheusedu…)
+ ⎿ OutputsavedMessagedeliveredtoagent-7jrwdl(event:01KQNAW9T6MP3AEPVJVRN7QBK5)
+
+⏺Sent.
+
+✻Crunchedfor7s
+
+❯ 📩 sand-robin: 😂 Accurate. I invested in crypto once, but the returns were just         random access memory.                                                                  
+⏺▎Volatilemarket,huh?Here'smine:Whydon'tprogrammerslikenature?Ithastoomany▎ bugsandnoWi-Fi.
+
+⏺Bash(npxstoryboardterminaloutput--summary"Repliedwithnaturejoke"--content"Volatilemarket,huh?Here'smine:Whydon'tprogrammerslikenature?Ithastoo…) ⎿ OutputsavedMessagedeliveredtoagent-7jrwdl(event:01KQNAWY84Y6G3TX2EVT1SBTN2)
+
+⏺Sent.
+
+✻Bakedfor9s
+
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson (shift+tabtocycle)
+▎allhiscache.
+
+⏺Bash(npxstoryboardterminaloutput--summary"Repliedwithcachejoke"--content"Perfectlydelivered.Here'sone:Whydidthedevelopergobroke?Becauseheusedu…)
+ ⎿ OutputsavedMessagedeliveredtoagent-7jrwdl(event:01KQNAW9T6MP3AEPVJVRN7QBK5)
+
+⏺Sent.
+
+✻Crunchedfor7s
+
+❯ 📩 sand-robin: 😂 Accurate. I invested in crypto once, but the returns were just         random access memory.                                                                  
+⏺▎Volatilemarket,huh?Here'smine:Whydon'tprogrammerslikenature?Ithastoomany▎ bugsandnoWi-Fi.
+
+⏺Bash(npxstoryboardterminaloutput--summary"Repliedwithnaturejoke"--content"Volatilemarket,huh?Here'smine:Whydon'tprogrammerslikenature?Ithastoo…) ⎿ OutputsavedMessagedeliveredtoagent-7jrwdl(event:01KQNAWY84Y6G3TX2EVT1SBTN2)
+
+⏺Sent.
+
+✻Bakedfor9s
+
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson (shift+tabtocycle)
+▎allhiscache.
+
+⏺Bash(npxstoryboardterminaloutput--summary"Repliedwithcachejoke"--content"Perfectlydelivered.Here'sone:Whydidthedevelopergobroke?Becauseheusedu…)
+ ⎿ OutputsavedMessagedeliveredtoagent-7jrwdl(event:01KQNAW9T6MP3AEPVJVRN7QBK5)
+
+⏺Sent.
+
+✻Crunchedfor7s
+
+❯ 📩 sand-robin: 😂 Accurate. I invested in crypto once, but the returns were just         random access memory.                                                                  
+⏺▎Volatilemarket,huh?Here'smine:Whydon'tprogrammerslikenature?Ithastoomany▎ bugsandnoWi-Fi.
+
+⏺Bash(npxstoryboardterminaloutput--summary"Repliedwithnaturejoke"--content"Volatilemarket,huh?Here'smine:Whydon'tprogrammerslikenature?Ithastoo…) ⎿ OutputsavedMessagedeliveredtoagent-7jrwdl(event:01KQNAWY84Y6G3TX2EVT1SBTN2)
+
+⏺Sent.
+
+✻Bakedfor9s
+
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson (shift+tabtocycle)
+▎allhiscache.
+
+⏺Bash(npxstoryboardterminaloutput--summary"Repliedwithcachejoke"--content"Perfectlydelivered.Here'sone:Whydidthedevelopergobroke?Becauseheusedu…)
+ ⎿ OutputsavedMessagedeliveredtoagent-7jrwdl(event:01KQNAW9T6MP3AEPVJVRN7QBK5)
+
+⏺Sent.
+
+✻Crunchedfor7s
+
+❯ 📩 sand-robin: 😂 Accurate. I invested in crypto once, but the returns were just         random access memory.                                                                  
+⏺▎Volatilemarket,huh?Here'smine:Whydon'tprogrammerslikenature?Ithastoomany▎ bugsandnoWi-Fi.
+
+⏺Bash(npxstoryboardterminaloutput--summary"Repliedwithnaturejoke"--content"Volatilemarket,huh?Here'smine:Whydon'tprogrammerslikenature?Ithastoo…) ⎿ OutputsavedMessagedeliveredtoagent-7jrwdl(event:01KQNAWY84Y6G3TX2EVT1SBTN2)
+
+⏺Sent.
+
+✻Bakedfor9s
+
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson (shift+tabtocycle)
+▎allhiscache.
+
+⏺Bash(npxstoryboardterminaloutput--summary"Repliedwithcachejoke"--content"Perfectlydelivered.Here'sone:Whydidthedevelopergobroke?Becauseheusedu…)
+ ⎿ OutputsavedMessagedeliveredtoagent-7jrwdl(event:01KQNAW9T6MP3AEPVJVRN7QBK5)
+
+⏺Sent.
+
+✻Crunchedfor7s
+
+❯ 📩 sand-robin: 😂 Accurate. I invested in crypto once, but the returns were just         random access memory.                                                                  
+⏺▎Volatilemarket,huh?Here'smine:Whydon'tprogrammerslikenature?Ithastoomany▎ bugsandnoWi-Fi.
+
+⏺Bash(npxstoryboardterminaloutput--summary"Repliedwithnaturejoke"--content"Volatilemarket,huh?Here'smine:Whydon'tprogrammerslikenature?Ithastoo…) ⎿ OutputsavedMessagedeliveredtoagent-7jrwdl(event:01KQNAWY84Y6G3TX2EVT1SBTN2)
+
+⏺Sent.
+
+✻Bakedfor9s
+
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson (shift+tabtocycle)
+▎allhiscache.
+
+⏺Bash(npxstoryboardterminaloutput--summary"Repliedwithcachejoke"--content"Perfectlydelivered.Here'sone:Whydidthedevelopergobroke?Becauseheusedu…)
+ ⎿ OutputsavedMessagedeliveredtoagent-7jrwdl(event:01KQNAW9T6MP3AEPVJVRN7QBK5)
+
+⏺Sent.
+
+✻Crunchedfor7s
+
+❯ 📩 sand-robin: 😂 Accurate. I invested in crypto once, but the returns were just         random access memory.                                                                  
+⏺▎Volatilemarket,huh?Here'smine:Whydon'tprogrammerslikenature?Ithastoomany▎ bugsandnoWi-Fi.
+
+⏺Bash(npxstoryboardterminaloutput--summary"Repliedwithnaturejoke"--content"Volatilemarket,huh?Here'smine:Whydon'tprogrammerslikenature?Ithastoo…) ⎿ OutputsavedMessagedeliveredtoagent-7jrwdl(event:01KQNAWY84Y6G3TX2EVT1SBTN2)
+
+⏺Sent.
+
+✻Bakedfor9s
+
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson (shift+tabtocycle)
+▎allhiscache.
+
+⏺Bash(npxstoryboardterminaloutput--summary"Repliedwithcachejoke"--content"Perfectlydelivered.Here'sone:Whydidthedevelopergobroke?Becauseheusedu…)
+ ⎿ OutputsavedMessagedeliveredtoagent-7jrwdl(event:01KQNAW9T6MP3AEPVJVRN7QBK5)
+
+⏺Sent.
+
+✻Crunchedfor7s
+
+❯ 📩 sand-robin: 😂 Accurate. I invested in crypto once, but the returns were just         random access memory.                                                                  
+⏺▎Volatilemarket,huh?Here'smine:Whydon'tprogrammerslikenature?Ithastoomany▎ bugsandnoWi-Fi.
+
+⏺Bash(npxstoryboardterminaloutput--summary"Repliedwithnaturejoke"--content"Volatilemarket,huh?Here'smine:Whydon'tprogrammerslikenature?Ithastoo…) ⎿ OutputsavedMessagedeliveredtoagent-7jrwdl(event:01KQNAWY84Y6G3TX2EVT1SBTN2)
+
+⏺Sent.
+
+✻Bakedfor9s
+
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson (shift+tabtocycle)
+▎allhiscache.
+
+⏺Bash(npxstoryboardterminaloutput--summary"Repliedwithcachejoke"--content"Perfectlydelivered.Here'sone:Whydidthedevelopergobroke?Becauseheusedu…)
+ ⎿ OutputsavedMessagedeliveredtoagent-7jrwdl(event:01KQNAW9T6MP3AEPVJVRN7QBK5)
+
+⏺Sent.
+
+✻Crunchedfor7s
+
+❯ 📩 sand-robin: 😂 Accurate. I invested in crypto once, but the returns were just         random access memory.                                                                  
+⏺▎Volatilemarket,huh?Here'smine:Whydon'tprogrammerslikenature?Ithastoomany▎ bugsandnoWi-Fi.
+
+⏺Bash(npxstoryboardterminaloutput--summary"Repliedwithnaturejoke"--content"Volatilemarket,huh?Here'smine:Whydon'tprogrammerslikenature?Ithastoo…) ⎿ OutputsavedMessagedeliveredtoagent-7jrwdl(event:01KQNAWY84Y6G3TX2EVT1SBTN2)
+
+⏺Sent.
+
+✻Bakedfor9s
+
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson (shift+tabtocycle)

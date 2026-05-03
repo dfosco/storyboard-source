@@ -1,323 +1,207 @@
 SESSION: agent-cwovi6 | maple-shrike
 CANVAS:  storyboarding/terminal-widget-prompts
-BRANCH:  4.2.5
-TIME:    2026-05-01T19:15:42.474Z
+BRANCH:  0.5.0--messaging-bus
+TIME:    2026-05-03T07:56:47.283Z
 
 ================================================================================
 SCREEN
 ================================================================================
 
-ompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
-│
-●  name: maple-shrike  branch: 4.2.5  canvas: terminal-widget-prompts
-│
-└  Starting Codex CLI...
 
-╭─────────────────────────────────────────────────────────╮
-│ >_ OpenAI Codex (v0.128.0)                              │
-│                                                         │
-│ model:     o4-mini medium   /model to change            │
-│ directory: ~/workspace/storyboard-core/.worktrees/4.2.5 │
-╰─────────────────────────────────────────────────────────╯
+• Ran # Verifying STORYBOARD_WIDGET_ID and reading config
+  │ if [ -z "$STORYBOARD_WIDGET_ID" ]; then
+  │   ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1) && source
+  │ … +3 lines
+  └ {
+      "widgetId": "agent-i8lgz5",
+    … +25 lines (ctrl + t to view transcript)
+      "hubs": []
+    }
 
-  Tip: New Build faster with the Codex App. Run 'codex app' or visit
-  https://chatgpt.com/codex?app-landing-page=true
+─────────────────────────────────────────────────────────────────────────────────────────
+
+• Configuration loaded from .storyboard/terminals/agent-i8lgz5.json:
+
+  - widgetId: agent-i8lgz5
+  - displayName: silver-thrush
+  - canvasId: storyboarding/terminal-widget-prompts
+  - branch/worktree: 0.5.0--messaging-bus
+  - devDomain: storyboard-core
+  - serverUrl: http://localhost:1239
+  - workingDirectory: /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-
+    bus
+
+  No further action needed.
+
+─────────────────────────────────────────────────────────────────────────────────────────
 
 
-› [System] Your terminal identity has been set. widgetId=agent-cwovi6 displayName=maple-
-  shrike canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/
-  terminals/agent-cwovi6.json serverUrl=http://localhost:1236 — this is a configuration
-  step, no response needed.
+› Explain this codebase
 
-
-⚠ Model metadata for `o4-mini` not found. Defaulting to fallback metadata; this can
-  degrade performance and cause issues.
-
-
-› Implement {feature}
-
-  o4-mini medium · ~/workspace/storyboard-core/.worktrees/4.2.5
+  o4-mini medium · ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
 
 ================================================================================
 SCROLLBACK (last 60s)
 ================================================================================
 
-[lost tty]
-[?996n[>c[>qompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
-│
-●  name: maple-shrike  branch: 4.2.5  canvas: terminal-widget-prompts
-│
-└  Starting Codex CLI...
-
-╭─────────────────────────────────────────────────────────╮
-│ >_ OpenAI Codex (v0.128.0)                              │
-│                                                         │
-│ model:     o4-mini medium   /model to change            │
-│ directory: ~/workspace/storyboard-core/.worktrees/4.2.5 │
-╰─────────────────────────────────────────────────────────╯
-
-  Tip: New Build faster with the Codex App. Run 'codex app' or visit
-  https://chatgpt.com/codex?app-landing-page=true
-
-
-› [System] Your terminal identity has been set. widgetId=agent-cwovi6 displayName=maple-
-  shrike canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/
-  terminals/agent-cwovi6.json serverUrl=http://localhost:1236 — this is a configuration
-  step, no response needed.
-
-
-⚠ Model metadata for `o4-mini` not found. Defaulting to fallback metadata; this can
-  degrade performance and cause issues.
-
-
-›Implement {feature}
-
-  o4-mini medium · ~/workspace/storyboard-core/.worktrees/4.2.5
-
-ompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
-│
-●  name: maple-shrike  branch: 4.2.5  canvas: terminal-widget-prompts
-│
-└  Starting Codex CLI...
-
-╭─────────────────────────────────────────────────────────╮
-│ >_ OpenAI Codex (v0.128.0)                              │
-│                                                         │
-│ model:     o4-mini medium   /model to change            │
-│ directory: ~/workspace/storyboard-core/.worktrees/4.2.5 │
-╰─────────────────────────────────────────────────────────╯
-
-  Tip: New Build faster with the Codex App. Run 'codex app' or visit
-  https://chatgpt.com/codex?app-landing-page=true
-
-
-› [System] Your terminal identity has been set. widgetId=agent-cwovi6 displayName=maple-
-  shrike canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/
-  terminals/agent-cwovi6.json serverUrl=http://localhost:1236 — this is a configuration
-  step, no response needed.
-
-
-⚠ Model metadata for `o4-mini` not found. Defaulting to fallback metadata; this can
-  degrade performance and cause issues.
-
-
-›Implement {feature}
-
-  o4-mini medium · ~/workspace/storyboard-core/.worktrees/4.2.5
-
-ompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
-│
-●  name: maple-shrike  branch: 4.2.5  canvas: terminal-widget-prompts
-│
-└  Starting Codex CLI...
-
-╭─────────────────────────────────────────────────────────╮
-│ >_ OpenAI Codex (v0.128.0)                              │
-│                                                         │
-│ model:     o4-mini medium   /model to change            │
-│ directory: ~/workspace/storyboard-core/.worktrees/4.2.5 │
-╰─────────────────────────────────────────────────────────╯
-
-  Tip: New Build faster with the Codex App. Run 'codex app' or visit
-  https://chatgpt.com/codex?app-landing-page=true
-
-
-› [System] Your terminal identity has been set. widgetId=agent-cwovi6 displayName=maple-
-  shrike canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/
-  terminals/agent-cwovi6.json serverUrl=http://localhost:1236 — this is a configuration
-  step, no response needed.
-
-
-⚠ Model metadata for `o4-mini` not found. Defaulting to fallback metadata; this can
-  degrade performance and cause issues.
-
-
-›Implement {feature}
-
-  o4-mini medium · ~/workspace/storyboard-core/.worktrees/4.2.5
-
-ompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
-│
-●  name: maple-shrike  branch: 4.2.5  canvas: terminal-widget-prompts
-│
-└  Starting Codex CLI...
-
-╭─────────────────────────────────────────────────────────╮
-│ >_ OpenAI Codex (v0.128.0)                              │
-│                                                         │
-│ model:     o4-mini medium   /model to change            │
-│ directory: ~/workspace/storyboard-core/.worktrees/4.2.5 │
-╰─────────────────────────────────────────────────────────╯
-
-  Tip: New Build faster with the Codex App. Run 'codex app' or visit
-  https://chatgpt.com/codex?app-landing-page=true
-
-
-› [System] Your terminal identity has been set. widgetId=agent-cwovi6 displayName=maple-
-  shrike canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/
-  terminals/agent-cwovi6.json serverUrl=http://localhost:1236 — this is a configuration
-  step, no response needed.
-
-
-⚠ Model metadata for `o4-mini` not found. Defaulting to fallback metadata; this can
-  degrade performance and cause issues.
-
-
-›Implement {feature}
-
-  o4-mini medium · ~/workspace/storyboard-core/.worktrees/4.2.5
-
-ompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
-│
-●  name: maple-shrike  branch: 4.2.5  canvas: terminal-widget-prompts
-│
-└  Starting Codex CLI...
-
-╭─────────────────────────────────────────────────────────╮
-│ >_ OpenAI Codex (v0.128.0)                              │
-│                                                         │
-│ model:     o4-mini medium   /model to change            │
-│ directory: ~/workspace/storyboard-core/.worktrees/4.2.5 │
-╰─────────────────────────────────────────────────────────╯
-
-  Tip: New Build faster with the Codex App. Run 'codex app' or visit
-  https://chatgpt.com/codex?app-landing-page=true
-
-
-› [System] Your terminal identity has been set. widgetId=agent-cwovi6 displayName=maple-
-  shrike canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/
-  terminals/agent-cwovi6.json serverUrl=http://localhost:1236 — this is a configuration
-  step, no response needed.
-
-
-⚠ Model metadata for `o4-mini` not found. Defaulting to fallback metadata; this can
-  degrade performance and cause issues.
-
-
-›Implement {feature}
-
-  o4-mini medium · ~/workspace/storyboard-core/.worktrees/4.2.5
-
-ompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
-│
-●  name: maple-shrike  branch: 4.2.5  canvas: terminal-widget-prompts
-│
-└  Starting Codex CLI...
-
-╭─────────────────────────────────────────────────────────╮
-│ >_ OpenAI Codex (v0.128.0)                              │
-│                                                         │
-│ model:     o4-mini medium   /model to change            │
-│ directory: ~/workspace/storyboard-core/.worktrees/4.2.5 │
-╰─────────────────────────────────────────────────────────╯
-
-  Tip: New Build faster with the Codex App. Run 'codex app' or visit
-  https://chatgpt.com/codex?app-landing-page=true
-
-
-› [System] Your terminal identity has been set. widgetId=agent-cwovi6 displayName=maple-
-  shrike canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/
-  terminals/agent-cwovi6.json serverUrl=http://localhost:1236 — this is a configuration
-  step, no response needed.
-
-
-⚠ Model metadata for `o4-mini` not found. Defaulting to fallback metadata; this can
-  degrade performance and cause issues.
-
-
-›Implement {feature}
-
-  o4-mini medium · ~/workspace/storyboard-core/.worktrees/4.2.5
-
-ompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
-│
-●  name: maple-shrike  branch: 4.2.5  canvas: terminal-widget-prompts
-│
-└  Starting Codex CLI...
-
-╭─────────────────────────────────────────────────────────╮
-│ >_ OpenAI Codex (v0.128.0)                              │
-│                                                         │
-│ model:     o4-mini medium   /model to change            │
-│ directory: ~/workspace/storyboard-core/.worktrees/4.2.5 │
-╰─────────────────────────────────────────────────────────╯
-
-  Tip: New Build faster with the Codex App. Run 'codex app' or visit
-  https://chatgpt.com/codex?app-landing-page=true
-
-
-› [System] Your terminal identity has been set. widgetId=agent-cwovi6 displayName=maple-
-  shrike canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/
-  terminals/agent-cwovi6.json serverUrl=http://localhost:1236 — this is a configuration
-  step, no response needed.
-
-
-⚠ Model metadata for `o4-mini` not found. Defaulting to fallback metadata; this can
-  degrade performance and cause issues.
-
-
-›Implement {feature}
-
-  o4-mini medium · ~/workspace/storyboard-core/.worktrees/4.2.5
-
-ompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
-│
-●  name: maple-shrike  branch: 4.2.5  canvas: terminal-widget-prompts
-│
-└  Starting Codex CLI...
-
-╭─────────────────────────────────────────────────────────╮
-│ >_ OpenAI Codex (v0.128.0)                              │
-│                                                         │
-│ model:     o4-mini medium   /model to change            │
-│ directory: ~/workspace/storyboard-core/.worktrees/4.2.5 │
-╰─────────────────────────────────────────────────────────╯
-
-  Tip: New Build faster with the Codex App. Run 'codex app' or visit
-  https://chatgpt.com/codex?app-landing-page=true
-
-
-› [System] Your terminal identity has been set. widgetId=agent-cwovi6 displayName=maple-
-  shrike canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/
-  terminals/agent-cwovi6.json serverUrl=http://localhost:1236 — this is a configuration
-  step, no response needed.
-
-
-⚠ Model metadata for `o4-mini` not found. Defaulting to fallback metadata; this can
-  degrade performance and cause issues.
-
-
-›Implement {feature}
-
-  o4-mini medium · ~/workspace/storyboard-core/.worktrees/4.2.5
-
-ompts" --name "maple-shrike" --startup "codex --ask-for-approval never"
-│
-●  name: maple-shrike  branch: 4.2.5  canvas: terminal-widget-prompts
-│
-└  Starting Codex CLI...
-
-╭─────────────────────────────────────────────────────────╮
-│ >_ OpenAI Codex (v0.128.0)                              │
-│                                                         │
-│ model:     o4-mini medium   /model to change            │
-│ directory: ~/workspace/storyboard-core/.worktrees/4.2.5 │
-╰─────────────────────────────────────────────────────────╯
-
-  Tip: New Build faster with the Codex App. Run 'codex app' or visit
-  https://chatgpt.com/codex?app-landing-page=true
-
-
-› [System] Your terminal identity has been set. widgetId=agent-cwovi6 displayName=maple-
-  shrike canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/
-  terminals/agent-cwovi6.json serverUrl=http://localhost:1236 — this is a configuration
-  step, no response needed.
-
-
-⚠ Model metadata for `o4-mini` not found. Defaulting to fallback metadata; this can
-  degrade performance and cause issues.
-
-
-›Implement {feature}
-
-  o4-mini medium · ~/workspace/storyboard-core/.worktrees/4.2.5
+[?996n[>c[>q    }
+
+─────────────────────────────────────────────────────────────────────────────────────────
+
+• Configuration loaded from .storyboard/terminals/agent-i8lgz5.json:
+
+  - widgetId: agent-i8lgz5
+  - displayName: silver-thrush
+  - canvasId: storyboarding/terminal-widget-prompts
+  - branch/worktree: 0.5.0--messaging-bus
+  - devDomain: storyboard-core
+  - serverUrl: http://localhost:1239
+  - workingDirectory: /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-
+    bus
+
+  No further action needed.
+
+─────────────────────────────────────────────────────────────────────────────────────────
+
+
+›Explain this codebase
+• Ran # Verifying STORYBOARD_WIDGET_ID and reading config
+  │ if [ -z "$STORYBOARD_WIDGET_ID" ]; then
+  │   ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1) && source
+  │ … +3 lines
+  └ {
+      "widgetId": "agent-i8lgz5",
+    … +25 lines (ctrl + t to view transcript)
+      "hubs": []
+    }
+
+─────────────────────────────────────────────────────────────────────────────────────────
+• Configuration loaded from .storyboard/terminals/agent-i8lgz5.json:
+
+  - widgetId: agent-i8lgz5
+  - displayName: silver-thrush
+  - canvasId: storyboarding/terminal-widget-prompts
+  - branch/worktree: 0.5.0--messaging-bus
+  - devDomain: storyboard-core
+  - serverUrl: http://localhost:1239
+  - workingDirectory: /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-    bus
+
+  No further action needed.
+
+─────────────────────────────────────────────────────────────────────────────────────────
+
+›Explain this codebase
+
+  o4-mini medium · ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+• Ran # Verifying STORYBOARD_WIDGET_ID and reading config
+  │ if [ -z "$STORYBOARD_WIDGET_ID" ]; then
+  │   ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1) && source
+  │ … +3 lines
+  └ {
+      "widgetId": "agent-i8lgz5",
+    … +25 lines (ctrl + t to view transcript)
+      "hubs": []
+    }
+
+─────────────────────────────────────────────────────────────────────────────────────────
+• Configuration loaded from .storyboard/terminals/agent-i8lgz5.json:
+
+  - widgetId: agent-i8lgz5
+  - displayName: silver-thrush
+  - canvasId: storyboarding/terminal-widget-prompts
+  - branch/worktree: 0.5.0--messaging-bus
+  - devDomain: storyboard-core
+  - serverUrl: http://localhost:1239
+  - workingDirectory: /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-    bus
+
+  No further action needed.
+
+─────────────────────────────────────────────────────────────────────────────────────────
+
+›Explain this codebase
+
+  o4-mini medium · ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+• Ran # Verifying STORYBOARD_WIDGET_ID and reading config
+  │ if [ -z "$STORYBOARD_WIDGET_ID" ]; then
+  │   ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1) && source
+  │ … +3 lines
+  └ {
+      "widgetId": "agent-i8lgz5",
+    … +25 lines (ctrl + t to view transcript)
+      "hubs": []
+    }
+
+─────────────────────────────────────────────────────────────────────────────────────────
+• Configuration loaded from .storyboard/terminals/agent-i8lgz5.json:
+
+  - widgetId: agent-i8lgz5
+  - displayName: silver-thrush
+  - canvasId: storyboarding/terminal-widget-prompts
+  - branch/worktree: 0.5.0--messaging-bus
+  - devDomain: storyboard-core
+  - serverUrl: http://localhost:1239
+  - workingDirectory: /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-    bus
+
+  No further action needed.
+
+─────────────────────────────────────────────────────────────────────────────────────────
+
+›Explain this codebase
+
+  o4-mini medium · ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+• Ran # Verifying STORYBOARD_WIDGET_ID and reading config
+  │ if [ -z "$STORYBOARD_WIDGET_ID" ]; then
+  │   ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1) && source
+  │ … +3 lines
+  └ {
+      "widgetId": "agent-i8lgz5",
+    … +25 lines (ctrl + t to view transcript)
+      "hubs": []
+    }
+
+─────────────────────────────────────────────────────────────────────────────────────────
+• Configuration loaded from .storyboard/terminals/agent-i8lgz5.json:
+
+  - widgetId: agent-i8lgz5
+  - displayName: silver-thrush
+  - canvasId: storyboarding/terminal-widget-prompts
+  - branch/worktree: 0.5.0--messaging-bus
+  - devDomain: storyboard-core
+  - serverUrl: http://localhost:1239
+  - workingDirectory: /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-    bus
+
+  No further action needed.
+
+─────────────────────────────────────────────────────────────────────────────────────────
+
+›Explain this codebase
+
+  o4-mini medium · ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus
+• Ran # Verifying STORYBOARD_WIDGET_ID and reading config
+  │ if [ -z "$STORYBOARD_WIDGET_ID" ]; then
+  │   ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1) && source
+  │ … +3 lines
+  └ {
+      "widgetId": "agent-i8lgz5",
+    … +25 lines (ctrl + t to view transcript)
+      "hubs": []
+    }
+
+─────────────────────────────────────────────────────────────────────────────────────────
+• Configuration loaded from .storyboard/terminals/agent-i8lgz5.json:
+
+  - widgetId: agent-i8lgz5
+  - displayName: silver-thrush
+  - canvasId: storyboarding/terminal-widget-prompts
+  - branch/worktree: 0.5.0--messaging-bus
+  - devDomain: storyboard-core
+  - serverUrl: http://localhost:1239
+  - workingDirectory: /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-    bus
+
+  No further action needed.
+
+─────────────────────────────────────────────────────────────────────────────────────────
+
+›Explain this codebase
+
+  o4-mini medium · ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus

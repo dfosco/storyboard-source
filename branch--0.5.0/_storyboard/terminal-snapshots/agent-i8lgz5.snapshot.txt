@@ -1,307 +1,123 @@
 SESSION: agent-i8lgz5 | silver-thrush
 CANVAS:  storyboarding/terminal-widget-prompts
-BRANCH:  4.2.5
-TIME:    2026-05-01T19:15:42.522Z
+BRANCH:  0.5.0--messaging-bus
+TIME:    2026-05-03T07:56:47.262Z
 
 ================================================================================
 SCREEN
 ================================================================================
 
+╭───────────────────────────────────────────────────────────────────────────────────────╮
+│                                         ╭─╮╭─╮                                        │
+│                                         ╰─╯╰─╯                                        │
+│                                         █ ▘▝ █                                        │
+│                                          ▔▔▔▔                                         │
+│                                 GitHub Copilot v1.0.40                                │
+│                          Copilot uses AI. Check for mistakes.                         │
+│                                                                                       │
+╰───────────────────────────────────────────────────────────────────────────────────────╯
 
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server, 2 agents, Visual
+● Selected custom agent: terminal-agent
+
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents, Visual
   Studio Code - Insiders connected
 
 ● All permissions are now enabled. Tool, path, and URL requests will be automatically
   approved.
 
+
+
+
+
+
+ ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*]
+─────────────────────────────────────────────────────────────────────────────────────────
 ❯ [System] Your terminal identity has been set. widgetId=agent-i8lgz5
   displayName=silver-thrush canvasId=storyboarding/terminal-widget-prompts
-  configFile=.storyboard/terminals/agent-i8lgz5.json serverUrl=http://localhost:1236 —
-  this is a configuration step, no response needed.
-
-● Read terminal config (shell)
-  │ cat .storyboard/terminals/agent-i8lgz5.json 2>/dev/null | head -100
-  └ 33 lines...
-
-● Check selected widgets (shell)
-  │ cat .storyboard/.selectedwidgets.json 2>/dev/null || echo "No selected widgets file"
-  └ 16 lines...
-
-◐ Let me start by reading my terminal config file to understand my context and any 
-  connected widgets.
-
-● Ready. I'm silver-thrush on the terminal-widget-prompts canvas, branch 4.2.5. No
-  connected widgets or messaging peers. What can I help you with?
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]        @storyboard.config.json
+  configFile=.storyboard/terminals/agent-i8lgz5.json serverUrl=http://localhost:1239
+  — this is a configuration step, no response needed.
 ─────────────────────────────────────────────────────────────────────────────────────────
-❯  
-─────────────────────────────────────────────────────────────────────────────────────────
- / commands · ? help        terminal-agent · Claude Opus 4.6 (1M context)(Internal only)
+ @ files · # issues                                     terminal-agent · Claude Opus 4.6
 
 ================================================================================
 SCROLLBACK (last 60s)
 ================================================================================
 
-[lost tty]
-[?996n[>c[>q
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server, 2 agents, Visual
+[?996n[>c[>q│                                                                               ╰───────────────────────────────────────────────────────────────────────────────
+● Selected custom agent: terminal-agent
+
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents, V  Studio Code - Insiders connected
+
+● All permissions are now enabled. Tool, path, and URL requests will be automati  approved.
+
+
+
+
+
+
+ ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-────────────────────────────────────────────────────────────────────────────────❯ [System] Your terminal identity has been set. widgetId=agent-i8lgz5
+  displayName=silver-thrush canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-i8lgz5.json serverUrl=http://localhost:  — this is a configuration step, no response needed.
+──────────────────────────────────────────────────────────────────────────────── @ files · # issues                                     terminal-agent · Claude 
+
+
+╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+● Selected custom agent: terminal-agent
+
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents, Visual
   Studio Code - Insiders connected
 
 ● All permissions are now enabled. Tool, path, and URL requests will be automatically
   approved.
 
-❯ [System] Your terminal identity has been set. widgetId=agent-i8lgz5
+
+
+
+
+
+ ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*]
+─────────────────────────────────────────────────────────────────────────────────────────❯ [System] Your terminal identity has been set. widgetId=agent-i8lgz5
   displayName=silver-thrush canvasId=storyboarding/terminal-widget-prompts
-  configFile=.storyboard/terminals/agent-i8lgz5.json serverUrl=http://localhost:1236 —
-  this is a configuration step, no response needed.
+  configFile=.storyboard/terminals/agent-i8lgz5.json serverUrl=http://localhost:1239
+  — this is a configuration step, no response needed.
+───────────────────────────────────────────────────────────────────────────────────────── @ files · # issues                                     terminal-agent · Claude Opus 4.6
+╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+● Selected custom agent: terminal-agent
 
-● Read terminal config (shell)
-  │ cat .storyboard/terminals/agent-i8lgz5.json 2>/dev/null | head -100
-  └ 33 lines...
-
-● Check selected widgets (shell)
-  │ cat .storyboard/.selectedwidgets.json 2>/dev/null || echo "No selected widgets file"
-  └ 16 lines...
-
-◐ Let me start by reading my terminal config file to understand my context and any 
-  connected widgets.
-
-● Ready. I'm silver-thrush on the terminal-widget-prompts canvas, branch 4.2.5. No
-  connected widgets or messaging peers. What can I help you with?
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]        @storyboard.config.json
-─────────────────────────────────────────────────────────────────────────────────────────❯
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.6 (1M context)(Internal only)
-
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server, 2 agents, Visual
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents, Visual
   Studio Code - Insiders connected
 
 ● All permissions are now enabled. Tool, path, and URL requests will be automatically
   approved.
 
-❯ [System] Your terminal identity has been set. widgetId=agent-i8lgz5
+
+
+
+
+
+ ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*]
+─────────────────────────────────────────────────────────────────────────────────────────❯ [System] Your terminal identity has been set. widgetId=agent-i8lgz5
   displayName=silver-thrush canvasId=storyboarding/terminal-widget-prompts
-  configFile=.storyboard/terminals/agent-i8lgz5.json serverUrl=http://localhost:1236 —
-  this is a configuration step, no response needed.
+  configFile=.storyboard/terminals/agent-i8lgz5.json serverUrl=http://localhost:1239
+  — this is a configuration step, no response needed.
+───────────────────────────────────────────────────────────────────────────────────────── @ files · # issues                                     terminal-agent · Claude Opus 4.6
+╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+● Selected custom agent: terminal-agent
 
-● Read terminal config (shell)
-  │ cat .storyboard/terminals/agent-i8lgz5.json 2>/dev/null | head -100
-  └ 33 lines...
-
-● Check selected widgets (shell)
-  │ cat .storyboard/.selectedwidgets.json 2>/dev/null || echo "No selected widgets file"
-  └ 16 lines...
-
-◐ Let me start by reading my terminal config file to understand my context and any 
-  connected widgets.
-
-● Ready. I'm silver-thrush on the terminal-widget-prompts canvas, branch 4.2.5. No
-  connected widgets or messaging peers. What can I help you with?
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]        @storyboard.config.json
-─────────────────────────────────────────────────────────────────────────────────────────❯
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.6 (1M context)(Internal only)
-❯  
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server, 2 agents, Visual
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents, Visual
   Studio Code - Insiders connected
 
 ● All permissions are now enabled. Tool, path, and URL requests will be automatically
   approved.
 
-❯ [System] Your terminal identity has been set. widgetId=agent-i8lgz5
+
+
+
+
+
+ ~/workspace/storyboard-core/worktrees/0.5.0--messaging-bus [⎇ 0.5.0--messaging-bus*]
+─────────────────────────────────────────────────────────────────────────────────────────❯ [System] Your terminal identity has been set. widgetId=agent-i8lgz5
   displayName=silver-thrush canvasId=storyboarding/terminal-widget-prompts
-  configFile=.storyboard/terminals/agent-i8lgz5.json serverUrl=http://localhost:1236 —
-  this is a configuration step, no response needed.
-
-● Read terminal config (shell)
-  │ cat .storyboard/terminals/agent-i8lgz5.json 2>/dev/null | head -100
-  └ 33 lines...
-
-● Check selected widgets (shell)
-  │ cat .storyboard/.selectedwidgets.json 2>/dev/null || echo "No selected widgets file"
-  └ 16 lines...
-
-◐ Let me start by reading my terminal config file to understand my context and any 
-  connected widgets.
-
-● Ready. I'm silver-thrush on the terminal-widget-prompts canvas, branch 4.2.5. No
-  connected widgets or messaging peers. What can I help you with?
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]        @storyboard.config.json
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.6 (1M context)(Internal only)
-
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server, 2 agents, Visual
-  Studio Code - Insiders connected
-
-● All permissions are now enabled. Tool, path, and URL requests will be automatically
-  approved.
-
-❯ [System] Your terminal identity has been set. widgetId=agent-i8lgz5
-  displayName=silver-thrush canvasId=storyboarding/terminal-widget-prompts
-  configFile=.storyboard/terminals/agent-i8lgz5.json serverUrl=http://localhost:1236 —
-  this is a configuration step, no response needed.
-
-● Read terminal config (shell)
-  │ cat .storyboard/terminals/agent-i8lgz5.json 2>/dev/null | head -100
-  └ 33 lines...
-
-● Check selected widgets (shell)
-  │ cat .storyboard/.selectedwidgets.json 2>/dev/null || echo "No selected widgets file"
-  └ 16 lines...
-
-◐ Let me start by reading my terminal config file to understand my context and any 
-  connected widgets.
-
-● Ready. I'm silver-thrush on the terminal-widget-prompts canvas, branch 4.2.5. No
-  connected widgets or messaging peers. What can I help you with?
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]        @storyboard.config.json
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.6 (1M context)(Internal only)
-
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server, 2 agents, Visual
-  Studio Code - Insiders connected
-
-● All permissions are now enabled. Tool, path, and URL requests will be automatically
-  approved.
-
-❯ [System] Your terminal identity has been set. widgetId=agent-i8lgz5
-  displayName=silver-thrush canvasId=storyboarding/terminal-widget-prompts
-  configFile=.storyboard/terminals/agent-i8lgz5.json serverUrl=http://localhost:1236 —
-  this is a configuration step, no response needed.
-
-● Read terminal config (shell)
-  │ cat .storyboard/terminals/agent-i8lgz5.json 2>/dev/null | head -100
-  └ 33 lines...
-
-● Check selected widgets (shell)
-  │ cat .storyboard/.selectedwidgets.json 2>/dev/null || echo "No selected widgets file"
-  └ 16 lines...
-
-◐ Let me start by reading my terminal config file to understand my context and any 
-  connected widgets.
-
-● Ready. I'm silver-thrush on the terminal-widget-prompts canvas, branch 4.2.5. No
-  connected widgets or messaging peers. What can I help you with?
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]        @storyboard.config.json
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.6 (1M context)(Internal only)
-
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server, 2 agents, Visual
-  Studio Code - Insiders connected
-
-● All permissions are now enabled. Tool, path, and URL requests will be automatically
-  approved.
-
-❯ [System] Your terminal identity has been set. widgetId=agent-i8lgz5
-  displayName=silver-thrush canvasId=storyboarding/terminal-widget-prompts
-  configFile=.storyboard/terminals/agent-i8lgz5.json serverUrl=http://localhost:1236 —
-  this is a configuration step, no response needed.
-
-● Read terminal config (shell)
-  │ cat .storyboard/terminals/agent-i8lgz5.json 2>/dev/null | head -100
-  └ 33 lines...
-
-● Check selected widgets (shell)
-  │ cat .storyboard/.selectedwidgets.json 2>/dev/null || echo "No selected widgets file"
-  └ 16 lines...
-
-◐ Let me start by reading my terminal config file to understand my context and any 
-  connected widgets.
-
-● Ready. I'm silver-thrush on the terminal-widget-prompts canvas, branch 4.2.5. No
-  connected widgets or messaging peers. What can I help you with?
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]        @storyboard.config.json
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.6 (1M context)(Internal only)
-
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server, 2 agents, Visual
-  Studio Code - Insiders connected
-
-● All permissions are now enabled. Tool, path, and URL requests will be automatically
-  approved.
-
-❯ [System] Your terminal identity has been set. widgetId=agent-i8lgz5
-  displayName=silver-thrush canvasId=storyboarding/terminal-widget-prompts
-  configFile=.storyboard/terminals/agent-i8lgz5.json serverUrl=http://localhost:1236 —
-  this is a configuration step, no response needed.
-
-● Read terminal config (shell)
-  │ cat .storyboard/terminals/agent-i8lgz5.json 2>/dev/null | head -100
-  └ 33 lines...
-
-● Check selected widgets (shell)
-  │ cat .storyboard/.selectedwidgets.json 2>/dev/null || echo "No selected widgets file"
-  └ 16 lines...
-
-◐ Let me start by reading my terminal config file to understand my context and any 
-  connected widgets.
-
-● Ready. I'm silver-thrush on the terminal-widget-prompts canvas, branch 4.2.5. No
-  connected widgets or messaging peers. What can I help you with?
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]        @storyboard.config.json
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.6 (1M context)(Internal only)
-
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server, 2 agents, Visual
-  Studio Code - Insiders connected
-
-● All permissions are now enabled. Tool, path, and URL requests will be automatically
-  approved.
-
-❯ [System] Your terminal identity has been set. widgetId=agent-i8lgz5
-  displayName=silver-thrush canvasId=storyboarding/terminal-widget-prompts
-  configFile=.storyboard/terminals/agent-i8lgz5.json serverUrl=http://localhost:1236 —
-  this is a configuration step, no response needed.
-
-● Read terminal config (shell)
-  │ cat .storyboard/terminals/agent-i8lgz5.json 2>/dev/null | head -100
-  └ 33 lines...
-
-● Check selected widgets (shell)
-  │ cat .storyboard/.selectedwidgets.json 2>/dev/null || echo "No selected widgets file"
-  └ 16 lines...
-
-◐ Let me start by reading my terminal config file to understand my context and any 
-  connected widgets.
-
-● Ready. I'm silver-thrush on the terminal-widget-prompts canvas, branch 4.2.5. No
-  connected widgets or messaging peers. What can I help you with?
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]        @storyboard.config.json
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.6 (1M context)(Internal only)
-
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server, 2 agents, Visual
-  Studio Code - Insiders connected
-
-● All permissions are now enabled. Tool, path, and URL requests will be automatically
-  approved.
-
-❯ [System] Your terminal identity has been set. widgetId=agent-i8lgz5
-  displayName=silver-thrush canvasId=storyboarding/terminal-widget-prompts
-  configFile=.storyboard/terminals/agent-i8lgz5.json serverUrl=http://localhost:1236 —
-  this is a configuration step, no response needed.
-
-● Read terminal config (shell)
-  │ cat .storyboard/terminals/agent-i8lgz5.json 2>/dev/null | head -100
-  └ 33 lines...
-
-● Check selected widgets (shell)
-  │ cat .storyboard/.selectedwidgets.json 2>/dev/null || echo "No selected widgets file"
-  └ 16 lines...
-
-◐ Let me start by reading my terminal config file to understand my context and any 
-  connected widgets.
-
-● Ready. I'm silver-thrush on the terminal-widget-prompts canvas, branch 4.2.5. No
-  connected widgets or messaging peers. What can I help you with?
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]        @storyboard.config.json
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.6 (1M context)(Internal only)
+  configFile=.storyboard/terminals/agent-i8lgz5.json serverUrl=http://localhost:1239
+  — this is a configuration step, no response needed.
+───────────────────────────────────────────────────────────────────────────────────────── @ files · # issues                                     terminal-agent · Claude Opus 4.6

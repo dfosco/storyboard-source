@@ -1,7 +1,7 @@
 SESSION: agent-opus7e | opal-bunting
 CANVAS:  storyboarding/terminal-widget-prompts
-BRANCH:  4.2.5
-TIME:    2026-05-01T19:15:42.274Z
+BRANCH:  0.5.0--messaging-bus
+TIME:    2026-05-03T07:56:47.321Z
 
 ================================================================================
 SCREEN
@@ -9,18 +9,16 @@ SCREEN
 
  ▐▛███▜▌   Claude Code v2.1.126
 ▝▜█████▛▘  Opus 4.7 (1M context) · API Usage Billing
-  ▘▘ ▝▝    ~/workspace/storyboard-core/.worktrees/4.2.5
+  ▘▘ ▝▝    @terminal-agent · ~/…/storyboard-core/worktrees/0.5.0--messaging-bus
 
-❯ [System] Your terminal identity has been set. widgetId=agent-opus7e 
-  displayName=opal-bunting canvasId=storyboarding/terminal-widget-prompts 
-  configFile=.storyboard/terminals/agent-opus7e.json serverUrl=http://localhost:1236 — 
+❯ [System] Your terminal identity has been set. widgetId=agent-opus7e
+  displayName=opal-bunting canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-opus7e.json serverUrl=http://localhost:1239 —
   this is a configuration step, no response needed.
 
-⏺ Acknowledged.
+✻ Worked for 2s
 
-✻ Cogitated for 1s
-
-─────────────────────────────────────────────────────────────────────────────────────────
+─────────────────────────────────────────────────────────────────────── terminal-agent ──
 ❯  
 ─────────────────────────────────────────────────────────────────────────────────────────
   ⏵⏵ bypass permissions on (shift+tab to cycle)
@@ -29,18 +27,16 @@ SCREEN
 SCROLLBACK (last 60s)
 ================================================================================
 
-[lost tty]
-[?996n[>c[>q ▐▛███▜▌ClaudeCodev2.1.126
-▝▜█████▛▘Opus4.7(1Mcontext)·APIUsageBilling
- ▘▘▝▝~/workspace/storyboard-core/.worktrees/4.2.5
+[?996n[>c[>q▐▛███▜▌ClaudeCodev2.1.126
+▝▜█████▛▘Opus4.7(1Mcontext)·APIUsageBilling▘▘▝▝@terminal-agent·~/…/storyboard-core/worktrees/0.5.0--messaging-bus
 
-❯ [System] Your terminal identity has been set. widgetId=agent-opus7e                      displayName=opal-bunting canvasId=storyboarding/terminal-widget-prompts                  configFile=.storyboard/terminals/agent-opus7e.json serverUrl=http://localhost:1236 —     this is a configuration step, no response needed.                                      
-⏺Acknowledged.
+❯ [System] Your terminal identity has been set. widgetId=agent-opus7e                    displayName=opal-bunting canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-opus7e.json serverUrl=http://localhost:1239 —   this is a configuration step, no response needed.                                 
+                                                                                         ✻ Worked for 2s                                                                                                                 
+───────────────────────────────────────────────────────────────────────terminal-agent──❯  
+─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson(shift+tabtocycle)               
 
-✻Cogitatedfor1s
 
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson (shift+tabtocycle)                    
 
 
 
@@ -55,17 +51,16 @@ SCROLLBACK (last 60s)
 
 
 
- ▐▛███▜▌ClaudeCodev2.1.126
-▝▜█████▛▘Opus4.7(1Mcontext)·APIUsageBilling
- ▘▘▝▝~/workspace/storyboard-core/.worktrees/4.2.5
+▐▛███▜▌ClaudeCodev2.1.126
+▝▜█████▛▘Opus4.7(1Mcontext)·APIUsageBilling▘▘▝▝@terminal-agent·~/…/storyboard-core/worktrees/0.5.0--messaging-bus
 
-❯ [System] Your terminal identity has been set. widgetId=agent-opus7e                      displayName=opal-bunting canvasId=storyboarding/terminal-widget-prompts                  configFile=.storyboard/terminals/agent-opus7e.json serverUrl=http://localhost:1236 —     this is a configuration step, no response needed.                                      
-⏺Acknowledged.
+❯ [System] Your terminal identity has been set. widgetId=agent-opus7e                    displayName=opal-bunting canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-opus7e.json serverUrl=http://localhost:1239 —   this is a configuration step, no response needed.                                 
+                                                                                         ✻ Worked for 2s                                                                                                                 
+───────────────────────────────────────────────────────────────────────terminal-agent──❯  
+─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson(shift+tabtocycle)               
 
-✻Cogitatedfor1s
 
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson (shift+tabtocycle)                    
 
 
 
@@ -80,17 +75,16 @@ SCROLLBACK (last 60s)
 
 
 
- ▐▛███▜▌ClaudeCodev2.1.126
-▝▜█████▛▘Opus4.7(1Mcontext)·APIUsageBilling
- ▘▘▝▝~/workspace/storyboard-core/.worktrees/4.2.5
+▐▛███▜▌ClaudeCodev2.1.126
+▝▜█████▛▘Opus4.7(1Mcontext)·APIUsageBilling▘▘▝▝@terminal-agent·~/…/storyboard-core/worktrees/0.5.0--messaging-bus
 
-❯ [System] Your terminal identity has been set. widgetId=agent-opus7e                      displayName=opal-bunting canvasId=storyboarding/terminal-widget-prompts                  configFile=.storyboard/terminals/agent-opus7e.json serverUrl=http://localhost:1236 —     this is a configuration step, no response needed.                                      
-⏺Acknowledged.
+❯ [System] Your terminal identity has been set. widgetId=agent-opus7e                    displayName=opal-bunting canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-opus7e.json serverUrl=http://localhost:1239 —   this is a configuration step, no response needed.                                 
+                                                                                         ✻ Worked for 2s                                                                                                                 
+───────────────────────────────────────────────────────────────────────terminal-agent──❯  
+─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson(shift+tabtocycle)               
 
-✻Cogitatedfor1s
 
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson (shift+tabtocycle)                    
 
 
 
@@ -105,17 +99,16 @@ SCROLLBACK (last 60s)
 
 
 
- ▐▛███▜▌ClaudeCodev2.1.126
-▝▜█████▛▘Opus4.7(1Mcontext)·APIUsageBilling
- ▘▘▝▝~/workspace/storyboard-core/.worktrees/4.2.5
+▐▛███▜▌ClaudeCodev2.1.126
+▝▜█████▛▘Opus4.7(1Mcontext)·APIUsageBilling▘▘▝▝@terminal-agent·~/…/storyboard-core/worktrees/0.5.0--messaging-bus
 
-❯ [System] Your terminal identity has been set. widgetId=agent-opus7e                      displayName=opal-bunting canvasId=storyboarding/terminal-widget-prompts                  configFile=.storyboard/terminals/agent-opus7e.json serverUrl=http://localhost:1236 —     this is a configuration step, no response needed.                                      
-⏺Acknowledged.
+❯ [System] Your terminal identity has been set. widgetId=agent-opus7e                    displayName=opal-bunting canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-opus7e.json serverUrl=http://localhost:1239 —   this is a configuration step, no response needed.                                 
+                                                                                         ✻ Worked for 2s                                                                                                                 
+───────────────────────────────────────────────────────────────────────terminal-agent──❯  
+─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson(shift+tabtocycle)               
 
-✻Cogitatedfor1s
 
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson (shift+tabtocycle)                    
 
 
 
@@ -130,17 +123,16 @@ SCROLLBACK (last 60s)
 
 
 
- ▐▛███▜▌ClaudeCodev2.1.126
-▝▜█████▛▘Opus4.7(1Mcontext)·APIUsageBilling
- ▘▘▝▝~/workspace/storyboard-core/.worktrees/4.2.5
+▐▛███▜▌ClaudeCodev2.1.126
+▝▜█████▛▘Opus4.7(1Mcontext)·APIUsageBilling▘▘▝▝@terminal-agent·~/…/storyboard-core/worktrees/0.5.0--messaging-bus
 
-❯ [System] Your terminal identity has been set. widgetId=agent-opus7e                      displayName=opal-bunting canvasId=storyboarding/terminal-widget-prompts                  configFile=.storyboard/terminals/agent-opus7e.json serverUrl=http://localhost:1236 —     this is a configuration step, no response needed.                                      
-⏺Acknowledged.
+❯ [System] Your terminal identity has been set. widgetId=agent-opus7e                    displayName=opal-bunting canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-opus7e.json serverUrl=http://localhost:1239 —   this is a configuration step, no response needed.                                 
+                                                                                         ✻ Worked for 2s                                                                                                                 
+───────────────────────────────────────────────────────────────────────terminal-agent──❯  
+─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson(shift+tabtocycle)               
 
-✻Cogitatedfor1s
 
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson (shift+tabtocycle)                    
 
 
 
@@ -155,17 +147,16 @@ SCROLLBACK (last 60s)
 
 
 
- ▐▛███▜▌ClaudeCodev2.1.126
-▝▜█████▛▘Opus4.7(1Mcontext)·APIUsageBilling
- ▘▘▝▝~/workspace/storyboard-core/.worktrees/4.2.5
+▐▛███▜▌ClaudeCodev2.1.126
+▝▜█████▛▘Opus4.7(1Mcontext)·APIUsageBilling▘▘▝▝@terminal-agent·~/…/storyboard-core/worktrees/0.5.0--messaging-bus
 
-❯ [System] Your terminal identity has been set. widgetId=agent-opus7e                      displayName=opal-bunting canvasId=storyboarding/terminal-widget-prompts                  configFile=.storyboard/terminals/agent-opus7e.json serverUrl=http://localhost:1236 —     this is a configuration step, no response needed.                                      
-⏺Acknowledged.
+❯ [System] Your terminal identity has been set. widgetId=agent-opus7e                    displayName=opal-bunting canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-opus7e.json serverUrl=http://localhost:1239 —   this is a configuration step, no response needed.                                 
+                                                                                         ✻ Worked for 2s                                                                                                                 
+───────────────────────────────────────────────────────────────────────terminal-agent──❯  
+─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson(shift+tabtocycle)               
 
-✻Cogitatedfor1s
 
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson (shift+tabtocycle)                    
 
 
 
@@ -180,64 +171,11 @@ SCROLLBACK (last 60s)
 
 
 
- ▐▛███▜▌ClaudeCodev2.1.126
-▝▜█████▛▘Opus4.7(1Mcontext)·APIUsageBilling
- ▘▘▝▝~/workspace/storyboard-core/.worktrees/4.2.5
+▐▛███▜▌ClaudeCodev2.1.126
+▝▜█████▛▘Opus4.7(1Mcontext)·APIUsageBilling▘▘▝▝@terminal-agent·~/…/storyboard-core/worktrees/0.5.0--messaging-bus
 
-❯ [System] Your terminal identity has been set. widgetId=agent-opus7e                      displayName=opal-bunting canvasId=storyboarding/terminal-widget-prompts                  configFile=.storyboard/terminals/agent-opus7e.json serverUrl=http://localhost:1236 —     this is a configuration step, no response needed.                                      
-⏺Acknowledged.
-
-✻Cogitatedfor1s
-
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson (shift+tabtocycle)                    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- ▐▛███▜▌ClaudeCodev2.1.126
-▝▜█████▛▘Opus4.7(1Mcontext)·APIUsageBilling
- ▘▘▝▝~/workspace/storyboard-core/.worktrees/4.2.5
-
-❯ [System] Your terminal identity has been set. widgetId=agent-opus7e                      displayName=opal-bunting canvasId=storyboarding/terminal-widget-prompts                  configFile=.storyboard/terminals/agent-opus7e.json serverUrl=http://localhost:1236 —     this is a configuration step, no response needed.                                      
-⏺Acknowledged.
-
-✻Cogitatedfor1s
-
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson (shift+tabtocycle)                    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- ▐▛███▜▌ClaudeCodev2.1.126
-▝▜█████▛▘Opus4.7(1Mcontext)·APIUsageBilling
- ▘▘▝▝~/workspace/storyboard-core/.worktrees/4.2.5
-
-❯ [System] Your terminal identity has been set. widgetId=agent-opus7e                      displayName=opal-bunting canvasId=storyboarding/terminal-widget-prompts                  configFile=.storyboard/terminals/agent-opus7e.json serverUrl=http://localhost:1236 —     this is a configuration step, no response needed.                                      
-⏺Acknowledged.
-
-✻Cogitatedfor1s
-
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson (shift+tabtocycle)                    
+❯ [System] Your terminal identity has been set. widgetId=agent-opus7e                    displayName=opal-bunting canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-opus7e.json serverUrl=http://localhost:1239 —   this is a configuration step, no response needed.                                 
+                                                                                         ✻ Worked for 2s                                                                                                                 
+───────────────────────────────────────────────────────────────────────terminal-agent──❯  
+─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson(shift+tabtocycle)               

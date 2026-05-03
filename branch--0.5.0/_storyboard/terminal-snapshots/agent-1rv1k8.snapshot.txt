@@ -1,0 +1,721 @@
+SESSION: agent-1rv1k8 | cobalt-avocet
+CANVAS:  storyboarding/terminal-bus
+BRANCH:  0.5.0--messaging-bus
+TIME:    2026-05-03T08:48:45.048Z
+
+================================================================================
+SCREEN
+================================================================================
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboa
+rding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❯ clear && storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "cobalt-avocet"
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● ✦ Start a new agent session
+│  ○ ▸ Start a new terminal session
+│  ○ ⊞ Browse existing sessions
+└
