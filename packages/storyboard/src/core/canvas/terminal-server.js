@@ -93,6 +93,7 @@ const TMUX_SHELL_OVERRIDES = {
   POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD: 'true',
   ZSH_THEME: '',
   TERM_PROGRAM: 'storyboard',
+  COLORTERM: 'truecolor',
 }
 
 /** Apply shell-config overrides to the tmux server's global environment */
@@ -707,7 +708,7 @@ function handleReadOnlyConnection(ws, widgetId, canvasId) {
       cols: 80,
       rows: 24,
       cwd: process.cwd(),
-      env: { ...process.env, TERM: 'xterm-256color' },
+      env: { ...process.env, TERM: 'xterm-256color', COLORTERM: 'truecolor' },
     })
   } catch (err) {
     try {
@@ -826,6 +827,7 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
   const tmuxEnv = {
     ...cleanEnv(),
     TERM: 'xterm-256color',
+    COLORTERM: 'truecolor',
     TERM_PROGRAM: 'storyboard',
     ZDOTDIR: zdotdir,
     STARSHIP_CONFIG: '/dev/null',
@@ -840,6 +842,7 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
   const directEnv = {
     ...cleanEnv(),
     TERM: 'xterm-256color',
+    COLORTERM: 'truecolor',
     TERM_PROGRAM: 'storyboard',
     ZDOTDIR: zdotdir,
     STARSHIP_CONFIG: '/dev/null',
