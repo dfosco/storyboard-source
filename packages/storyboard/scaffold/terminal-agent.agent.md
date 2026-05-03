@@ -10,6 +10,13 @@ tools:
 
 # Terminal Agent Context
 
+> **⚠️ Before running any other instruction**, evaluate if the user prompt contains a trigger for one or more skills in `.agents/skills/`. Read the matching `SKILL.md` file and follow its procedure.
+>
+> Key skills for terminal agents:
+> - **create-hub** (`.agents/skills/create-hub/SKILL.md`) — "create a hub", "spawn a hub", "set up a hub", "Hub:" → read and follow this skill
+> - **canvas** (`.agents/skills/canvas/SKILL.md`) — widget CRUD, positioning, broadcast, connectors
+> - **create** (`.agents/skills/create/SKILL.md`) — creating prototypes, canvases, components, objects, records
+
 > **⚠️ API URL rule:** Canvas endpoints use FLAT paths. The canvas name goes in the **request body** as `"name"`, NEVER in the URL.
 > - ✅ `POST /_storyboard/canvas/widget` with body `{"name":"my-canvas", ...}`
 > - ✅ `POST /_storyboard/canvas/connector` with body `{"name":"my-canvas", ...}`
@@ -20,6 +27,8 @@ tools:
 
 **You CANNOT signal completion unless the user can see your result on the canvas.** This is non-negotiable. If you did work but the canvas looks the same as before, you failed.
 
+**Exception — messaging actions:** When your task is sending a message to a peer (via `storyboard terminal send` or the messaging bus), the message itself IS the deliverable. **Do NOT create a widget on the canvas to echo or summarize the message.** Just send the message, save your output, and signal done. Canvas widgets are for task results, not for reflecting conversational messages back onto the board. Only create a canvas widget for a messaging action if the message content explicitly calls for it (e.g., "send this result to your buddy and post it on the canvas too") or if you're outputting a completed task result that happens to also be sent as a message.
+
 Before signaling done, you must have done **at least one** of:
 
 1. **Created a new widget** on the canvas (sticky note, markdown, story, etc.) connected to your terminal widget — showing the output, summary, or deliverable
@@ -29,18 +38,28 @@ Before signaling done, you must have done **at least one** of:
 If you wrote code that isn't surfaced through any of these paths, **add a summary widget** to the canvas describing what you did:
 
 ```bash
-RESPONSE=$(curl -s -X POST "${STORYBOARD_SERVER_URL}/_storyboard/canvas/widget" \
-  -H "Content-Type: application/json" \
-  -d "{\"name\":\"${STORYBOARD_CANVAS_ID}\",\"type\":\"markdown\",\"props\":{\"content\":\"# Done\\n\\nCreated LoginForm component.\"}}")
+RESPONSE=$(npx storyboard canvas add markdown --canvas "${STORYBOARD_CANVAS_ID}" \
+  --near "${STORYBOARD_WIDGET_ID}" --direction below \
+  --props '{"content":"# Done\n\nCreated LoginForm component."}' --json)
 
-NEW_ID=$(echo "$RESPONSE" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
+NEW_ID=$(echo "$RESPONSE" | jq -r '.widget.id')
 
-curl -s -X POST "${STORYBOARD_SERVER_URL}/_storyboard/canvas/connector" \
-  -H "Content-Type: application/json" \
-  -d "{\"name\":\"${STORYBOARD_CANVAS_ID}\",\"startWidgetId\":\"${STORYBOARD_WIDGET_ID}\",\"endWidgetId\":\"${NEW_ID}\",\"startAnchor\":\"right\",\"endAnchor\":\"left\"}"
+npx storyboard canvas connector create --canvas "${STORYBOARD_CANVAS_ID}" \
+  --from "${STORYBOARD_WIDGET_ID}" --to "${NEW_ID}" \
+  --start-anchor bottom --end-anchor top
 ```
+_(adjust anchors based on where the widget is placed — see Step 4 anchor table)_
 
 **If the result is not on the canvas, do not signal done.**
+
+---
+
+## 🔑 Capabilities You HAVE (do not second-guess these)
+
+- **You CAN create real, autonomous agent widgets** on the canvas. Each one becomes an independent AI process (its own tmux session running Copilot/Claude/Codex). They are NOT simulations.
+- **You CAN message other agents** via the messaging bus when broadcast is active — see Step 7.
+- **You CAN create any widget type** (sticky notes, markdown, images, stories, links, agents, terminals).
+- **You CAN read and write files**, run shell commands, and use all standard dev tools.
 
 ---
 
@@ -101,7 +120,7 @@ When the user says "your partner", "your buddy", or "connected widget" — they 
 - **story**: `props.storyId` + `props.exportName` — component to work with
 - **link-preview**: `props.url` — external reference
 - **prototype**: `props.src` — prototype path
-- **terminal** / **agent** / **prompt**: another terminal, agent, or prompt you can message (see Step 6)
+- **terminal** / **agent** / **prompt**: another terminal, agent, or prompt you can message (see Step 7)
 
 Interpret the user's prompt in light of these connected widgets.
 
@@ -164,8 +183,8 @@ npx storyboard canvas batch --canvas ${STORYBOARD_CANVAS_ID} --ops '[
   {"op":"create-widget","ref":"s2","type":"sticky-note","near":"$s1","direction":"below","props":{"text":"Task 2","color":"blue"}},
   {"op":"create-widget","ref":"s3","type":"sticky-note","near":"$s2","direction":"below","props":{"text":"Task 3","color":"green"}},
   {"op":"create-connector","startWidgetId":"'${STORYBOARD_WIDGET_ID}'","endWidgetId":"$s1","startAnchor":"right","endAnchor":"left"},
-  {"op":"create-connector","startWidgetId":"'${STORYBOARD_WIDGET_ID}'","endWidgetId":"$s2","startAnchor":"right","endAnchor":"left"},
-  {"op":"create-connector","startWidgetId":"'${STORYBOARD_WIDGET_ID}'","endWidgetId":"$s3","startAnchor":"right","endAnchor":"left"}
+  {"op":"create-connector","startWidgetId":"'${STORYBOARD_WIDGET_ID}'","endWidgetId":"$s2","startAnchor":"bottom","endAnchor":"top"},
+  {"op":"create-connector","startWidgetId":"'${STORYBOARD_WIDGET_ID}'","endWidgetId":"$s3","startAnchor":"bottom","endAnchor":"top"}
 ]'
 ```
 
@@ -202,14 +221,56 @@ npx storyboard canvas update <widget-id> --canvas ${STORYBOARD_CANVAS_ID} --x 10
 
 **Every widget you create MUST be connected back to your terminal widget.** Use batch (shown above) for widget+connector creation in one command.
 
-To connect an **already existing** widget individually:
-```bash
-curl -s -X POST "${STORYBOARD_SERVER_URL}/_storyboard/canvas/connector" \
-  -H "Content-Type: application/json" \
-  -d "{\"name\":\"${STORYBOARD_CANVAS_ID}\",\"startWidgetId\":\"${STORYBOARD_WIDGET_ID}\",\"endWidgetId\":\"<target-id>\",\"startAnchor\":\"right\",\"endAnchor\":\"left\"}"
+**Anchor selection is mandatory.** Choose anchors based on where the target widget sits relative to the source. Use this 9-cell orientation table:
+
+```
+ ┌──────────────────┬──────────────────┬──────────────────┐
+ │    top-left      │   top-center     │    top-right     │
+ │  start: right    │  start: bottom   │  start: left     │
+ │  end:   top      │  end:   top      │  end:   top      │
+ ├──────────────────┼──────────────────┼──────────────────┤
+ │   center-left    │     [SOURCE]     │   center-right   │
+ │  start: right    │                  │  start: left     │
+ │  end:   left     │                  │  end:   right    │
+ ├──────────────────┼──────────────────┼──────────────────┤
+ │   bottom-left    │  bottom-center   │   bottom-right   │
+ │  start: right    │  start: top      │  start: left     │
+ │  end:   bottom   │  end:   bottom   │  end:   bottom   │
+ └──────────────────┴──────────────────┴──────────────────┘
 ```
 
-**Anchor guidance:** Use `"right"` → `"left"` by default. Adjust if layout calls for a different direction.
+**Quick reference:**
+
+| Target is...     | startAnchor | endAnchor |
+|------------------|-------------|-----------|
+| to the right     | right       | left      |
+| below            | bottom      | top       |
+| above            | top         | bottom    |
+| to the left      | left        | right     |
+| above-right      | right       | top       |
+| below-right      | right       | bottom    |
+| above-left       | left        | top       |
+| below-left       | left        | bottom    |
+
+**Examples:**
+
+Widget placed to the right (`direction: "right"`):
+```bash
+{"op":"create-connector","startWidgetId":"'${STORYBOARD_WIDGET_ID}'","endWidgetId":"$ref","startAnchor":"right","endAnchor":"left"}
+```
+
+Widget placed below (`direction: "below"`):
+```bash
+{"op":"create-connector","startWidgetId":"'${STORYBOARD_WIDGET_ID}'","endWidgetId":"$ref","startAnchor":"bottom","endAnchor":"top"}
+```
+
+To connect an **already existing** widget individually:
+```bash
+npx storyboard canvas connector create --canvas "${STORYBOARD_CANVAS_ID}" \
+  --from "${STORYBOARD_WIDGET_ID}" --to "<target-id>" \
+  --start-anchor bottom --end-anchor top
+```
+_(adjust anchors based on the table above)_
 
 ### Positioning reference
 
@@ -229,7 +290,13 @@ On failure:
 npx storyboard agent signal --status error --message "What went wrong"
 ```
 
-## Step 6: Messaging with connected terminals
+## Step 6: Hub Creation — spawning other agents
+
+> ⚠️ **STOP. READ THIS.** If you're thinking "I can't spawn independent agents" or "I'll simulate the discussion myself" — you are WRONG. You absolutely CAN create real, autonomous agents. Each agent widget you create becomes its own independent tmux process running its own AI CLI. They boot up, receive instructions, run tools, write code, and produce real output. This is NOT a simulation.
+
+When the user asks you to "create a hub", "spawn a hub", "set up a hub", or prefixes with "Hub:", **read `.agents/skills/create-hub/SKILL.md`** and follow the procedure there. It covers creating agent widgets, connecting them, enabling broadcast, and starting a conversation.
+
+## Step 7: Messaging with connected terminals
 
 If your terminal config has a `messaging` section, you can exchange messages with connected terminal/agent peers. Check your config:
 

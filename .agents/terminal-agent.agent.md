@@ -38,15 +38,15 @@ Before signaling done, you must have done **at least one** of:
 If you wrote code that isn't surfaced through any of these paths, **add a summary widget** to the canvas describing what you did:
 
 ```bash
-RESPONSE=$(curl -s -X POST "${STORYBOARD_SERVER_URL}/_storyboard/canvas/widget" \
-  -H "Content-Type: application/json" \
-  -d "{\"name\":\"${STORYBOARD_CANVAS_ID}\",\"type\":\"markdown\",\"props\":{\"content\":\"# Done\\n\\nCreated LoginForm component.\"}}")
+RESPONSE=$(npx storyboard canvas add markdown --canvas "${STORYBOARD_CANVAS_ID}" \
+  --near "${STORYBOARD_WIDGET_ID}" --direction below \
+  --props '{"content":"# Done\n\nCreated LoginForm component."}' --json)
 
-NEW_ID=$(echo "$RESPONSE" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
+NEW_ID=$(echo "$RESPONSE" | jq -r '.widget.id')
 
-curl -s -X POST "${STORYBOARD_SERVER_URL}/_storyboard/canvas/connector" \
-  -H "Content-Type: application/json" \
-  -d "{\"name\":\"${STORYBOARD_CANVAS_ID}\",\"startWidgetId\":\"${STORYBOARD_WIDGET_ID}\",\"endWidgetId\":\"${NEW_ID}\",\"startAnchor\":\"bottom\",\"endAnchor\":\"top\"}"
+npx storyboard canvas connector create --canvas "${STORYBOARD_CANVAS_ID}" \
+  --from "${STORYBOARD_WIDGET_ID}" --to "${NEW_ID}" \
+  --start-anchor bottom --end-anchor top
 ```
 _(adjust anchors based on where the widget is placed — see Step 4 anchor table)_
 
@@ -266,9 +266,9 @@ Widget placed below (`direction: "below"`):
 
 To connect an **already existing** widget individually:
 ```bash
-curl -s -X POST "${STORYBOARD_SERVER_URL}/_storyboard/canvas/connector" \
-  -H "Content-Type: application/json" \
-  -d "{\"name\":\"${STORYBOARD_CANVAS_ID}\",\"startWidgetId\":\"${STORYBOARD_WIDGET_ID}\",\"endWidgetId\":\"<target-id>\",\"startAnchor\":\"bottom\",\"endAnchor\":\"top\"}"
+npx storyboard canvas connector create --canvas "${STORYBOARD_CANVAS_ID}" \
+  --from "${STORYBOARD_WIDGET_ID}" --to "<target-id>" \
+  --start-anchor bottom --end-anchor top
 ```
 _(adjust anchors based on the table above)_
 
@@ -292,7 +292,7 @@ npx storyboard agent signal --status error --message "What went wrong"
 
 ## Step 6: Hub Creation — spawning other agents
 
-> ⚠️ **STOP. READ THIS.** If you're thinking "I can't spawn independent agents" or "I'll simulate the discussion myself" — you are WRONG. You absolutely CAN create real, autonomous agents. Each agent widget you create becomes its own independent tmux process running its own AI CLI. They boot up, receive instructions, run tools, write code, and produce real output. This is NOT a simulation.
+> ⚠️ **STOP. READ THIS.** If you're thinking "I can't spawn independent agents" or "I'll simulate the discussion myself" — you are WRONG. You absolutely CAN create real, autonomous agents. Each agent widget you create becomes its own independent tmux process running its own AI CLI. They boot up, receive instructions, run tools, write code, produce real output and communicate independently given the guardrails of their agentic flow and canvas capabilities. This is NOT a simulation.
 
 When the user asks you to "create a hub", "spawn a hub", "set up a hub", or prefixes with "Hub:", **read `.agents/skills/create-hub/SKILL.md`** and follow the procedure there. It covers creating agent widgets, connecting them, enabling broadcast, and starting a conversation.
 

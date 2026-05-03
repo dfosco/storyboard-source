@@ -9,12 +9,32 @@ description: Work with Storyboard canvases — add, move, update, remove, and ar
 
 ## What This Does
 
-Reads, manipulates, and arranges widgets on a Storyboard canvas. Supports absolute and relational positioning, bulk layout, content updates, and widget removal — all through the canvas server API.
+Reads, manipulates, and arranges widgets on a Storyboard canvas. Supports absolute and relational positioning, bulk layout, content updates, and widget removal.
+
+## ⚠️ Do NOT create widgets to echo messages
+
+**Message requests between agents (via `storyboard terminal send` or the messaging bus) should NOT result in new widgets on the canvas.** Sending a message is a communication action, not a content-creation action. Do not create sticky notes, markdown blocks, or any other widget to reflect, echo, or summarize a sent message — unless the message or surrounding context explicitly calls for canvas output (e.g., the agent is posting a completed task result alongside the message).
+
+## ⚠️ CLI-First — Mandatory
+
+**Always use `npx storyboard canvas` CLI commands as your primary tool.** The CLI resolves the correct dev server port automatically via the Caddy proxy or `ports.json` — you never need to know the port number. All commands work from any worktree directory.
+
+**Only fall back to the HTTP API if the CLI does not support the operation or if a CLI command fails.** When using the API as a fallback, note the failure and explain why you're falling back.
 
 ## Prerequisites
 
 - The dev server **must** be running (`storyboard dev` or `npm run dev`)
 - The target canvas must already exist
+
+## Critical: Never Parse JSONL Directly
+
+**Always use the canvas server API or CLI to read canvas state.** Never manually parse `.canvas.jsonl` files.
+
+JSONL files are append-only event logs (`widget_added`, `widget_updated`, `widgets_replaced`, etc.) that require correct event replay to materialize the current state. Manually parsing them is error-prone — events like `widgets_replaced` update positions, props, and content in bulk, and naive parsing will miss these updates, producing stale/incorrect widget data.
+
+The server materializes the JSONL correctly. Use:
+- **CLI:** `npx storyboard canvas read {name} --json`
+- **API:** `GET /_storyboard/canvas/read?name={name}`
 
 ---
 
@@ -50,7 +70,7 @@ const { x, y, adjusted } = findFreePosition({
 })
 ```
 
-**Algorithm:** Tries the target position first. If collision, moves right. If still blocked, moves down. Returns the first free position, snapped to grid.
+**Algorithm:** Checks the target position against all widgets. If any overlap, jumps past the max right edge (endX) of all colliders + gridSize. Repeats until clear. If horizontal resolution is exhausted, falls back to moving down past the max bottom edge (endY). Returns a collision-free position, snapped to grid.
 
 ---
 
@@ -62,8 +82,14 @@ const { x, y, adjusted } = findFreePosition({
 | `markdown` | 530×240 | `content` (markdown) | `width` |
 | `prototype` | 800×600 | `src` (URL/path) | `label`, `zoom` (10–250), `width`, `height` |
 | `figma-embed` | 800×450 | `url` | `width`, `height` |
-| `image` | — | `src` (filename) | `width`, `height`, `private` |
-| `link-preview` | — | `url` | `title` |
+| `codepen-embed` | 800×450 | `url` | `width`, `height` |
+| `story` | 780×420 | `storyId` + `exportName` | `width`, `height`, `showCode` |
+| `component-set` | 780×420 | `storyId` | `layout` (horizontal/vertical), `selected`, `width`, `height` |
+| `image` | 400×300 | `src` (filename) | `width`, `height`, `private` |
+| `link-preview` | 320×200 | `url` | `title` |
+| `component` | 300×200 | — | `width`, `height` |
+| `terminal` | 650×500 | — | `prettyName`, `alias` |
+| `agent` | 650×500 | — | `prettyName`, `alias`, `agentId` (key from `canvas.agents` config) |
 
 ## Reference: Widget Content, URLs, and File Paths
 
@@ -86,18 +112,11 @@ Each widget type stores content in a different prop. When querying widgets, use 
 - When positioning: **snap to grid** — `Math.round(value / gridSize) * gridSize`
 - Standard gap between widgets: **1 grid unit** (= `gridSize`, usually 24px)
 
-## Reference: Server API
+## Reference: CLI Commands (Primary Interface)
 
-All endpoints are at `http://localhost:{PORT}/_storyboard/canvas/`. The port is determined by the worktree:
+**These are the commands you should use for all canvas operations.** Prefer these over the HTTP API in every case.
 
-```js
-import { detectWorktreeName, getPort } from '@dfosco/storyboard-core/worktree/port'
-const port = getPort(detectWorktreeName())
-```
-
-## Reference: CLI Commands
-
-### Read canvas state (CLI)
+### Read canvas state
 ```bash
 npx storyboard canvas read              # List all canvases
 npx storyboard canvas read my-canvas    # List all widgets with ID, content, URLs, file paths
@@ -105,63 +124,101 @@ npx storyboard canvas read my-canvas --json   # Output as JSON (for parsing)
 npx storyboard canvas read my-canvas --id sticky-note-abc123  # Get specific widget
 ```
 
-The CLI outputs widget ID, type, position, content, and file paths (for images). Use `--json` for machine-readable output that includes enriched `content`, `url`, and `filePath` fields.
+The CLI outputs widget ID, type, position, content, and file paths (for images). Use `--json` for machine-readable output that includes enriched `content`, `url`, `filePath`, and `bounds` fields.
 
-## Reference: Server API
+**Bounds:** Both human-readable and JSON output include bounds for each widget:
+- `bounds.width`, `bounds.height` — resolved from props or type defaults
+- `bounds.startX`, `bounds.startY` — top-left corner (same as position)
+- `bounds.endX`, `bounds.endY` — bottom-right corner (startX + width, startY + height)
 
-### Read canvas state
-```
-GET /read?name={CANVAS_NAME}
-```
-Returns the materialized canvas:
-```json
-{
-  "title": "My Canvas",
-  "grid": true,
-  "gridSize": 24,
-  "widgets": [
-    {
-      "id": "sticky-note-abc123",
-      "type": "sticky-note",
-      "position": { "x": 100, "y": 200 },
-      "props": { "text": "Hello", "color": "yellow", "width": 270, "height": 170 }
-    }
-  ]
-}
+Bounds are persisted in widget metadata and recalculated on every add, move, or resize. Legacy widgets without bounds will have them computed on-the-fly from position + size.
+
+Use bounds to determine widget overlap and spatial relationships without manual size calculation.
+
+### Get widget bounds
+```bash
+npx storyboard canvas bounds my-canvas                     # Bounds for all widgets
+npx storyboard canvas bounds my-canvas --id sticky-abc123  # Bounds for one widget
+npx storyboard canvas bounds my-canvas --json              # JSON output
+npx storyboard canvas bounds --type sticky-note            # Default size for a widget type
 ```
 
-### List canvases
-```
-GET /list
-```
-Returns `{ canvases: [{ name, title, path, widgetCount }] }`.
+Returns only size and position data (no content): `id`, `type`, `width`, `height`, `startX`, `startY`, `endX`, `endY`. Useful for collision checks and spatial queries.
 
 ### Add a widget
-```
-POST /widget
-{ "name": "{CANVAS}", "type": "{TYPE}", "position": { "x": 0, "y": 0 }, "props": {} }
-```
-Or via CLI: `npx storyboard canvas add {TYPE} --canvas {NAME} --x {X} --y {Y} --props '{JSON}'`
+```bash
+# Auto-positioned (default — places near the active agent, selected widget, or viewport center)
+npx storyboard canvas add {TYPE} --canvas {NAME} --props '{JSON}'
 
-### Remove a widget
-```
-DELETE /widget
-{ "name": "{CANVAS}", "widgetId": "{WIDGET_ID}" }
+# Place near a specific widget (explicit --near)
+npx storyboard canvas add {TYPE} --canvas {NAME} --near {WIDGET_ID} --direction right --props '{JSON}'
+
+# Explicit coordinates (overrides auto-positioning)
+npx storyboard canvas add {TYPE} --canvas {NAME} --x {X} --y {Y} --props '{JSON}'
+
+# Disable auto-positioning entirely (place at 0,0)
+npx storyboard canvas add {TYPE} --canvas {NAME} --near false --props '{JSON}'
+
+# Complex props (markdown, backticks, quotes) — use --props-file to avoid shell escaping
+echo '{"content":"# Hello\nSome **markdown**"}' > /tmp/widget-props.json
+npx storyboard canvas add {TYPE} --canvas {NAME} --props-file /tmp/widget-props.json
 ```
 
-### Bulk update (move, resize, reorder, update props)
-```
-PUT /update
-{ "name": "{CANVAS}", "widgets": [ ...full widgets array... ] }
-```
-This replaces the entire widgets array. **Always read the current state first**, modify the array, then PUT it back.
+**Widgets are auto-positioned by default.** When no `--x`/`--y` or `--near` is provided, the server picks a smart position using this priority chain:
 
-### Update canvas settings
+1. **Active agent/terminal** — if `$STORYBOARD_WIDGET_ID` is set (i.e., the command runs from an agent), places near that widget
+2. **Selected widget** — the widget the user has selected in the browser
+3. **Viewport center** — the center of the user's current view
+4. **Last widget on canvas** — to the right of the most recently added widget
+5. **Origin (0, 0)** — only for truly empty canvases with no viewport data
+
+Use `--near {WIDGET_ID}` to override auto-positioning with a specific reference widget. The `--direction` flag defaults to `right` — valid values: `right`, `left`, `above`, `below`, `above-right`, `below-right`, `above-left`, `below-left`. Use `--gap N` to control spacing in grid spaces (default: 1). Use `--near false` to disable auto-positioning and place at explicit `--x`/`--y` (or 0,0).
+
+**Always use `--props-file` for markdown widgets or any content with special characters.** Write the props JSON to a temp file first, then pass the path. This avoids all shell escaping issues with backticks, quotes, and newlines.
+
+### Update a widget
+```bash
+# Update sticky note text
+npx storyboard canvas update {WIDGET_ID} --canvas {NAME} --text "New text"
+
+# Update markdown content
+npx storyboard canvas update {WIDGET_ID} --canvas {NAME} --content "# Heading"
+
+# Arbitrary props as JSON
+npx storyboard canvas update {WIDGET_ID} --canvas {NAME} --props '{"key":"value"}'
+
+# Move a widget — ALWAYS provide both --x and --y
+npx storyboard canvas update {WIDGET_ID} --canvas {NAME} --x 100 --y 200
+# ⚠️ Omitting --x or --y zeros out the missing axis. Always read the widget's
+# current position first, then provide both coordinates.
+
+# Shorthand flags: --text, --content, --src, --url, --color
 ```
-PUT /update
-{ "name": "{CANVAS}", "settings": { "title": "...", "grid": true, "gridSize": 24, ... } }
+
+### Add flags reference
 ```
-Allowed setting keys: `title`, `description`, `grid`, `gridSize`, `colorMode`, `dotted`, `centered`, `author`, `snapToGrid`.
+  Positional: <widget-type>  Widget type (sticky-note, markdown, prototype, story, component-set, image, figma-embed, codepen-embed, link-preview)
+
+  -c, --canvas           Target canvas name (required)
+  --x                    X position (omit for auto-positioning)
+  --y                    Y position (omit for auto-positioning)
+  --near                 Place near this widget ID (default: auto-selects best reference). Use --near false to disable
+  -dir, --direction      Direction from reference widget: right, left, above, below, above-right, below-right, above-left, below-left [default: right]
+  --gap                  Spacing between widgets in grid spaces [default: 1]
+  --resolve              Run server-side collision detection on the target position [default: false]
+  --props                Widget props as JSON string
+  -pf, --props-file      Path to a JSON file containing widget props (avoids shell escaping)
+  --json                 Output result as JSON (includes widget id) [default: false]
+```
+
+### CLI output with `--json`
+
+The `--json` flag outputs JSON, but the CLI may mix spinner characters into the output. When parsing, strip non-JSON characters before the opening `{`:
+
+```bash
+RAW=$(npx storyboard canvas add sticky-note --canvas my-canvas --near widget-id --props '{"text":"hi"}' --json 2>/dev/null)
+NEW_ID=$(echo "$RAW" | sed 's/[^{]*//' | python3 -c "import sys,json; print(json.load(sys.stdin)['id'])" 2>/dev/null)
+```
 
 ---
 
@@ -171,7 +228,7 @@ Allowed setting keys: `title`, `description`, `grid`, `gridSize`, `colorMode`, `
 
 If the user doesn't specify which canvas:
 ```bash
-curl -s http://localhost:{PORT}/_storyboard/canvas/list
+npx storyboard canvas read
 ```
 If there's one canvas, use it. If multiple, ask the user.
 
@@ -180,10 +237,10 @@ If there's one canvas, use it. If multiple, ask the user.
 **Always read the current state before any operation that involves positioning or modifying existing widgets:**
 
 ```bash
-curl -s "http://localhost:{PORT}/_storyboard/canvas/read?name={CANVAS_NAME}"
+npx storyboard canvas read {CANVAS_NAME} --json
 ```
 
-Parse the response to get the `widgets` array and `gridSize`.
+Parse the response to get the widgets and gridSize.
 
 ### Step 3: Resolve positioning (for add/move operations)
 
@@ -209,50 +266,89 @@ Where:
 
 **Implicit reference** — If the user says "to the right of the blue sticky" without an ID, read the canvas state and find the matching widget by type + props (e.g. a sticky-note with `color: "blue"`). If ambiguous, ask.
 
-**No position given** — Place near the user's viewport:
-1. Read `.storyboard/.selectedwidgets.json` and check the `viewport` field
-2. If viewport exists, place near `viewport.centerX, viewport.centerY` (offset slightly to avoid overlap with existing widgets)
-3. If no viewport data, fall back to: empty canvas → `(0, 0)`, otherwise → right of rightmost widget or below last row
+**No position given** — **The server auto-positions by default.** You do NOT need to calculate a position manually. Just omit `--x`, `--y`, and `--near`:
+
+```bash
+npx storyboard canvas add sticky-note --canvas {NAME} --props '{"text":"hello"}'
+```
+
+The server uses this priority chain:
+1. **Active agent/terminal** — if `$STORYBOARD_WIDGET_ID` is set, places near that widget
+2. **Selected widget** — the widget the user has selected in the browser
+3. **Viewport center** — the center of the user's current view
+4. **Last widget on canvas** — to the right of the most recently added widget
+5. **Origin (0, 0)** — only for truly empty canvases with no viewport data
+
+All auto-positioned widgets go through collision detection automatically.
 
 ### Step 4: Execute the operation
 
 **Adding a widget:**
 ```bash
+# Auto-positioned (default — just specify type, canvas, and props)
+npx storyboard canvas add {TYPE} --canvas {NAME} --props '{JSON}' --json
+
+# With explicit --near (relative to a specific widget)
+npx storyboard canvas add {TYPE} --canvas {NAME} --near {REF_WIDGET_ID} --direction right --props '{JSON}' --json
+
+# With explicit coordinates (overrides auto-positioning)
 npx storyboard canvas add {TYPE} --canvas {NAME} --x {X} --y {Y} --props '{JSON}'
+
+# Disable auto-positioning (force 0,0)
+npx storyboard canvas add {TYPE} --canvas {NAME} --near false --x 0 --y 0 --props '{JSON}'
 ```
 
 **Moving a widget:**
-1. Read canvas state → get widgets array
-2. Find the target widget by ID
-3. Update its `position` field
-4. PUT the full array back:
+1. Read the widget's current position first (`canvas read --id {WIDGET_ID} --json`)
+2. Calculate new coordinates — **always provide both x and y**
+3. Use the CLI:
 ```bash
-curl -X PUT http://localhost:{PORT}/_storyboard/canvas/update \
-  -H 'Content-Type: application/json' \
-  -d '{"name":"{CANVAS}","widgets":[...updated array...]}'
+npx storyboard canvas update {WIDGET_ID} --canvas {NAME} --x {NEW_X} --y {NEW_Y}
+# ⚠️ Both --x and --y are REQUIRED — omitting one zeros out the missing axis
 ```
 
 **Updating widget props** (text, color, size, content, etc.):
-1. Read canvas state → get widgets array
-2. Find the target widget by ID
-3. Merge new props into `widget.props`
-4. PUT the full array back
+```bash
+# Use shorthand flags for common props
+npx storyboard canvas update {WIDGET_ID} --canvas {NAME} --text "New text"
+npx storyboard canvas update {WIDGET_ID} --canvas {NAME} --content "# New heading"
+npx storyboard canvas update {WIDGET_ID} --canvas {NAME} --color blue
+
+# Or pass arbitrary props as JSON
+npx storyboard canvas update {WIDGET_ID} --canvas {NAME} --props '{"key":"value"}'
+```
 
 **Removing a widget:**
 ```bash
+# CLI does not yet support delete — use API fallback
 curl -X DELETE http://localhost:{PORT}/_storyboard/canvas/widget \
   -H 'Content-Type: application/json' \
   -d '{"name":"{CANVAS}","widgetId":"{WIDGET_ID}"}'
 ```
 
 **Rearranging / laying out multiple widgets:**
-1. Read canvas state → get widgets array
+1. Read canvas state → get widgets array via CLI (`canvas read --json`)
 2. Calculate new positions for all affected widgets using the positioning formulas
-3. PUT the full updated array back in a single call
+3. Use the API fallback: PUT the full updated array back in a single call (see Server API Fallback section)
 
 ### Step 5: Confirm
 
 After the operation, tell the user what changed. For relational positioning, confirm the calculated coordinates. For bulk operations, summarize the layout.
+
+**For every widget added**, provide a direct URL to the widget on the canvas. The URL is constructed as:
+
+1. **Get the base URL**: Use the proxy URL if Caddy is running, otherwise the direct URL:
+   - Proxy: `http://{devDomain}.localhost/branch--{worktreeName}/` (where `devDomain` comes from `storyboard.config.json`, default `storyboard`)
+   - Direct: `http://localhost:{port}/branch--{worktreeName}/`
+   - For `main`: no `branch--` prefix, just `http://{devDomain}.localhost/` or `http://localhost:{port}/`
+2. **Append the canvas path**: `canvas/{canvasName}`
+3. **Append the widget anchor**: `#{widgetId}`
+
+Full URL: `{baseURL}canvas/{canvasName}#{widgetId}`
+
+Example: `http://storyboard-core.localhost/branch--4.2.0--tmux-management/canvas/design-system#sticky-note-f3k2m1`
+
+**If you cannot generate the URL** (no widget ID in the response, or the add command failed silently), this means creation likely failed — **retry the operation** before reporting success. A successful widget add always returns a widget ID.
 
 ---
 
@@ -266,48 +362,51 @@ npx storyboard canvas add sticky-note --canvas my-canvas --x 0 --y 0 --props '{"
 
 ### Relational positioning
 User: "Add a blue sticky to the right of sticky-note-f20afo on my-canvas"
-1. Read canvas: find `sticky-note-f20afo` at `{x: 100, y: 200}` with `width: 270`
-2. Calculate: x = `100 + 270 + 24 = 394` → snap to `Math.round(394/24)*24 = 384`, y = `200`
-3. Run:
+
+**Use `--near`** — the CLI handles position calculation and collision detection automatically:
 ```bash
-npx storyboard canvas add sticky-note --canvas my-canvas --x 384 --y 200 --props '{"text":"","color":"blue"}'
+npx storyboard canvas add sticky-note --canvas my-canvas --near sticky-note-f20afo --direction right --props '{"text":"","color":"blue"}'
 ```
 
 ### Move a widget
 User: "Move sticky-note-abc123 below markdown-xyz789"
-1. Read canvas: find `markdown-xyz789` at `{x: 0, y: 0}` with `height: 240`
-2. Calculate: x = `0`, y = `0 + 240 + 24 = 264` → snap to `264`
-3. Update the widgets array, set `sticky-note-abc123.position` to `{x: 0, y: 264}`
-4. PUT the full array back
+1. Read canvas to get markdown-xyz789's position and bounds
+2. Calculate: use the positioning formulas (ref.y + ref.height + gap)
+3. Update:
+```bash
+npx storyboard canvas update sticky-note-abc123 --canvas my-canvas --x {X} --y {NEW_Y}
+```
 
 ### Update content
 User: "Change the text of sticky-note-abc123 to 'Done!'"
-1. Read canvas, find `sticky-note-abc123`
-2. Set `props.text = "Done!"`
-3. PUT the full widgets array back
+```bash
+npx storyboard canvas update sticky-note-abc123 --canvas my-canvas --text "Done!"
+```
 
 ### Row of widgets
 User: "Add three sticky notes in a row: red, blue, green"
 
-Stride = `270 + 24 = 294` → snap to `Math.round(294/24)*24 = 288`
+Use `--near` to chain positioning — each new sticky is placed to the right of the previous one:
 ```bash
-npx storyboard canvas add sticky-note --canvas my-canvas --x 0 --y 0 --props '{"color":"red"}'
-npx storyboard canvas add sticky-note --canvas my-canvas --x 288 --y 0 --props '{"color":"blue"}'
-npx storyboard canvas add sticky-note --canvas my-canvas --x 576 --y 0 --props '{"color":"green"}'
+# First sticky at a starting point
+RAW1=$(npx storyboard canvas add sticky-note --canvas my-canvas --x 0 --y 0 --props '{"color":"red"}' --json 2>/dev/null)
+ID1=$(echo "$RAW1" | sed 's/[^{]*//' | python3 -c "import sys,json; print(json.load(sys.stdin)['id'])")
+
+# Second sticky to the right of the first
+RAW2=$(npx storyboard canvas add sticky-note --canvas my-canvas --near "$ID1" --direction right --props '{"color":"blue"}' --json 2>/dev/null)
+ID2=$(echo "$RAW2" | sed 's/[^{]*//' | python3 -c "import sys,json; print(json.load(sys.stdin)['id'])")
+
+# Third sticky to the right of the second
+npx storyboard canvas add sticky-note --canvas my-canvas --near "$ID2" --direction right --props '{"color":"green"}'
 ```
 
 ### Describe canvas state
 User: "What's on my-canvas?"
 
-**Option 1 — CLI (recommended):**
 ```bash
 npx storyboard canvas read my-canvas
 ```
 This lists all widgets with their ID, type, position, content, URLs, and file paths.
-
-**Option 2 — API:**
-1. Read canvas state via API
-2. List all widgets with their type, position, key props, and ID
 
 ### Query a specific widget
 User: "What's in widget sticky-note-abc123?"
@@ -321,8 +420,8 @@ npx storyboard canvas read my-canvas --id sticky-note-abc123 --json
 
 ### Remove a widget
 User: "Delete the prototype embed on my-canvas"
-1. Read canvas, find the widget of type `prototype`
-2. Run:
+1. Read canvas via CLI, find the widget of type `prototype`
+2. Use API fallback (CLI doesn't support delete yet):
 ```bash
 curl -X DELETE http://localhost:{PORT}/_storyboard/canvas/widget \
   -H 'Content-Type: application/json' \
@@ -352,13 +451,508 @@ If multiple images exist, ask which one the user wants to view, or list them wit
 
 ---
 
-## Story Components on Canvas
+## Connectors
 
-When creating **story components** (`.story.jsx` files) for use on a canvas:
+Connectors are visual links between two widgets on a canvas. They are created and deleted via the canvas server API. The CLI (`storyboard canvas add`) does **not** support connectors yet — use `curl` directly.
 
-1. **Always use Primer React components** from `@primer/react` for all UI elements — buttons, forms, layout, etc.
-2. **Always use Primer Octicons** from `@primer/octicons-react` for icons.
-3. **Use CSS Modules** (`*.module.css`) for any custom styling beyond Primer defaults.
-4. **Use the `create` skill** to scaffold the component — never create story files manually.
+### Creating a connector
 
-These rules ensure visual consistency across all canvas widgets and prototype pages.
+```
+POST /_storyboard/canvas/connector
+```
+
+**Request body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | ✅ | Canvas name |
+| `startWidgetId` | string | ✅ | ID of the source widget |
+| `endWidgetId` | string | ✅ | ID of the destination widget |
+| `startAnchor` | string | ✅ | Anchor point on the source widget |
+| `endAnchor` | string | ✅ | Anchor point on the destination widget |
+| `connectorType` | string | ❌ | Connector style (defaults to `"default"`) |
+
+**Anchor values:** `top`, `bottom`, `left`, `right`
+
+**Validation rules:**
+- Both `startWidgetId` and `endWidgetId` must exist on the canvas
+- A widget cannot connect to itself (`startWidgetId !== endWidgetId`)
+- Both anchors must be one of the four valid values
+
+**Response (201):**
+```json
+{
+  "success": true,
+  "connector": {
+    "id": "connector-abc123",
+    "type": "connector",
+    "connectorType": "default",
+    "start": { "widgetId": "sticky-note-aaa", "anchor": "right" },
+    "end": { "widgetId": "sticky-note-bbb", "anchor": "left" },
+    "meta": {}
+  }
+}
+```
+
+**Side effects on connected widgets:** After materialization, each widget involved in a connector gains a `connectorIds` array listing all connector IDs attached to it. This is derived automatically — you don't set it manually.
+
+### Deleting a connector
+
+```
+DELETE /_storyboard/canvas/connector
+```
+
+**Request body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | ✅ | Canvas name |
+| `connectorId` | string | ✅ | ID of the connector to remove |
+
+The connector must exist on the canvas. Response: `{ "success": true, "removed": 1 }`.
+
+### Updating a connector
+
+```
+PATCH /_storyboard/canvas/connector
+```
+
+Update a connector's anchors and/or metadata without deleting it. The connector keeps its ID, widget connections, and messaging state.
+
+**Request body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | ✅ | Canvas name |
+| `connectorId` | string | ✅ | ID of the connector to update |
+| `startAnchor` | string | ❌ | New anchor on start widget (`top`/`right`/`bottom`/`left`) |
+| `endAnchor` | string | ❌ | New anchor on end widget (`top`/`right`/`bottom`/`left`) |
+| `meta` | object | ❌ | Metadata updates (e.g. `messagingMode`) |
+
+At least one of `startAnchor`, `endAnchor`, or `meta` should be provided. Omitted anchor fields keep their current value.
+
+**Example — swap anchors:**
+```bash
+curl -X PATCH http://localhost:{PORT}/_storyboard/canvas/connector \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "my-canvas",
+    "connectorId": "connector-abc123",
+    "startAnchor": "bottom",
+    "endAnchor": "top"
+  }'
+```
+
+Response: `{ "success": true }`
+
+### Direction
+
+Connectors are directional: they go **from** `start` **to** `end`. The `startAnchor` determines which side of the source widget the line exits, and `endAnchor` determines which side of the target widget the line enters. For example, `startAnchor: "right"` + `endAnchor: "left"` draws a left-to-right connection.
+
+### Anchor Optimization
+
+**Do not hardcode anchors.** Always calculate the optimal anchor pair based on the spatial relationship between the two connected widgets. The goal is to avoid connectors that overlap other widgets or cross each other.
+
+#### Relative Orientation
+
+Every connector between widgets A (start) and B (end) has a `relativeOrientation` — derived from where A's **center point** sits relative to B's **bounds** on a 3×3 spatial grid.
+
+Widget B occupies the center cell. Widget A can be in any of the 8 surrounding cells:
+
+```
+ ┌──────────────┬──────────────┬──────────────┐
+ │   top-left   │  top-center  │  top-right   │
+ ├──────────────┼──────────────┼──────────────┤
+ │ center-left  │      B       │ center-right │
+ ├──────────────┼──────────────┼──────────────┤
+ │ bottom-left  │bottom-center │ bottom-right │
+ └──────────────┴──────────────┴──────────────┘
+```
+
+#### Calculating the sector
+
+**Sector boundaries** come from B's `bounds`:
+- Left: `B.bounds.startX` — Right: `B.bounds.endX`
+- Top: `B.bounds.startY` — Bottom: `B.bounds.endY`
+
+**A's test point** is its center: `(A.bounds.startX + A.bounds.width / 2, A.bounds.startY + A.bounds.height / 2)`. Using the center (not top-left corner) avoids edge cases where large widgets straddle sector boundaries.
+
+Let `Ax, Ay` = A's center coordinates:
+
+| Condition | Horizontal sector |
+|-----------|------------------|
+| `Ax < B.bounds.startX` | left |
+| `Ax >= B.bounds.startX && Ax <= B.bounds.endX` | center |
+| `Ax > B.bounds.endX` | right |
+
+| Condition | Vertical sector |
+|-----------|----------------|
+| `Ay < B.bounds.startY` | top |
+| `Ay >= B.bounds.startY && Ay <= B.bounds.endY` | center |
+| `Ay > B.bounds.endY` | bottom |
+
+Combine: `{vertical}-{horizontal}` → e.g. `top-left`, `center-right`, `bottom-center`.
+
+#### Orientation → Anchor Map
+
+Each grid position produces a `relativeOrientation` that maps to an ideal anchor pair. The connector exits the side of A facing B, and enters the side of B facing A:
+
+```
+ ┌──────────────────┬──────────────────┬──────────────────┐
+ │    top-left      │   top-center     │    top-right     │
+ │  A anchor: right │  A anchor: bottom│  A anchor: left  │
+ │  B anchor: top   │  B anchor: top   │  B anchor: top   │
+ ├──────────────────┼──────────────────┼──────────────────┤
+ │   center-left    │        B         │   center-right   │
+ │  A anchor: right │                  │  A anchor: left  │
+ │  B anchor: left  │                  │  B anchor: right │
+ ├──────────────────┼──────────────────┼──────────────────┤
+ │   bottom-left    │  bottom-center   │   bottom-right   │
+ │  A anchor: right │  A anchor: top   │  A anchor: left  │
+ │  B anchor: bottom│  B anchor: bottom│  B anchor: bottom│
+ └──────────────────┴──────────────────┴──────────────────┘
+```
+
+**Summary table:**
+
+| A's grid position | relativeOrientation | A anchor (start) | B anchor (end) |
+|-------------------|---------------------|------------------|----------------|
+| top-left          | top-to-right        | right            | top            |
+| top-center        | top-to-bottom       | bottom           | top            |
+| top-right         | top-to-left         | left             | top            |
+| center-left       | left-to-right       | right            | left           |
+| center-right      | right-to-left       | left             | right          |
+| bottom-left       | bottom-to-right     | right            | bottom         |
+| bottom-center     | bottom-to-top       | top              | bottom         |
+| bottom-right      | bottom-to-left      | left             | bottom         |
+
+**Key directive:** Connector positioning is calculated AFTER all widgets have been positioned. **Never reposition widgets** to accommodate better connector layout — only adjust anchors.
+
+### When to Recalculate Anchors
+
+Recalculate anchors in two scenarios:
+
+1. **After creating new connectors** — compute the `relativeOrientation` for each new A→B pair and set the anchors accordingly when calling `POST /connector`
+2. **After moving any widget that has connectors** — re-read all connectors attached to the moved widget, recompute orientations for each pair, and `PATCH /connector` any whose ideal anchors have changed
+
+**Procedure:**
+1. Read the canvas state (get all widgets with bounds + all connectors)
+2. For each connector, find the start and end widgets
+3. Calculate A's center point and determine which sector it falls in relative to B's bounds
+4. Look up the ideal anchor pair from the orientation table
+5. If the current anchors differ from the ideal, PATCH the connector with the new anchors
+
+### Example: Single connector
+
+```bash
+curl -X POST http://localhost:{PORT}/_storyboard/canvas/connector \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "my-canvas",
+    "startWidgetId": "sticky-note-aaa",
+    "endWidgetId": "sticky-note-bbb",
+    "startAnchor": "right",
+    "endAnchor": "left"
+  }'
+```
+
+### Pattern: 1→n (one source to many targets)
+
+Create multiple connectors from the same source widget to different targets. **Calculate anchors per-pair** using the orientation table — each target may be in a different sector relative to the source:
+
+```bash
+# Connect source to three targets — anchors depend on relative positions
+# (These examples assume targets are to the right; adjust per orientation)
+curl -X POST http://localhost:{PORT}/_storyboard/canvas/connector \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"my-canvas","startWidgetId":"source-widget","endWidgetId":"target-1","startAnchor":"right","endAnchor":"left"}'
+
+curl -X POST http://localhost:{PORT}/_storyboard/canvas/connector \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"my-canvas","startWidgetId":"source-widget","endWidgetId":"target-2","startAnchor":"bottom","endAnchor":"top"}'
+
+curl -X POST http://localhost:{PORT}/_storyboard/canvas/connector \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"my-canvas","startWidgetId":"source-widget","endWidgetId":"target-3","startAnchor":"right","endAnchor":"top"}'
+```
+
+### Pattern: n→1 (many sources to one target)
+
+Connect multiple source widgets to a single target. Each source may be in a different sector relative to the target — **calculate anchors per-pair**:
+
+```bash
+# source-1 is to the left of target → left-to-right
+curl -X POST http://localhost:{PORT}/_storyboard/canvas/connector \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"my-canvas","startWidgetId":"source-1","endWidgetId":"target-widget","startAnchor":"right","endAnchor":"left"}'
+
+# source-2 is above target → top-to-bottom
+curl -X POST http://localhost:{PORT}/_storyboard/canvas/connector \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"my-canvas","startWidgetId":"source-2","endWidgetId":"target-widget","startAnchor":"bottom","endAnchor":"top"}'
+```
+
+### Pattern: n→n (many to many)
+
+Create connectors between arbitrary pairs — each call is independent. **Always calculate anchors from the orientation table** based on widget positions:
+
+```bash
+# widget-a is above widget-b → top-to-bottom
+curl -X POST http://localhost:{PORT}/_storyboard/canvas/connector \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"my-canvas","startWidgetId":"widget-a","endWidgetId":"widget-b","startAnchor":"bottom","endAnchor":"top"}'
+
+# widget-c is to the left of widget-d → left-to-right
+curl -X POST http://localhost:{PORT}/_storyboard/canvas/connector \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"my-canvas","startWidgetId":"widget-c","endWidgetId":"widget-d","startAnchor":"right","endAnchor":"left"}'
+```
+
+---
+
+## Broadcast & Messaging
+
+Broadcast enables real-time messaging between connected agent/terminal widgets. It's controlled per-connector via `meta.messagingMode`.
+
+### Enabling broadcast on a connector
+
+Set `meta.messagingMode` when creating or updating a connector:
+
+```bash
+# Option A: Set messagingMode when creating the connector
+curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/connector" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "<canvasName>",
+    "startWidgetId": "<widgetA>",
+    "endWidgetId": "<widgetB>",
+    "startAnchor": "right",
+    "endAnchor": "left",
+    "meta": { "messagingMode": "two-way" }
+  }'
+
+# Option B: Update an existing connector
+curl -s -X PATCH "$STORYBOARD_SERVER_URL/_storyboard/canvas/connector" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "<canvasName>",
+    "connectorId": "<connectorId>",
+    "meta": { "messagingMode": "two-way" }
+  }'
+```
+
+**Messaging modes:**
+- `"two-way"` — both widgets can send and receive
+- `"one-way"` — only start→end direction
+- `null` — messaging disabled (default)
+
+### Bulk broadcast toggle
+
+Use the CLI to enable/disable broadcast across all connectors touching a widget (and optionally its entire connected component):
+
+```bash
+storyboard canvas broadcast \
+  --canvas <canvasName> \
+  --widget <widgetId> \
+  --mode two-way \
+  --pass-through
+```
+
+| Flag | Description |
+|------|-------------|
+| `--canvas`, `-c` | Canvas name (required) |
+| `--widget`, `-w` | Widget to broadcast from (defaults to `$STORYBOARD_WIDGET_ID`) |
+| `--mode`, `-m` | `two-way`, `one-way`, or `none` (default: `two-way`) |
+| `--pass-through` | BFS entire connected component (default: direct neighbors only) |
+| `--json` | Output result as JSON |
+
+In batch operations, use `{ "op": "broadcast", "widgetId": "...", "mode": "two-way", "passThrough": true }`.
+
+### Agent widgets
+
+An **agent widget** (`type: "agent"`) creates a real, autonomous AI session — its own tmux process running Copilot, Claude, or Codex. It is NOT a simulation.
+
+```bash
+# Create an agent widget with a nickname
+storyboard canvas add agent --canvas "$STORYBOARD_CANVAS_ID" --json \
+  --name "Research Agent" --props '{"agentId": "copilot"}'
+```
+
+- `--name` sets the agent's **alias** (human-readable nickname). The auto-generated `prettyName` (e.g. `ivory-avocet`) remains as a unique fallback.
+- `agentId` maps to keys in `canvas.agents` from `storyboard.config.json` (e.g. `"copilot"`, `"claude"`, `"codex"`)
+- The agent auto-starts when the browser renders the widget — no separate spawn call needed
+- If no `agentId` is provided, the first `canvas.agents` entry with `default: true` is used
+
+### Alias management
+
+```bash
+storyboard canvas alias get --widget <id> --canvas <name>    # Read alias
+storyboard canvas alias set --widget <id> --canvas <name> --alias "New Name"  # Set alias
+storyboard canvas alias clear --widget <id> --canvas <name>  # Clear alias
+```
+
+When an alias is changed, the agent and all hub peers are notified via tmux send-keys.
+
+For creating multi-agent hubs (multiple agents working together), invoke the **create-hub** skill.
+
+---
+
+## Reference: Server API (Fallback Only)
+
+> **⚠️ Only use these endpoints when the CLI does not support the operation or when a CLI command has failed.** Always try the CLI first.
+
+All endpoints are at `http://localhost:{PORT}/_storyboard/canvas/`. The port is determined by the worktree:
+
+```js
+import { detectWorktreeName, getPort } from '@dfosco/storyboard-core/worktree/port'
+const port = getPort(detectWorktreeName())
+```
+
+### Read canvas state
+```
+GET /read?name={CANVAS_NAME}
+```
+Returns the materialized canvas with `widgets` array, `gridSize`, etc.
+
+### List canvases
+```
+GET /list
+```
+Returns `{ canvases: [{ name, title, path, widgetCount }] }`.
+
+### Add a widget
+```
+POST /widget
+{ "name": "{CANVAS}", "type": "{TYPE}", "props": {} }
+```
+
+**Auto-positioned by default.** Omit `position` to let the server place it automatically using the priority chain (source agent → selected widget → viewport → last widget). Optional fields:
+
+| Field | Description |
+|-------|-------------|
+| `position` | `{ "x": N, "y": N }` — explicit coordinates, overrides auto-positioning |
+| `near` | Widget ID to position near. Set to `false` to disable auto-positioning |
+| `direction` | `right`, `left`, `above`, `below`, `above-right`, `below-right`, `above-left`, `below-left` (default: `right`) |
+| `gap` | Spacing between widgets in grid spaces (default: `1`). Use higher values (e.g. `10`) for connected widgets |
+| `resolve` | `true` to run collision detection on explicit coordinates |
+| `source` | Caller's widget ID (agent/terminal) — highest auto-position priority |
+
+### Remove a widget
+```
+DELETE /widget
+{ "name": "{CANVAS}", "widgetId": "{WIDGET_ID}" }
+```
+
+### Update a single widget
+```
+PATCH /widget
+{ "name": "{CANVAS}", "widgetId": "{WIDGET_ID}", "props": { ... }, "position": { "x": 0, "y": 0 } }
+```
+
+### Bulk update (move, resize, reorder, update props)
+```
+PUT /update
+{ "name": "{CANVAS}", "widgets": [ ...full widgets array... ] }
+```
+This replaces the entire widgets array. **Always read the current state first**, modify the array, then PUT it back.
+
+### Update canvas settings
+```
+PUT /update
+{ "name": "{CANVAS}", "settings": { "title": "...", "grid": true, "gridSize": 24, ... } }
+```
+Allowed setting keys: `title`, `description`, `grid`, `gridSize`, `colorMode`, `dotted`, `centered`, `author`, `snapToGrid`.
+
+---
+
+## Creating Widgets
+
+Canvas widgets come in two categories: **content widgets** you can add directly, and **story widgets** that require scaffolding a component first.
+
+### Content widgets (add directly via API/CLI)
+
+These widgets are created inline — just call the add widget API with the type and props:
+
+| Type | What it does | Key props |
+|------|-------------|-----------|
+| `sticky-note` | Text note with color | `text`, `color` |
+| `markdown` | Rich markdown block | `content` |
+| `prototype` | Embedded prototype iframe | `src` (URL/path), `label`, `zoom` |
+| `figma-embed` | Figma frame embed | `url` |
+| `codepen-embed` | CodePen embed | `url` |
+| `link-preview` | URL preview card | `url`, `title`, `description` |
+| `image` | Uploaded image | `src` (filename), `private` |
+
+### Story widgets (scaffold first, then add)
+
+A **story widget** embeds a React component (`.story.jsx`) directly on the canvas. To add one:
+
+1. **Scaffold the component** — invoke the **`create` skill** with type "Component". This creates the correct directory structure (`ComponentName/ComponentName.jsx` + `name.story.jsx`), Primer conventions, and CSS Module patterns. Never create story files manually.
+2. **Add the story widget to the canvas** — use the add widget API with type `story`:
+   ```json
+   {
+     "type": "story",
+     "props": {
+       "storyId": "text-input",
+       "exportName": "Default",
+       "width": 400,
+       "height": 300
+     }
+   }
+   ```
+   - `storyId` — the kebab-case component name (matches the story file stem)
+   - `exportName` — which named export to render (e.g. `Default`, `WithValidation`)
+
+3. **Or use the CLI**:
+   ```bash
+   npx storyboard canvas add story --canvas my-canvas --props '{"storyId":"text-input","exportName":"Default"}'
+   ```
+
+### Component-set widgets (all variants in one widget)
+
+`component-set` is a **dedicated widget type** — not a prop on `story`. The canvas renderer maps `component-set` → `ComponentSetWidget` and `story` → `StoryWidget`. Using the wrong type renders the wrong component.
+
+- ✅ `npx storyboard canvas add component-set --props '{ "storyId": "my-story" }'`
+- ❌ `npx storyboard canvas add story --props '{ "storyId": "my-story", "componentSet": true }'`
+
+A **component-set widget** renders ALL named exports from a single `.story.jsx` file in a grid layout inside one iframe. Use this instead of multiple `story` widgets when you want to show every variant of a component side by side.
+
+1. **Scaffold the component** — same as story widgets: invoke the **`create` skill** with type "Component".
+2. **Add the component-set widget to the canvas**:
+   ```json
+   {
+     "type": "component-set",
+     "props": {
+       "storyId": "text-input",
+       "layout": "horizontal",
+       "width": 780,
+       "height": 420
+     }
+   }
+   ```
+
+3. **Or use the CLI**:
+   ```bash
+   npx storyboard canvas add component-set --canvas my-canvas --props '{"storyId":"text-input"}'
+   ```
+
+#### Component-set props
+
+| Prop | Values | Notes |
+|------|--------|-------|
+| `storyId` | file stem | Required. e.g. `cq-setup-progress` for `cq-setup-progress.story.jsx`, NOT the route path |
+| `layout` | `horizontal` (default), `vertical` | Grid direction |
+| `selected` | export name | Pre-selects a cell |
+| `width`, `height` | number | Widget dimensions |
+
+#### Authoring stories for component sets
+
+- **Named exports only** — no `export default`. Each named export = one grid cell.
+- **No wrapper chrome** — no headings, descriptions, or layout wrappers. The `ComponentSetPage` handles labels and grid layout.
+- **PascalCase export names** — they become the cell labels (e.g. `Simple`, `RepoList`, `ProgressBar`).
+- **`storyId` = file stem** — e.g. `cq-setup-progress` for `cq-setup-progress.story.jsx`, NOT the route path (`CqSetupProgress/cq-setup-progress`).
+- **Route is auto-generated** from directory: `src/components/Foo/bar.story.jsx` → `/components/Foo/bar`.
+
+**When to use `component-set` vs `story`:**
+- Use `story` when embedding a single specific export (e.g. just the `Default` variant)
+- Use `component-set` when showing all exports/variants of a component together (e.g. a design review of all states)

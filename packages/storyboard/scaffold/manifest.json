@@ -27,9 +27,25 @@
     },
     {
       "source": "scaffold/skills/",
-      "target": ".github/skills/",
+      "target": ".agents/skills/",
       "mode": "updateable",
       "directory": true
+    },
+    {
+      "source": "scaffold/roles/",
+      "target": ".agents/roles/",
+      "mode": "updateable",
+      "directory": true
+    },
+    {
+      "source": "scaffold/prompt-agent.agent.md",
+      "target": ".agents/prompt-agent.agent.md",
+      "mode": "updateable"
+    },
+    {
+      "source": "scaffold/terminal-agent.agent.md",
+      "target": ".agents/terminal-agent.agent.md",
+      "mode": "updateable"
     },
     {
       "source": "scaffold/deploy.yml",
