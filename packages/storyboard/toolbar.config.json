@@ -104,6 +104,7 @@
       ]
     },
     "autosync": {
+      "disabled": true,
       "ariaLabel": "Auto sync",
       "icon": "primer/sync",
       "render": "menu",

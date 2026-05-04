@@ -62,10 +62,6 @@
           "id": "feature-flags",
           "label": "Feature Flags",
           "meta": { "strokeWeight": 1.6, "scale": 1.1 }
-        },
-        {
-          "id": "autosync",
-          "label": "Auto Sync"
         }
       ]
     },
