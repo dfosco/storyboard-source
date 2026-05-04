@@ -3,8 +3,12 @@
  *
  * Dev: always visible (main or branch). Shows "Local development" label.
  * Prod: shows on non-main branches only.
+ *
+ * Renders via portal as the first child of <body> so that its sticky
+ * positioning pushes the entire page (including absolutely positioned items) down.
  */
 import { useState, useEffect, useMemo } from 'react'
+import { createPortal } from 'react-dom'
 import { GitBranchIcon } from '@primer/octicons-react'
 import css from './BranchBar.module.css'
 
@@ -22,6 +26,18 @@ function getDevDomainColor() {
   if (!color) return null
   if (typeof CSS !== 'undefined' && CSS.supports && !CSS.supports('color', color)) return null
   return color
+}
+
+/** Get or create the portal container at the top of body. */
+function getPortalContainer() {
+  if (typeof document === 'undefined') return null
+  let el = document.getElementById('sb-branch-bar-root')
+  if (!el) {
+    el = document.createElement('div')
+    el.id = 'sb-branch-bar-root'
+    document.body.prepend(el)
+  }
+  return el
 }
 
 export default function BranchBar({ basePath }) {
@@ -54,13 +70,16 @@ export default function BranchBar({ basePath }) {
 
   if ((!isOnBranch && !isLocalDev) || hidden || isHiddenByParam) return null
 
+  const portalContainer = getPortalContainer()
+  if (!portalContainer) return null
+
   function hideChrome() {
     window.dispatchEvent(new KeyboardEvent('keydown', {
       key: '.', metaKey: true, bubbles: true,
     }))
   }
 
-  return (
+  return createPortal(
     <div className={css.bar} data-branch-bar>
       <div
         className={`${css.barInner}${isLocalDev ? '' : ` ${css.barProd}`}`}
@@ -82,6 +101,7 @@ export default function BranchBar({ basePath }) {
           <button className={css.barAction} onClick={hideChrome}>Hide</button>
         </div>
       </div>
-    </div>
+    </div>,
+    portalContainer
   )
 }
