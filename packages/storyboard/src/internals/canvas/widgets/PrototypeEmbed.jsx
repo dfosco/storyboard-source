@@ -456,10 +456,7 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
         onClose={() => {
           setImmersiveClosing(false)
           setExpandMode(null)
-          // Restore chrome if it was hidden (keyboard shortcut entry hides it)
-          document.documentElement.classList.remove('storyboard-chrome-hidden')
-          document.documentElement.classList.remove('storyboard-chrome-completely-hidden')
-          // Notify CanvasPage to clear its fullscreen tracking ref
+          // Notify CanvasPage to clear fullscreen ref and restore chrome state
           document.dispatchEvent(new CustomEvent('storyboard:canvas:immersive-closed', {
             detail: { widgetId }
           }))

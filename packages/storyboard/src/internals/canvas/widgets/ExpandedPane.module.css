@@ -91,8 +91,8 @@
   transition: opacity 0.2s ease;
 }
 
-.immersive:hover .immersiveCloseBtn {
-  opacity: 1;
+.immersiveCloseBtn {
+  opacity: 0.5;
 }
 
 .immersiveCloseBtn:hover {

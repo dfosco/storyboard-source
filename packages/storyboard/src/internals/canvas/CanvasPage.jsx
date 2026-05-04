@@ -2275,6 +2275,7 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
 
   // ── Prototype fullscreen (immersive mode) ──────────────────────────
   const fullscreenWidgetRef = useRef(null)
+  const fullscreenChromeWasHidden = useRef(false)
 
   useEffect(() => {
     function handlePrototypeFullscreen() {
@@ -2305,6 +2306,9 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
 
       fullscreenWidgetRef.current = targetWidget.id
 
+      // Save current chrome state before hiding (so we can restore correctly on exit)
+      fullscreenChromeWasHidden.current = document.documentElement.classList.contains('storyboard-chrome-hidden')
+
       // Hide toolbar
       document.documentElement.classList.add('storyboard-chrome-hidden')
       document.documentElement.classList.add('storyboard-chrome-completely-hidden')
@@ -2316,6 +2320,11 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
     }
 
     function handleFullscreenExit() {
+      // Only restore chrome if CanvasPage was the one that hid it (keyboard shortcut path)
+      if (fullscreenWidgetRef.current && !fullscreenChromeWasHidden.current) {
+        document.documentElement.classList.remove('storyboard-chrome-hidden')
+        document.documentElement.classList.remove('storyboard-chrome-completely-hidden')
+      }
       fullscreenWidgetRef.current = null
     }
 
