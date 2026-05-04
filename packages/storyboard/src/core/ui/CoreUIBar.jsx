@@ -757,7 +757,7 @@ export default function CoreUIBar({ basePath = '/', toolbarConfig, customHandler
   return (
     <>
       {/* Canvas toolbar */}
-      {canvasActive && !completelyHidden && canvasMenus.length > 0 && (
+      {canvasActive && visible && !completelyHidden && canvasMenus.length > 0 && (
         <div
           className="fixed bottom-6 left-6 z-[9999] font-sans flex items-center gap-3"
           role="toolbar"
