@@ -38,6 +38,11 @@
   to { transform: scale(1); opacity: 1; }
 }
 
+@keyframes immersiveFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
 .modalBody {
   flex: 1;
   min-height: 0;
@@ -55,6 +60,16 @@
   overflow: hidden;
   background: var(--bgColor-default, #ffffff);
   animation: expandedPaneScaleIn 0.2s ease;
+}
+
+/* ── Immersive mode ─────────────────────────────────────────────── */
+
+.immersive {
+  animation: expandedPaneFadeIn 0.15s ease;
+}
+
+.immersiveClosing {
+  animation: immersiveFadeOut 0.2s ease forwards;
 }
 
 /* ── Single-pane full body ───────────────────────────────────────── */

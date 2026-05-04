@@ -436,7 +436,18 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
         modalContainerRef={modalContainerRef}
         splitMode={expandMode === 'split'}
         immersive={expandMode === 'immersive'}
-        onClose={() => setExpandMode(null)}
+        onClose={() => {
+          const wasImmersive = expandMode === 'immersive'
+          setExpandMode(null)
+          if (wasImmersive) {
+            // Notify CanvasPage to clear its fullscreen ref and restore chrome
+            document.dispatchEvent(new CustomEvent('storyboard:canvas:widget-fullscreen-exit', {
+              detail: { widgetId }
+            }))
+            document.documentElement.classList.remove('storyboard-chrome-hidden')
+            document.documentElement.classList.remove('storyboard-chrome-completely-hidden')
+          }
+        }}
       />
     )}
     </>

@@ -2318,20 +2318,15 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
       }))
     }
 
-    // Escape key exits fullscreen
-    function handleKeydown(e) {
-      if (e.key === 'Escape' && fullscreenWidgetRef.current) {
-        e.preventDefault()
-        e.stopPropagation()
-        handlePrototypeFullscreen()
-      }
+    function handleFullscreenExit() {
+      fullscreenWidgetRef.current = null
     }
 
     document.addEventListener('storyboard:canvas:prototype-fullscreen', handlePrototypeFullscreen)
-    window.addEventListener('keydown', handleKeydown, true)
+    document.addEventListener('storyboard:canvas:widget-fullscreen-exit', handleFullscreenExit)
     return () => {
       document.removeEventListener('storyboard:canvas:prototype-fullscreen', handlePrototypeFullscreen)
-      window.removeEventListener('keydown', handleKeydown, true)
+      document.removeEventListener('storyboard:canvas:widget-fullscreen-exit', handleFullscreenExit)
     }
   }, [localWidgets])
 

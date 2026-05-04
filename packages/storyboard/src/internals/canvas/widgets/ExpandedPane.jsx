@@ -57,6 +57,16 @@ const MIN_PANE_HEIGHT_PX = 80
  * @param {((panes: PaneConfig[]) => void)} [props.onPanesChange] — notify parent of pane changes
  */
 export default function ExpandedPane({ initialPanes, initialLayout, variant = 'modal', onClose }) {
+  // ── Immersive fade-out state ──
+  const [closing, setClosing] = useState(false)
+  const handleClose = useCallback(() => {
+    if (variant === 'immersive') {
+      setClosing(true)
+    } else {
+      onClose()
+    }
+  }, [variant, onClose])
+
   // Normalize to 2D layout: outer = columns, inner = rows
   const [layout, setLayout] = useState(() => {
     if (initialLayout) return initialLayout
@@ -177,12 +187,12 @@ export default function ExpandedPane({ initialPanes, initialLayout, variant = 'm
     function handleKeyDown(e) {
       if (e.key === 'Escape') {
         e.stopPropagation()
-        onClose()
+        handleClose()
       }
     }
     document.addEventListener('keydown', handleKeyDown, true)
     return () => document.removeEventListener('keydown', handleKeyDown, true)
-  }, [onClose])
+  }, [handleClose])
 
   // ── Column drag-to-resize dividers ──
   const dragState = useRef(null)
@@ -390,10 +400,11 @@ export default function ExpandedPane({ initialPanes, initialLayout, variant = 'm
     if (!pane) return null
     return createPortal(
       <div
-        className={styles.fullContainer}
+        className={`${styles.fullContainer} ${styles.immersive} ${closing ? styles.immersiveClosing : ''}`}
         onPointerDown={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
         onWheel={(e) => e.stopPropagation()}
+        onAnimationEnd={() => { if (closing) onClose() }}
       >
         <div className={styles.singleFull}>
           {renderPaneContent(pane)}
