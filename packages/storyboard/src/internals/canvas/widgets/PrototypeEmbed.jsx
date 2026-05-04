@@ -194,6 +194,7 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
 
   // ── Fullscreen (immersive) mode ─────────────────────────────────────
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const fullscreenContainerRef = useRef(null)
 
   useEffect(() => {
     function handleEnter(e) {
@@ -214,6 +215,39 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
       document.removeEventListener('storyboard:canvas:widget-fullscreen-exit', handleExit)
     }
   }, [widgetId])
+
+  // Reparent iframe into fullscreen container when entering/exiting
+  useEffect(() => {
+    const iframe = iframeRef.current
+    if (!iframe) return
+    if (isFullscreen && fullscreenContainerRef.current) {
+      iframe._savedClassName = iframe.className
+      iframe._savedStyle = iframe.getAttribute('style') || ''
+      iframe.className = styles.fullscreenIframe
+      iframe.removeAttribute('style')
+      const target = fullscreenContainerRef.current
+      try {
+        if (target.moveBefore) target.moveBefore(iframe, target.firstChild)
+        else target.prepend(iframe)
+      } catch {
+        target.prepend(iframe)
+      }
+    } else if (!isFullscreen && inlineContainerRef.current) {
+      if (iframe._savedClassName !== undefined) {
+        iframe.className = iframe._savedClassName
+        iframe.setAttribute('style', iframe._savedStyle)
+        delete iframe._savedClassName
+        delete iframe._savedStyle
+      }
+      const target = inlineContainerRef.current
+      try {
+        if (target.moveBefore) target.moveBefore(iframe, null)
+        else target.appendChild(iframe)
+      } catch {
+        target.appendChild(iframe)
+      }
+    }
+  }, [isFullscreen])
 
   // Reparent iframe between inline and modal
   useEffect(() => {
@@ -315,7 +349,7 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
     <WidgetWrapper>
       <div
         ref={embedRef}
-        className={`${styles.embed}${isFullscreen ? ` ${styles.fullscreen}` : ''}`}
+        className={styles.embed}
         style={{ width, height, ...chromeVars }}
       >
         <div className={styles.header}>
@@ -436,6 +470,9 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
         splitMode={expandMode === 'split'}
         onClose={() => setExpandMode(null)}
       />
+    )}
+    {isFullscreen && (
+      <div className={styles.fullscreenOverlay} ref={fullscreenContainerRef} />
     )}
     </>
   )

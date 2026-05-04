@@ -152,6 +152,20 @@
   height: 100%;
 }
 
+.fullscreenOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200000;
+  background: var(--bgColor-default, #ffffff);
+}
+
+.fullscreenIframe {
+  border: none;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 /* Restore transitions — smooth chrome re-appearance on exit */
 .embed {
   transition: border-color 200ms ease, border-radius 200ms ease, box-shadow 200ms ease, border-width 200ms ease;
