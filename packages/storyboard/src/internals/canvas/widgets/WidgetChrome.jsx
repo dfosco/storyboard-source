@@ -332,6 +332,7 @@ export default function WidgetChrome({
   readOnly = false,
 }) {
   const [hovered, setHovered] = useState(false)
+  const altHeld = useAltKey()
   const leaveTimer = useRef(null)
 
   const handleMouseEnter = useCallback(() => {
@@ -360,7 +361,7 @@ export default function WidgetChrome({
     }
     // Widget-specific actions go through the widget's imperative ref
     if (widgetRef?.current?.handleAction) {
-      const handled = widgetRef.current.handleAction(actionId)
+      const handled = widgetRef.current.handleAction(actionId, { altKey: e.altKey })
       if (handled !== false) return
     }
     // Fallback to generic handler
@@ -533,6 +534,11 @@ export default function WidgetChrome({
                   } else {
                     label = 'Show output'
                   }
+                }
+
+                // Expand: alt+click → Fullscreen (Immersive)
+                if (feature.action === 'expand' && altHeld) {
+                  label = 'Fullscreen (Immersive)'
                 }
 
                 // Open-terminal: hide when no session

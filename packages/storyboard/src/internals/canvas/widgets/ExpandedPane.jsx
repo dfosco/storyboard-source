@@ -384,6 +384,25 @@ export default function ExpandedPane({ initialPanes, initialLayout, variant = 'm
     )
   }
 
+  // ── Immersive variant (no top bar, full viewport) ──
+  if (!isSplit && variant === 'immersive') {
+    const pane = allPanes[0]
+    if (!pane) return null
+    return createPortal(
+      <div
+        className={styles.fullContainer}
+        onPointerDown={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
+        onWheel={(e) => e.stopPropagation()}
+      >
+        <div className={styles.singleFull}>
+          {renderPaneContent(pane)}
+        </div>
+      </div>,
+      document.body,
+    )
+  }
+
   // ── Full layout (single-pane full or multi-pane split) ──
   return createPortal(
     <div

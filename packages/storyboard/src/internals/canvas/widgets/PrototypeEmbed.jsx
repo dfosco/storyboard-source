@@ -192,20 +192,16 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
     return () => document.removeEventListener('storyboard:theme:changed', readToolbarTheme)
   }, [])
 
-  // ── Fullscreen (immersive) mode ─────────────────────────────────────
-  const [isFullscreen, setIsFullscreen] = useState(false)
-  const fullscreenContainerRef = useRef(null)
-
+  // ── Fullscreen (immersive) mode — triggers expand with 'immersive' variant
   useEffect(() => {
     function handleEnter(e) {
       if (e.detail?.widgetId === widgetId) {
-        setIsFullscreen(true)
-        setInteractive(true)
+        setExpandMode('immersive')
       }
     }
     function handleExit(e) {
       if (e.detail?.widgetId === widgetId) {
-        setIsFullscreen(false)
+        setExpandMode(null)
       }
     }
     document.addEventListener('storyboard:canvas:widget-fullscreen', handleEnter)
@@ -215,39 +211,6 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
       document.removeEventListener('storyboard:canvas:widget-fullscreen-exit', handleExit)
     }
   }, [widgetId])
-
-  // Reparent iframe into fullscreen container when entering/exiting
-  useEffect(() => {
-    const iframe = iframeRef.current
-    if (!iframe) return
-    if (isFullscreen && fullscreenContainerRef.current) {
-      iframe._savedClassName = iframe.className
-      iframe._savedStyle = iframe.getAttribute('style') || ''
-      iframe.className = styles.fullscreenIframe
-      iframe.removeAttribute('style')
-      const target = fullscreenContainerRef.current
-      try {
-        if (target.moveBefore) target.moveBefore(iframe, target.firstChild)
-        else target.prepend(iframe)
-      } catch {
-        target.prepend(iframe)
-      }
-    } else if (!isFullscreen && inlineContainerRef.current) {
-      if (iframe._savedClassName !== undefined) {
-        iframe.className = iframe._savedClassName
-        iframe.setAttribute('style', iframe._savedStyle)
-        delete iframe._savedClassName
-        delete iframe._savedStyle
-      }
-      const target = inlineContainerRef.current
-      try {
-        if (target.moveBefore) target.moveBefore(iframe, null)
-        else target.appendChild(iframe)
-      } catch {
-        target.appendChild(iframe)
-      }
-    }
-  }, [isFullscreen])
 
   // Reparent iframe between inline and modal
   useEffect(() => {
@@ -302,11 +265,15 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
   const enterInteractive = useCallback(() => setInteractive(true), [])
 
   useImperativeHandle(ref, () => ({
-    handleAction(actionId) {
+    handleAction(actionId, opts) {
       if (actionId === 'edit') {
         setEditing(true)
       } else if (actionId === 'expand' || actionId === 'expand-single') {
-        setExpandMode('single')
+        if (opts?.altKey) {
+          setExpandMode('immersive')
+        } else {
+          setExpandMode('single')
+        }
       } else if (actionId === 'split-screen') {
         setExpandMode('split')
       } else if (actionId === 'open-external') {
@@ -468,11 +435,9 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
         widgetId={widgetId}
         modalContainerRef={modalContainerRef}
         splitMode={expandMode === 'split'}
+        immersive={expandMode === 'immersive'}
         onClose={() => setExpandMode(null)}
       />
-    )}
-    {isFullscreen && (
-      <div className={styles.fullscreenOverlay} ref={fullscreenContainerRef} />
     )}
     </>
   )
@@ -482,7 +447,7 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
  * Builds pane configs and renders ExpandedPane for an expanded prototype widget.
  * The primary pane is an external pane that receives the iframe via reparenting.
  */
-function PrototypeExpandPane({ widgetId, modalContainerRef, splitMode, onClose }) {
+function PrototypeExpandPane({ widgetId, modalContainerRef, splitMode, immersive, onClose }) {
   const connectedWidgets = useMemo(
     () => splitMode ? findAllConnectedSplitTargets(widgetId) : [],
     [widgetId, splitMode],
@@ -513,10 +478,12 @@ function PrototypeExpandPane({ widgetId, modalContainerRef, splitMode, onClose }
     [primaryWidget, connectedWidgets, buildPaneFn],
   )
 
+  const variant = immersive ? 'immersive' : (layout.flat().length <= 1 ? 'modal' : 'full')
+
   return (
     <ExpandedPane
       initialLayout={layout}
-      variant={layout.flat().length <= 1 ? 'modal' : 'full'}
+      variant={variant}
       onClose={onClose}
     />
   )
