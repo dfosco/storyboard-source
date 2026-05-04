@@ -185,3 +185,8 @@
   pointer-events: none;
   z-index: 9999;
 }
+
+/* Hide canvas nav when toolbars are hidden */
+:global(html.storyboard-chrome-hidden) .canvasTitle {
+  display: none;
+}

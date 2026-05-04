@@ -90,3 +90,8 @@
 .menuIcon {
   font-size: 18px;
 }
+
+/* Hide add-widget toolbar when toolbars are hidden */
+:global(html.storyboard-chrome-hidden) .toolbar {
+  display: none;
+}

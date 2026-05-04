@@ -133,3 +133,8 @@
 .backBtn:hover {
   color: var(--fgColor-default, #1f2328);
 }
+
+/* Hide canvas controls when toolbars are hidden */
+:global(html.storyboard-chrome-hidden) .toolbar {
+  display: none;
+}
