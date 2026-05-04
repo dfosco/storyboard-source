@@ -48,6 +48,16 @@
       "mode": "updateable"
     },
     {
+      "source": "scaffold/prompt-agent.agent.md",
+      "target": ".github/agents/prompt-agent.agent.md",
+      "mode": "updateable"
+    },
+    {
+      "source": "scaffold/terminal-agent.agent.md",
+      "target": ".github/agents/terminal-agent.agent.md",
+      "mode": "updateable"
+    },
+    {
       "source": "scaffold/deploy.yml",
       "target": ".github/workflows/deploy.yml",
       "mode": "updateable"
