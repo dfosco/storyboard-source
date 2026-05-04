@@ -1213,6 +1213,7 @@ export default function StoryboardCommandPalette({ basePath }) {
         }}
       >
       <Command.Input
+        autoFocus
         placeholder={activePage === 'root'
           ? 'Search commands, prototypes, canvases, stories...'
           : `Search ${toolMenus.find(m => m.id === activePage)?.label || ''}...`
