@@ -442,3 +442,17 @@
   background: var(--bgColor-neutral-muted, #272c33);
   color: var(--fgColor-default, #e6edf3);
 }
+
+/* ── Hide widget chrome when toolbars are hidden ─────────────────── */
+
+:global(html.storyboard-chrome-hidden) .toolbar {
+  display: none;
+}
+
+:global(html.storyboard-chrome-hidden) .widgetSlotSelected {
+  outline: none;
+}
+
+:global(html.storyboard-chrome-hidden) .anchorPort {
+  display: none;
+}

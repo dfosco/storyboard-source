@@ -33,7 +33,7 @@
     "zoom": {
       "min": 10,
       "max": 250,
-      "step": 10
+      "step": 5
     },
     "terminal": {
       "fontSize": 18,
@@ -101,7 +101,7 @@
       },
       "prompt": {
         "pool_size": 2,
-        "webgl_ready_slots": 2
+        "webgl_ready_slots": 2  
       }
     }
   },
