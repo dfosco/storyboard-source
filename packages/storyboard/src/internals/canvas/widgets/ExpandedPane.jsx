@@ -21,6 +21,7 @@
  */
 import { useState, useEffect, useLayoutEffect, useRef, useCallback, useMemo } from 'react'
 import { createPortal } from 'react-dom'
+import { ScreenNormalIcon } from '@primer/octicons-react'
 import ExpandedPaneTopBar from './ExpandedPaneTopBar.jsx'
 import styles from './ExpandedPane.module.css'
 
@@ -418,6 +419,13 @@ export default function ExpandedPane({ initialPanes, initialLayout, variant = 'm
         onWheel={(e) => e.stopPropagation()}
         onAnimationEnd={() => { if (isClosing && !closedRef.current) { closedRef.current = true; onClose() } }}
       >
+        <button
+          className={styles.immersiveCloseBtn}
+          onClick={handleClose}
+          aria-label="Exit immersive mode"
+        >
+          <ScreenNormalIcon size={16} />
+        </button>
         <div className={styles.singleFull}>
           {renderPaneContent(pane)}
         </div>

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback, useMemo, forwardRef, useImperativeHandle } from 'react'
 import { buildPrototypeIndex } from '../../../core/index.js'
+import { useOverride } from '../../hooks/useOverride.js'
 import WidgetWrapper from './WidgetWrapper.jsx'
 import ResizeHandle from './ResizeHandle.jsx'
 import { readProp, prototypeEmbedSchema } from './widgetProps.js'
@@ -64,7 +65,12 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
 
   const [editing, setEditing] = useState(false)
   const [interactive, setInteractive] = useState(false)
-  const [expandMode, setExpandMode] = useState(null)
+  const [expandOverride, setExpandOverride, clearExpandOverride] = useOverride(`_prototype_expanded_${widgetId}`)
+  const expandMode = expandOverride === 'immersive' ? 'immersive' : expandOverride === 'split' ? 'split' : expandOverride === 'single' ? 'single' : null
+  const setExpandMode = useCallback((mode) => {
+    if (mode) setExpandOverride(mode)
+    else clearExpandOverride()
+  }, [setExpandOverride, clearExpandOverride])
   const [immersiveClosing, setImmersiveClosing] = useState(false)
   const expanded = expandMode !== null
   const [filter, setFilter] = useState('')
@@ -194,6 +200,9 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
   }, [])
 
   // ── Fullscreen (immersive) mode — triggers expand with 'immersive' variant
+  const expandModeRef = useRef(expandMode)
+  expandModeRef.current = expandMode
+
   useEffect(() => {
     function handleEnter(e) {
       if (e.detail?.widgetId === widgetId) {
@@ -203,7 +212,7 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
     }
     function handleExit(e) {
       if (e.detail?.widgetId === widgetId) {
-        if (expandMode === 'immersive') {
+        if (expandModeRef.current === 'immersive') {
           // Trigger animated close instead of immediate unmount
           setImmersiveClosing(true)
         } else {
@@ -217,7 +226,7 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
       document.removeEventListener('storyboard:canvas:widget-fullscreen', handleEnter)
       document.removeEventListener('storyboard:canvas:widget-fullscreen-exit', handleExit)
     }
-  }, [widgetId, expandMode])
+  }, [widgetId, setExpandMode])
 
   // Reparent iframe between inline and modal
   useEffect(() => {

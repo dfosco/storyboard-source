@@ -72,6 +72,33 @@
   animation: immersiveFadeOut 0.2s ease forwards;
 }
 
+.immersiveCloseBtn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: none;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.immersive:hover .immersiveCloseBtn {
+  opacity: 1;
+}
+
+.immersiveCloseBtn:hover {
+  background: rgba(0, 0, 0, 0.85);
+}
+
 /* ── Single-pane full body ───────────────────────────────────────── */
 
 .singleFull {
