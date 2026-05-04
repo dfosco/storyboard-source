@@ -454,6 +454,21 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
         immersive={expandMode === 'immersive'}
         closing={immersiveClosing}
         onClose={() => {
+          // Reparent iframe back to inline BEFORE unmounting the portal
+          const iframe = iframeRef.current
+          if (iframe && inlineContainerRef.current) {
+            if (iframe._savedClassName !== undefined) {
+              iframe.className = iframe._savedClassName
+              iframe.setAttribute('style', iframe._savedStyle)
+              delete iframe._savedClassName
+              delete iframe._savedStyle
+            }
+            const target = inlineContainerRef.current
+            try {
+              if (target.moveBefore) target.moveBefore(iframe, null)
+              else target.appendChild(iframe)
+            } catch { target.appendChild(iframe) }
+          }
           setImmersiveClosing(false)
           setExpandMode(null)
           // Notify CanvasPage to clear fullscreen ref and restore chrome state
