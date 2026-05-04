@@ -123,6 +123,8 @@ function helpScreen(version) {
     cmd('branch', 'Switch to a branch (interactive worktree guide)'),
     cmd('branch <name>', 'Switch to a specific branch directly'),
     cmd('branch --worktree=<name>', 'Non-interactive branch switch'),
+    cmd('pull', 'Pull latest changes from remote (untracked-safe)'),
+    cmd('publish', 'Push local commits to remote (pulls first)'),
     cmd('proxy start', 'Start or reload Caddy proxy'),
     cmd('proxy close', 'Stop Caddy proxy'),
     '',
@@ -151,6 +153,12 @@ switch (command) {
     break
   case 'branch':
     import('./branch.js')
+    break
+  case 'pull':
+    import('./pull.js')
+    break
+  case 'publish':
+    import('./publish.js')
     break
   case 'proxy':
     import('./proxy.js')
