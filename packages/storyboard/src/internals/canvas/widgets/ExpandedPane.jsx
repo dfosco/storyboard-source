@@ -56,16 +56,28 @@ const MIN_PANE_HEIGHT_PX = 80
  * @param {() => void} props.onClose — close callback
  * @param {((panes: PaneConfig[]) => void)} [props.onPanesChange] — notify parent of pane changes
  */
-export default function ExpandedPane({ initialPanes, initialLayout, variant = 'modal', onClose }) {
+export default function ExpandedPane({ initialPanes, initialLayout, variant = 'modal', closing: closingProp = false, onClose }) {
   // ── Immersive fade-out state ──
-  const [closing, setClosing] = useState(false)
+  const [closingInternal, setClosingInternal] = useState(false)
+  const isClosing = closingProp || closingInternal
+  const closedRef = useRef(false)
   const handleClose = useCallback(() => {
     if (variant === 'immersive') {
-      setClosing(true)
+      setClosingInternal(true)
     } else {
       onClose()
     }
   }, [variant, onClose])
+
+  // Fallback: if onAnimationEnd doesn't fire (reduced-motion, etc.), force close
+  useEffect(() => {
+    if (!isClosing) return
+    closedRef.current = false
+    const timer = setTimeout(() => {
+      if (!closedRef.current) { closedRef.current = true; onClose() }
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [isClosing, onClose])
 
   // Normalize to 2D layout: outer = columns, inner = rows
   const [layout, setLayout] = useState(() => {
@@ -400,11 +412,11 @@ export default function ExpandedPane({ initialPanes, initialLayout, variant = 'm
     if (!pane) return null
     return createPortal(
       <div
-        className={`${styles.fullContainer} ${styles.immersive} ${closing ? styles.immersiveClosing : ''}`}
+        className={`${styles.fullContainer} ${styles.immersive} ${isClosing ? styles.immersiveClosing : ''}`}
         onPointerDown={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
         onWheel={(e) => e.stopPropagation()}
-        onAnimationEnd={() => { if (closing) onClose() }}
+        onAnimationEnd={() => { if (isClosing && !closedRef.current) { closedRef.current = true; onClose() } }}
       >
         <div className={styles.singleFull}>
           {renderPaneContent(pane)}

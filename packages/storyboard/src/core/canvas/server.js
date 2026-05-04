@@ -492,8 +492,30 @@ export function createCanvasHandler(ctx) {
 
       // Sync hub-manager's in-memory state so messaging routes can find hubs
       try {
-        const { materializeHubs } = await import('../messaging/hub-manager.js')
-        materializeHubs(canvasName, widgets, connectors, { roleByWidget, defaultRole })
+        const { materializeHubs, getHub } = await import('../messaging/hub-manager.js')
+        const { created: createdHubs } = materializeHubs(canvasName, widgets, connectors, { roleByWidget, defaultRole })
+
+        // Auto-assign "Leader" alias to the leader widget in newly created hubs
+        if (createdHubs.length > 0) {
+          const hubCanvasPath = findCanvasPath(root, canvasName)
+          if (hubCanvasPath) {
+            for (const hubId of createdHubs) {
+              const hub = getHub(hubId)
+              if (!hub) continue
+              for (const [wId, member] of hub.members) {
+                if (member.role !== 'leader') continue
+                const w = widgetMap.get(wId)
+                if (!w || w.props?.alias) continue
+                appendEventRaw(hubCanvasPath, {
+                  event: 'widget_updated',
+                  timestamp: new Date().toISOString(),
+                  widgetId: wId,
+                  props: { alias: 'Leader' },
+                })
+              }
+            }
+          }
+        }
       } catch { /* messaging module may not be loaded */ }
 
       // Auto-propagate broadcast: any connector between two agent/terminal

@@ -2278,16 +2278,13 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
 
   useEffect(() => {
     function handlePrototypeFullscreen() {
-      // EXIT: if already in fullscreen, signal exit
+      // EXIT: if already in fullscreen, signal exit (triggers animated close)
       if (fullscreenWidgetRef.current) {
         document.dispatchEvent(new CustomEvent('storyboard:canvas:widget-fullscreen-exit', {
           detail: { widgetId: fullscreenWidgetRef.current }
         }))
         fullscreenWidgetRef.current = null
-
-        // Re-show toolbar
-        document.documentElement.classList.remove('storyboard-chrome-hidden')
-        document.documentElement.classList.remove('storyboard-chrome-completely-hidden')
+        // Chrome restoration happens after fade-out animation in PrototypeEmbed onClose
         return
       }
 
@@ -2324,9 +2321,11 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
 
     document.addEventListener('storyboard:canvas:prototype-fullscreen', handlePrototypeFullscreen)
     document.addEventListener('storyboard:canvas:widget-fullscreen-exit', handleFullscreenExit)
+    document.addEventListener('storyboard:canvas:immersive-closed', handleFullscreenExit)
     return () => {
       document.removeEventListener('storyboard:canvas:prototype-fullscreen', handlePrototypeFullscreen)
       document.removeEventListener('storyboard:canvas:widget-fullscreen-exit', handleFullscreenExit)
+      document.removeEventListener('storyboard:canvas:immersive-closed', handleFullscreenExit)
     }
   }, [localWidgets])
 

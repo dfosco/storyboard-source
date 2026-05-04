@@ -65,6 +65,7 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
   const [editing, setEditing] = useState(false)
   const [interactive, setInteractive] = useState(false)
   const [expandMode, setExpandMode] = useState(null)
+  const [immersiveClosing, setImmersiveClosing] = useState(false)
   const expanded = expandMode !== null
   const [filter, setFilter] = useState('')
   const [canvasTheme, setCanvasTheme] = useState(() => resolveCanvasThemeFromStorage())
@@ -196,12 +197,18 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
   useEffect(() => {
     function handleEnter(e) {
       if (e.detail?.widgetId === widgetId) {
+        setImmersiveClosing(false)
         setExpandMode('immersive')
       }
     }
     function handleExit(e) {
       if (e.detail?.widgetId === widgetId) {
-        setExpandMode(null)
+        if (expandMode === 'immersive') {
+          // Trigger animated close instead of immediate unmount
+          setImmersiveClosing(true)
+        } else {
+          setExpandMode(null)
+        }
       }
     }
     document.addEventListener('storyboard:canvas:widget-fullscreen', handleEnter)
@@ -210,7 +217,7 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
       document.removeEventListener('storyboard:canvas:widget-fullscreen', handleEnter)
       document.removeEventListener('storyboard:canvas:widget-fullscreen-exit', handleExit)
     }
-  }, [widgetId])
+  }, [widgetId, expandMode])
 
   // Reparent iframe between inline and modal
   useEffect(() => {
@@ -436,17 +443,17 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
         modalContainerRef={modalContainerRef}
         splitMode={expandMode === 'split'}
         immersive={expandMode === 'immersive'}
+        closing={immersiveClosing}
         onClose={() => {
-          const wasImmersive = expandMode === 'immersive'
+          setImmersiveClosing(false)
           setExpandMode(null)
-          if (wasImmersive) {
-            // Notify CanvasPage to clear its fullscreen ref and restore chrome
-            document.dispatchEvent(new CustomEvent('storyboard:canvas:widget-fullscreen-exit', {
-              detail: { widgetId }
-            }))
-            document.documentElement.classList.remove('storyboard-chrome-hidden')
-            document.documentElement.classList.remove('storyboard-chrome-completely-hidden')
-          }
+          // Restore chrome if it was hidden (keyboard shortcut entry hides it)
+          document.documentElement.classList.remove('storyboard-chrome-hidden')
+          document.documentElement.classList.remove('storyboard-chrome-completely-hidden')
+          // Notify CanvasPage to clear its fullscreen tracking ref
+          document.dispatchEvent(new CustomEvent('storyboard:canvas:immersive-closed', {
+            detail: { widgetId }
+          }))
         }}
       />
     )}
@@ -458,7 +465,7 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
  * Builds pane configs and renders ExpandedPane for an expanded prototype widget.
  * The primary pane is an external pane that receives the iframe via reparenting.
  */
-function PrototypeExpandPane({ widgetId, modalContainerRef, splitMode, immersive, onClose }) {
+function PrototypeExpandPane({ widgetId, modalContainerRef, splitMode, immersive, closing, onClose }) {
   const connectedWidgets = useMemo(
     () => splitMode ? findAllConnectedSplitTargets(widgetId) : [],
     [widgetId, splitMode],
@@ -495,6 +502,7 @@ function PrototypeExpandPane({ widgetId, modalContainerRef, splitMode, immersive
     <ExpandedPane
       initialLayout={layout}
       variant={variant}
+      closing={immersive ? closing : false}
       onClose={onClose}
     />
   )
