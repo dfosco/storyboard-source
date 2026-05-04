@@ -738,6 +738,13 @@ export default function CoreUIBar({ basePath = '/', toolbarConfig, customHandler
           break
         }
       }
+
+      // Cmd+Opt+Ctrl+F — prototype fullscreen (immersive mode)
+      if (e.metaKey && e.altKey && e.ctrlKey && e.key === 'f') {
+        e.preventDefault()
+        document.dispatchEvent(new CustomEvent('storyboard:canvas:prototype-fullscreen'))
+        return
+      }
     }
 
     window.addEventListener('keydown', handleKeydown)

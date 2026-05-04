@@ -192,6 +192,29 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
     return () => document.removeEventListener('storyboard:theme:changed', readToolbarTheme)
   }, [])
 
+  // ── Fullscreen (immersive) mode ─────────────────────────────────────
+  const [isFullscreen, setIsFullscreen] = useState(false)
+
+  useEffect(() => {
+    function handleEnter(e) {
+      if (e.detail?.widgetId === widgetId) {
+        setIsFullscreen(true)
+        setInteractive(true)
+      }
+    }
+    function handleExit(e) {
+      if (e.detail?.widgetId === widgetId) {
+        setIsFullscreen(false)
+      }
+    }
+    document.addEventListener('storyboard:canvas:widget-fullscreen', handleEnter)
+    document.addEventListener('storyboard:canvas:widget-fullscreen-exit', handleExit)
+    return () => {
+      document.removeEventListener('storyboard:canvas:widget-fullscreen', handleEnter)
+      document.removeEventListener('storyboard:canvas:widget-fullscreen-exit', handleExit)
+    }
+  }, [widgetId])
+
   // Reparent iframe between inline and modal
   useEffect(() => {
     const iframe = iframeRef.current
@@ -292,7 +315,7 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
     <WidgetWrapper>
       <div
         ref={embedRef}
-        className={styles.embed}
+        className={`${styles.embed}${isFullscreen ? ` ${styles.fullscreen}` : ''}`}
         style={{ width, height, ...chromeVars }}
       >
         <div className={styles.header}>

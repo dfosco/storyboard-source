@@ -2273,6 +2273,152 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
     return () => document.removeEventListener('storyboard:canvas:zoom-to-fit', handleZoomToFit)
   }, [localWidgets, componentEntries])
 
+  // ── Prototype fullscreen (immersive mode) ──────────────────────────
+  const fullscreenWidgetRef = useRef(null)
+  const fullscreenSavedViewport = useRef(null)
+
+  useEffect(() => {
+    function handlePrototypeFullscreen() {
+      const el = scrollRef.current
+      const zoomEl = zoomElRef.current
+      if (!el || !zoomEl) return
+
+      // EXIT: if already in fullscreen, animate out
+      if (fullscreenWidgetRef.current) {
+        const saved = fullscreenSavedViewport.current
+        if (!saved) return
+
+        const newScale = saved.zoom / 100
+
+        // Add transition for smooth zoom-out
+        zoomEl.style.transition = 'transform 350ms ease-out, width 350ms ease-out, height 350ms ease-out'
+
+        // Apply saved zoom
+        zoomRef.current = saved.zoom
+        zoomEl.style.transform = `scale(${newScale})`
+        zoomEl.style.width = `${Math.max(10000, 100 / newScale)}vw`
+        zoomEl.style.height = `${Math.max(10000, 100 / newScale)}vh`
+
+        // Animate scroll via rAF
+        const startScrollLeft = el.scrollLeft
+        const startScrollTop = el.scrollTop
+        const targetScrollLeft = saved.scrollLeft
+        const targetScrollTop = saved.scrollTop
+        const startTime = performance.now()
+        const duration = 350
+
+        function animateScroll(now) {
+          const elapsed = now - startTime
+          const t = Math.min(1, elapsed / duration)
+          // ease-out curve matching CSS
+          const eased = 1 - Math.pow(1 - t, 3)
+          el.scrollLeft = startScrollLeft + (targetScrollLeft - startScrollLeft) * eased
+          el.scrollTop = startScrollTop + (targetScrollTop - startScrollTop) * eased
+          if (t < 1) requestAnimationFrame(animateScroll)
+        }
+        requestAnimationFrame(animateScroll)
+
+        // On transitionend: restore chrome, clean up
+        function onTransitionEnd(e) {
+          if (e.target !== zoomEl || e.propertyName !== 'transform') return
+          zoomEl.removeEventListener('transitionend', onTransitionEnd)
+          zoomEl.style.transition = ''
+
+          // Signal widget to restore chrome
+          document.dispatchEvent(new CustomEvent('storyboard:canvas:widget-fullscreen-exit', {
+            detail: { widgetId: fullscreenWidgetRef.current }
+          }))
+
+          fullscreenWidgetRef.current = null
+          fullscreenSavedViewport.current = null
+
+          // Re-show toolbar
+          document.documentElement.classList.remove('storyboard-chrome-hidden')
+          document.documentElement.classList.remove('storyboard-chrome-completely-hidden')
+
+          // Commit zoom to React state
+          setZoom(saved.zoom)
+        }
+        zoomEl.addEventListener('transitionend', onTransitionEnd)
+        return
+      }
+
+      // ENTER: find selected prototype widget
+      const selected = selectedIdsRef.current
+      if (!selected || selected.size === 0) return
+
+      const widgets = localWidgets ?? []
+      let targetWidget = null
+      for (const id of selected) {
+        const w = widgets.find((w) => w.id === id)
+        if (w && w.type === 'prototype') {
+          targetWidget = w
+          break
+        }
+      }
+      if (!targetWidget) return
+
+      // Save current viewport
+      fullscreenSavedViewport.current = {
+        zoom: zoomRef.current,
+        scrollLeft: el.scrollLeft,
+        scrollTop: el.scrollTop,
+      }
+      fullscreenWidgetRef.current = targetWidget.id
+
+      // Calculate zoom to fit widget flush to viewport (zero padding)
+      const wPos = targetWidget.position || { x: 0, y: 0 }
+      const wWidth = targetWidget.props?.width ?? 800
+      const wHeight = targetWidget.props?.height ?? 600
+
+      const viewW = el.clientWidth
+      const viewH = el.clientHeight
+
+      const fitScale = Math.min(viewW / wWidth, viewH / wHeight)
+      const { ZOOM_MIN: zMin, ZOOM_MAX: zMax } = zoomLimits()
+      const fitZoom = Math.min(zMax, Math.max(zMin, Math.round(fitScale * 100)))
+      const newScale = fitZoom / 100
+
+      // Apply zoom instantly (no transition on enter)
+      zoomRef.current = fitZoom
+      zoomEl.style.transform = `scale(${newScale})`
+      zoomEl.style.width = `${Math.max(10000, 100 / newScale)}vw`
+      zoomEl.style.height = `${Math.max(10000, 100 / newScale)}vh`
+      setZoom(fitZoom)
+
+      // Scroll so widget is centered in viewport
+      const widgetCenterX = wPos.x + wWidth / 2
+      const widgetCenterY = wPos.y + wHeight / 2
+      el.scrollLeft = widgetCenterX * newScale - viewW / 2
+      el.scrollTop = widgetCenterY * newScale - viewH / 2
+
+      // Hide toolbar
+      document.documentElement.classList.add('storyboard-chrome-hidden')
+      document.documentElement.classList.add('storyboard-chrome-completely-hidden')
+
+      // Signal widget to enter fullscreen
+      document.dispatchEvent(new CustomEvent('storyboard:canvas:widget-fullscreen', {
+        detail: { widgetId: targetWidget.id }
+      }))
+    }
+
+    // Escape key exits fullscreen
+    function handleKeydown(e) {
+      if (e.key === 'Escape' && fullscreenWidgetRef.current) {
+        e.preventDefault()
+        e.stopPropagation()
+        handlePrototypeFullscreen()
+      }
+    }
+
+    document.addEventListener('storyboard:canvas:prototype-fullscreen', handlePrototypeFullscreen)
+    window.addEventListener('keydown', handleKeydown, true)
+    return () => {
+      document.removeEventListener('storyboard:canvas:prototype-fullscreen', handlePrototypeFullscreen)
+      window.removeEventListener('keydown', handleKeydown, true)
+    }
+  }, [localWidgets])
+
   // Canvas background should follow toolbar theme target.
   useEffect(() => {
     function readMode() {
