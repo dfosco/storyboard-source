@@ -1,130 +1,40 @@
 SESSION: agent-m26l3q | cobalt-raven
 CANVAS:  storyboarding/terminal-widget-prompts
 BRANCH:  0.5.0
-TIME:    2026-05-04T17:32:42.836Z
+TIME:    2026-05-04T17:53:09.423Z
 
 ================================================================================
 SCREEN
 ================================================================================
 
-  │ messages read --channel "hub--storyboarding--terminal-widget-prompts--hub_bf145d88e6"
-  │ --since "01KQT0NG377X8VB6XFRTYAX8J9" 2>/dev/null | jq -r '.events | length'
-  └ 2 lines...
+  │ STORYBOARD_WIDGET_ID="agent-m26l3q" && export
+  │ STORYBOARD_SERVER_URL="http://localhost:1235" && storyboard agent signal --status
+  │ done --message "Created sustainable design systems guide on canvas"
+  └ 3 lines...
 
-❯ 📩 agent-ebwi0e: Great foundations from the Researcher. Here's my critical
-  review:\n\n## What's Missing\n\n**Component API Consistency** — No mention of API
-  design conventions (compound components vs. config props, contro…
+● Signal done via npx (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && export
+  │ STORYBOARD_WIDGET_ID="agent-m26l3q" && export
+  │ STORYBOARD_CANVAS_ID="storyboarding/terminal-widget-prompts" && export
+  │ STORYBOARD_SERVER_URL="http://localhost:1235" && npx storyboard agent signal --status
+  │ done --message "Created sustainable design systems guide on canvas"
+  └ 3 lines...
 
-● Read full critic message (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && storyboard messages
-  │ read --channel "hub--storyboarding--terminal-widget-prompts--hub_bf145d88e6" --since
-  │ "01KQT0NG377X8VB6XFRTYAX8J9" 2>/dev/null | jq -r '.events[1].body'
-  └ 38 lines...
+● Done! Here's what happened:
 
-● Excellent — both contributions are in. Now I'll synthesize them into a final markdown
-  document and place it on the canvas.
+  Hub created with 3 agents:
 
-● Create final markdown widget on canvas (shell)
-  └ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && export
-    STORYBOARD_WIDGET_ID="agent-m26l3q" && export
-    STORYBOARD_CANVAS_ID="storyboarding/terminal-widget-prompts" && export
-    STORYBOARD_SERVER_URL="http://localhost:1235" && storyboard canvas batch --canvas
-    "$STORYBOARD_CANVAS_ID" --ops '[…
+   - cobalt-raven (leader/me) — coordinated and synthesized
+   - ivory-oriole (Design Systems Researcher) — contributed 5 core principles
+   - plum-harrier (Design Systems Critic) — added anti-patterns, trade-offs, and
+  reality checks
 
-○ Synthesizing final markdown (Esc to cancel · 12.1 KiB)
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
+  The final markdown guide is now on the canvas below my widget, covering: token
+  architecture, API consistency, governance, DX-driven adoption, living docs,
+  incremental deprecation, success metrics, anti-patterns, and key trade-offs.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]
 ─────────────────────────────────────────────────────────────────────────────────────────
 ❯  
 ─────────────────────────────────────────────────────────────────────────────────────────
- / commands · ? help · ctrl+q enqueue · ctrl+x → b background task
- terminal-agent · Claude Opus 4.6
-
-================================================================================
-SCROLLBACK (last 60s)
-================================================================================
-
-  │ messages read --channel "hub--storyboarding--terminal-widget-prompts--hub_bf145d88e6"  │ --since "01KQT0NG377X8VB6XFRTYAX8J9" 2>/dev/null | jq -r '.events | length'
-  └ 2 lines...
-
-❯ 📩 agent-ebwi0e: Great foundations from the Researcher. Here's my critical
-  review:\n\n## What's Missing\n\n**Component API Consistency** — No mention of API
-  design conventions (compound components vs. config props, contro…
-
-● Read full critic message (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && storyboard messages
-  │ read --channel "hub--storyboarding--terminal-widget-prompts--hub_bf145d88e6" --since
-  │ "01KQT0NG377X8VB6XFRTYAX8J9" 2>/dev/null | jq -r '.events[1].body'
-  └ 38 lines...
-
-● Excellent — both contributions are in. Now I'll synthesize them into a final markdown
-  document and place it on the canvas.
-
-● Create final markdown widget on canvas (shell)
-  └ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && export
-    STORYBOARD_WIDGET_ID="agent-m26l3q" && export
-    STORYBOARD_CANVAS_ID="storyboarding/terminal-widget-prompts" && export
-    STORYBOARD_SERVER_URL="http://localhost:1235" && storyboard canvas batch --canvas
-    "$STORYBOARD_CANVAS_ID" --ops '[…
-
-◎ Synthesizing final markdown (Esc to cancel · 12.1 KiB)
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
-─────────────────────────────────────────────────────────────────────────────────────────❯
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue · ctrl+x → b background task
- terminal-agent · Claude Opus 4.6
-  │ messages read --channel "hub--storyboarding--terminal-widget-prompts--hub_bf145d88e6"  │ --since "01KQT0NG377X8VB6XFRTYAX8J9" 2>/dev/null | jq -r '.events | length'
-  └ 2 lines...
-
-❯ 📩 agent-ebwi0e: Great foundations from the Researcher. Here's my critical
-  review:\n\n## What's Missing\n\n**Component API Consistency** — No mention of API
-  design conventions (compound components vs. config props, contro…
-
-● Read full critic message (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && storyboard messages
-  │ read --channel "hub--storyboarding--terminal-widget-prompts--hub_bf145d88e6" --since
-  │ "01KQT0NG377X8VB6XFRTYAX8J9" 2>/dev/null | jq -r '.events[1].body'
-  └ 38 lines...
-
-● Excellent — both contributions are in. Now I'll synthesize them into a final markdown
-  document and place it on the canvas.
-
-● Create final markdown widget on canvas (shell)
-  └ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && export
-    STORYBOARD_WIDGET_ID="agent-m26l3q" && export
-    STORYBOARD_CANVAS_ID="storyboarding/terminal-widget-prompts" && export
-    STORYBOARD_SERVER_URL="http://localhost:1235" && storyboard canvas batch --canvas
-    "$STORYBOARD_CANVAS_ID" --ops '[…
-
-○ Synthesizing final markdown (Esc to cancel · 12.1 KiB)
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue · ctrl+x → b background task
- terminal-agent · Claude Opus 4.6
-◎ Synthesizing final markdown (Esc to cancel · 12.1 KiB)  │ messages read --channel "hub--storyboarding--terminal-widget-prompts--hub_bf145d88e6"  │ --since "01KQT0NG377X8VB6XFRTYAX8J9" 2>/dev/null | jq -r '.events | length'
-  └ 2 lines...
-
-❯ 📩 agent-ebwi0e: Great foundations from the Researcher. Here's my critical
-  review:\n\n## What's Missing\n\n**Component API Consistency** — No mention of API
-  design conventions (compound components vs. config props, contro…
-
-● Read full critic message (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && storyboard messages
-  │ read --channel "hub--storyboarding--terminal-widget-prompts--hub_bf145d88e6" --since
-  │ "01KQT0NG377X8VB6XFRTYAX8J9" 2>/dev/null | jq -r '.events[1].body'
-  └ 38 lines...
-
-● Excellent — both contributions are in. Now I'll synthesize them into a final markdown
-  document and place it on the canvas.
-
-● Create final markdown widget on canvas (shell)
-  └ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && export
-    STORYBOARD_WIDGET_ID="agent-m26l3q" && export
-    STORYBOARD_CANVAS_ID="storyboarding/terminal-widget-prompts" && export
-    STORYBOARD_SERVER_URL="http://localhost:1235" && storyboard canvas batch --canvas
-    "$STORYBOARD_CANVAS_ID" --ops '[…
-
-◉ Synthesizing final markdown (Esc to cancel · 12.1 KiB)
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue · ctrl+x → b background task
- terminal-agent · Claude Opus 4.6
-● Synthesizing final markdown (Esc to cancel · 12.1 KiB)◉ Synthesizing final markdown (Esc to cancel · 12.1 KiB)◎ Synthesizing final markdown (Esc to cancel · 12.1 KiB)○ Synthesizing final markdown (Esc to cancel · 12.1 KiB)◎ Synthesizing final markdown (Esc to cancel · 12.1 KiB)◉ Synthesizing final markdown (Esc to cancel · 12.1 KiB)● Synthesizing final markdown (Esc to cancel · 12.1 KiB)◉ Synthesizing final markdown (Esc to cancel · 12.1 KiB)◎ Synthesizing final markdown (Esc to cancel · 12.1 KiB)○ Synthesizing final markdown (Esc to cancel · 12.1 KiB)◎ Synthesizing final markdown (Esc to cancel · 12.1 KiB)◉ Synthesizing final markdown (Esc to cancel · 12.1 KiB)● Synthesizing final markdown (Esc to cancel · 12.1 KiB)◉ Synthesizing final markdown (Esc to cancel · 12.1 KiB)◎ Synthesizing final markdown (Esc to cancel · 12.1 KiB)○ Synthesizing final markdown (Esc to cancel · 12.1 KiB)◎ Synthesizing final markdown (Esc to cancel · 12.1 KiB)◉ Synthesizing final markdown (Esc to cancel · 12.1 KiB)● Synthesizing final markdown (Esc to cancel · 12.1 KiB)◉ Synthesizing final markdown (Esc to cancel · 12.1 KiB)◎ Synthesizing final markdown (Esc to cancel · 12.1 KiB)○ Synthesizing final markdown (Esc to cancel · 12.1 KiB)[?996n[>c[>q
+ 1 background /tasks · / commands · ? help              terminal-agent · Claude Opus 4.6

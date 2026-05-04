@@ -740,7 +740,8 @@ export default function CoreUIBar({ basePath = '/', toolbarConfig, customHandler
       }
 
       // Cmd+Opt+Ctrl+F — prototype fullscreen (immersive mode)
-      if (e.metaKey && e.altKey && e.ctrlKey && e.key === 'f') {
+      // Use e.code since alt/opt changes e.key on macOS (e.g. 'f' → 'ƒ')
+      if (e.metaKey && e.altKey && e.ctrlKey && e.code === 'KeyF') {
         e.preventDefault()
         document.dispatchEvent(new CustomEvent('storyboard:canvas:prototype-fullscreen'))
         return
