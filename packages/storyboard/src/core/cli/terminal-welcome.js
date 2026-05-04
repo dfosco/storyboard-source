@@ -393,16 +393,16 @@ async function welcomeLoop() {
 
     // Build the first option based on number of configured agents
     const agentOption = agents.length > 1
-      ? { value: 'agents', label: '✦ Start a new agent session' }
-      : { value: 'copilot', label: `✦ Start a new ${agents[0]?.label || 'Copilot'} session` }
+      ? { value: 'agents', label: '> Start a new agent session' }
+      : { value: 'copilot', label: `> Start a new ${agents[0]?.label || 'Copilot'} session` }
 
     drainStdin()
     const action = await p.select({
       message: 'How would you like to start?',
       options: [
         agentOption,
-        { value: 'shell', label: '▸ Start a new terminal session' },
-        { value: 'sessions', label: '⊞ Browse existing sessions' },
+        { value: 'shell', label: '> Start a new terminal session' },
+        { value: 'sessions', label: '> Browse existing sessions' },
       ],
     })
 
@@ -418,7 +418,7 @@ async function welcomeLoop() {
         message: 'Which agent?',
         options: agents.map(a => ({
           value: a.id,
-          label: `✦ Start a new ${a.label} session`,
+          label: `> Start a new ${a.label} session`,
         })),
       })
 
@@ -461,9 +461,9 @@ async function welcomeLoop() {
       const sessionOptions = [
         ...resumableAgents.map(a => ({
           value: `agent:${a.id}`,
-          label: `✦ ${a.label} sessions`,
+          label: `> ${a.label} sessions`,
         })),
-        { value: 'terminal', label: '⊞ Terminal sessions' },
+        { value: 'terminal', label: '> Terminal sessions' },
       ]
 
       drainStdin()
