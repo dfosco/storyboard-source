@@ -1187,23 +1187,31 @@ export default function StoryboardCommandPalette({ basePath }) {
 
   return (
     <>
-    <Command.Dialog
-      open={open}
-      onOpenChange={handleChangeOpen}
-      label="Command Menu"
-      className="command-palette"
-      shouldFilter={activePage === 'root'}
-      filter={cmdkFilter}
-      aria-describedby={undefined}
-      onKeyDown={(e) => {
-        if (e.key === 'Escape' && activePage !== 'root') {
-          e.preventDefault()
-          e.stopPropagation()
-          setActivePage('root')
-          setSearch('')
-        }
-      }}
-    >
+    {open && (
+      <>
+      {/* Overlay */}
+      <div cmdk-overlay="" onClick={() => handleChangeOpen(false)} />
+      {/* Dialog container — replaces Command.Dialog to avoid Radix context issues */}
+      <div
+        cmdk-dialog=""
+        role="dialog"
+        aria-label="Command Menu"
+      >
+      <Command
+        className="command-palette"
+        shouldFilter={activePage === 'root'}
+        filter={cmdkFilter}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape' && activePage !== 'root') {
+            e.preventDefault()
+            e.stopPropagation()
+            setActivePage('root')
+            setSearch('')
+          } else if (e.key === 'Escape') {
+            handleChangeOpen(false)
+          }
+        }}
+      >
       <Command.Input
         placeholder={activePage === 'root'
           ? 'Search commands, prototypes, canvases, stories...'
@@ -1341,7 +1349,10 @@ export default function StoryboardCommandPalette({ basePath }) {
           ))
         )}
       </Command.List>
-    </Command.Dialog>
+    </Command>
+      </div>
+      </>
+    )}
 
     <CreateDialog
       type={createType}

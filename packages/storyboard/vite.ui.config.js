@@ -30,16 +30,25 @@ const srcDir = path.resolve(__dirname, 'src/core')
  * The consumer's Vite will resolve these via package.json exports.
  */
 const sharedStateModules = {
+  // Barrel re-export — handlers do `import('../../index.js')` which must
+  // resolve to the consumer-installed @dfosco/storyboard/core, not get inlined.
+  'index.js': '@dfosco/storyboard/core',
   // Top-level stateful modules → main package export
   'data/loader.js': '@dfosco/storyboard/core',
   'data/viewfinder.js': '@dfosco/storyboard/core',
   'modes/modes.js': '@dfosco/storyboard/core',
   'stores/commandActions.js': '@dfosco/storyboard/core',
+  'stores/configStore.js': '@dfosco/storyboard/core',
   'stores/uiConfig.js': '@dfosco/storyboard/core',
   'stores/toolRegistry.js': '@dfosco/storyboard/core',
   'stores/toolbarConfigStore.js': '@dfosco/storyboard/core',
+  'stores/toolStateStore.js': '@dfosco/storyboard/core',
   'stores/featureFlags.js': '@dfosco/storyboard/core',
   'stores/plugins.js': '@dfosco/storyboard/core',
+  'stores/canvasConfig.js': '@dfosco/storyboard/core',
+  'stores/commandPaletteConfig.js': '@dfosco/storyboard/core',
+  'stores/customerModeConfig.js': '@dfosco/storyboard/core',
+  'stores/themeStore.ts': '@dfosco/storyboard/core',
   'session/localStorage.js': '@dfosco/storyboard/core',
   // Comments subsystem → comments barrel export
   'comments/config.js': '@dfosco/storyboard/comments',
