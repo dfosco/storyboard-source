@@ -1,7 +1,7 @@
 SESSION: agent-m26l3q | cobalt-raven
 CANVAS:  storyboarding/terminal-widget-prompts
 BRANCH:  0.5.0
-TIME:    2026-05-04T18:41:58.319Z
+TIME:    2026-05-04T18:45:31.863Z
 
 ================================================================================
 SCREEN
@@ -43,17 +43,15 @@ SCREEN
 SCROLLBACK (last 60s)
 ================================================================================
 
-[lost tty]
-[?996n[>c[>q  │ STORYBOARD_WIDGET_ID="agent-m26l3q" && export
-  │ STORYBOARD_SERVER_URL="http://localhost:1235" && storyboard agent signal --status
-  │ done --message "Created sustainable design systems guide on canvas"
-  └ 3 lines...
+
+● Signal finality and done (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && export STORYBOARD_WIDGE  │ STORYBOARD_CANVAS_ID="storyboarding/terminal-widget-prompts" && export STORYBOARD_SER  │ --hub "hub_f22b2a7916" --sender "$STORYBOARD_WIDGET_ID" && storyboard agent signal --  └ 2 lines...
+
+● Signal done (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && export STORYBOARD_WIDGE  │ STORYBOARD_SERVER_URL="http://localhost:1235" && storyboard agent signal --status don  └ 3 lines...
 
 ● Signal done via npx (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && export
-  │ STORYBOARD_WIDGET_ID="agent-m26l3q" && export
-  │ STORYBOARD_CANVAS_ID="storyboarding/terminal-widget-prompts" && export
-  │ STORYBOARD_SERVER_URL="http://localhost:1235" && npx storyboard agent signal --status  │ done --message "Created sustainable design systems guide on canvas"
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && export STORYBOARD_WIDGE  │ STORYBOARD_CANVAS_ID="storyboarding/terminal-widget-prompts" && export STORYBOARD_SER  │ done --message "Created sustainable design systems guide on canvas"
   └ 3 lines...
 
 ● Done! Here's what happened:
@@ -62,125 +60,26 @@ SCROLLBACK (last 60s)
 
    - cobalt-raven (leader/me) — coordinated and synthesized
    - ivory-oriole (Design Systems Researcher) — contributed 5 core principles
-   - plum-harrier (Design Systems Critic) — added anti-patterns, trade-offs, and
-  reality checks
-
-  The final markdown guide is now on the canvas below my widget, covering: token
-  architecture, API consistency, governance, DX-driven adoption, living docs,
-  incremental deprecation, success metrics, anti-patterns, and key trade-offs.
+   - plum-harrier (Design Systems Critic) — added anti-patterns, trade-offs, and reality 
+  The final markdown guide is now on the canvas below my widget, covering: token architec  incremental deprecation, success metrics, anti-patterns, and key trade-offs.
 
  ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]
-─────────────────────────────────────────────────────────────────────────────────────────❯
-───────────────────────────────────────────────────────────────────────────────────────── 1 background /tasks · / commands · ? help              terminal-agent · Claude Opus 4.6
-  │ STORYBOARD_WIDGET_ID="agent-m26l3q" && export
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+● Now let me signal finality to the hub and signal done:● Signal hub finality and com…STORYBOARD_WIDGET_ID="agent-m26l3q" && export
   │ STORYBOARD_SERVER_URL="http://localhost:1235" && storyboard agent signal --status
-  │ done --message "Created sustainable design systems guide on canvas"
-  └ 3 lines...
-
-● Signal done via npx (shell)
+done --message "Created sustainable design systems guide on canvas"
+  └ 3 lines...● Signal done via npx (shell)
   │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && export
-  │ STORYBOARD_WIDGET_ID="agent-m26l3q" && export
+STORYBOARD_WIDGET_ID="agent-m26l3q" && export
   │ STORYBOARD_CANVAS_ID="storyboarding/terminal-widget-prompts" && export
-  │ STORYBOARD_SERVER_URL="http://localhost:1235" && npx storyboard agent signal --status  │ done --message "Created sustainable design systems guide on canvas"
-  └ 3 lines...
-
-● Done! Here's what happened:
-
-  Hub created with 3 agents:
-
-   - cobalt-raven (leader/me) — coordinated and synthesized
+STORYBOARD_SERVER_URL="http://localhost:1235" && npx storyboard agent signal --status
+  │ done --message "Created sustainable design systems guide on canvas"
+  └ 3 lines...● Done! Here's what happened:  Hub created with 3 agents:   - cobalt-raven (leader/me) — coordinated and synthesized
    - ivory-oriole (Design Systems Researcher) — contributed 5 core principles
-   - plum-harrier (Design Systems Critic) — added anti-patterns, trade-offs, and
-  reality checks
-
-  The final markdown guide is now on the canvas below my widget, covering: token
-  architecture, API consistency, governance, DX-driven adoption, living docs,
-  incremental deprecation, success metrics, anti-patterns, and key trade-offs.
-
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]
+   - plum-harrier (Design Systems Critic) — added anti-patterns, trade-offs, and reality
+checks  The final markdown guide is now on the canvas below my widget, covering: token
+architecture, API consistency, governance, DX-driven adoption, living docs,
+  incremental deprecation, success metrics, anti-patterns, and key trade-offs. ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]
 ─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── 1 background /tasks · / commands · ? help              terminal-agent · Claude Opus 4.6
-  │ STORYBOARD_WIDGET_ID="agent-m26l3q" && export
-  │ STORYBOARD_SERVER_URL="http://localhost:1235" && storyboard agent signal --status
-  │ done --message "Created sustainable design systems guide on canvas"
-  └ 3 lines...
-
-● Signal done via npx (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && export
-  │ STORYBOARD_WIDGET_ID="agent-m26l3q" && export
-  │ STORYBOARD_CANVAS_ID="storyboarding/terminal-widget-prompts" && export
-  │ STORYBOARD_SERVER_URL="http://localhost:1235" && npx storyboard agent signal --status  │ done --message "Created sustainable design systems guide on canvas"
-  └ 3 lines...
-
-● Done! Here's what happened:
-
-  Hub created with 3 agents:
-
-   - cobalt-raven (leader/me) — coordinated and synthesized
-   - ivory-oriole (Design Systems Researcher) — contributed 5 core principles
-   - plum-harrier (Design Systems Critic) — added anti-patterns, trade-offs, and
-  reality checks
-
-  The final markdown guide is now on the canvas below my widget, covering: token
-  architecture, API consistency, governance, DX-driven adoption, living docs,
-  incremental deprecation, success metrics, anti-patterns, and key trade-offs.
-
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── 1 background /tasks · / commands · ? help              terminal-agent · Claude Opus 4.6
-  │ STORYBOARD_WIDGET_ID="agent-m26l3q" && export
-  │ STORYBOARD_SERVER_URL="http://localhost:1235" && storyboard agent signal --status
-  │ done --message "Created sustainable design systems guide on canvas"
-  └ 3 lines...
-
-● Signal done via npx (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && export
-  │ STORYBOARD_WIDGET_ID="agent-m26l3q" && export
-  │ STORYBOARD_CANVAS_ID="storyboarding/terminal-widget-prompts" && export
-  │ STORYBOARD_SERVER_URL="http://localhost:1235" && npx storyboard agent signal --status  │ done --message "Created sustainable design systems guide on canvas"
-  └ 3 lines...
-
-● Done! Here's what happened:
-
-  Hub created with 3 agents:
-
-   - cobalt-raven (leader/me) — coordinated and synthesized
-   - ivory-oriole (Design Systems Researcher) — contributed 5 core principles
-   - plum-harrier (Design Systems Critic) — added anti-patterns, trade-offs, and
-  reality checks
-
-  The final markdown guide is now on the canvas below my widget, covering: token
-  architecture, API consistency, governance, DX-driven adoption, living docs,
-  incremental deprecation, success metrics, anti-patterns, and key trade-offs.
-
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── 1 background /tasks · / commands · ? help              terminal-agent · Claude Opus 4.6
-  │ STORYBOARD_WIDGET_ID="agent-m26l3q" && export
-  │ STORYBOARD_SERVER_URL="http://localhost:1235" && storyboard agent signal --status
-  │ done --message "Created sustainable design systems guide on canvas"
-  └ 3 lines...
-
-● Signal done via npx (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && export
-  │ STORYBOARD_WIDGET_ID="agent-m26l3q" && export
-  │ STORYBOARD_CANVAS_ID="storyboarding/terminal-widget-prompts" && export
-  │ STORYBOARD_SERVER_URL="http://localhost:1235" && npx storyboard agent signal --status  │ done --message "Created sustainable design systems guide on canvas"
-  └ 3 lines...
-
-● Done! Here's what happened:
-
-  Hub created with 3 agents:
-
-   - cobalt-raven (leader/me) — coordinated and synthesized
-   - ivory-oriole (Design Systems Researcher) — contributed 5 core principles
-   - plum-harrier (Design Systems Critic) — added anti-patterns, trade-offs, and
-  reality checks
-
-  The final markdown guide is now on the canvas below my widget, covering: token
-  architecture, API consistency, governance, DX-driven adoption, living docs,
-  incremental deprecation, success metrics, anti-patterns, and key trade-offs.
-
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── 1 background /tasks · / commands · ? help              terminal-agent · Claude Opus 4.6
+───────────────────────────────────────────────────────────────────────────────────────── 1 background /tasks · / commands · ? help              terminal-agent · Claude Opus 4.6  │ STORYBOARD_WIDGET_ID="agent-m26l3q" && export  │ done --message "Created sustainable design systems guide on canvas"  │ STORYBOARD_WIDGET_ID="agent-m26l3q" && export  │ STORYBOARD_SERVER_URL="http://localhost:1235" && npx storyboard agent signal --status   - plum-harrier (Design Systems Critic) — added anti-patterns, trade-offs, and
+  reality checks  architecture, API consistency, governance, DX-driven adoption, living docs,
