@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+import { getCanvasZoom } from '../../../core/index.js'
 import styles from './ResizeHandle.module.css'
 
 /**
@@ -35,9 +36,14 @@ export default function ResizeHandle({ targetRef, minWidth = 180, minHeight = 60
 
     onResizeStart?.()
 
+    // Capture zoom at drag start so resizing stays consistent mid-drag
+    const scale = (getCanvasZoom() || 100) / 100
+
     function onMove(ev) {
-      lastW = axis === 'vertical' ? startW : Math.max(minWidth, startW + ev.clientX - startX)
-      lastH = axis === 'horizontal' ? startH : Math.max(minHeight, startH + ev.clientY - startY)
+      const dx = (ev.clientX - startX) / scale
+      const dy = (ev.clientY - startY) / scale
+      lastW = axis === 'vertical' ? startW : Math.max(minWidth, startW + dx)
+      lastH = axis === 'horizontal' ? startH : Math.max(minHeight, startH + dy)
       onResize?.(lastW, lastH)
     }
 
