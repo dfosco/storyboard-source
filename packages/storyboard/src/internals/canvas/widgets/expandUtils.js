@@ -526,11 +526,6 @@ export function getSplitPaneLabel(widget) {
   }
   if (widget.type === 'agent') {
     const name = widget.props?.prettyName || '…'
-    const role = widget.props?.role
-    if (role && role !== 'member') {
-      const roleLabel = role.charAt(0).toUpperCase() + role.slice(1)
-      return `Agent · ${name} · ${roleLabel}`
-    }
     return `Agent · ${name}`
   }
   if (widget.type === 'prototype') {

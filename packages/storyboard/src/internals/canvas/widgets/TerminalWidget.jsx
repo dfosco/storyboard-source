@@ -551,12 +551,12 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
             <>
               <span className={styles.nameSeparator}> · </span>
               <span onDoubleClick={handleAliasDoubleClick}>{alias}</span>
+              {showLeaderCrown && <span className={styles.leaderCrown} aria-label="Hub leader"><Icon name="iconoir/crown" size={12} color="#AE843B" /></span>}
             </>
           ) : (
             <span onDoubleClick={handleAliasDoubleClick}></span>
           )}
         </span>
-        {showLeaderCrown && <span className={styles.leaderCrown} aria-label="Hub leader"><Icon name="iconoir/crown" size={12} color="#AE843B" /></span>}
       </div>
       <div
         ref={terminalRef}
