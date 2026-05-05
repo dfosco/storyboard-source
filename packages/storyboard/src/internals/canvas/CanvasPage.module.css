@@ -118,6 +118,10 @@
   z-index: 3;
 }
 
+:global(.tc-drag:hover) {
+  z-index: 3;
+}
+
 :global(.tc-drag.tc-on) {
   z-index: 4;
 }

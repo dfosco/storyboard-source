@@ -733,8 +733,9 @@ function TerminalExpandPane({ widgetId, expandContainerRef, prettyName, isAgent,
     if (widget.id === widgetId) {
       return {
         id: widgetId,
-        label: getSplitPaneLabel({ type: isAgent ? 'agent' : 'terminal', props: { prettyName } }),
+        label: getSplitPaneLabel(primaryWidget),
         widgetType: isAgent ? 'agent' : 'terminal',
+        widgetProps: primaryWidget.props,
         kind: 'external',
         attach: (container) => {
           expandContainerRef.current = container
@@ -754,7 +755,7 @@ function TerminalExpandPane({ widgetId, expandContainerRef, prettyName, isAgent,
       }
     }
     return buildPaneForWidget(widget)
-  }, [widgetId, prettyName, isAgent, expandContainerRef])
+  }, [widgetId, primaryWidget, isAgent, expandContainerRef])
 
   const layout = useMemo(
     () => buildSplitLayout(primaryWidget, connectedWidgets, buildPaneFn),

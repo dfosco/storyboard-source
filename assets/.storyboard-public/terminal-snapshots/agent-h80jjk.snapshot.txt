@@ -1,0 +1,40 @@
+SESSION: agent-h80jjk | storm-wren
+CANVAS:  storyboarding/form-schema
+BRANCH:  0.5.0
+TIME:    2026-05-05T06:31:04.692Z
+
+================================================================================
+SCREEN
+================================================================================
+
+
+● Update spec to merge external-prototype into prototype (shell)
+  │ export STORYBOARD_CANVAS_ID="storyboarding/form-schema"
+  │ export STORYBOARD_SERVER_URL="http://localhost:1235"
+  │
+  │ npx storyboard canvas update markdown-umdbac --canvas ${STORYBOARD_CANVAS_ID}
+  │ --content '# Artifact Schema & API Specification…
+  └ 190 lines...
+
+● Save output (shell)
+  │ npx storyboard terminal output --summary "Merged external-prototype into prototype
+  │ type" --content "Updated the spec: external-prototype is no longer a separate type.
+  │ It's just a prototype with a url field. When url is present, no index.jsx or flow is
+  │ generated. Added mutual exclusivity rule: url + flow cannot coexist." 2>/dev/null
+  └ 2 lines...
+
+● Good call. Updated the spec — external-prototype is now just a prototype with a url
+  field. When url is present:
+
+   - No index.jsx generated
+   - No flow file created
+   - url + flow are mutually exclusive (validation rule)
+
+  This drops us from 8 to 7 artifact types, and the schema/API/CLI all simplify
+  accordingly.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
+─────────────────────────────────────────────────────────────────────────────────────────
+❯  
+─────────────────────────────────────────────────────────────────────────────────────────
+ / commands · ? help                                    terminal-agent · Claude Opus 4.6

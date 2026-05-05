@@ -61,6 +61,7 @@ export function buildPaneForWidget(widget, surface = 'splitbar') {
       id: widget.id,
       label,
       widgetType: widget.type,
+      widgetProps: widget.props,
       kind: 'external',
       attach: (container) => reparentTerminalInto(widget.id, container),
       onResize: (rect) => {
@@ -524,7 +525,13 @@ export function getSplitPaneLabel(widget) {
     return `Terminal · ${widget.props?.prettyName || '…'}`
   }
   if (widget.type === 'agent') {
-    return `Agent · ${widget.props?.prettyName || '…'}`
+    const name = widget.props?.prettyName || '…'
+    const role = widget.props?.role
+    if (role && role !== 'member') {
+      const roleLabel = role.charAt(0).toUpperCase() + role.slice(1)
+      return `Agent · ${name} · ${roleLabel}`
+    }
+    return `Agent · ${name}`
   }
   if (widget.type === 'prototype') {
     return `Prototype · ${widget.props?.src || '…'}`

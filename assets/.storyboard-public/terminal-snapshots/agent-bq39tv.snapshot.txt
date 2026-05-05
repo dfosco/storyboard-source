@@ -1,0 +1,111 @@
+SESSION: agent-bq39tv | gold-osprey
+CANVAS:  storyboarding/form-schema
+BRANCH:  0.5.0
+TIME:    2026-05-05T06:31:04.398Z
+
+================================================================================
+SCREEN
+================================================================================
+
+❯ Type picker should be a primer dropdown, not segmented control
+
+● Edit ArtifactForm.jsx +17 -8
+  └ src/components/ArtifactForm/ArtifactForm.jsx
+
+● Edit ArtifactForm.jsx +1 -1
+  └ src/components/ArtifactForm/ArtifactForm.jsx
+
+● Now remove the duplicate TypeDropdown since TypeSelector now IS the dropdown, and
+  update the compact mode to just use the same component:
+
+● Edit ArtifactForm.jsx +1 -4
+  └ src/components/ArtifactForm/ArtifactForm.jsx
+
+● Edit ArtifactForm.jsx +1 -1
+  └ src/components/ArtifactForm/ArtifactForm.jsx
+
+● Now remove the now-unused TypeDropdown function:
+
+● Edit ArtifactForm.jsx -24
+  └ src/components/ArtifactForm/ArtifactForm.jsx
+
+● Done. TypePicker now uses a Primer ActionMenu dropdown with icons, labels, and
+  descriptions for each artifact type — no more segmented control. The story widgets on
+  canvas will auto-refresh via HMR.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
+─────────────────────────────────────────────────────────────────────────────────────────
+❯  
+─────────────────────────────────────────────────────────────────────────────────────────
+ / commands · ? help                                    terminal-agent · Claude Opus 4.6
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+◎ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)● Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)○ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)● Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)○ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)● Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)○ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)● Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)○ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)● Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)○ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)● Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)○ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)● Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)○ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)● Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)○ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)● Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)○ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)● Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)○ Switching TypePicker to dropdown (Esc to cancel · 2.9 KiB)○ Switching TypePicker to dropdown (Esc to cancel · 3.0 KiB)○ Switching TypePicker to dropdown (Esc to cancel · 3.1 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 3.1 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 3.7 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 3.9 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 3.9 KiB)● Switching TypePicker to dropdown (Esc to cancel · 3.9 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 3.9 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 3.9 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)○ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)  These render the actual ArtifactForm component live on the canvas. Fixed the markdown
+  widget too.
+
+❯ Type picker should be a primer dropdown, not segmented control● Edit ArtifactForm.jsx +17 -8
+  └ src/components/ArtifactForm/ArtifactForm.jsx● Edit ArtifactForm.jsx +1 -1
+  └ src/components/ArtifactForm/ArtifactForm.jsx
+
+● Now remove the duplicate TypeDropdown since TypeSelector now IS the dropdown, and
+  update the compact mode to just use the same component:
+
+● Edit ArtifactForm.jsx +1 -4
+  └ src/components/ArtifactForm/ArtifactForm.jsx
+
+● Edit ArtifactForm.jsx +1 -1
+  └ src/components/ArtifactForm/ArtifactForm.jsx
+
+● Now remove the now-unused TypeDropdown function:● Edit ArtifactForm.jsx -24◎ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)● Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)○ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)● Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)○ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)● Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)○ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)● Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)○ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)● Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)○ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)● Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)○ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)● Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)○ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)● Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)○ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)● Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◉ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)○ Switching TypePicker to dropdown (Esc to cancel · 4.1 KiB)◎ Switching TypePicker to dropdown (Esc to cancel · 4.3 KiB)
+  These render the actual ArtifactForm component live on the canvas. Fixed the markdown
+  widget too.
+
+❯ Type picker should be a primer dropdown, not segmented control
+
+● Edit ArtifactForm.jsx +17 -8
+  └ src/components/ArtifactForm/ArtifactForm.jsx
+
+● Edit ArtifactForm.jsx +1 -1
+  └ src/components/ArtifactForm/ArtifactForm.jsx
+
+● Now remove the duplicate TypeDropdown since TypeSelector now IS the dropdown, and
+  update the compact mode to just use the same component:
+
+● Edit ArtifactForm.jsx +1 -4
+  └ src/components/ArtifactForm/ArtifactForm.jsx
+
+● Edit ArtifactForm.jsx +1 -1
+  └ src/components/ArtifactForm/ArtifactForm.jsx
+
+● Now remove the now-unused TypeDropdown function:
+
+● Edit ArtifactForm.jsx -24
+  └ src/components/ArtifactForm/ArtifactForm.jsx
+ / commands · ? help                                    terminal-agent · Claude Opus 4.6❯ Type picker should be a primer dropdown, not segmented control
+
+● Edit ArtifactForm.jsx +17 -8
+  └ src/components/ArtifactForm/ArtifactForm.jsx
+
+● Edit ArtifactForm.jsx +1 -1
+  └ src/components/ArtifactForm/ArtifactForm.jsx
+
+● Now remove the duplicate TypeDropdown since TypeSelector now IS the dropdown, and
+  update the compact mode to just use the same component:
+
+● Edit ArtifactForm.jsx +1 -4
+  └ src/components/ArtifactForm/ArtifactForm.jsx
+
+● Edit ArtifactForm.jsx +1 -1
+  └ src/components/ArtifactForm/ArtifactForm.jsx
+
+● Now remove the now-unused TypeDropdown function:
+
+● Edit ArtifactForm.jsx -24
+  └ src/components/ArtifactForm/ArtifactForm.jsx
+
+● Done. TypePicker now uses a Primer ActionMenu dropdown with icons, labels, and
+  descriptions for each artifact type — no more segmented control. The story widgets on
+  canvas will auto-refresh via HMR.

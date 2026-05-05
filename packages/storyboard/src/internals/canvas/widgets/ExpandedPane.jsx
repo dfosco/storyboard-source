@@ -333,6 +333,7 @@ export default function ExpandedPane({ initialPanes, initialLayout, variant = 'm
           <ExpandedPaneTopBar
             label={pane.label}
             widgetType={pane.widgetType}
+            widgetProps={pane.widgetProps}
             actions={pane.actions}
             features={pane.features}
             getState={pane.getState}
@@ -361,6 +362,7 @@ export default function ExpandedPane({ initialPanes, initialLayout, variant = 'm
             <ExpandedPaneTopBar
               label={pane.label}
               widgetType={pane.widgetType}
+              widgetProps={pane.widgetProps}
               actions={pane.actions}
               features={pane.features}
               getState={pane.getState}
@@ -391,6 +393,7 @@ export default function ExpandedPane({ initialPanes, initialLayout, variant = 'm
           <ExpandedPaneTopBar
             label={pane.label}
             widgetType={pane.widgetType}
+            widgetProps={pane.widgetProps}
             actions={pane.actions}
             features={pane.features}
             getState={pane.getState}
@@ -466,6 +469,7 @@ export default function ExpandedPane({ initialPanes, initialLayout, variant = 'm
           <ExpandedPaneTopBar
             label={allPanes[0]?.label}
             widgetType={allPanes[0]?.widgetType}
+            widgetProps={allPanes[0]?.widgetProps}
             actions={allPanes[0]?.actions}
             features={allPanes[0]?.features}
             getState={allPanes[0]?.getState}

@@ -1,0 +1,32 @@
+SESSION: agent-3z8j0p | ruby-heron
+CANVAS:  storyboarding/form-schema
+BRANCH:  0.5.0
+TIME:    2026-05-05T06:31:04.303Z
+
+================================================================================
+SCREEN
+================================================================================
+
+  for all 7 types
+   - ⏳ Architect — Delegated, working on technical spec (API, CLI, validation,
+   FS ops)
+   - ✅ Plan — Published to the connected markdown widget on canvas
+
+  I'll wait for the Architect's response and then synthesize both outputs into
+  the final spec on the markdown block. Want me to poll now, or give them more
+  time?
+
+❯ Give them more time, sketcher needs to actually build the UI and architect is
+   iterating
+
+● Got it — letting them cook. I'll check back when you say so, or when they
+  signal done.
+
+◐ The user wants me to wait and give the peers more time to work. I'll check back
+   later.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
+─────────────────────────────────────────────────────────────────────────────────
+❯  
+─────────────────────────────────────────────────────────────────────────────────
+ / commands · ? help                            terminal-agent · Claude Opus 4.6

@@ -200,29 +200,6 @@
   border-color: var(--borderColor-default, #484f58);
 }
 
-.roleSelectWrap {
-  display: inline-flex;
-  align-items: center;
-}
-
-.roleSelect {
-  height: 24px;
-  max-width: 130px;
-  border-radius: 12px;
-  border: 1.6px solid var(--borderColor-muted, #d0d7de);
-  background: var(--bgColor-default, #ffffff);
-  color: var(--fgColor-default, #1f2328);
-  font-size: 11px;
-  line-height: 1;
-  padding: 0 8px;
-}
-
-:global([data-sb-canvas-theme^='dark']) .roleSelect {
-  border-color: var(--borderColor-muted, #373e47);
-  background: var(--bgColor-muted, #161b22);
-  color: var(--fgColor-default, #e6edf3);
-}
-
 .featureBtnActive {
   background: var(--bgColor-accent-emphasis, #0969da);
   border-color: var(--bgColor-accent-emphasis, #0969da);
@@ -407,6 +384,16 @@
   background: var(--bgColor-neutral-muted, #272c33);
 }
 
+.overflowItemActive {
+  font-weight: 600;
+}
+
+.overflowItemActive::before {
+  content: '✓';
+  font-size: 10px;
+  margin-right: -4px;
+}
+
 .overflowItemDanger:hover {
   background: var(--bgColor-danger-muted, #ffebe9);
   color: var(--fgColor-danger, #d1242f);
@@ -441,18 +428,4 @@
 :global([data-sb-canvas-theme^='dark']) .altHintActive {
   background: var(--bgColor-neutral-muted, #272c33);
   color: var(--fgColor-default, #e6edf3);
-}
-
-/* ── Hide widget chrome when toolbars are hidden ─────────────────── */
-
-:global(html.storyboard-chrome-hidden) .toolbar {
-  display: none;
-}
-
-:global(html.storyboard-chrome-hidden) .widgetSlotSelected {
-  outline: none;
-}
-
-:global(html.storyboard-chrome-hidden) .anchorPort {
-  display: none;
 }

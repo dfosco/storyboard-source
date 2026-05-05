@@ -49,6 +49,7 @@ function resolveFeatureDisplay(feature, getState) {
  * @param {Object} props
  * @param {string} props.label — pane display label
  * @param {string} [props.widgetType] — widget type string for icon resolution
+ * @param {Object} [props.widgetProps] — widget props for contextual decorations (e.g. leader crown)
  * @param {boolean} [props.showClose] — show close button (rightmost pane)
  * @param {() => void} [props.onClose] — close entire ExpandedPane
  * @param {Array<{ label: string, onClick: () => void }>} [props.actions] — legacy action buttons
@@ -56,10 +57,11 @@ function resolveFeatureDisplay(feature, getState) {
  * @param {(key: string) => any} [props.getState] — state accessor for toggle resolution
  * @param {(actionId: string) => void} [props.onAction] — action dispatch callback
  */
-export default function ExpandedPaneTopBar({ label, widgetType, showClose, onClose, actions, features, getState, onAction }) {
+export default function ExpandedPaneTopBar({ label, widgetType, widgetProps, showClose, onClose, actions, features, getState, onAction }) {
   const resolvedActions = typeof actions === 'function' ? actions() : actions
   const meta = widgetType ? getWidgetMeta(widgetType) : null
   const iconName = meta?.icon || null
+  const showLeaderCrown = widgetType === 'agent' && widgetProps?.role === 'leader'
 
   return (
     <div className={styles.bar}>
@@ -69,6 +71,11 @@ export default function ExpandedPaneTopBar({ label, widgetType, showClose, onClo
         </span>
       )}
       <span className={styles.label}>{label}</span>
+      {showLeaderCrown && (
+        <span className={styles.leaderCrown} aria-label="Hub leader">
+          <Icon name="iconoir/crown" size={12} color="#AE843B" />
+        </span>
+      )}
 
       {/* Config-driven feature actions */}
       {features?.map((feature) => {

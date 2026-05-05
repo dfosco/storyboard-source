@@ -57,3 +57,9 @@
   color: #e6edf3;
   border-color: #484f58;
 }
+
+.leaderCrown {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}

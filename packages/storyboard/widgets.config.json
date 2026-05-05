@@ -1099,10 +1099,6 @@
           "icon": "expand"
         },
         {
-          "id": "hub-role",
-          "type": "role-selector"
-        },
-        {
           "id": "copy",
           "type": "action",
           "action": "copy",
@@ -1215,6 +1211,10 @@
           "action": "expand",
           "label": "$label:expand",
           "icon": "expand"
+        },
+        {
+          "id": "hub-role",
+          "type": "role-selector"
         },
         {
           "id": "copy",
@@ -1368,6 +1368,10 @@
           "action": "expand",
           "label": "$label:expand",
           "icon": "expand"
+        },
+        {
+          "id": "hub-role",
+          "type": "role-selector"
         },
         {
           "id": "copy",

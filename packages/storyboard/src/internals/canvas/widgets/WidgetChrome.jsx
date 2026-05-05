@@ -204,31 +204,63 @@ function DropdownFeature({ feature, onAction }) {
   )
 }
 
+function CrownIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M2 20h20" />
+      <path d="M4 17l2-12 5 5 3-7 3 7 5-5 2 12H4z" />
+    </svg>
+  )
+}
+
 function RoleFeature({ options, currentRole, onRoleChange }) {
   const roleOptions = Array.isArray(options) ? options : []
+  const [open, setOpen] = useState(false)
+  const menuRef = useRef(null)
+
+  useEffect(() => {
+    if (!open) return
+    function handlePointerDown(e) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('pointerdown', handlePointerDown)
+    return () => document.removeEventListener('pointerdown', handlePointerDown)
+  }, [open])
+
   if (!onRoleChange || roleOptions.length === 0) return null
 
   return (
-    <Tooltip text="Hub role" direction="n">
-      <label className={styles.roleSelectWrap} onClick={(e) => e.stopPropagation()}>
-        <select
-          className={styles.roleSelect}
-          value={currentRole}
-          onChange={(e) => {
-            e.stopPropagation()
-            onRoleChange(e.target.value)
-          }}
-          onClick={(e) => e.stopPropagation()}
+    <div ref={menuRef} className={styles.overflowWrapper}>
+      <Tooltip text="Hub role" direction="n">
+        <button
+          className={styles.featureBtn}
+          onClick={(e) => { e.stopPropagation(); setOpen((v) => !v) }}
           aria-label="Hub role"
+          aria-expanded={open}
         >
+          <CrownIcon />
+        </button>
+      </Tooltip>
+      {open && (
+        <div className={styles.overflowMenu}>
           {roleOptions.map((role) => (
-            <option key={role.id} value={role.id}>
-              {role.title || role.id}
-            </option>
+            <button
+              key={role.id}
+              className={`${styles.overflowItem} ${role.id === currentRole ? styles.overflowItemActive : ''}`}
+              onClick={(e) => {
+                e.stopPropagation()
+                onRoleChange(role.id)
+                setOpen(false)
+              }}
+            >
+              <span>{role.title || role.id}</span>
+            </button>
           ))}
-        </select>
-      </label>
-    </Tooltip>
+        </div>
+      )}
+    </div>
   )
 }
 

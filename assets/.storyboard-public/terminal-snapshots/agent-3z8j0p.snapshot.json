@@ -1,0 +1,10 @@
+{
+  "widgetId": "agent-3z8j0p",
+  "canvasId": "storyboarding/form-schema",
+  "prettyName": "ruby-heron",
+  "timestamp": "2026-05-05T06:31:04.303Z",
+  "cols": 81,
+  "rows": 24,
+  "paneContent": "  for all 7 types\n   - ⏳ Architect — Delegated, working on technical spec (API, CLI, validation,\n   FS ops)\n   - ✅ Plan — Published to the connected markdown widget on canvas\n\n  I'll wait for the Architect's response and then synthesize both outputs into\n  the final spec on the markdown block. Want me to poll now, or give them more\n  time?\n\n❯ Give them more time, sketcher needs to actually build the UI and architect is\n   iterating\n\n● Got it — letting them cook. I'll check back when you say so, or when they\n  signal done.\n\n◐ The user wants me to wait and give the peers more time to work. I'll check back\n   later.\n\n ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]\n─────────────────────────────────────────────────────────────────────────────────\n❯  \n─────────────────────────────────────────────────────────────────────────────────\n / commands · ? help                            terminal-agent · Claude Opus 4.6\n\n",
+  "scrollback": ""
+}
