@@ -293,7 +293,7 @@ export function isBound(widgetId) {
 export function getBinding(widgetId) {
   const b = bindings.get(widgetId)
   if (!b) return null
-  return { widgetId: b.widgetId, tmuxName: b.tmuxName, channel: b.channel }
+  return { widgetId: b.widgetId, tmuxName: b.tmuxName, channel: b.channel, branch: b.branch, canvasId: b.canvasId }
 }
 
 /**

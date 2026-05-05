@@ -14,7 +14,7 @@
 import { publish, subscribe, read, readMulti } from './bus.js'
 import { negotiateFormat, serializeResponse, parseRequestBody } from './toon.js'
 import { getPresent, isPresent, getAllPresent } from './presence.js'
-import { getBindings, getBinding } from './delivery.js'
+import { getBindings, getBinding, terminalChannel } from './delivery.js'
 import {
   getHub,
   getHubsForCanvas,
@@ -532,12 +532,23 @@ async function handleHubSend(req, res, body, sendJson) {
 
   // Fanout: publish to each recipient's terminal channel so the delivery
   // bridge can inject the message into their tmux session.
+  // Always publish regardless of binding — messages persist in the bus log
+  // and are backfilled when the agent reconnects (durable cursor).
   const senderMember = hub.members.get(senderId)
   const senderName = senderMember?.name || senderMember?.prettyName || senderId
+
+  // Resolve branch from sender's binding (sender is always connected)
+  const senderBinding = getBinding(senderId)
+  const branch = senderBinding?.branch
+
   for (const recipient of recipientList) {
     const binding = getBinding(recipient.widgetId)
-    if (binding) {
-      await publish(binding.channel, {
+    const channel = binding
+      ? binding.channel
+      : (branch ? terminalChannel(branch, hub.canvasId, recipient.widgetId) : null)
+
+    if (channel) {
+      await publish(channel, {
         type: 'message:request',
         senderId,
         senderName,
