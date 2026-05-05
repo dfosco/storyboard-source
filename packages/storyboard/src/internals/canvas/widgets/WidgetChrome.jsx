@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect, useSyncExternalStore } from 'react'
 import { Tooltip } from '@primer/react'
+import { CheckIcon } from '@primer/octicons-react'
 import { getConnectorConfig, getInteractGate } from './widgetConfig.js'
 import { ICON_REGISTRY } from './widgetIcons.jsx'
 import styles from './WidgetChrome.module.css'
@@ -247,7 +248,7 @@ function RoleFeature({ options, currentRole, onRoleChange }) {
           {roleOptions.map((role) => (
             <button
               key={role.id}
-              className={`${styles.overflowItem} ${role.id === currentRole ? styles.overflowItemActive : ''}`}
+              className={styles.overflowItem}
               onClick={(e) => {
                 e.stopPropagation()
                 onRoleChange(role.id)
@@ -255,6 +256,7 @@ function RoleFeature({ options, currentRole, onRoleChange }) {
               }}
             >
               <span>{role.title || role.id}</span>
+              {role.id === currentRole && <CheckIcon size={12} />}
             </button>
           ))}
         </div>

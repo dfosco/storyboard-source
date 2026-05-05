@@ -384,16 +384,6 @@
   background: var(--bgColor-neutral-muted, #272c33);
 }
 
-.overflowItemActive {
-  font-weight: 600;
-}
-
-.overflowItemActive::before {
-  content: '✓';
-  font-size: 10px;
-  margin-right: -4px;
-}
-
 .overflowItemDanger:hover {
   background: var(--bgColor-danger-muted, #ffebe9);
   color: var(--fgColor-danger, #d1242f);
