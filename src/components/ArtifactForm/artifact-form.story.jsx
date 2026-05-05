@@ -1,16 +1,13 @@
 /**
  * ArtifactForm stories — demonstrates the unified creation UI.
  *
- * Based on reference images showing:
- * - Type picker with segmented control across top
- * - Individual artifact forms (prototype, canvas, component, etc.)
- * - Compact mode with dropdown type selector
- * - Code/JSON editing for objects, records, flows
- * - Validation states
+ * Matches Architect's spec: 7 types (prototype, canvas, component,
+ * flow, object, record, page). External prototypes are just prototypes
+ * with a URL field — no separate type.
  */
 import ArtifactForm from './ArtifactForm.jsx'
 
-/** Full form with type picker — segmented control lets user switch artifact types */
+/** Full form with type dropdown — ActionMenu lets user switch artifact types */
 export function TypePicker() {
   return (
     <ArtifactForm
@@ -20,7 +17,7 @@ export function TypePicker() {
   )
 }
 
-/** Compact mode — dropdown type selector, only required fields shown */
+/** Compact mode — required fields only */
 export function CompactTypePicker() {
   return (
     <ArtifactForm
@@ -31,7 +28,7 @@ export function CompactTypePicker() {
   )
 }
 
-/** Create Prototype — name, title, description, author, icon, tags, team */
+/** Prototype — name, title, desc, author, folder, icon, tags, team, url, flow checkbox */
 export function CreatePrototype() {
   return (
     <ArtifactForm
@@ -42,18 +39,7 @@ export function CreatePrototype() {
   )
 }
 
-/** Create External Prototype — name, URL (required), title, description */
-export function CreateExternalPrototype() {
-  return (
-    <ArtifactForm
-      type="external-prototype"
-      onSubmit={data => console.log('Create external:', data)}
-      onCancel={() => console.log('Cancelled')}
-    />
-  )
-}
-
-/** Create Canvas — name, title, description */
+/** Canvas — name, title, description, folder */
 export function CreateCanvas() {
   return (
     <ArtifactForm
@@ -64,7 +50,7 @@ export function CreateCanvas() {
   )
 }
 
-/** Create Component — name (PascalCase), location select, format select */
+/** Component — name (PascalCase), directory */
 export function CreateComponent() {
   return (
     <ArtifactForm
@@ -75,7 +61,18 @@ export function CreateComponent() {
   )
 }
 
-/** Create Object — name + JSON code editor */
+/** Flow — name, prototype, title, desc, globals, folder, copy-from, starting-page */
+export function CreateFlow() {
+  return (
+    <ArtifactForm
+      type="flow"
+      onSubmit={data => console.log('Create flow:', data)}
+      onCancel={() => console.log('Cancelled')}
+    />
+  )
+}
+
+/** Object — name, folder, JSON body */
 export function CreateObject() {
   return (
     <ArtifactForm
@@ -86,7 +83,7 @@ export function CreateObject() {
   )
 }
 
-/** Create Record — name + JSON array editor */
+/** Record — name, folder, JSON array */
 export function CreateRecord() {
   return (
     <ArtifactForm
@@ -97,12 +94,12 @@ export function CreateRecord() {
   )
 }
 
-/** Create Flow — name, prototype select, $global, JSON body */
-export function CreateFlow() {
+/** Page — prototype (select), path, folder, template */
+export function CreatePage() {
   return (
     <ArtifactForm
-      type="flow"
-      onSubmit={data => console.log('Create flow:', data)}
+      type="page"
+      onSubmit={data => console.log('Create page:', data)}
       onCancel={() => console.log('Cancelled')}
     />
   )

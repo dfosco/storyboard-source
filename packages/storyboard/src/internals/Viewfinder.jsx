@@ -273,18 +273,12 @@ function EditArtifactModal({ item, dirName, basePath, onClose }) {
 
     const apiBase = (basePath || '/').replace(/\/+$/, '')
     let endpoint
+    let method = 'PATCH'
 
-    if (item.type === 'canvas') {
-      endpoint = `${apiBase}/_storyboard/canvas/update-meta`
-    } else if (item.type === 'prototype') {
-      endpoint = `${apiBase}/_storyboard/workshop/prototypes`
-    } else {
-      setError('Editing this type is not supported')
-      setSubmitting(false)
-      return
-    }
+    endpoint = `${apiBase}/_storyboard/artifact/`
 
     const body = {
+      type: item.type,
       name: dirName,
       title: name.trim(),
       description: description.trim(),
@@ -294,7 +288,7 @@ function EditArtifactModal({ item, dirName, basePath, onClose }) {
 
     try {
       const res = await fetch(endpoint, {
-        method: 'PUT',
+        method: method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       })
@@ -382,19 +376,9 @@ function DeleteArtifactModal({ item, dirName, basePath, typeLabel, onClose, onDe
     setDeleting(true)
 
     const apiBase = (basePath || '/').replace(/\/+$/, '')
-    let endpoint
+    const endpoint = `${apiBase}/_storyboard/artifact/`
 
-    if (item.type === 'canvas') {
-      endpoint = `${apiBase}/_storyboard/canvas/delete-canvas`
-    } else if (item.type === 'prototype') {
-      endpoint = `${apiBase}/_storyboard/workshop/prototypes`
-    } else {
-      setError('Deleting this type is not supported')
-      setDeleting(false)
-      return
-    }
-
-    const body = { name: dirName }
+    const body = { type: item.type, name: dirName }
     if (item.folder) body.folder = item.folder
 
     try {
@@ -707,10 +691,10 @@ function CreateForm({ type, onClose, basePath }) {
   useEffect(() => {
     if (!needsPrototype) return
     const apiBase = (basePath || '/').replace(/\/+$/, '')
-    fetch(`${apiBase}/_storyboard/workshop/flows`)
+    fetch(`${apiBase}/_storyboard/artifact/list?type=prototype`)
       .then(r => r.ok ? r.json() : null)
       .then(data => {
-        if (data?.prototypes) setPrototypes(data.prototypes)
+        if (data?.items) setPrototypes(data.items.map(p => ({ name: p.name })))
       })
       .catch(() => {})
   }, [needsPrototype, basePath])
@@ -723,34 +707,29 @@ function CreateForm({ type, onClose, basePath }) {
     setSubmitting(true)
 
     const apiBase = (basePath || '/').replace(/\/+$/, '')
-    let endpoint, body
-    if (type === 'Canvas') {
-      endpoint = `${apiBase}/_storyboard/canvas/create`
-      body = { name: name.trim(), title: title.trim(), description: description.trim(), grid: true, gridSize: 24 }
-    } else if (type === 'Prototype') {
-      endpoint = `${apiBase}/_storyboard/workshop/prototypes`
-      body = { name: name.trim(), title: title.trim(), description: description.trim() }
-      if (isExternal) { body.external = true; body.url = url.trim() }
-    } else if (type === 'Flow') {
-      endpoint = `${apiBase}/_storyboard/workshop/flows`
-      body = { name: name.trim(), title: title.trim(), prototype, description: description.trim() }
-    } else if (type === 'Page') {
-      endpoint = `${apiBase}/_storyboard/workshop/pages`
-      body = { name: name.trim(), prototype }
-    } else {
-      endpoint = `${apiBase}/_storyboard/canvas/create-story`
-      body = { name: name.trim(), location: 'src/components' }
-    }
+    const endpoint = `${apiBase}/_storyboard/artifact/`
+
+    // Map UI type to API type
+    const typeMap = { Canvas: 'canvas', Prototype: 'prototype', Component: 'component', Flow: 'flow', Page: 'page', Object: 'object', Record: 'record' }
+    const apiType = typeMap[type]
+
+    // Build payload
+    const payload = { type: apiType, name: name.trim() }
+    if (title.trim()) payload.title = title.trim()
+    if (description.trim()) payload.description = description.trim()
+    if (needsPrototype && prototype) payload.prototype = prototype
+    if (type === 'Prototype' && isExternal && url.trim()) payload.url = url.trim()
+    if (type === 'Page') payload.path = name.trim()
 
     try {
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
+        body: JSON.stringify(payload),
       })
       if (!res.ok) {
-        const text = await res.text()
-        throw new Error(text || `Request failed (${res.status})`)
+        const data = await res.json().catch(() => null)
+        throw new Error(data?.error || `Request failed (${res.status})`)
       }
       const data = await res.json().catch(() => ({}))
       const route = data.route || data.path || `/${name.trim()}`
@@ -761,7 +740,7 @@ function CreateForm({ type, onClose, basePath }) {
     }
   }
 
-  const typeLabels = { Canvas: 'Canvas', Prototype: 'Prototype', Component: 'Component', Flow: 'Prototype Flow', Page: 'Prototype Page' }
+  const typeLabels = { Canvas: 'Canvas', Prototype: 'Prototype', Component: 'Component', Flow: 'Prototype Flow', Page: 'Prototype Page', Object: 'Object', Record: 'Record' }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -874,6 +853,8 @@ function CreateMenu({ onClose, basePath }) {
   const moreItems = [
     { title: 'Prototype Flow', desc: 'A flow data file for a prototype', type: 'Flow' },
     { title: 'Prototype Page', desc: 'A new page inside a prototype', type: 'Page' },
+    { title: 'Object', desc: 'Reusable JSON data fragment', type: 'Object' },
+    { title: 'Record', desc: 'Collection of entries with IDs', type: 'Record' },
   ]
 
   if (activeForm) {

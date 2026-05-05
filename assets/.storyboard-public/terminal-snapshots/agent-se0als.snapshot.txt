@@ -1,36 +1,36 @@
-SESSION: agent-h80jjk | storm-wren
+SESSION: agent-se0als | opal-magpie
 CANVAS:  storyboarding/form-schema
 BRANCH:  0.5.0
-TIME:    2026-05-05T07:06:17.083Z
+TIME:    2026-05-05T07:06:17.048Z
 
 ================================================================================
 SCREEN
 ================================================================================
 
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && npx storyboard canvas
+  │ batch --canvas "storyboarding/form-schema" --ops '[…
+  └ 19 lines...
+
+● Now signal done and save output for the leader:
+
+● Signal done (shell)
+  │ export STORYBOARD_CANVAS_ID="storyboarding/form-schema"
+  │ export STORYBOARD_WIDGET_ID="agent-se0als"
   │ export STORYBOARD_SERVER_URL="http://localhost:1235"
-  │
-  │ npx storyboard canvas update markdown-umdbac --canvas ${STORYBOARD_CANVAS_ID} …
-  └ 66 lines...
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && npx storyboard
+  │ terminal output --summary "Built storyboard artifact CLI command" --content …
+  └ 10 lines...
 
-● Respond to hub and save output (shell)
-  │ export STORYBOARD_WIDGET_ID="agent-h80jjk"
-  │ npx storyboard hub respond --hub hub_4b0762c485 --sender ${STORYBOARD_WIDGET_ID}
-  │ --body "Phase 1 DONE. Built packages/storyboard/src/core/artifact/ with:
-  │
-  │ - 7 JSON Schema files (prototype, canvas, component, flow, object, record, page)…
-  └ 15 lines...
+● Done. Created packages/storyboard/src/core/cli/artifact.js with 5 subcommands:
 
-● Done. Built the full packages/storyboard/src/core/artifact/ module:
+   - create — POST /_storyboard/artifact/
+   - edit — PATCH /_storyboard/artifact/
+   - delete — DELETE /_storyboard/artifact/ (with --force or interactive confirm)
+   - list — GET /_storyboard/artifact/list
+   - schema — GET /_storyboard/artifact/schema
 
-   - 7 JSON Schema files for all artifact types
-   - validate.js — 3-stage pipeline (normalize → schema → semantic)
-   - operations.js — FS create/edit/delete/list for all types
-   - routes.js — REST handler at /_storyboard/artifact/
-   - index.js — barrel export
-   - Registered in server-plugin.js
-
-  All validation tests passing. Canvas widget updated. Awaiting Leader's next
-  delegation.
+  Registered in the CLI router (index.js) and added to the help screen. All flags map
+  1:1 to schema fields, supports interactive and non-interactive modes.
 
  ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
  @agent-3z8j0p.snapshot.txt:1-655

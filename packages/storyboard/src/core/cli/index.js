@@ -67,6 +67,14 @@ function helpScreen(version) {
     cmd('create flow', 'Create a flow for a prototype'),
     cmd('create page', 'Create a page in a prototype'),
     '',
+    `  ${bold(cyan('Artifact'))}`,
+    cmd('artifact create <type>', 'Create a new artifact'),
+    `                              ${dim('types: prototype, canvas, component, flow, object, record, page')}`,
+    cmd('artifact edit <type> <name>', 'Edit an existing artifact'),
+    cmd('artifact delete <type> <name>', 'Delete an artifact'),
+    cmd('artifact list [type]', 'List artifacts'),
+    cmd('artifact schema <type>', 'Show JSON Schema for a type'),
+    '',
     `  ${bold(cyan('Canvas'))}`,
     cmd('canvas add <type>', 'Add widget to a canvas'),
     `                              ${dim('types: sticky-note, markdown, prototype, agent')}`,
@@ -274,6 +282,9 @@ switch (command) {
     break
   case 'code':
     import('./code.js')
+    break
+  case 'artifact':
+    import('./artifact.js')
     break
   default: {
     if (command === 'update' || (command && command.startsWith('update:'))) {

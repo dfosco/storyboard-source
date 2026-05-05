@@ -1,0 +1,17 @@
+{
+  "$id": "artifact:component",
+  "type": "object",
+  "required": ["name"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Za-z0-9]+$|^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "maxLength": 64,
+      "description": "Component name (PascalCase or kebab-case)"
+    },
+    "directory": {
+      "type": "string",
+      "description": "Subdirectory inside src/components/"
+    }
+  }
+}

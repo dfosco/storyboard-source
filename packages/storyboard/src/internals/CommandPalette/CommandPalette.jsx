@@ -370,8 +370,13 @@ function buildDynamicSection(section, prefix, onNavigateToPage, onCreateAction) 
       { id: 'create:canvas', children: 'Canvas', keywords: ['create', 'canvas', 'new', 'board'], itemType: 'create', onClick: () => onCreateAction?.('Canvas') },
       { id: 'create:prototype', children: 'Prototype', keywords: ['create', 'prototype', 'new', 'page'], itemType: 'create', onClick: () => onCreateAction?.('Prototype') },
       { id: 'create:component', children: 'Component', keywords: ['create', 'component', 'new', 'story'], itemType: 'create', onClick: () => onCreateAction?.('Component') },
-      { id: 'create:flow', children: 'Prototype Flow', keywords: ['create', 'flow', 'new', 'data'], itemType: 'create', onClick: () => onCreateAction?.('Flow') },
-      { id: 'create:page', children: 'Prototype Page', keywords: ['create', 'page', 'new'], itemType: 'create', onClick: () => onCreateAction?.('Page') },
+      { id: 'create:flow', children: 'Flow', keywords: ['create', 'flow', 'new', 'data'], itemType: 'create', onClick: () => onCreateAction?.('Flow') },
+      { id: 'create:object', children: 'Object', keywords: ['create', 'object', 'new', 'data', 'json'], itemType: 'create', onClick: () => onCreateAction?.('Object') },
+      { id: 'create:record', children: 'Record', keywords: ['create', 'record', 'new', 'collection', 'data'], itemType: 'create', onClick: () => onCreateAction?.('Record') },
+      { id: 'create:page', children: 'Page', keywords: ['create', 'page', 'new', 'route'], itemType: 'create', onClick: () => onCreateAction?.('Page') },
+      { id: 'create:object', children: 'Object', keywords: ['create', 'object', 'new', 'data', 'json'], itemType: 'create', onClick: () => onCreateAction?.('Object') },
+      { id: 'create:record', children: 'Record', keywords: ['create', 'record', 'new', 'collection', 'data'], itemType: 'create', onClick: () => onCreateAction?.('Record') },
+      { id: 'create:page', children: 'Page', keywords: ['create', 'page', 'new'], itemType: 'create', onClick: () => onCreateAction?.('Page') },
     ]
     return { group: { heading: section.title, id: `cfg:${section.id}`, items: createItems } }
   }

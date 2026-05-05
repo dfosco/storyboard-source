@@ -214,11 +214,11 @@ export default function CanvasCreateMenu({ config = {}, data: _data, canvasName 
     setProtoError(null)
     try {
       const basePath = window.__STORYBOARD_BASE_PATH__ || '/'
-      const apiUrl = basePath.replace(/\/$/, '') + '/_storyboard/workshop/prototypes'
+      const apiUrl = basePath.replace(/\/$/, '') + '/_storyboard/artifact/'
       const res = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: protoKebab }),
+        body: JSON.stringify({ type: 'prototype', name: protoKebab }),
       })
       const d = await res.json()
       if (!res.ok) { setProtoError(d.error || 'Failed to create prototype'); setProtoSubmitting(false); return }

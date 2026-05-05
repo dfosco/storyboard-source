@@ -32,6 +32,7 @@ import { initPresence } from '../messaging/presence.js'
 import { initDeliveryBridge } from '../messaging/delivery.js'
 import { getHubsMap } from '../messaging/hub-manager.js'
 import { startMaintenance, stopMaintenance } from '../messaging/hub-maintenance.js'
+import { createArtifactRoutes } from '../artifact/routes.js'
 
 const API_PREFIX = '/_storyboard/'
 
@@ -322,6 +323,9 @@ export default function storyboardServer() {
       initPresence()
       initDeliveryBridge({ root })
       routeHandlers.set('messages', createMessagingRoutes({ sendJson: sendJsonLogged }))
+
+      // Artifact CRUD API
+      routeHandlers.set('artifact', createArtifactRoutes({ root, sendJson: sendJsonLogged }))
 
       // Push all bus events to browser clients via Vite HMR WebSocket
       subscribeAll((channel, event) => {
