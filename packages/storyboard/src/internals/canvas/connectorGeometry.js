@@ -134,26 +134,102 @@ export function connectorIntersectsRect(connector, widgetMap, rect, numSamples =
 const ANCHORS = ['top', 'bottom', 'left', 'right']
 
 /**
- * Find the best anchor pair between two widgets based on shortest distance.
- * Tests all 16 combinations (4 anchors × 4 anchors) and returns the pair
- * with the minimum Euclidean distance.
+ * Get widget bounding box from position and dimensions.
+ */
+function getWidgetBounds(widget) {
+  const x = widget.position?.x ?? 0
+  const y = widget.position?.y ?? 0
+  let w, h
+  const el = typeof document !== 'undefined' ? document.getElementById(widget.id) : null
+  if (el) {
+    const firstChild = el.querySelector('[data-widget-id]') || el.firstElementChild
+    if (firstChild) {
+      w = firstChild.offsetWidth
+      h = firstChild.offsetHeight
+    }
+  }
+  if (!w) w = widget.props?.width ?? widget.bounds?.width ?? 270
+  if (!h) h = widget.props?.height ?? widget.bounds?.height ?? 170
+  return { x, y, width: w, height: h }
+}
+
+/**
+ * Check if a point is inside a rect (with optional margin for edge tolerance).
+ */
+function pointInRect(pt, rect, margin = 0) {
+  return (
+    pt.x >= rect.x + margin &&
+    pt.x <= rect.x + rect.width - margin &&
+    pt.y >= rect.y + margin &&
+    pt.y <= rect.y + rect.height - margin
+  )
+}
+
+/**
+ * Check if a Bézier path overlaps with a widget's bounding box.
+ * Samples points along the curve and checks for intersection.
+ * Skips the first and last 10% of the curve (near anchors).
+ */
+function pathOverlapsWidget(p0, cp1, cp2, p3, widgetBounds, numSamples = 16) {
+  // Sample from t=0.1 to t=0.9 to skip anchor vicinity
+  for (let i = 1; i < numSamples; i++) {
+    const t = 0.1 + (i / numSamples) * 0.8
+    const pt = evalCubicBezier(p0, cp1, cp2, p3, t)
+    if (pointInRect(pt, widgetBounds, 8)) {
+      return true
+    }
+  }
+  return false
+}
+
+/**
+ * Find the best anchor pair between two widgets.
+ * Considers both distance and overlap avoidance:
+ * 1. Prefers paths that don't overlap either widget
+ * 2. Among valid paths, picks the shortest
+ * 3. Falls back to shortest path if all overlap
+ *
  * @param {Object} widgetA — source widget { id, position, props }
  * @param {Object} widgetB — target widget { id, position, props }
  * @returns {{ startAnchor: string, endAnchor: string }}
  */
 export function findBestAnchors(widgetA, widgetB) {
-  let best = { startAnchor: 'right', endAnchor: 'left', dist: Infinity }
+  const boundsA = getWidgetBounds(widgetA)
+  const boundsB = getWidgetBounds(widgetB)
+
+  const candidates = []
 
   for (const anchorA of ANCHORS) {
     const ptA = getAnchorPoint(widgetA, anchorA)
+    const c1 = getControlOffset(anchorA)
+    const cp1 = { x: ptA.x + c1.dx, y: ptA.y + c1.dy }
+
     for (const anchorB of ANCHORS) {
       const ptB = getAnchorPoint(widgetB, anchorB)
+      const c2 = getControlOffset(anchorB)
+      const cp2 = { x: ptB.x + c2.dx, y: ptB.y + c2.dy }
+
       const dist = Math.hypot(ptA.x - ptB.x, ptA.y - ptB.y)
-      if (dist < best.dist) {
-        best = { startAnchor: anchorA, endAnchor: anchorB, dist }
-      }
+
+      // Check if path overlaps either widget
+      const overlapsA = pathOverlapsWidget(ptA, cp1, cp2, ptB, boundsA)
+      const overlapsB = pathOverlapsWidget(ptA, cp1, cp2, ptB, boundsB)
+
+      candidates.push({
+        startAnchor: anchorA,
+        endAnchor: anchorB,
+        dist,
+        overlaps: overlapsA || overlapsB,
+      })
     }
   }
 
+  // Sort: non-overlapping first, then by distance
+  candidates.sort((a, b) => {
+    if (a.overlaps !== b.overlaps) return a.overlaps ? 1 : -1
+    return a.dist - b.dist
+  })
+
+  const best = candidates[0]
   return { startAnchor: best.startAnchor, endAnchor: best.endAnchor }
 }
