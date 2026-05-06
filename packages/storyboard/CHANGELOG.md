@@ -1,5 +1,15 @@
 # @dfosco/storyboard
 
+## 0.5.0-alpha.14
+
+### Patch Changes
+
+-   Add sidebar visibility props to Workspace, hide "All artifacts" by default
+
+    -   Added `showAllArtifacts`, `showPrototypes`, `showCanvases`, `showComponents` props
+    -   All artifacts hidden by default
+    -   Added `component` icon to Icon.jsx
+
 ## 0.5.0-alpha.13
 
 ### Patch Changes

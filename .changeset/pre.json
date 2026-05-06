@@ -1,8 +1,8 @@
 {
-  "mode": "exit",
+  "mode": "pre",
   "tag": "alpha",
   "initialVersions": {
-    "@dfosco/storyboard": "0.5.0-alpha.12"
+    "@dfosco/storyboard": "0.5.0-alpha.13"
   },
   "changesets": [
     "changeset-moojzicz",
@@ -12,6 +12,7 @@
     "changeset-mou1wsk4",
     "changeset-mou2nsy2",
     "changeset-tematd",
-    "changeset-temcrx"
+    "changeset-temcrx",
+    "workspace-sidebar-visibility"
   ]
 }
