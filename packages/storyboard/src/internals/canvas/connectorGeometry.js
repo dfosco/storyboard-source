@@ -35,15 +35,30 @@ export function getAnchorPoint(widget, anchor) {
 
 /**
  * Compute the control point offset direction for an anchor.
+ * When `scale` < 1, reduces the offset proportionally (for close widgets).
  */
-export function getControlOffset(anchor) {
+export function getControlOffset(anchor, scale = 1) {
+  const offset = CONTROL_OFFSET * scale
   switch (anchor) {
-    case 'top':    return { dx: 0, dy: -CONTROL_OFFSET }
-    case 'bottom': return { dx: 0, dy: CONTROL_OFFSET }
-    case 'left':   return { dx: -CONTROL_OFFSET, dy: 0 }
-    case 'right':  return { dx: CONTROL_OFFSET, dy: 0 }
+    case 'top':    return { dx: 0, dy: -offset }
+    case 'bottom': return { dx: 0, dy: offset }
+    case 'left':   return { dx: -offset, dy: 0 }
+    case 'right':  return { dx: offset, dy: 0 }
     default:       return { dx: 0, dy: 0 }
   }
+}
+
+/** Threshold distance (3 grid sizes) below which curve bounciness is reduced. */
+const CLOSE_THRESHOLD = 24 * 3 // 72px
+
+/**
+ * Compute scale factor for control offset based on anchor distance.
+ * When anchors are closer than CLOSE_THRESHOLD, reduce bounciness proportionally.
+ */
+function computeControlScale(dist) {
+  if (dist >= CLOSE_THRESHOLD) return 1
+  // Scale linearly from 0.3 at dist=0 to 1.0 at dist=CLOSE_THRESHOLD
+  return 0.3 + (dist / CLOSE_THRESHOLD) * 0.7
 }
 
 /**
@@ -51,18 +66,24 @@ export function getControlOffset(anchor) {
  * When `freeEnd` is true, the end control point is computed from
  * the direction vector (end→start) so the curve never bends in
  * front of the cursor during drag.
+ *
+ * Control offset is scaled down when anchors are close (< 3 gridSizes)
+ * to prevent the curve from bulging and overlapping widgets.
  */
 export function buildPath(startPt, startAnchor, endPt, endAnchor, freeEnd = false) {
-  const c1 = getControlOffset(startAnchor)
+  const dist = Math.hypot(startPt.x - endPt.x, startPt.y - endPt.y)
+  const scale = computeControlScale(dist)
+
+  const c1 = getControlOffset(startAnchor, scale)
   let c2
   if (freeEnd) {
     const dx = startPt.x - endPt.x
     const dy = startPt.y - endPt.y
-    const dist = Math.hypot(dx, dy) || 1
-    const scale = Math.min(CONTROL_OFFSET, dist * 0.4)
-    c2 = { dx: (dx / dist) * scale, dy: (dy / dist) * scale }
+    const d = dist || 1
+    const freeScale = Math.min(CONTROL_OFFSET * scale, d * 0.4)
+    c2 = { dx: (dx / d) * freeScale, dy: (dy / d) * freeScale }
   } else {
-    c2 = getControlOffset(endAnchor)
+    c2 = getControlOffset(endAnchor, scale)
   }
   return `M ${startPt.x} ${startPt.y} C ${startPt.x + c1.dx} ${startPt.y + c1.dy}, ${endPt.x + c2.dx} ${endPt.y + c2.dy}, ${endPt.x} ${endPt.y}`
 }
@@ -201,15 +222,17 @@ export function findBestAnchors(widgetA, widgetB) {
 
   for (const anchorA of ANCHORS) {
     const ptA = getAnchorPoint(widgetA, anchorA)
-    const c1 = getControlOffset(anchorA)
-    const cp1 = { x: ptA.x + c1.dx, y: ptA.y + c1.dy }
 
     for (const anchorB of ANCHORS) {
       const ptB = getAnchorPoint(widgetB, anchorB)
-      const c2 = getControlOffset(anchorB)
-      const cp2 = { x: ptB.x + c2.dx, y: ptB.y + c2.dy }
-
       const dist = Math.hypot(ptA.x - ptB.x, ptA.y - ptB.y)
+
+      // Use same scaling as buildPath for accurate overlap detection
+      const scale = computeControlScale(dist)
+      const c1 = getControlOffset(anchorA, scale)
+      const c2 = getControlOffset(anchorB, scale)
+      const cp1 = { x: ptA.x + c1.dx, y: ptA.y + c1.dy }
+      const cp2 = { x: ptB.x + c2.dx, y: ptB.y + c2.dy }
 
       // Check if path overlaps either widget
       const overlapsA = pathOverlapsWidget(ptA, cp1, cp2, ptB, boundsA)

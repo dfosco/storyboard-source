@@ -315,15 +315,30 @@ function getAnchorPoint(widget, anchor) {
 
 /**
  * Compute the control point offset direction for an anchor.
+ * When `scale` < 1, reduces the offset proportionally (for close widgets).
  */
-function getControlOffset(anchor) {
+function getControlOffset(anchor, scale = 1) {
+  const offset = CONTROL_OFFSET * scale
   switch (anchor) {
-    case 'top':    return { dx: 0, dy: -CONTROL_OFFSET }
-    case 'bottom': return { dx: 0, dy: CONTROL_OFFSET }
-    case 'left':   return { dx: -CONTROL_OFFSET, dy: 0 }
-    case 'right':  return { dx: CONTROL_OFFSET, dy: 0 }
+    case 'top':    return { dx: 0, dy: -offset }
+    case 'bottom': return { dx: 0, dy: offset }
+    case 'left':   return { dx: -offset, dy: 0 }
+    case 'right':  return { dx: offset, dy: 0 }
     default:       return { dx: 0, dy: 0 }
   }
+}
+
+/** Threshold distance (3 grid sizes) below which curve bounciness is reduced. */
+const CLOSE_THRESHOLD = 24 * 3 // 72px
+
+/**
+ * Compute scale factor for control offset based on anchor distance.
+ * When anchors are closer than CLOSE_THRESHOLD, reduce bounciness proportionally.
+ */
+function computeControlScale(dist) {
+  if (dist >= CLOSE_THRESHOLD) return 1
+  // Scale linearly from 0.3 at dist=0 to 1.0 at dist=CLOSE_THRESHOLD
+  return 0.3 + (dist / CLOSE_THRESHOLD) * 0.7
 }
 
 /**
@@ -387,15 +402,17 @@ export function findBestAnchors(widgetA, widgetB) {
 
   for (const anchorA of ANCHORS) {
     const ptA = getAnchorPoint(widgetA, anchorA)
-    const c1 = getControlOffset(anchorA)
-    const cp1 = { x: ptA.x + c1.dx, y: ptA.y + c1.dy }
 
     for (const anchorB of ANCHORS) {
       const ptB = getAnchorPoint(widgetB, anchorB)
-      const c2 = getControlOffset(anchorB)
-      const cp2 = { x: ptB.x + c2.dx, y: ptB.y + c2.dy }
-
       const dist = Math.hypot(ptA.x - ptB.x, ptA.y - ptB.y)
+
+      // Use same scaling as client-side for accurate overlap detection
+      const scale = computeControlScale(dist)
+      const c1 = getControlOffset(anchorA, scale)
+      const c2 = getControlOffset(anchorB, scale)
+      const cp1 = { x: ptA.x + c1.dx, y: ptA.y + c1.dy }
+      const cp2 = { x: ptB.x + c2.dx, y: ptB.y + c2.dy }
 
       const overlapsA = pathOverlapsWidget(ptA, cp1, cp2, ptB, boundsA)
       const overlapsB = pathOverlapsWidget(ptA, cp1, cp2, ptB, boundsB)
