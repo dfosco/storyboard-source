@@ -67,7 +67,8 @@
     "./worktree/port": "./src/core/worktree/port.js",
     "./worktree/serverRegistry": "./src/core/worktree/serverRegistry.js",
     "./inspector/highlighter": "./src/core/inspector/highlighter.js",
-    "./smooth-corners": "./src/core/utils/smoothCorners.js"
+    "./smooth-corners": "./src/core/utils/smoothCorners.js",
+    "./primer": "./src/primer/index.js"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",
