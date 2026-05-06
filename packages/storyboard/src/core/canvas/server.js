@@ -47,7 +47,7 @@ import {
   isGhCliAvailable,
   isGitHubEmbedUrl,
 } from './githubEmbeds.js'
-import { stampBounds, stampBoundsAll, resolvePosition, getWidgetBounds } from './collision.js'
+import { stampBounds, stampBoundsAll, resolvePosition, getWidgetBounds, findBestAnchors } from './collision.js'
 import { markCanvasWrite, unmarkCanvasWrite } from './writeGuard.js'
 import { devLog } from '../logger/devLogger.js'
 import widgetsConfig from '../../../widgets.config.json' with { type: 'json' }
@@ -1331,7 +1331,7 @@ export function createCanvasHandler(ctx) {
 
     // POST /connector — append a connector_added event
     if (routePath === '/connector' && method === 'POST') {
-      const { name, startWidgetId, startAnchor, endWidgetId, endAnchor, connectorType = 'default', meta = null } = body
+      let { name, startWidgetId, startAnchor, endWidgetId, endAnchor, connectorType = 'default', meta = null } = body
 
       if (!name) {
         sendJson(res, 400, { error: 'Canvas name is required' })
@@ -1339,11 +1339,6 @@ export function createCanvasHandler(ctx) {
       }
       if (!startWidgetId || !endWidgetId) {
         sendJson(res, 400, { error: 'startWidgetId and endWidgetId are required' })
-        return
-      }
-      const validAnchors = ['top', 'bottom', 'left', 'right']
-      if (!validAnchors.includes(startAnchor) || !validAnchors.includes(endAnchor)) {
-        sendJson(res, 400, { error: `Anchors must be one of: ${validAnchors.join(', ')}` })
         return
       }
       if (startWidgetId === endWidgetId) {
@@ -1359,13 +1354,29 @@ export function createCanvasHandler(ctx) {
 
       try {
         const data = readCanvas(filePath)
-        const widgetIds = new Set((data.widgets || []).map((w) => w.id))
-        if (!widgetIds.has(startWidgetId)) {
+        const widgets = data.widgets || []
+        const widgetMap = new Map(widgets.map((w) => [w.id, w]))
+
+        if (!widgetMap.has(startWidgetId)) {
           sendJson(res, 404, { error: `Widget "${startWidgetId}" not found` })
           return
         }
-        if (!widgetIds.has(endWidgetId)) {
+        if (!widgetMap.has(endWidgetId)) {
           sendJson(res, 404, { error: `Widget "${endWidgetId}" not found` })
+          return
+        }
+
+        // Auto-calculate optimal anchors if not provided
+        const validAnchors = ['top', 'bottom', 'left', 'right']
+        if (!startAnchor || !endAnchor) {
+          const computed = findBestAnchors(widgetMap.get(startWidgetId), widgetMap.get(endWidgetId))
+          if (!startAnchor) startAnchor = computed.startAnchor
+          if (!endAnchor) endAnchor = computed.endAnchor
+        }
+
+        // Validate anchors (if explicitly provided)
+        if (!validAnchors.includes(startAnchor) || !validAnchors.includes(endAnchor)) {
+          sendJson(res, 400, { error: `Anchors must be one of: ${validAnchors.join(', ')}` })
           return
         }
 
@@ -1829,15 +1840,23 @@ export function createCanvasHandler(ctx) {
               case 'create-connector': {
                 const startWidgetId = resolveRef(op.startWidgetId)
                 const endWidgetId = resolveRef(op.endWidgetId)
-                const { startAnchor = 'right', endAnchor = 'left', connectorType = 'default', ref } = op
+                let { startAnchor, endAnchor, connectorType = 'default', ref } = op
 
                 if (!startWidgetId || !endWidgetId) throw new Error('startWidgetId and endWidgetId are required')
-                if (!validAnchors.includes(startAnchor) || !validAnchors.includes(endAnchor)) {
-                  throw new Error(`Anchors must be one of: ${validAnchors.join(', ')}`)
-                }
                 if (startWidgetId === endWidgetId) throw new Error('Cannot connect a widget to itself')
                 if (!widgetIds.has(startWidgetId)) throw new Error(`Widget "${startWidgetId}" not found`)
                 if (!widgetIds.has(endWidgetId)) throw new Error(`Widget "${endWidgetId}" not found`)
+
+                // Auto-calculate optimal anchors if not provided
+                if (!startAnchor || !endAnchor) {
+                  const computed = findBestAnchors(widgetMap.get(startWidgetId), widgetMap.get(endWidgetId))
+                  if (!startAnchor) startAnchor = computed.startAnchor
+                  if (!endAnchor) endAnchor = computed.endAnchor
+                }
+
+                if (!validAnchors.includes(startAnchor) || !validAnchors.includes(endAnchor)) {
+                  throw new Error(`Anchors must be one of: ${validAnchors.join(', ')}`)
+                }
 
                 const connectorId = generateWidgetId('connector')
                 const connector = {

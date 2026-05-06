@@ -290,3 +290,131 @@ export function resolvePosition({
     gridSize,
   })
 }
+
+// --- Connector anchor calculation ---
+
+const ANCHORS = ['top', 'bottom', 'left', 'right']
+const CONTROL_OFFSET = 80 // matches connectorDefaults.controlOffset
+
+/**
+ * Compute the anchor point on a widget's edge (server-side, no DOM).
+ * @param {object} widget
+ * @param {string} anchor - 'top', 'bottom', 'left', 'right'
+ * @returns {{ x: number, y: number }}
+ */
+function getAnchorPoint(widget, anchor) {
+  const { x, y, width: w, height: h } = getWidgetBounds(widget)
+  switch (anchor) {
+    case 'top':    return { x: x + w / 2, y }
+    case 'bottom': return { x: x + w / 2, y: y + h }
+    case 'left':   return { x, y: y + h / 2 }
+    case 'right':  return { x: x + w, y: y + h / 2 }
+    default:       return { x: x + w / 2, y: y + h / 2 }
+  }
+}
+
+/**
+ * Compute the control point offset direction for an anchor.
+ */
+function getControlOffset(anchor) {
+  switch (anchor) {
+    case 'top':    return { dx: 0, dy: -CONTROL_OFFSET }
+    case 'bottom': return { dx: 0, dy: CONTROL_OFFSET }
+    case 'left':   return { dx: -CONTROL_OFFSET, dy: 0 }
+    case 'right':  return { dx: CONTROL_OFFSET, dy: 0 }
+    default:       return { dx: 0, dy: 0 }
+  }
+}
+
+/**
+ * Evaluate a cubic Bézier curve at parameter t.
+ */
+function evalCubicBezier(p0, p1, p2, p3, t) {
+  const mt = 1 - t
+  const mt2 = mt * mt
+  const mt3 = mt2 * mt
+  const t2 = t * t
+  const t3 = t2 * t
+  return {
+    x: mt3 * p0.x + 3 * mt2 * t * p1.x + 3 * mt * t2 * p2.x + t3 * p3.x,
+    y: mt3 * p0.y + 3 * mt2 * t * p1.y + 3 * mt * t2 * p2.y + t3 * p3.y,
+  }
+}
+
+/**
+ * Check if a point is inside a rect (with margin).
+ */
+function pointInRect(pt, rect, margin = 0) {
+  return (
+    pt.x >= rect.x + margin &&
+    pt.x <= rect.x + rect.width - margin &&
+    pt.y >= rect.y + margin &&
+    pt.y <= rect.y + rect.height - margin
+  )
+}
+
+/**
+ * Check if a Bézier path overlaps with a widget's bounding box.
+ * Samples points along the curve, skipping near anchors.
+ */
+function pathOverlapsWidget(p0, cp1, cp2, p3, widgetBounds, numSamples = 16) {
+  for (let i = 1; i < numSamples; i++) {
+    const t = 0.1 + (i / numSamples) * 0.8
+    const pt = evalCubicBezier(p0, cp1, cp2, p3, t)
+    if (pointInRect(pt, widgetBounds, 8)) {
+      return true
+    }
+  }
+  return false
+}
+
+/**
+ * Find the best anchor pair between two widgets.
+ * Considers both distance and overlap avoidance:
+ * 1. Prefers paths that don't overlap either widget
+ * 2. Among valid paths, picks the shortest
+ * 3. Falls back to shortest path if all overlap
+ *
+ * @param {object} widgetA — source widget
+ * @param {object} widgetB — target widget
+ * @returns {{ startAnchor: string, endAnchor: string }}
+ */
+export function findBestAnchors(widgetA, widgetB) {
+  const boundsA = getWidgetBounds(widgetA)
+  const boundsB = getWidgetBounds(widgetB)
+
+  const candidates = []
+
+  for (const anchorA of ANCHORS) {
+    const ptA = getAnchorPoint(widgetA, anchorA)
+    const c1 = getControlOffset(anchorA)
+    const cp1 = { x: ptA.x + c1.dx, y: ptA.y + c1.dy }
+
+    for (const anchorB of ANCHORS) {
+      const ptB = getAnchorPoint(widgetB, anchorB)
+      const c2 = getControlOffset(anchorB)
+      const cp2 = { x: ptB.x + c2.dx, y: ptB.y + c2.dy }
+
+      const dist = Math.hypot(ptA.x - ptB.x, ptA.y - ptB.y)
+
+      const overlapsA = pathOverlapsWidget(ptA, cp1, cp2, ptB, boundsA)
+      const overlapsB = pathOverlapsWidget(ptA, cp1, cp2, ptB, boundsB)
+
+      candidates.push({
+        startAnchor: anchorA,
+        endAnchor: anchorB,
+        dist,
+        overlaps: overlapsA || overlapsB,
+      })
+    }
+  }
+
+  // Sort: non-overlapping first, then by distance
+  candidates.sort((a, b) => {
+    if (a.overlaps !== b.overlaps) return a.overlaps ? 1 : -1
+    return a.dist - b.dist
+  })
+
+  const best = candidates[0]
+  return { startAnchor: best.startAnchor, endAnchor: best.endAnchor }
+}

@@ -24,8 +24,8 @@ if (!sub || sub === '--help' || sub === '-h') {
     -c, --canvas         Canvas name (required)
     --start              Start widget ID (required)
     --end                End widget ID (required)
-    --start-anchor       Start anchor: top, bottom, left, right [default: right]
-    --end-anchor         End anchor: top, bottom, left, right [default: left]
+    --start-anchor       Start anchor: top, bottom, left, right (auto-calculated if omitted)
+    --end-anchor         End anchor: top, bottom, left, right (auto-calculated if omitted)
     --connector-type     Connector type [default: default]
     --meta               Connector meta as JSON string
     --json               Output as JSON
@@ -59,10 +59,12 @@ if (sub === 'create') {
     name: canvas,
     startWidgetId,
     endWidgetId,
-    startAnchor: flags['start-anchor'] || 'right',
-    endAnchor: flags['end-anchor'] || 'left',
     connectorType: flags['connector-type'] || 'default',
   }
+
+  // Only include anchors if explicitly provided (server auto-calculates if omitted)
+  if (flags['start-anchor']) body.startAnchor = flags['start-anchor']
+  if (flags['end-anchor']) body.endAnchor = flags['end-anchor']
 
   if (flags.meta) {
     try { body.meta = JSON.parse(flags.meta) } catch { die('--meta must be valid JSON') }
@@ -73,7 +75,8 @@ if (sub === 'create') {
     if (flags.json) {
       jsonOut(result)
     } else {
-      console.log(`Connector created: ${result.connector?.id || 'ok'}`)
+      const c = result.connector
+      console.log(`Connector created: ${c?.id || 'ok'} (${c?.start?.anchor} → ${c?.end?.anchor})`)
     }
   } catch (err) { die(err.message) }
 

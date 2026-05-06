@@ -453,10 +453,18 @@ If multiple images exist, ask which one the user wants to view, or list them wit
 
 ## Connectors
 
-Connectors are visual links between two widgets on a canvas. They are created and deleted via the canvas server API. The CLI (`storyboard canvas add`) does **not** support connectors yet — use `curl` directly.
+Connectors are visual links between two widgets on a canvas.
 
 ### Creating a connector
 
+**CLI (recommended):**
+```bash
+npx storyboard canvas connector create --canvas <name> --start <widgetId> --end <widgetId>
+```
+
+Anchors are **auto-calculated** by default — the server finds the optimal anchor pair that minimizes distance while avoiding overlap with either widget. You can override with `--start-anchor` and `--end-anchor` if needed.
+
+**API:**
 ```
 POST /_storyboard/canvas/connector
 ```
@@ -468,16 +476,21 @@ POST /_storyboard/canvas/connector
 | `name` | string | ✅ | Canvas name |
 | `startWidgetId` | string | ✅ | ID of the source widget |
 | `endWidgetId` | string | ✅ | ID of the destination widget |
-| `startAnchor` | string | ✅ | Anchor point on the source widget |
-| `endAnchor` | string | ✅ | Anchor point on the destination widget |
+| `startAnchor` | string | ❌ | Anchor point on the source widget (auto-calculated if omitted) |
+| `endAnchor` | string | ❌ | Anchor point on the destination widget (auto-calculated if omitted) |
 | `connectorType` | string | ❌ | Connector style (defaults to `"default"`) |
 
 **Anchor values:** `top`, `bottom`, `left`, `right`
 
+**Auto-calculation algorithm:** When anchors are omitted, the server tests all 16 anchor combinations and selects the pair that:
+1. Does not cause the Bézier path to overlap either widget's bounding box
+2. Has the shortest distance between anchor points
+3. Falls back to shortest distance if all paths overlap
+
 **Validation rules:**
 - Both `startWidgetId` and `endWidgetId` must exist on the canvas
 - A widget cannot connect to itself (`startWidgetId !== endWidgetId`)
-- Both anchors must be one of the four valid values
+- If provided, anchors must be one of the four valid values
 
 **Response (201):**
 ```json
@@ -551,9 +564,21 @@ Connectors are directional: they go **from** `start` **to** `end`. The `startAnc
 
 ### Anchor Optimization
 
-**Do not hardcode anchors.** Always calculate the optimal anchor pair based on the spatial relationship between the two connected widgets. The goal is to avoid connectors that overlap other widgets or cross each other.
+> **Note:** As of v0.5.0, anchor calculation is **automatic**. When you omit `startAnchor` and `endAnchor` from the API/CLI, the server calculates the optimal pair using a Bézier path overlap-avoidance algorithm. The manual orientation table below is kept for reference but is no longer required for typical usage.
 
-#### Relative Orientation
+The automatic algorithm:
+1. Tests all 16 anchor combinations (4×4)
+2. Samples points along each Bézier curve
+3. Rejects paths that overlap either widget's bounding box
+4. Selects the shortest non-overlapping path
+5. Falls back to shortest overall if all paths overlap
+
+**When to manually specify anchors:**
+- When you want a specific visual style (e.g., always exit from bottom)
+- When connecting through a specific gap between widgets
+- When the auto-calculated path isn't aesthetically ideal
+
+#### Reference: Relative Orientation (Manual Calculation)
 
 Every connector between widgets A (start) and B (end) has a `relativeOrientation` — derived from where A's **center point** sits relative to B's **bounds** on a 3×3 spatial grid.
 
@@ -630,10 +655,9 @@ Each grid position produces a `relativeOrientation` that maps to an ideal anchor
 
 ### When to Recalculate Anchors
 
-Recalculate anchors in two scenarios:
+With auto-calculation, you typically don't need to manually recalculate. However, if you've explicitly set anchors and then move widgets, you may want to:
 
-1. **After creating new connectors** — compute the `relativeOrientation` for each new A→B pair and set the anchors accordingly when calling `POST /connector`
-2. **After moving any widget that has connectors** — re-read all connectors attached to the moved widget, recompute orientations for each pair, and `PATCH /connector` any whose ideal anchors have changed
+1. **After moving any widget that has connectors** — re-read all connectors attached to the moved widget, recompute orientations for each pair, and `PATCH /connector` any whose ideal anchors have changed
 
 **Procedure:**
 1. Read the canvas state (get all widgets with bounds + all connectors)
