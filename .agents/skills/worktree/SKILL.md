@@ -11,6 +11,14 @@ description: Creates a git worktree in worktrees/<branch-name> and switches into
 
 Creates a git worktree for a given branch name inside `worktrees/` and switches into it.
 
+> **⚠️ CRITICAL: The folder is `worktrees/` — NO DOT PREFIX.**
+> 
+> Do NOT use `.worktrees/`. The folder is gitignored but does NOT have a dot prefix.
+> This is intentional — it makes the folder visible in file explorers and IDEs.
+> 
+> ❌ Wrong: `.worktrees/my-branch`  
+> ✅ Correct: `worktrees/my-branch`
+
 ---
 
 ## How to Execute
@@ -93,6 +101,7 @@ pwd && git branch --show-current
 
 ## Notes
 
+- **⚠️ FOLDER NAME IS `worktrees/` — NO DOT.** Do not use `.worktrees/`. The folder is gitignored but intentionally visible (no dot prefix). Agents often mistakenly add a dot because the folder is gitignored — this is wrong.
 - **⚠️ New worktrees MUST branch from the CURRENT branch**, not from main or the main worktree's HEAD. When the user says "create worktree X" while on branch `4.2.7`, the new branch must be based on `4.2.7`. Always use `git worktree add <path> -b <name> <current-branch>` with an explicit start-point. The only exception is if the user explicitly says to branch from a different base (e.g., "create worktree X from main").
 - **Worktrees MUST live in `worktrees/` at the REPOSITORY ROOT — never anywhere else.** The repository root is the top-level git directory (use `git rev-parse --show-toplevel` to find it). If you are currently inside a worktree (e.g. `worktrees/4.0.0/`), do NOT create nested worktrees inside it (e.g. `worktrees/4.0.0/worktrees/`). Always `cd` to the repo root or use an absolute path to the root `worktrees/` directory.
 - **⚠️ Nesting detection:** Before creating a worktree, check if your current working directory is already inside a `worktrees/` directory. If `pwd` contains `/worktrees/`, you are inside a worktree — resolve the true repo root with `git -C "$(git rev-parse --show-toplevel)" rev-parse --show-superproject-working-tree` or walk up the path to find the first directory that is NOT inside `worktrees/`. Never trust `git rev-parse --show-toplevel` alone when inside a worktree — it returns the worktree root, not the repo root.
