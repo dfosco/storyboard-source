@@ -43,6 +43,7 @@ import Icon from '../Icon.jsx'
 import { stories as storyIndex } from 'virtual:storyboard-data-index'
 import styles from './CanvasPage.module.css'
 import ConnectorLayer from './ConnectorLayer.jsx'
+import { findBestAnchors } from './connectorGeometry.js'
 
 /** Canvas zoom limits — read from storyboard.config.json via canvasConfig. */
 function zoomLimits() {
@@ -988,6 +989,38 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
       console.error('[canvas] Failed to add connector:', err)
     }
   }, [canvasId, undoRedo])
+
+  /**
+   * Alt+Click handler: create a connector from the selected widget to the clicked widget.
+   * Automatically finds the shortest anchor pair between the two widgets.
+   */
+  const handleAltClickConnect = useCallback((targetWidgetId) => {
+    const selectedArr = Array.from(selectedIdsRef.current)
+    if (selectedArr.length !== 1) return
+    const sourceId = selectedArr[0]
+    if (sourceId === targetWidgetId) return
+
+    const widgets = stateRef.current.widgets ?? []
+    const sourceWidget = widgets.find((w) => w.id === sourceId)
+    const targetWidget = widgets.find((w) => w.id === targetWidgetId)
+    if (!sourceWidget || !targetWidget) return
+
+    // Check if connection already exists
+    const connectors = stateRef.current.connectors ?? []
+    const alreadyConnected = connectors.some((c) =>
+      (c.start?.widgetId === sourceId && c.end?.widgetId === targetWidgetId) ||
+      (c.start?.widgetId === targetWidgetId && c.end?.widgetId === sourceId)
+    )
+    if (alreadyConnected) return
+
+    const { startAnchor, endAnchor } = findBestAnchors(sourceWidget, targetWidget)
+    handleConnectorAdd({
+      startWidgetId: sourceId,
+      startAnchor,
+      endWidgetId: targetWidgetId,
+      endAnchor,
+    })
+  }, [handleConnectorAdd])
 
   const handleConnectorRemove = useCallback((connectorId) => {
     undoRedo.snapshot(stateRef.current, 'connector-remove')
@@ -3166,6 +3199,11 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
         onClick={isLocalDev ? (e) => {
           e.stopPropagation()
           if (!e.target.closest('.tc-drag-handle')) {
+            // Alt+Click: create connector from selected widget to this one
+            if (e.altKey && selectedWidgetIds.size === 1 && !selectedWidgetIds.has(effectiveWidget.id)) {
+              handleAltClickConnect(effectiveWidget.id)
+              return
+            }
             handleWidgetSelect(effectiveWidget.id, e.shiftKey)
           }
         } : undefined}

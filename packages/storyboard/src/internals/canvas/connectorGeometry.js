@@ -130,3 +130,30 @@ export function connectorIntersectsRect(connector, widgetMap, rect, numSamples =
   }
   return false
 }
+
+const ANCHORS = ['top', 'bottom', 'left', 'right']
+
+/**
+ * Find the best anchor pair between two widgets based on shortest distance.
+ * Tests all 16 combinations (4 anchors × 4 anchors) and returns the pair
+ * with the minimum Euclidean distance.
+ * @param {Object} widgetA — source widget { id, position, props }
+ * @param {Object} widgetB — target widget { id, position, props }
+ * @returns {{ startAnchor: string, endAnchor: string }}
+ */
+export function findBestAnchors(widgetA, widgetB) {
+  let best = { startAnchor: 'right', endAnchor: 'left', dist: Infinity }
+
+  for (const anchorA of ANCHORS) {
+    const ptA = getAnchorPoint(widgetA, anchorA)
+    for (const anchorB of ANCHORS) {
+      const ptB = getAnchorPoint(widgetB, anchorB)
+      const dist = Math.hypot(ptA.x - ptB.x, ptA.y - ptB.y)
+      if (dist < best.dist) {
+        best = { startAnchor: anchorA, endAnchor: anchorB, dist }
+      }
+    }
+  }
+
+  return { startAnchor: best.startAnchor, endAnchor: best.endAnchor }
+}
