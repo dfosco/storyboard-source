@@ -1,5 +1,16 @@
 # @dfosco/storyboard
 
+## 0.5.0-alpha.11
+
+### Patch Changes
+
+-   Fix all lint errors for CI
+
+    -   Fix unused variable warnings in cli/run.js, publish.js, pull.js
+    -   Fix `cmdk-overlay` and `cmdk-dialog` unknown property errors (use `data-` prefix)
+    -   Fix "cannot access refs during render" in PrototypeEmbed.jsx
+    -   Add eslint-disable comments for intentionally unused code
+
 ## 0.5.0-alpha.10
 
 ### Patch Changes
