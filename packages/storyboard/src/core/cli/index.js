@@ -52,6 +52,8 @@ function helpScreen(version) {
     `  ${bold('All commands:')}`,
     '',
     `  ${bold(cyan('Development'))}`,
+    cmd('run', 'Start proxy + dev server in one command'),
+    cmd('run [branch]', 'Start proxy + dev for a specific branch'),
     cmd('dev', 'Start Vite dev server + update proxy'),
     cmd('dev [branch]', 'Start dev for a specific worktree/branch'),
     cmd('server list', 'List running dev servers'),
@@ -155,6 +157,9 @@ const command = process.argv[2]
 switch (command) {
   case 'dev':
     import('./dev.js')
+    break
+  case 'run':
+    import('./run.js')
     break
   case 'setup':
     import('./setup.js')

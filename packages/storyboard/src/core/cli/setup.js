@@ -20,9 +20,28 @@ import { parseFlags } from './flags.js'
 const flagSchema = {
   'skip-branch': { type: 'boolean', default: false, description: 'Skip the branch prompt at the end' },
   branch: { type: 'string', description: 'Switch to a branch after setup (non-interactive)' },
+  'nuke': { type: 'boolean', default: false }, // undocumented: output uninstall command
 }
 
 const { flags } = parseFlags(process.argv.slice(3), flagSchema)
+
+// Hidden: output uninstall command for testing fresh setups
+if (flags.nuke) {
+  const nukeCmd = [
+    'sudo pkill caddy 2>/dev/null',
+    'brew uninstall caddy gh git 2>/dev/null',
+    'rm -f ~/.local/bin/copilot /usr/local/bin/copilot',
+    '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"',
+    'sudo rm -rf /Library/Developer/CommandLineTools',
+    'xcode-select --reset',
+    'rm -rf ~/.oh-my-zsh ~/.prezto ~/.zprezto ~/.zplug ~/.zinit ~/.zi ~/.antigen ~/.zim ~/.starship.toml ~/.p10k.zsh 2>/dev/null',
+    'rm -f ~/.zshrc ~/.zshenv ~/.zprofile ~/.zlogin ~/.zlogout ~/.bashrc ~/.bash_profile ~/.bash_login ~/.bash_logout ~/.profile 2>/dev/null',
+    'echo "# macOS default zsh" > ~/.zshrc',
+    'chsh -s /bin/zsh',
+  ].join('; ')
+  console.log(nukeCmd)
+  process.exit(0)
+}
 
 /**
  * Run a potentially slow task with a spinner that only appears after 500ms.
@@ -99,7 +118,24 @@ if (!hasBrew) {
   }
 }
 
-// 3. Caddy
+// 3. Git (install via brew if missing — avoids Xcode CLT requirement)
+if (hasBrew) {
+  if (isInstalled('git')) {
+    p.log.success('Git installed')
+  } else {
+    const gitSpin = p.spinner()
+    gitSpin.start('Installing Git...')
+    try {
+      run('brew install git')
+      gitSpin.stop('Git installed')
+    } catch {
+      gitSpin.stop('Failed to install Git')
+      p.log.warning('Install manually: brew install git')
+    }
+  }
+}
+
+// 4. Caddy
 if (hasBrew) {
   if (isCaddyInstalled()) {
     p.log.success('Caddy proxy installed')
@@ -115,7 +151,7 @@ if (hasBrew) {
     }
   }
 
-  // 4. GitHub CLI
+  // 5. GitHub CLI
   if (isInstalled('gh')) {
     p.log.success('GitHub CLI installed')
   } else {
@@ -131,7 +167,7 @@ if (hasBrew) {
   }
 }
 
-// 5. VS Code CLI
+// 6. VS Code CLI
 if (isInstalled('code')) {
   p.log.success('VS Code CLI installed')
 } else {
@@ -171,7 +207,28 @@ if (isInstalled('code')) {
   }
 }
 
-// 6. Git hooks
+// 6a. Copilot CLI
+if (isInstalled('copilot')) {
+  p.log.success('Copilot CLI installed')
+} else {
+  const copilotSpin = p.spinner()
+  copilotSpin.start('Installing Copilot CLI...')
+  try {
+    run('curl -fsSL https://gh.io/copilot-install | bash')
+    // Add ~/.local/bin to PATH if not already there
+    const localBin = `${process.env.HOME}/.local/bin`
+    if (!process.env.PATH.includes(localBin)) {
+      process.env.PATH = `${localBin}:${process.env.PATH}`
+    }
+    copilotSpin.stop('Copilot CLI installed')
+    p.log.info(dim('  Note: You may need to restart your terminal or add ~/.local/bin to PATH'))
+  } catch {
+    copilotSpin.stop('Failed to install Copilot CLI')
+    p.log.warning('Install manually: curl -fsSL https://gh.io/copilot-install | bash')
+  }
+}
+
+// 8. Git hooks
 {
   // Create .githooks/ if it doesn't exist — copy from scaffold template
   if (!existsSync('.githooks')) {
@@ -199,7 +256,7 @@ if (isInstalled('code')) {
   }
 }
 
-// 7. Asset directories
+// 9. Asset directories
 {
   const dirs = ['assets/canvas/images', 'assets/.storyboard-public/terminal-snapshots', '.storyboard', '.storyboard/terminals', '.storyboard/terminal-buffers', '.storyboard/logs']
   for (const dir of dirs) {
@@ -299,7 +356,7 @@ if (isInstalled('code')) {
   } catch { /* ignore */ }
 }
 
-// 8. Proxy
+// 10. Proxy
 if (isCaddyInstalled()) {
   const proxySpin = p.spinner()
   const caddyfilePath = generateCaddyfile()
@@ -314,7 +371,7 @@ if (isCaddyInstalled()) {
   }
 }
 
-// 9. Install / sync dependencies
+// 11. Install / sync dependencies
 // Skip npm install if a dev server is running — it would trigger Vite's
 // file watcher and restart the server on a different port.
 {
