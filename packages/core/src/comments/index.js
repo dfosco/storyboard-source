@@ -40,3 +40,6 @@ export { saveDraft, getDraft, clearDraft, composerDraftKey, replyDraftKey } from
 
 // GraphQL client (for advanced use)
 export { graphql } from './graphql.js'
+
+// UI (Svelte-based mount)
+export { mountComments, showCommentWindow, closeCommentWindow, openCommentsDrawer, closeCommentsDrawer } from './ui/index.js'
