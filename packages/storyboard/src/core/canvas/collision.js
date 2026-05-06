@@ -406,10 +406,14 @@ export function findBestAnchors(widgetA, widgetB) {
 
     for (const anchorB of ANCHORS) {
       const ptB = getAnchorPoint(widgetB, anchorB)
-      const dist = Math.hypot(ptA.x - ptB.x, ptA.y - ptB.y)
+      const dx = Math.abs(ptA.x - ptB.x)
+      const dy = Math.abs(ptA.y - ptB.y)
+      const dist = Math.hypot(dx, dy)
+      // Use min axis distance for scale (matches client-side buildPath logic)
+      const minAxisDist = Math.min(dx, dy)
 
       // Use same scaling as client-side for accurate overlap detection
-      const scale = computeControlScale(dist)
+      const scale = computeControlScale(minAxisDist)
       const c1 = getControlOffset(anchorA, scale)
       const c2 = getControlOffset(anchorB, scale)
       const cp1 = { x: ptA.x + c1.dx, y: ptA.y + c1.dy }

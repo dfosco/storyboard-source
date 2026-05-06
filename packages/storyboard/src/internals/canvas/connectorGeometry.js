@@ -68,21 +68,24 @@ function computeControlScale(dist) {
  * the direction vector (end→start) so the curve never bends in
  * front of the cursor during drag.
  *
- * Control offset is scaled down when anchors are close (< 3 gridSizes)
- * to prevent the curve from bulging and overlapping widgets.
+ * Control offset is scaled down when anchors are close on either axis
+ * (< 6 gridSizes) to prevent the curve from bulging and overlapping widgets.
  */
 export function buildPath(startPt, startAnchor, endPt, endAnchor, freeEnd = false) {
-  const dist = Math.hypot(startPt.x - endPt.x, startPt.y - endPt.y)
-  const scale = computeControlScale(dist)
+  const dx = Math.abs(startPt.x - endPt.x)
+  const dy = Math.abs(startPt.y - endPt.y)
+  // Use minimum of X or Y distance - if either is small, reduce bounce
+  const minAxisDist = Math.min(dx, dy)
+  const scale = computeControlScale(minAxisDist)
 
   const c1 = getControlOffset(startAnchor, scale)
   let c2
   if (freeEnd) {
-    const dx = startPt.x - endPt.x
-    const dy = startPt.y - endPt.y
-    const d = dist || 1
-    const freeScale = Math.min(CONTROL_OFFSET * scale, d * 0.4)
-    c2 = { dx: (dx / d) * freeScale, dy: (dy / d) * freeScale }
+    const fdx = startPt.x - endPt.x
+    const fdy = startPt.y - endPt.y
+    const dist = Math.hypot(fdx, fdy) || 1
+    const freeScale = Math.min(CONTROL_OFFSET * scale, dist * 0.4)
+    c2 = { dx: (fdx / dist) * freeScale, dy: (fdy / dist) * freeScale }
   } else {
     c2 = getControlOffset(endAnchor, scale)
   }
@@ -226,10 +229,14 @@ export function findBestAnchors(widgetA, widgetB) {
 
     for (const anchorB of ANCHORS) {
       const ptB = getAnchorPoint(widgetB, anchorB)
-      const dist = Math.hypot(ptA.x - ptB.x, ptA.y - ptB.y)
+      const dx = Math.abs(ptA.x - ptB.x)
+      const dy = Math.abs(ptA.y - ptB.y)
+      const dist = Math.hypot(dx, dy)
+      // Use min axis distance for scale (matches buildPath logic)
+      const minAxisDist = Math.min(dx, dy)
 
       // Use same scaling as buildPath for accurate overlap detection
-      const scale = computeControlScale(dist)
+      const scale = computeControlScale(minAxisDist)
       const c1 = getControlOffset(anchorA, scale)
       const c2 = getControlOffset(anchorB, scale)
       const cp1 = { x: ptA.x + c1.dx, y: ptA.y + c1.dy }
