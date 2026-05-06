@@ -1195,10 +1195,10 @@ export default function StoryboardCommandPalette({ basePath }) {
     {open && (
       <>
       {/* Overlay */}
-      <div cmdk-overlay="" onClick={() => handleChangeOpen(false)} />
+      <div data-cmdk-overlay="" onClick={() => handleChangeOpen(false)} />
       {/* Dialog container — replaces Command.Dialog to avoid Radix context issues */}
       <div
-        cmdk-dialog=""
+        data-cmdk-dialog=""
         role="dialog"
         aria-label="Command Menu"
       >

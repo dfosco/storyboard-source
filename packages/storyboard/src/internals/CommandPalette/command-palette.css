@@ -5,7 +5,7 @@
  */
 
 /* ─── Overlay ─── */
-[cmdk-overlay] {
+[data-cmdk-overlay] {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
@@ -14,7 +14,7 @@
 }
 
 /* ─── Dialog content (Radix Content wrapper) ─── */
-[cmdk-dialog] {
+[data-cmdk-dialog] {
   position: fixed;
   top: 20%;
   left: 50%;
@@ -117,8 +117,8 @@
 }
 
 /* ─── Dark mode ─── */
-html[data-color-mode="dark"] [cmdk-dialog],
-body[data-color-mode="dark"] [cmdk-dialog] {
+html[data-color-mode="dark"] [data-cmdk-dialog],
+body[data-color-mode="dark"] [data-cmdk-dialog] {
   background: #2d333b;
   color: #e6edf3;
   border-color: #444c56;
@@ -160,14 +160,14 @@ body[data-color-mode="dark"] [cmdk-empty] {
   color: #768390;
 }
 
-html[data-color-mode="dark"] [cmdk-overlay],
-body[data-color-mode="dark"] [cmdk-overlay] {
+html[data-color-mode="dark"] [data-cmdk-overlay],
+body[data-color-mode="dark"] [data-cmdk-overlay] {
   background: rgba(0, 0, 0, 0.7);
 }
 
 /* ─── Mobile responsiveness ─── */
 @media (max-width: 640px) {
-  [cmdk-dialog] {
+  [data-cmdk-dialog] {
     max-width: 100%;
     border-radius: 0;
     top: 0;

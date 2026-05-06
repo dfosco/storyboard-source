@@ -27,6 +27,7 @@ function currentBranch(cwd) {
   }
 }
 
+// eslint-disable-next-line no-unused-vars -- reserved for future use
 function hasUnpushedCommits(cwd, branch) {
   try {
     const count = execFileSync(
@@ -113,6 +114,7 @@ try {
   pushSpin.stop('Published to origin')
 } catch (err) {
   pushSpin.stop('Push failed')
+  void err // unused but kept for debugging
 
   // Re-apply stash before exiting
   if (stashSha) {

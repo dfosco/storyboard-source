@@ -61,6 +61,7 @@ try {
 } catch (err) {
   spin.stop('Pull failed — conflict detected')
   pullFailed = true
+  void err // unused but kept for debugging
 
   // 3. Abort the rebase to restore clean state
   try {

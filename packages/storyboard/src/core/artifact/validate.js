@@ -16,8 +16,11 @@ const schemaCache = new Map()
 
 const VALID_TYPES = ['prototype', 'canvas', 'component', 'flow', 'object', 'record', 'page']
 const RESERVED_NAMES = new Set(['index', 'app', '_app'])
+// eslint-disable-next-line no-unused-vars -- reserved for future validation
 const NAME_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+// eslint-disable-next-line no-unused-vars -- reserved for future validation
 const PATH_PATTERN = /^[a-z0-9/[\]_-]+$/
+// eslint-disable-next-line no-unused-vars -- reserved for future validation
 const MAX_NAME_LENGTH = 64
 
 /**

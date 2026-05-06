@@ -201,7 +201,7 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
 
   // ── Fullscreen (immersive) mode — triggers expand with 'immersive' variant
   const expandModeRef = useRef(expandMode)
-  expandModeRef.current = expandMode
+  useEffect(() => { expandModeRef.current = expandMode }, [expandMode])
 
   useEffect(() => {
     function handleEnter(e) {

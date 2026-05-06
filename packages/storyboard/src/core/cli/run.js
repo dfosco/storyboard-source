@@ -10,8 +10,7 @@
  */
 
 import * as p from '@clack/prompts'
-import { existsSync } from 'fs'
-import { generateCaddyfile, isCaddyInstalled, isCaddyRunning, startCaddy, reloadCaddy } from './proxy.js'
+import { generateCaddyfile, isCaddyInstalled, isCaddyRunning, startCaddy } from './proxy.js'
 
 p.intro('storyboard run')
 
