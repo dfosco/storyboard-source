@@ -1,5 +1,11 @@
 # @dfosco/storyboard
 
+## 0.5.0-alpha.13
+
+### Patch Changes
+
+-   Add /primer export with ThemeSync component for Primer-based projects
+
 ## 0.5.0-alpha.12
 
 ### Patch Changes
