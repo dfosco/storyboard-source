@@ -17,7 +17,7 @@ Storyboard is free and open-source, and can be deployed by forking the example r
 <!-- storyboard-launcher-download:start -->
 ## Storyboard Launcher (Desktop App)
 
-Download the macOS Launcher from [latest launcher release](https://github.com/dfosco/storyboard/releases/tag/storyboard-launcher-v0.1.3) or directly from [Storyboard-Launcher-macOS-v0.1.3.dmg](https://github.com/dfosco/storyboard/releases/download/storyboard-launcher-v0.1.3/Storyboard-Launcher-macOS-v0.1.3.dmg).
+Download the macOS Launcher from [latest launcher release](https://github.com/dfosco/storyboard/releases/tag/storyboard-launcher-v0.1.4) or directly from [Storyboard-Launcher-macOS-v0.1.4.dmg](https://github.com/dfosco/storyboard/releases/download/storyboard-launcher-v0.1.4/Storyboard-Launcher-macOS-v0.1.4.dmg).
 
 After installing, run:
 ```bash
