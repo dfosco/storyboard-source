@@ -328,8 +328,8 @@ function getControlOffset(anchor, scale = 1) {
   }
 }
 
-/** Threshold distance (3 grid sizes) below which curve bounciness is reduced. */
-const CLOSE_THRESHOLD = 24 * 3 // 72px
+/** Threshold distance (6 grid sizes) below which curve bounciness is reduced. */
+const CLOSE_THRESHOLD = 24 * 6 // 144px
 
 /**
  * Compute scale factor for control offset based on anchor distance.
@@ -337,8 +337,9 @@ const CLOSE_THRESHOLD = 24 * 3 // 72px
  */
 function computeControlScale(dist) {
   if (dist >= CLOSE_THRESHOLD) return 1
-  // Scale linearly from 0.3 at dist=0 to 1.0 at dist=CLOSE_THRESHOLD
-  return 0.3 + (dist / CLOSE_THRESHOLD) * 0.7
+  // Scale linearly from 0.15 at dist=0 to 1.0 at dist=CLOSE_THRESHOLD
+  // More aggressive minimum (0.15) to prevent S-curves on close widgets
+  return 0.15 + (dist / CLOSE_THRESHOLD) * 0.85
 }
 
 /**
