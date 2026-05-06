@@ -76,6 +76,21 @@ const customIcons = {
       'M2 19L11 12L2 5L2 19Z',
     ],
   },
+  // Component icon (puzzle piece / brick)
+  'component': {
+    viewBox: '0 0 24 24',
+    strokeWidth: '1.5',
+    strokePaths: [
+      'M3.5 10.5V5.5C3.5 4.94772 3.94772 4.5 4.5 4.5H9.5',
+      'M14.5 4.5H19.5C20.0523 4.5 20.5 4.94772 20.5 5.5V10.5',
+      'M20.5 13.5V18.5C20.5 19.0523 20.0523 19.5 19.5 19.5H14.5',
+      'M9.5 19.5H4.5C3.94772 19.5 3.5 19.0523 3.5 18.5V13.5',
+      'M12 4.5V7.5',
+      'M12 16.5V19.5',
+      'M20.5 12H17.5',
+      'M6.5 12H3.5',
+    ],
+  },
 }
 
 /* ─── Iconoir icons (stroke-based unless fill: true) ─── */

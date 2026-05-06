@@ -1051,6 +1051,10 @@ export default function Workspace({
   basePath,
   title = 'Storyboard',
   subtitle,
+  showAllArtifacts = false,
+  showPrototypes = true,
+  showCanvases = true,
+  showComponents = true,
 }) {
   const themeAttrs = useToolbarTheme()
   const ghUser = useGitHubUser(basePath)
@@ -1158,8 +1162,20 @@ export default function Workspace({
 
   const itemMap = useMemo(() => Object.fromEntries(allItems.map(i => [i.id, i])), [allItems])
 
-  // State
-  const [activeNav, setActiveNav] = useState('all')
+  // Filter nav items based on visibility props
+  const visibleNavItems = useMemo(() => {
+    const visibility = {
+      all: showAllArtifacts,
+      prototypes: showPrototypes,
+      canvases: showCanvases,
+      components: showComponents,
+    }
+    return NAV_ITEMS.filter(nav => visibility[nav.id])
+  }, [showAllArtifacts, showPrototypes, showCanvases, showComponents])
+
+  // State - default to first visible nav item
+  const defaultNav = visibleNavItems[0]?.id || 'prototypes'
+  const [activeNav, setActiveNav] = useState(defaultNav)
   const [activeTab, setActiveTab] = useState('All')
   const [showCreate, setShowCreate] = useState(false)
   const isLocalDev = typeof window !== 'undefined' && window.__SB_LOCAL_DEV__ === true
@@ -1307,7 +1323,7 @@ export default function Workspace({
         <aside className={`${css.sidebar}${sidebarOpen ? ` ${css.sidebarOpen}` : ''}`}>
           <div className={css.sidebarContent}>
           <nav className={css.navSection}>
-            {NAV_ITEMS.map(nav => (
+            {visibleNavItems.map(nav => (
               <button
                 key={nav.id}
                 className={activeNav === nav.id ? css.navItemActive : css.navItem}
