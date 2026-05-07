@@ -653,6 +653,10 @@ function buildUnifiedConfig(root) {
     plugins: sbConfig?.plugins || {},
     repository: sbConfig?.repository || {},
     workshop: sbConfig?.workshop || {},
+    customDomain: sbConfig?.customDomain || '',
+    prodDomain: sbConfig?.prodDomain || '',
+    devDomain: sbConfig?.devDomain || '',
+    devDomainColor: sbConfig?.devDomainColor || '',
   }
 
   return { unified, warnings }
