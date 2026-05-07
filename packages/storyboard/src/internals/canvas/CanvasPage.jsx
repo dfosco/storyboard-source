@@ -911,6 +911,9 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
       if (snapped.width != null) snapped.width = snapDimension(snapped.width, snapGridSize, true, 60)
       if (snapped.height != null) snapped.height = snapDimension(snapped.height, snapGridSize, true, 60)
     }
+    // Guard against NaN values corrupting widget state
+    if (typeof snapped.width === 'number' && Number.isNaN(snapped.width)) delete snapped.width
+    if (typeof snapped.height === 'number' && Number.isNaN(snapped.height)) delete snapped.height
     setLocalWidgets((prev) => {
       if (!prev) return prev
       const next = prev.map((w) =>

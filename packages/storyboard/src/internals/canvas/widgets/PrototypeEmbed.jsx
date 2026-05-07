@@ -45,9 +45,9 @@ function resolveCanvasThemeFromStorage() {
 
 export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdate, resizable }, ref) {
   const src = readProp(props, 'src', prototypeEmbedSchema)
-  const width = readProp(props, 'width', prototypeEmbedSchema)
-  const height = readProp(props, 'height', prototypeEmbedSchema)
-  const zoom = readProp(props, 'zoom', prototypeEmbedSchema)
+  const width = readProp(props, 'width', prototypeEmbedSchema) || 800
+  const height = readProp(props, 'height', prototypeEmbedSchema) || 600
+  const zoom = readProp(props, 'zoom', prototypeEmbedSchema) || 100
   const label = readProp(props, 'label', prototypeEmbedSchema) || src
 
   const basePath = (import.meta.env.BASE_URL || '/').replace(/\/$/, '')
@@ -444,7 +444,7 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
           </div>
         )}
       </div>
-      {resizable && <ResizeHandle targetRef={embedRef} width={width} height={height} onResize={handleResize} />}
+      {resizable && <ResizeHandle targetRef={embedRef} onResize={handleResize} />}
     </WidgetWrapper>
     {expanded && (
       <PrototypeExpandPane

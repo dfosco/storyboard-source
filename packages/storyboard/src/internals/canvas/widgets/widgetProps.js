@@ -83,7 +83,14 @@ import { schemas as configSchemas } from './widgetConfig.js'
  */
 export function readProp(props, key, schema) {
   const value = props?.[key]
-  if (value !== undefined && value !== null) return value
+  if (value !== undefined && value !== null) {
+    // Reject NaN for number props — fall through to default
+    if (typeof value === 'number' && Number.isNaN(value)) {
+      // fall through to default
+    } else {
+      return value
+    }
+  }
   return schema[key]?.defaultValue ?? null
 }
 
