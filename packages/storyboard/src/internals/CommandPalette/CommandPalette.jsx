@@ -29,14 +29,24 @@ import './command-palette.css'
 // Icon size for all palette items
 const ICON_SIZE = 16
 
-const DEPLOYED_HOST = 'storyboard.githubapp.com'
+function getDeployedDomain() {
+  try {
+    const cfg = getConfig() || {}
+    const d = (cfg.customDomain || '').trim()
+    return d || ''
+  } catch {
+    return ''
+  }
+}
 
 function openDeployedBranch() {
   if (typeof window === 'undefined') return
+  const host = getDeployedDomain()
+  if (!host) return
   try {
     const url = new URL(window.location.href)
     url.protocol = 'https:'
-    url.host = DEPLOYED_HOST
+    url.host = host
     url.port = ''
     window.open(url.toString(), '_blank', 'noopener,noreferrer')
   } catch {
@@ -286,6 +296,7 @@ function buildConfigSections(prefix, onNavigateToPage, onCreateAction) {
       }
 
       if (tool.inlineAction === 'open-deployed-branch') {
+        if (!getDeployedDomain()) continue
         remainingItems.push({
           id: `cfg:${section.id}:${toolId}`,
           children: label,
@@ -756,6 +767,7 @@ function buildToolsSection(section, prefix, onNavigateToPage) {
     }
 
     if (tool.inlineAction === 'open-deployed-branch') {
+      if (!getDeployedDomain()) continue
       items.push({
         id: `cfg:${section.id}:${toolId}`,
         children: label,
