@@ -247,6 +247,15 @@
       "hideFromCommandPaletteSearch": true,
       "handler": "core:feature-flags"
     },
+    "see-deployed-branch": {
+      "label": "See deployed branch",
+      "icon": "primer/globe",
+      "render": "button",
+      "surface": "command-palette",
+      "modes": ["*"],
+      "prod": true,
+      "inlineAction": "open-deployed-branch"
+    },
     "hide-toolbars": {
       "label": "Hide toolbars",
       "icon": "primer/light-bulb",

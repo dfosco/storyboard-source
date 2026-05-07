@@ -29,6 +29,21 @@ import './command-palette.css'
 // Icon size for all palette items
 const ICON_SIZE = 16
 
+const DEPLOYED_HOST = 'storyboard.githubapp.com'
+
+function openDeployedBranch() {
+  if (typeof window === 'undefined') return
+  try {
+    const url = new URL(window.location.href)
+    url.protocol = 'https:'
+    url.host = DEPLOYED_HOST
+    url.port = ''
+    window.open(url.toString(), '_blank', 'noopener,noreferrer')
+  } catch {
+    // ignore malformed URLs
+  }
+}
+
 function getIconMap() {
   const config = getCommandPaletteConfig()
   return config?.icons || {}
@@ -267,6 +282,17 @@ function buildConfigSections(prefix, onNavigateToPage, onCreateAction) {
 
       if (tool.inlineAction === 'open-palette') {
         // Skip — no point opening the palette from within itself
+        continue
+      }
+
+      if (tool.inlineAction === 'open-deployed-branch') {
+        remainingItems.push({
+          id: `cfg:${section.id}:${toolId}`,
+          children: label,
+          keywords: [label, toolId, 'deployed', 'branch', 'production', 'preview'].filter(Boolean),
+          showType: false,
+          onClick: () => openDeployedBranch(),
+        })
         continue
       }
 
@@ -725,6 +751,18 @@ function buildToolsSection(section, prefix, onNavigateToPage) {
         onClick: () => {
           document.dispatchEvent(new CustomEvent('storyboard:open-palette'))
         },
+      })
+      continue
+    }
+
+    if (tool.inlineAction === 'open-deployed-branch') {
+      items.push({
+        id: `cfg:${section.id}:${toolId}`,
+        children: label,
+        keywords: [label, toolId, 'deployed', 'branch', 'production', 'preview'].filter(Boolean),
+        showType: false,
+        closeOnSelect: entryCloseOnSelect,
+        onClick: () => openDeployedBranch(),
       })
       continue
     }

@@ -59,6 +59,10 @@
           "meta": { "strokeWeight": 1.6, "scale": 1.1 }
         },
         {
+          "id": "see-deployed-branch",
+          "label": "See deployed branch"
+        },
+        {
           "id": "feature-flags",
           "label": "Feature Flags",
           "meta": { "strokeWeight": 1.6, "scale": 1.1 }
@@ -140,6 +144,7 @@
     "repository": "primer/mark-github",
     "docs": "primer/book",
     "devtools": "iconoir/wrench",
+    "see-deployed-branch": "primer/globe",
     "feature-flags": "iconoir/white-flag",
     "agent": "agents",
     "prompt": "primer/zap",
