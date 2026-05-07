@@ -167,6 +167,12 @@ async function resolveDevTarget(branchArg, { allowCreate = true } = {}) {
 
   const root = repoRoot()
 
+  // Already inside the requested worktree — just use cwd
+  const detectedName = detectWorktreeName()
+  if (detectedName === branchArg) {
+    return { worktreeName: branchArg, targetCwd: process.cwd(), created: false }
+  }
+
   // "main" → repo root
   if (branchArg === 'main') {
     return { worktreeName: 'main', targetCwd: root, created: false }
