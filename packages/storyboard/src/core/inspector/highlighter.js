@@ -239,7 +239,8 @@ export async function createInspectorHighlighter() {
 
       let highlighted
       try {
-        highlighted = hljs.highlight(code, { language: lang, ignoreIllegals: true }).value
+        const resolvedLang = hljs.getLanguage(lang) ? lang : 'plaintext'
+        highlighted = hljs.highlight(code, { language: resolvedLang, ignoreIllegals: true }).value
       } catch {
         highlighted = escapeHtml(code)
       }
