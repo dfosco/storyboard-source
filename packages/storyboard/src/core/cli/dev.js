@@ -255,8 +255,11 @@ function requestSwitchBranch(port, branch) {
         res.on('end', () => {
           try {
             const json = JSON.parse(data)
-            if (res.statusCode >= 400) reject(new Error(json.error || `HTTP ${res.statusCode}`))
-            else resolve(json)
+            if (res.statusCode >= 400) {
+              const err = new Error(json.error || `HTTP ${res.statusCode}`)
+              if (json.stderr) err.stderr = json.stderr
+              reject(err)
+            } else resolve(json)
           } catch { reject(new Error(`Bad response: ${data}`)) }
         })
       }
@@ -293,6 +296,7 @@ async function runClientMode(serverPort, worktreeName, domain) {
     p.outro('Ready')
   } catch (err) {
     p.log.error(`Failed to start dev for "${worktreeName}": ${err.message}`)
+    if (err.stderr) p.log.message(err.stderr.trim())
     process.exit(1)
   }
 }
@@ -362,6 +366,7 @@ async function runOwnerMode(worktreeName, targetCwd, domain, serverPort) {
     const start = Date.now()
     while (Date.now() - start < 60_000) {
       if (entry.status === 'ready') return true
+      if (entry.status === 'stopped') return false
       await new Promise(r => setTimeout(r, 300))
     }
     return false
@@ -385,6 +390,13 @@ async function runOwnerMode(worktreeName, targetCwd, domain, serverPort) {
 
     entry.child.stdout.pipe(process.stdout)
     entry.child.stderr.pipe(process.stderr)
+  } else if (entry.status === 'stopped') {
+    p.log.error(`Vite for "${worktreeName}" exited (code ${entry.exitCode ?? 'unknown'}) before becoming ready`)
+    if (entry.stderr) {
+      p.log.message(entry.stderr.trim())
+    }
+    try { serverInstance.close() } catch { /* best effort */ }
+    process.exit(1)
   } else {
     p.log.warning(`Vite may still be starting — check ${proxyUrl}`)
     p.outro('Server running')

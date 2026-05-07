@@ -146,7 +146,10 @@ function spawnVite(branch) {
   // Register in persistent server registry
   register({ id: entry.serverId, worktree: branch, pid: child.pid, port, background: true })
 
-  // Detect ready state from stdout
+  // Detect ready state from stdout. Buffer recent stderr so a silent crash
+  // surfaces a useful message instead of just "Vite may still be starting".
+  const stderrBuffer = []
+  const STDERR_BUFFER_MAX = 50
   child.stdout.on('data', (data) => {
     const text = data.toString()
     const portMatch = text.match(/localhost:(\d+)/)
@@ -164,14 +167,26 @@ function spawnVite(branch) {
     }
   })
 
-  child.stderr.on('data', () => { /* suppress */ })
+  child.stderr.on('data', (data) => {
+    const line = data.toString()
+    stderrBuffer.push(line)
+    if (stderrBuffer.length > STDERR_BUFFER_MAX) stderrBuffer.shift()
+  })
 
-  child.on('exit', (_code) => {
-    void _code
+  child.on('exit', (code) => {
+    const failed = entry.status !== 'ready' && code !== 0 && code !== null
     entry.status = 'stopped'
+    entry.exitCode = code
+    entry.stderr = stderrBuffer.join('')
     processes.delete(branch)
     unregister(entry.serverId)
     releasePort(branch)
+    if (failed) {
+      // Surface the failure — silent crashes during startup were leaving
+      // users with a running server but no Vite, and no clue why.
+      // eslint-disable-next-line no-console
+      console.error(`[storyboard] Vite for "${branch}" exited with code ${code}\n${entry.stderr}`)
+    }
   })
 
   return entry
@@ -255,17 +270,27 @@ routeHandlers.set('switch-branch', async (req, res, ctx) => {
     const entry = spawnVite(branch)
 
     // Wait for Vite to report ready via stdout (not TCP polling, which
-    // can false-positive on occupied ports from other processes)
+    // can false-positive on occupied ports from other processes).
+    // Bail out early if the child crashes during startup so the client
+    // gets a useful error instead of waiting for the full timeout.
     const ready = await (async () => {
       const start = Date.now()
       while (Date.now() - start < HEALTH_TIMEOUT) {
         if (entry.status === 'ready') return true
+        if (entry.status === 'stopped') return false
         await new Promise(r => setTimeout(r, 300))
       }
       return false
     })()
     if (!ready) {
       stopVite(branch)
+      if (entry.status === 'stopped') {
+        sendJsonLogged(res, 500, {
+          error: `Vite for "${branch}" exited (code ${entry.exitCode ?? 'unknown'}) before becoming ready`,
+          stderr: entry.stderr || null,
+        })
+        return
+      }
       sendJsonLogged(res, 504, { error: `Vite server for ${branch} did not become ready in time` })
       return
     }
