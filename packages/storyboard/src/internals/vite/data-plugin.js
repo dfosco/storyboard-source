@@ -638,25 +638,17 @@ function buildUnifiedConfig(root) {
     }
   }
 
-  // 7. Build the unified config object
+  // 7. Build the unified config object.
+  // Start from the schema-defaulted sbConfig so every top-level key from
+  // storyboard.config.json (and every schema default) flows to initConfig().
+  // Then override the domain-specific slices that have their own dedicated
+  // config files merged above (toolbar/commandPalette/paste/widgets).
   const unified = {
+    ...sbConfig,
     toolbar: finalToolbar,
     commandPalette: finalCommandPalette,
     paste: finalPaste,
     widgets: finalWidgets,
-    featureFlags: sbConfig?.featureFlags || {},
-    modes: sbConfig?.modes || {},
-    ui: sbConfig?.ui || {},
-    canvas: sbConfig?.canvas || {},
-    comments: sbConfig?.comments || {},
-    customerMode: sbConfig?.customerMode || {},
-    plugins: sbConfig?.plugins || {},
-    repository: sbConfig?.repository || {},
-    workshop: sbConfig?.workshop || {},
-    customDomain: sbConfig?.customDomain || '',
-    prodDomain: sbConfig?.prodDomain || '',
-    devDomain: sbConfig?.devDomain || '',
-    devDomainColor: sbConfig?.devDomainColor || '',
   }
 
   return { unified, warnings }
