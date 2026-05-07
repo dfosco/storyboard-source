@@ -1,6 +1,6 @@
 {
   "name": "@dfosco/storyboard",
-  "version": "0.5.0-alpha.14",
+  "version": "0.5.0-alpha.15",
   "type": "module",
   "license": "MIT",
   "description": "Storyboard prototyping framework — core engine, React integration, and canvas",

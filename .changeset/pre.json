@@ -1,8 +1,8 @@
 {
-  "mode": "exit",
+  "mode": "pre",
   "tag": "alpha",
   "initialVersions": {
-    "@dfosco/storyboard": "0.5.0-alpha.13"
+    "@dfosco/storyboard": "0.5.0-alpha.14"
   },
   "changesets": [
     "changeset-moojzicz",
@@ -13,6 +13,7 @@
     "changeset-mou2nsy2",
     "changeset-tematd",
     "changeset-temcrx",
+    "dev-worktree-setup-fixes",
     "workspace-sidebar-visibility"
   ]
 }
