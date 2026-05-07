@@ -29,11 +29,10 @@ import './command-palette.css'
 // Icon size for all palette items
 const ICON_SIZE = 16
 
-function getDeployedDomain() {
+function getProdDomain() {
   try {
     const cfg = getConfig() || {}
-    const d = (cfg.customDomain || '').trim()
-    return d || ''
+    return (cfg.prodDomain || '').trim()
   } catch {
     return ''
   }
@@ -41,13 +40,20 @@ function getDeployedDomain() {
 
 function openDeployedBranch() {
   if (typeof window === 'undefined') return
-  const host = getDeployedDomain()
+  const raw = getProdDomain()
+  if (!raw) return
+  // prodDomain may be "host" or "host/base/path/" — split on first slash.
+  const stripped = raw.replace(/^https?:\/\//i, '').replace(/^\/+/, '')
+  const slashIdx = stripped.indexOf('/')
+  const host = slashIdx === -1 ? stripped : stripped.slice(0, slashIdx)
+  const basePath = slashIdx === -1 ? '' : '/' + stripped.slice(slashIdx + 1).replace(/\/+$/, '')
   if (!host) return
   try {
     const url = new URL(window.location.href)
     url.protocol = 'https:'
     url.host = host
     url.port = ''
+    url.pathname = basePath + url.pathname
     window.open(url.toString(), '_blank', 'noopener,noreferrer')
   } catch {
     // ignore malformed URLs
@@ -296,7 +302,7 @@ function buildConfigSections(prefix, onNavigateToPage, onCreateAction) {
       }
 
       if (tool.inlineAction === 'open-deployed-branch') {
-        if (!getDeployedDomain()) continue
+        if (!getProdDomain()) continue
         remainingItems.push({
           id: `cfg:${section.id}:${toolId}`,
           children: label,
@@ -767,7 +773,7 @@ function buildToolsSection(section, prefix, onNavigateToPage) {
     }
 
     if (tool.inlineAction === 'open-deployed-branch') {
-      if (!getDeployedDomain()) continue
+      if (!getProdDomain()) continue
       items.push({
         id: `cfg:${section.id}:${toolId}`,
         children: label,

@@ -1,7 +1,7 @@
 {
   "devDomain": "storyboard-core",
   "devDomainColor": "#c77f25",
-  "prodDomain": "dfosco.github.io/storyboard/",
+  "prodDomain": "https://dfosco.github.io/storyboard/",
   "repository": {
     "owner": "dfosco",
     "name": "storyboard"

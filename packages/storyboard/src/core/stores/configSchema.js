@@ -125,6 +125,7 @@
 /**
  * @typedef {object} StoryboardConfig
  * @property {string}   [customDomain]
+ * @property {string}   [prodDomain] — production host (and optional base path) for the deployed env, e.g. "dfosco.github.io/storyboard/"
  * @property {string}   [devDomain]
  * @property {string}   [devDomainColor] — CSS color for the BranchBar in local dev (default: blue)
  * @property {{ owner: string, name: string }} [repository]
@@ -154,6 +155,7 @@ export const builtinPasteRules = [
 /** Default config values. Every key here is safe to access without null checks. */
 export const configDefaults = {
   customDomain: '',
+  prodDomain: '',
   devDomain: '',
   devDomainColor: '',
   repository: { owner: '', name: '' },
