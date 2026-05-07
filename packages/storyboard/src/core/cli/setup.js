@@ -30,7 +30,7 @@ if (flags.nuke) {
   const nukeCmd = [
     'sudo pkill caddy 2>/dev/null',
     'brew uninstall caddy gh git 2>/dev/null',
-    'rm -f ~/.local/bin/copilot /usr/local/bin/copilot',
+    'rm -f ~/.local/bin/copilot /usr/local/bin/copilot ~/.local/bin/code /usr/local/bin/code',
     '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"',
     'sudo rm -rf /Library/Developer/CommandLineTools',
     'xcode-select --reset',
@@ -171,39 +171,40 @@ if (hasBrew) {
 if (isInstalled('code')) {
   p.log.success('VS Code CLI installed')
 } else {
-  // Try to install the `code` CLI from VS Code's known locations
-  const codePaths = [
-    '/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code',
-    '/usr/local/bin/code',
-  ]
+  const vsCodeApp = '/Applications/Visual Studio Code.app'
+  const shellScript = `${vsCodeApp}/Contents/Resources/app/bin/code`
   let installed = false
-  for (const codePath of codePaths) {
-    if (existsSync(codePath)) {
-      p.log.success('VS Code CLI available (symlink exists)')
-      installed = true
-      break
-    }
-  }
-  if (!installed) {
-    // Try the VS Code shell command installer
-    const vsCodeApp = '/Applications/Visual Studio Code.app'
-    if (existsSync(vsCodeApp)) {
-      const shellScript = `${vsCodeApp}/Contents/Resources/app/bin/code`
-      if (existsSync(shellScript)) {
-        try {
-          // Create symlink in /usr/local/bin
-          run(`ln -sf "${shellScript}" /usr/local/bin/code`)
-          p.log.success('VS Code CLI installed (symlinked to /usr/local/bin/code)')
-          installed = true
-        } catch {
-          // Fall through to manual instructions
+
+  if (existsSync(shellScript)) {
+    // Try /usr/local/bin first, then ~/.local/bin as fallback
+    const localBin = `${process.env.HOME}/.local/bin`
+    const targets = ['/usr/local/bin/code', `${localBin}/code`]
+
+    for (const target of targets) {
+      try {
+        const dir = path.dirname(target)
+        if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
+        run(`ln -sf "${shellScript}" "${target}"`)
+        // Add ~/.local/bin to PATH if that's where we installed
+        if (target.includes('.local/bin') && !process.env.PATH.includes(localBin)) {
+          process.env.PATH = `${localBin}:${process.env.PATH}`
         }
+        p.log.success(`VS Code CLI installed (${target})`)
+        installed = true
+        break
+      } catch {
+        // Try next target
       }
     }
-    if (!installed) {
-      p.log.warning('VS Code CLI not found. Open VS Code and run:')
-      p.log.info('  Cmd+Shift+P → "Shell Command: Install \'code\' command in PATH"')
+  }
+
+  if (!installed) {
+    if (existsSync(vsCodeApp)) {
+      p.log.warning('VS Code found but could not create symlink. Open VS Code and run:')
+    } else {
+      p.log.warning('VS Code not found. Install VS Code, then run:')
     }
+    p.log.info('  Cmd+Shift+P → "Shell Command: Install \'code\' command in PATH"')
   }
 }
 
