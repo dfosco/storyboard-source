@@ -1,5 +1,4 @@
 import { useCallback } from 'react'
-import { getCanvasZoom } from '../../../core/index.js'
 import styles from './ResizeHandle.module.css'
 
 /**
@@ -36,8 +35,11 @@ export default function ResizeHandle({ targetRef, minWidth = 180, minHeight = 60
 
     onResizeStart?.()
 
-    // Capture zoom at drag start so resizing stays consistent mid-drag
-    const scale = (getCanvasZoom() || 100) / 100
+    // Capture zoom at drag start so resizing stays consistent mid-drag.
+    // Derive scale from the element's rendered size vs offsetWidth, which
+    // accounts for the canvas's CSS transform regardless of zoom plumbing.
+    const rect = el.getBoundingClientRect()
+    const scale = startW > 0 && rect.width > 0 ? rect.width / startW : 1
 
     function onMove(ev) {
       const dx = (ev.clientX - startX) / scale
