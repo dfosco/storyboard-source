@@ -7,6 +7,7 @@
  */
 import { Fragment, Suspense } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
+import PrototypeErrorBoundary, { ImportErrorFallback } from '@dfosco/storyboard/error-boundary'
 import {
   generatePreservedRoutes,
   generateRegularRoutes,
@@ -35,21 +36,28 @@ const regularRoutes = generateRegularRoutes(ROUTES, (importFn, key) => {
   return {
     ...index,
     lazy: async () => {
-      const module = await importFn()
-      const Default = module?.default || Fragment
-      const Page = () =>
-        module?.Pending ? (
-          <Suspense fallback={<module.Pending />}>
+      try {
+        const module = await importFn()
+        const Default = module?.default || Fragment
+        const Page = () =>
+          module?.Pending ? (
+            <Suspense fallback={<module.Pending />}>
+              <Default />
+            </Suspense>
+          ) : (
             <Default />
-          </Suspense>
-        ) : (
-          <Default />
-        )
-      return {
-        Component: Page,
-        ErrorBoundary: module?.Catch,
-        loader: module?.Loader,
-        action: module?.Action,
+          )
+        return {
+          Component: Page,
+          ErrorBoundary: module?.Catch || PrototypeErrorBoundary,
+          loader: module?.Loader,
+          action: module?.Action,
+        }
+      } catch (err) {
+        // Import itself failed (syntax error, broken dependency, etc.)
+        return {
+          Component: () => <ImportErrorFallback error={err} route={key} />,
+        }
       }
     },
   }

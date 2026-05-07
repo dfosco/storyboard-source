@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, Suspense, lazy } from 'react'
+import { useState, useEffect, useMemo, useRef, Suspense, lazy, Component } from 'react'
 import { useParams, useLocation } from 'react-router-dom'
 // Named import seeds the core data index via init() AND provides canvas/story route data
 import { canvases, stories } from 'virtual:storyboard-data-index'
@@ -12,6 +12,45 @@ export { StoryboardContext }
 const CanvasPageLazy = lazy(() => import('./canvas/CanvasPage.jsx'))
 const StoryPageLazy = lazy(() => import('./story/StoryPage.jsx'))
 const CommandPaletteLazy = lazy(() => import('./CommandPalette/CommandPalette.jsx'))
+
+/**
+ * Error boundary for top-level sections (canvas, story).
+ * Prevents a crash in one section from taking down the entire provider tree.
+ */
+class SectionErrorBoundary extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { error: null }
+  }
+
+  static getDerivedStateFromError(error) {
+    return { error }
+  }
+
+  componentDidCatch(error, info) {
+    console.error(
+      `[storyboard] ${this.props.section || 'Section'} crashed:`,
+      error,
+      info?.componentStack,
+    )
+  }
+
+  render() {
+    if (this.state.error) {
+      const message = this.state.error?.message || String(this.state.error)
+      return (
+        <main className={styles.container}>
+          <div className={styles.banner}>
+            <strong>{this.props.section || 'Section'} error</strong>
+            {message}
+          </div>
+          <a className={styles.homeLink} href="/">← Back to workspace</a>
+        </main>
+      )
+    }
+    return this.props.children
+  }
+}
 
 // Build a map from canvas route paths → canvas names at module load time
 const canvasRouteMap = new Map()
@@ -375,9 +414,11 @@ function StoryboardProviderInner({ flowName, sceneName, recordName, recordParam,
     }
     return (
       <StoryboardContext.Provider value={canvasValue}>
-        <Suspense fallback={null}>
-          <CanvasPageLazy canvasId={canvasId} siblingPages={siblingPages} canvasMeta={canvasMeta} />
-        </Suspense>
+        <SectionErrorBoundary section="Canvas">
+          <Suspense fallback={null}>
+            <CanvasPageLazy canvasId={canvasId} siblingPages={siblingPages} canvasMeta={canvasMeta} />
+          </Suspense>
+        </SectionErrorBoundary>
       </StoryboardContext.Provider>
     )
   }
@@ -394,9 +435,11 @@ function StoryboardProviderInner({ flowName, sceneName, recordName, recordParam,
     }
     return (
       <StoryboardContext.Provider value={storyValue}>
-        <Suspense fallback={null}>
-          <StoryPageLazy name={storyName} />
-        </Suspense>
+        <SectionErrorBoundary section="Story">
+          <Suspense fallback={null}>
+            <StoryPageLazy name={storyName} />
+          </Suspense>
+        </SectionErrorBoundary>
       </StoryboardContext.Provider>
     )
   }

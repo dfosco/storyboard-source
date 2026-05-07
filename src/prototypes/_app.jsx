@@ -6,6 +6,7 @@ import { Outlet } from 'react-router-dom'
 // needs StoryboardProvider and useFeatureFlag.
 import StoryboardProvider from '@dfosco/storyboard/context'
 import { useFeatureFlag } from '@dfosco/storyboard/hooks/useFeatureFlag'
+import { AppErrorBoundary } from '@dfosco/storyboard/error-boundary'
 import appStyles from './_app.module.css'
 import '@dfosco/storyboard/canvas/style.css'
 
@@ -37,6 +38,9 @@ export default function App() {
     </StoryboardProvider>
   )
 }
+
+// Last-resort error boundary — generouted wires this via _app?.Catch
+export const Catch = AppErrorBoundary
 
 function FeatureFlagBanner() {
   const showBanner = useFeatureFlag('show-banner')

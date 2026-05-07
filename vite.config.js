@@ -56,6 +56,7 @@ export default defineConfig(() => {
             '@dfosco/storyboard/smooth-corners': path.resolve(__dirname, 'packages/storyboard/src/core/utils/smoothCorners.js'),
             '@dfosco/storyboard/core': path.resolve(__dirname, 'packages/storyboard/src/core/index.js'),
             '@dfosco/storyboard/hash-preserver': path.resolve(__dirname, 'packages/storyboard/src/internals/hashPreserver.js'),
+            '@dfosco/storyboard/error-boundary': path.resolve(__dirname, 'packages/storyboard/src/internals/PrototypeErrorBoundary.jsx'),
             '@dfosco/storyboard/canvas/CanvasPage': path.resolve(__dirname, 'packages/storyboard/src/internals/canvas/CanvasPage.jsx'),
             '@dfosco/storyboard/context': path.resolve(__dirname, 'packages/storyboard/src/internals/context.jsx'),
             '@dfosco/storyboard/hooks/useFeatureFlag': path.resolve(__dirname, 'packages/storyboard/src/internals/hooks/useFeatureFlag.js'),

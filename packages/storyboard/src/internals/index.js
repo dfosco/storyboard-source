@@ -54,5 +54,8 @@ export { default as AuthModal } from './AuthModal/AuthModal.jsx'
 export { default as CanvasPage } from './canvas/CanvasPage.jsx'
 export { useCanvas } from './canvas/useCanvas.js'
 
+// Error boundaries
+export { default as PrototypeErrorBoundary, ImportErrorFallback, AppErrorBoundary } from './PrototypeErrorBoundary.jsx'
+
 // Icon
 export { default as Icon } from './Icon.jsx'
