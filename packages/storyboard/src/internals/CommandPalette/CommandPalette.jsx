@@ -417,9 +417,6 @@ function buildDynamicSection(section, prefix, onNavigateToPage, onCreateAction) 
       { id: 'create:object', children: 'Object', keywords: ['create', 'object', 'new', 'data', 'json'], itemType: 'create', onClick: () => onCreateAction?.('Object') },
       { id: 'create:record', children: 'Record', keywords: ['create', 'record', 'new', 'collection', 'data'], itemType: 'create', onClick: () => onCreateAction?.('Record') },
       { id: 'create:page', children: 'Page', keywords: ['create', 'page', 'new', 'route'], itemType: 'create', onClick: () => onCreateAction?.('Page') },
-      { id: 'create:object', children: 'Object', keywords: ['create', 'object', 'new', 'data', 'json'], itemType: 'create', onClick: () => onCreateAction?.('Object') },
-      { id: 'create:record', children: 'Record', keywords: ['create', 'record', 'new', 'collection', 'data'], itemType: 'create', onClick: () => onCreateAction?.('Record') },
-      { id: 'create:page', children: 'Page', keywords: ['create', 'page', 'new'], itemType: 'create', onClick: () => onCreateAction?.('Page') },
     ]
     return { group: { heading: section.title, id: `cfg:${section.id}`, items: createItems } }
   }
@@ -1029,6 +1026,21 @@ export default function StoryboardCommandPalette({ basePath }) {
     const handler = (e) => setCurrentTheme(e.detail.theme)
     document.addEventListener('storyboard:theme:changed', handler)
     return () => document.removeEventListener('storyboard:theme:changed', handler)
+  }, [])
+
+  // External callers (canvas Add menu, workspace) request the create dialog by
+  // dispatching `storyboard:create-artifact` with `{ type: 'Prototype' | ... }`.
+  // Accepts both PascalCase (palette ids) and lowercase (schema keys).
+  useEffect(() => {
+    const handler = (e) => {
+      const raw = e?.detail?.type
+      if (!raw) return
+      const type = typeof raw === 'string' ? raw.charAt(0).toUpperCase() + raw.slice(1) : raw
+      setOpen(false)
+      requestAnimationFrame(() => setCreateType(type))
+    }
+    document.addEventListener('storyboard:create-artifact', handler)
+    return () => document.removeEventListener('storyboard:create-artifact', handler)
   }, [])
 
   function handleCreateAction(type) {
