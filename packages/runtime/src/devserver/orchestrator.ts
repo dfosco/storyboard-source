@@ -61,6 +61,17 @@ interface LeaseInternal {
   expiresAt: number
 }
 
+export class SlotCwdConflictError extends Error {
+  constructor(slot: DevServerSlot, existingCwd: string, requestedCwd: string) {
+    super(
+      `Slot ${slotKey(slot)} is already bound to ${existingCwd}; refusing to rebind to ${requestedCwd}. ` +
+      `Two different repositories cannot share devDomain "${slot.devDomain}". ` +
+      `Set a unique devDomain in storyboard.config.json for one of them.`,
+    )
+    this.name = 'SlotCwdConflictError'
+  }
+}
+
 export class ForbiddenDefaultDomainError extends Error {
   constructor() {
     super(
@@ -143,12 +154,23 @@ export class DevServerOrchestrator {
     const existing = this.bySlot.get(key)
 
     if (existing && existing.status === 'ready') {
+      // M5 (per-devDomain origin): the slot is one shared origin to the
+      // browser. Allowing two different working directories to claim the
+      // same slot means cookies/SW/storage written by repo A would leak
+      // into repo B. Refuse the rebind with a clear error pointing at the
+      // user's storyboard.config.json.
+      if (existing.cwd !== input.targetCwd) {
+        throw new SlotCwdConflictError(input.slot, existing.cwd, input.targetCwd)
+      }
       return this.toResponse(existing, this.mintLease(existing, input.ttlSeconds))
     }
     if (existing && existing.status !== 'stopped') {
       try { await existing.readyPromise } catch { /* fall through */ }
       const refreshed = this.bySlot.get(key)
       if (refreshed?.status === 'ready') {
+        if (refreshed.cwd !== input.targetCwd) {
+          throw new SlotCwdConflictError(input.slot, refreshed.cwd, input.targetCwd)
+        }
         return this.toResponse(refreshed, this.mintLease(refreshed, input.ttlSeconds))
       }
     }

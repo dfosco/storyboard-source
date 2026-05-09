@@ -28,7 +28,7 @@ CLI commands (`sb dev`, `sb proxy`, …) become thin clients that *request* reso
 
 ## Status
 
-**M4 shipped.** Hot pool of pre-allocated ports (default warm: 1, env-tunable). All bug-class fixes (M1–M3, M5b, M5c) plus M4 perf in. M5/M6 pending.
+**M5 shipped.** Per-devDomain origin enforcement: slot-CWD conflict refusal + Vite Host-header guard. Through M5, every RCA hypothesis is closed. M6 docs/changeset/e2e remains.
 
 ## Daemon
 

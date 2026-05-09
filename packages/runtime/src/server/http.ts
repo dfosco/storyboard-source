@@ -22,6 +22,7 @@ import {
   ForbiddenDefaultDomainError,
   LeaseNotFoundError,
   DevServerSpawnError,
+  SlotCwdConflictError,
 } from '../devserver/index.js'
 import { HotPool } from '../pool/index.js'
 import { PortPool } from '../devserver/port-pool.js'
@@ -147,6 +148,10 @@ routes.set('POST /devserver/acquire', async (req, res) => {
   } catch (err) {
     if (err instanceof ForbiddenDefaultDomainError) {
       sendError(res, 403, 'FORBIDDEN_DEFAULT_DOMAIN', err.message)
+      return
+    }
+    if (err instanceof SlotCwdConflictError) {
+      sendError(res, 409, 'CONFLICT', err.message)
       return
     }
     if (err instanceof DevServerSpawnError) {

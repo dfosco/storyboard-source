@@ -93,6 +93,22 @@ function renderForeignBranchPage(foreign: string, ownBranch: string | null, devD
 </body></html>`
 }
 
+function renderForeignDomainPage(actualHost: string, expectedHost: string): string {
+  return `<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Misdirected Request</title>
+<style>
+  body { font-family: -apple-system, sans-serif; max-width: 540px; margin: 4rem auto; padding: 0 1rem; color: #1f2328; }
+  code { background: #eef0f2; padding: 0.1em 0.3em; border-radius: 3px; }
+</style></head>
+<body>
+<h1>Wrong domain (421 Misdirected)</h1>
+<p>This Vite serves <code>${escapeHtml(expectedHost)}</code>, but you requested <code>${escapeHtml(actualHost)}</code>.</p>
+<p>Each Storyboard repo has a unique <code>devDomain</code>. If you see this page,
+either Caddy misrouted your request or two repos are configured with the same
+<code>devDomain</code> in <code>storyboard.config.json</code>.</p>
+</body></html>`
+}
+
 function escapeHtml(s: string): string {
   return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!))
 }
@@ -121,10 +137,25 @@ export function storyboardRuntimePlugin(opts: StoryboardRuntimePluginOptions = {
       if (!enabled) return
       const ownBase = branch && branch !== 'main' ? `/branch--${branch}/` : '/'
       const ownDomain = devDomain ?? 'storyboard'
+      const expectedHost = `${ownDomain}.localhost`
 
-      // H1: install BEFORE Vite's own base-redirect middleware.
+      // M5 / H1 defense in depth: refuse requests whose Host header points
+      // at a different devDomain. If Caddy somehow misroutes (or a user
+      // hand-types the wrong domain into a port-bound URL), we never serve
+      // foreign content under a domain Vite isn't supposed to own.
       server.middlewares.use((req: IncomingMessage, res: ServerResponse, next: () => void) => {
         const url = req.url ?? '/'
+
+        // Strip port from Host before comparing (Caddy strips it anyway,
+        // but direct hits to localhost:1240 will include it).
+        const rawHost = ((req.headers?.host ?? '').split(':')[0] ?? '').toLowerCase()
+        if (rawHost && rawHost.endsWith('.localhost') && rawHost !== expectedHost) {
+          res.statusCode = 421
+          res.setHeader('Content-Type', 'text/html; charset=utf-8')
+          res.end(renderForeignDomainPage(rawHost, expectedHost))
+          return
+        }
+
         const decision = decideRedirect(url, ownBase)
         switch (decision.kind) {
           case 'pass':

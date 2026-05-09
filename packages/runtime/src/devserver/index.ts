@@ -4,5 +4,6 @@ export {
   ForbiddenDefaultDomainError,
   LeaseNotFoundError,
   DevServerSpawnError,
+  SlotCwdConflictError,
 } from './orchestrator.js'
 export type { DevServerOrchestratorOptions } from './orchestrator.js'
