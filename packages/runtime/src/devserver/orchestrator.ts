@@ -90,7 +90,7 @@ export interface DevServerOrchestratorOptions {
   proxy: ProxyController
   ports?: PortPool
   /** Override Vite spawn for tests — return a child you've prepared. */
-  spawnVite?: (cwd: string, port: Port, basePath: string) => ChildProcess
+  spawnVite?: (cwd: string, port: Port, basePath: string, devDomain: string) => ChildProcess
   readyTimeoutMs?: number
 }
 
@@ -148,7 +148,7 @@ export class DevServerOrchestrator {
     const port = await this.ports.acquire()
     const id = randomUUID()
     const basePath = input.slot.worktree === 'main' ? '/' : `/branch--${input.slot.worktree}/`
-    const child = this.spawnViteFn(input.targetCwd, port, basePath)
+    const child = this.spawnViteFn(input.targetCwd, port, basePath, input.slot.devDomain)
 
     const stderrTail: string[] = []
     let resolveReady: () => void = () => undefined
@@ -303,19 +303,24 @@ function toDevServer(ds: DevServerInternal): DevServer {
   })
 }
 
-function defaultSpawnVite(cwd: string, port: Port, basePath: string): ChildProcess {
+function defaultSpawnVite(cwd: string, port: Port, basePath: string, devDomain: string): ChildProcess {
   const localVite = resolvePath(cwd, 'node_modules', '.bin', 'vite')
   const useLocal = existsSync(localVite)
+  // dist/devserver/orchestrator.js → ../vite-plugin/wrapper.js
+  const wrapperPath = resolvePath(import.meta.dirname ?? '', '..', 'vite-plugin', 'wrapper.js')
   const args = ['--port', String(port)]
+  if (existsSync(wrapperPath)) {
+    args.push('--config', wrapperPath)
+  }
+  const branchMatch = basePath.match(/^\/branch--([^/]+)\/$/)
+  const branch = branchMatch ? branchMatch[1]! : 'main'
+  const env = {
+    ...process.env,
+    VITE_BASE_PATH: basePath,
+    STORYBOARD_RUNTIME_BRANCH: branch,
+    STORYBOARD_RUNTIME_DOMAIN: devDomain,
+  }
   return useLocal
-    ? spawn(localVite, args, {
-        cwd,
-        env: { ...process.env, VITE_BASE_PATH: basePath },
-        stdio: ['ignore', 'pipe', 'pipe'],
-      })
-    : spawn('npx', ['vite', ...args], {
-        cwd,
-        env: { ...process.env, VITE_BASE_PATH: basePath },
-        stdio: ['ignore', 'pipe', 'pipe'],
-      })
+    ? spawn(localVite, args, { cwd, env, stdio: ['ignore', 'pipe', 'pipe'] })
+    : spawn('npx', ['vite', ...args], { cwd, env, stdio: ['ignore', 'pipe', 'pipe'] })
 }

@@ -28,7 +28,7 @@ CLI commands (`sb dev`, `sb proxy`, …) become thin clients that *request* reso
 
 ## Status
 
-**M3 + M3b landed.** Runtime can spawn Vite, manage leases, enforce slot uniqueness, and refuse the default devDomain. M2 ProxyController + M1 daemon already in. M4/M5/M6 pending.
+**M5b shipped.** Vite-side guards (H1 base-redirect hardening, H6 HMR namespacing) auto-injected by the runtime. M3 + M2 + M1 already in. M5c/M4/M5/M6 pending.
 
 ## Daemon
 
