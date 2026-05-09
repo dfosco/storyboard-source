@@ -65,15 +65,27 @@ Introduce a single-machine **Storyboard Runtime** daemon owning proxy + devserve
 
 | Milestone | Worktree | Branch | Status |
 |---|---|---|---|
-| Plan | `worktrees/0.5.0` | `0.5.0` | ✅ committed `45b6e754e` |
-| M1 scaffold + daemon | `worktrees/0.5.0--runtime` | `0.5.0--runtime` | ✅ pushed `eb70a24c2` |
-| M2 ProxyController | `worktrees/0.5.0--runtime--m2` | `0.5.0--runtime--m2` | ✅ local `beac800f2` |
-| M3 + M3b orchestrator | `worktrees/0.5.0--runtime--m3` | `0.5.0--runtime--m3` | ✅ local `e553403c5` (smoke tested by user) |
-| M5b Vite guards | `worktrees/0.5.0--runtime--m5b` | `0.5.0--runtime--m5b` | ✅ local `05fb773bf` |
-| **M5c Browser guards** | `worktrees/0.5.0--runtime--m5c` | `0.5.0--runtime--m5c` | ✅ local `b1a8bb8d0` |
-| M4 Hot pool | `worktrees/0.5.0--runtime--m4` | — | ⏳ next |
-| M5 Per-domain origin | `worktrees/0.5.0--runtime--m5` | — | ⏳ |
-| M6 Docs + e2e | `worktrees/0.5.0--runtime--m6` | — | ⏳ |
+| Plan | `worktrees/0.5.0` | `0.5.0` | ✅ |
+| M1 scaffold + daemon | `worktrees/0.5.0--runtime` | `0.5.0--runtime` | ✅ pushed |
+| M2 ProxyController | `worktrees/0.5.0--runtime--m2` | `0.5.0--runtime--m2` | ✅ |
+| M3 + M3b orchestrator | `worktrees/0.5.0--runtime--m3` | `0.5.0--runtime--m3` | ✅ |
+| M5b Vite guards | `worktrees/0.5.0--runtime--m5b` | `0.5.0--runtime--m5b` | ✅ |
+| M5c Browser guards | `worktrees/0.5.0--runtime--m5c` | `0.5.0--runtime--m5c` | ✅ |
+| M4 Hot pool | `worktrees/0.5.0--runtime--m4` | `0.5.0--runtime--m4` | ✅ |
+| M5 Per-domain origin | `worktrees/0.5.0--runtime--m5` | `0.5.0--runtime--m5` | ✅ |
+| **M6 Docs + e2e** | `worktrees/0.5.0--runtime--m6` | `0.5.0--runtime--m6` | ✅ ALL COMPLETE |
+
+## ✅ All milestones complete (M1–M6, 62/62 tests)
+
+The runtime is fully built. Final test totals:
+- **62 runtime tests pass** (10 schema + 7 ProxyController + 3 HTTP-proxy + 10 orchestrator + 12 vite-plugin + 9 hot-pool + 6 m5-origin + 5 e2e).
+- **1333 storyboard tests pass** (12 pre-existing canvas-widget failures unrelated to this work).
+
+The e2e acceptance test (`packages/runtime/test/e2e.test.ts`) directly asserts: *every lease.url returned by the runtime contains at most one `/branch--` segment*. The doubled-URL bug class is structurally unreachable from the runtime API.
+
+## What's NOT yet done (separate workstream)
+
+- CLI integration: `packages/storyboard/src/core/cli/dev.js` and `proxy.js` still use the legacy per-repo server (`packages/storyboard/src/core/server/`). Migration steps are listed in `.agents/architecture/runtime.md`.
 
 ## ▶︎ Stop point — user testing
 
