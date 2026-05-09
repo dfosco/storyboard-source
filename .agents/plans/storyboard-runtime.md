@@ -58,7 +58,22 @@ Introduce a single-machine **Storyboard Runtime** daemon owning proxy + devserve
 - TS only inside `packages/runtime/`; rest stays JS.
 - Hot pool included behind a config flag.
 - Loopback HTTP on `127.0.0.1:4321` for IPC.
-- Worktree: `0.5.0--runtime`.
+- **One worktree per milestone**: `0.5.0--runtime`, `0.5.0--runtime--m2`, …
+- **No PRs** — work lands on branches; user opens PRs manually when ready.
+
+## Progress
+
+| Milestone | Worktree | Branch | Status |
+|---|---|---|---|
+| Plan | `worktrees/0.5.0` | `0.5.0` | ✅ committed `06dfade52` |
+| M1 scaffold + daemon | `worktrees/0.5.0--runtime` | `0.5.0--runtime` | ✅ committed `eb70a24c2`, pushed |
+| M2 ProxyController | `worktrees/0.5.0--runtime--m2` | `0.5.0--runtime--m2` | ✅ committed `beac800f2` (local) |
+| M3 + M3b orchestrator | `worktrees/0.5.0--runtime--m3` *(next)* | — | ⏳ |
+| M5b Vite guards | `worktrees/0.5.0--runtime--m5b` | — | ⏳ |
+| M5c Browser guards | `worktrees/0.5.0--runtime--m5c` | — | ⏳ |
+| M4 Hot pool | `worktrees/0.5.0--runtime--m4` | — | ⏳ |
+| M5 Per-domain origin | `worktrees/0.5.0--runtime--m5` | — | ⏳ |
+| M6 Docs + e2e | `worktrees/0.5.0--runtime--m6` | — | ⏳ |
 
 ## Open questions (decide during M1)
 
