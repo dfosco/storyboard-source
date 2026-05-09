@@ -16,9 +16,10 @@ if (!sub || sub === '--help' || sub === '-h') {
   console.log(`
   canvas connector subcommands:
 
-    create   Create a connector between two widgets
-    update   Update a connector's anchors or meta
-    delete   Delete a connector
+    create     Create a connector between two widgets
+    update     Update a connector's anchors or meta
+    delete     Delete a connector
+    waypoints  Set or clear manual routing waypoints on a connector
 
   create flags:
     -c, --canvas         Canvas name (required)
@@ -40,6 +41,15 @@ if (!sub || sub === '--help' || sub === '-h') {
   delete flags:
     Positional: <connectorId>
     -c, --canvas         Canvas name (required)
+
+  waypoints subcommands:
+    set <connectorId>    Set manual waypoints — requires --waypoints '[{"dx":0,"dy":0,"tHint":0.5}]'
+    clear <connectorId>  Drop manual waypoints (revert to auto-routing)
+
+  waypoints flags:
+    -c, --canvas         Canvas name (required)
+    --waypoints          JSON array of { dx, dy, tHint? } objects (set only)
+    --json               Output as JSON
 `)
   process.exit(0)
 }
@@ -105,6 +115,31 @@ if (sub === 'create') {
     if (flags.json) { jsonOut(result) } else { console.log('Connector deleted') }
   } catch (err) { die(err.message) }
 
+} else if (sub === 'waypoints') {
+  const wpSub = positional[0]
+  const connectorId = positional[1]
+  if (!wpSub || (wpSub !== 'set' && wpSub !== 'clear')) {
+    die('waypoints subcommand must be "set" or "clear"')
+  }
+  if (!connectorId) die('Connector ID is required')
+
+  if (wpSub === 'set') {
+    if (!flags.waypoints) die('--waypoints JSON array is required for set')
+    let waypoints
+    try { waypoints = JSON.parse(flags.waypoints) } catch { die('--waypoints must be valid JSON') }
+    if (!Array.isArray(waypoints)) die('--waypoints must be a JSON array')
+
+    try {
+      const result = await post('/_storyboard/canvas/connector/waypoints', { name: canvas, connectorId, waypoints })
+      if (flags.json) { jsonOut(result) } else { console.log(`Waypoints set: ${waypoints.length} point(s)`) }
+    } catch (err) { die(err.message) }
+  } else {
+    try {
+      const result = await del('/_storyboard/canvas/connector/waypoints', { name: canvas, connectorId })
+      if (flags.json) { jsonOut(result) } else { console.log('Waypoints cleared (auto-routing restored)') }
+    } catch (err) { die(err.message) }
+  }
+
 } else {
-  die(`Unknown connector subcommand: ${sub}. Use create, update, or delete.`)
+  die(`Unknown connector subcommand: ${sub}. Use create, update, delete, or waypoints.`)
 }

@@ -334,6 +334,59 @@ describe('connectors', () => {
     expect(state.connectors[0].start.anchor).toBe('bottom')
     expect(state.connectors[0].meta.messagingMode).toBe('two-way')
   })
+
+  it('sets manual waypoints via connector_waypoints_set', () => {
+    const state = materialize([
+      ...baseEvents,
+      { event: 'connector_added', timestamp: '2', connector },
+      { event: 'connector_waypoints_set', timestamp: '3', connectorId: 'connector-001', waypoints: [
+        { dx: 100, dy: 0, tHint: 0.33 },
+        { dx: 100, dy: 200, tHint: 0.66 },
+      ] },
+    ])
+    expect(state.connectors[0].waypoints).toHaveLength(2)
+    expect(state.connectors[0].waypoints[0]).toEqual({ dx: 100, dy: 0, tHint: 0.33 })
+    expect(state.connectors[0].waypoints[1]).toEqual({ dx: 100, dy: 200, tHint: 0.66 })
+  })
+
+  it('replaces existing waypoints on subsequent connector_waypoints_set', () => {
+    const state = materialize([
+      ...baseEvents,
+      { event: 'connector_added', timestamp: '2', connector },
+      { event: 'connector_waypoints_set', timestamp: '3', connectorId: 'connector-001', waypoints: [{ dx: 50, dy: 0 }] },
+      { event: 'connector_waypoints_set', timestamp: '4', connectorId: 'connector-001', waypoints: [{ dx: 75, dy: 25 }, { dx: 100, dy: 50 }] },
+    ])
+    expect(state.connectors[0].waypoints).toHaveLength(2)
+    expect(state.connectors[0].waypoints[0].dx).toBe(75)
+  })
+
+  it('drops waypoints via connector_waypoints_cleared', () => {
+    const state = materialize([
+      ...baseEvents,
+      { event: 'connector_added', timestamp: '2', connector },
+      { event: 'connector_waypoints_set', timestamp: '3', connectorId: 'connector-001', waypoints: [{ dx: 100, dy: 0 }] },
+      { event: 'connector_waypoints_cleared', timestamp: '4', connectorId: 'connector-001' },
+    ])
+    expect(state.connectors[0].waypoints).toBeUndefined()
+  })
+
+  it('connector_waypoints_set on missing connector is a no-op', () => {
+    const state = materialize([
+      ...baseEvents,
+      { event: 'connector_added', timestamp: '2', connector },
+      { event: 'connector_waypoints_set', timestamp: '3', connectorId: 'does-not-exist', waypoints: [{ dx: 100, dy: 0 }] },
+    ])
+    expect(state.connectors[0].waypoints).toBeUndefined()
+  })
+
+  it('coerces non-array waypoints payload to empty array', () => {
+    const state = materialize([
+      ...baseEvents,
+      { event: 'connector_added', timestamp: '2', connector },
+      { event: 'connector_waypoints_set', timestamp: '3', connectorId: 'connector-001', waypoints: null },
+    ])
+    expect(state.connectors[0].waypoints).toEqual([])
+  })
 })
 
 describe('materializeFromText', () => {

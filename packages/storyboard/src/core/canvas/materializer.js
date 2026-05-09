@@ -16,6 +16,8 @@
  *   connector_added  — append a connector between two widgets
  *   connector_removed — remove a connector by id
  *   connectors_replaced — replace the entire connectors array (bulk update, used by undo/redo)
+ *   connector_waypoints_set     — set/replace manual routing waypoints on a connector
+ *   connector_waypoints_cleared — drop manual routing, revert to auto-routing
  */
 
 /**
@@ -185,6 +187,29 @@ export function materialize(events) {
 
       case 'connectors_replaced': {
         state.connectors = evt.connectors || []
+        break
+      }
+
+      case 'connector_waypoints_set': {
+        // Set/replace manual routing waypoints on a connector.
+        // Waypoints are stored relative to the start anchor at creation time:
+        //   { dx, dy, tHint? }
+        // Render code resolves absolute positions = startAnchorPt + (dx, dy).
+        state.connectors = (state.connectors || []).map((c) => {
+          if (c.id !== evt.connectorId) return c
+          const waypoints = Array.isArray(evt.waypoints) ? evt.waypoints : []
+          return { ...c, waypoints }
+        })
+        break
+      }
+
+      case 'connector_waypoints_cleared': {
+        // Drop manual routing waypoints — connector reverts to auto-routing.
+        state.connectors = (state.connectors || []).map((c) => {
+          if (c.id !== evt.connectorId) return c
+          const { waypoints, ...rest } = c // eslint-disable-line no-unused-vars
+          return rest
+        })
         break
       }
 

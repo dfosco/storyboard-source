@@ -167,3 +167,11 @@ export function removeConnector(canvasId, connectorId) {
 export function updateConnector(canvasId, connectorId, meta) {
   return request('/connector', 'PATCH', { name: canvasId, connectorId, meta })
 }
+
+export function setConnectorWaypoints(canvasId, connectorId, waypoints) {
+  return request('/connector/waypoints', 'POST', { name: canvasId, connectorId, waypoints })
+}
+
+export function clearConnectorWaypoints(canvasId, connectorId) {
+  return request('/connector/waypoints', 'DELETE', { name: canvasId, connectorId })
+}

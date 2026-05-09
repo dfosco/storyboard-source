@@ -1030,7 +1030,7 @@ export function createCanvasHandler(ctx) {
         if (settings) {
           const filtered = {}
           for (const [key, value] of Object.entries(settings)) {
-            if (['title', 'description', 'grid', 'gridSize', 'colorMode', 'dotted', 'centered', 'author', 'snapToGrid'].includes(key)) {
+            if (['title', 'description', 'grid', 'gridSize', 'colorMode', 'dotted', 'centered', 'author', 'snapToGrid', 'connectorStyle'].includes(key)) {
               filtered[key] = value
             }
           }
@@ -1502,6 +1502,101 @@ export function createCanvasHandler(ctx) {
         }
       } catch (err) {
         sendJson(res, 500, { error: `Failed to update connector: ${err.message}` })
+      }
+      return
+    }
+
+    // POST /connector/waypoints — set/replace manual routing waypoints on a connector
+    if (routePath === '/connector/waypoints' && method === 'POST') {
+      const { name, connectorId, waypoints } = body
+
+      if (!name || !connectorId) {
+        sendJson(res, 400, { error: 'Canvas name and connectorId are required' })
+        return
+      }
+      if (!Array.isArray(waypoints)) {
+        sendJson(res, 400, { error: 'waypoints must be an array of { dx, dy, tHint? } objects' })
+        return
+      }
+      // Validate each waypoint
+      for (let i = 0; i < waypoints.length; i++) {
+        const wp = waypoints[i]
+        if (!wp || typeof wp !== 'object' || typeof wp.dx !== 'number' || typeof wp.dy !== 'number') {
+          sendJson(res, 400, { error: `waypoints[${i}] must have numeric dx and dy` })
+          return
+        }
+      }
+
+      const filePath = findCanvasPath(root, name)
+      if (!filePath) {
+        sendJson(res, 404, { error: `Canvas "${name}" not found` })
+        return
+      }
+
+      try {
+        const data = readCanvas(filePath)
+        const exists = (data.connectors || []).some((c) => c.id === connectorId)
+        if (!exists) {
+          sendJson(res, 404, { error: `Connector "${connectorId}" not found in canvas "${name}"` })
+          return
+        }
+
+        // Normalize waypoints — keep only known fields
+        const normalized = waypoints.map((wp) => {
+          const out = { dx: wp.dx, dy: wp.dy }
+          if (typeof wp.tHint === 'number') out.tHint = wp.tHint
+          if (wp.orientation === 'h' || wp.orientation === 'v') out.orientation = wp.orientation
+          return out
+        })
+
+        appendEvent(filePath, {
+          event: 'connector_waypoints_set',
+          timestamp: new Date().toISOString(),
+          connectorId,
+          waypoints: normalized,
+        })
+
+        sendJson(res, 200, { success: true, waypoints: normalized })
+        pushCanvasUpdate(name, filePath, __viteWs)
+      } catch (err) {
+        sendJson(res, 500, { error: `Failed to set waypoints: ${err.message}` })
+      }
+      return
+    }
+
+    // DELETE /connector/waypoints — clear manual routing, revert to auto-routing
+    if (routePath === '/connector/waypoints' && method === 'DELETE') {
+      const { name, connectorId } = body
+
+      if (!name || !connectorId) {
+        sendJson(res, 400, { error: 'Canvas name and connectorId are required' })
+        return
+      }
+
+      const filePath = findCanvasPath(root, name)
+      if (!filePath) {
+        sendJson(res, 404, { error: `Canvas "${name}" not found` })
+        return
+      }
+
+      try {
+        const data = readCanvas(filePath)
+        const exists = (data.connectors || []).some((c) => c.id === connectorId)
+        if (!exists) {
+          sendJson(res, 404, { error: `Connector "${connectorId}" not found in canvas "${name}"` })
+          return
+        }
+
+        appendEvent(filePath, {
+          event: 'connector_waypoints_cleared',
+          timestamp: new Date().toISOString(),
+          connectorId,
+        })
+
+        sendJson(res, 200, { success: true })
+        pushCanvasUpdate(name, filePath, __viteWs)
+      } catch (err) {
+        sendJson(res, 500, { error: `Failed to clear waypoints: ${err.message}` })
       }
       return
     }
