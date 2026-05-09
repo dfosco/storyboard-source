@@ -5,15 +5,30 @@ import {
   getAllLocal,
   subscribeToStorage,
   getStorageSnapshot,
+  STORAGE_PREFIX,
 } from './localStorage.js'
+
+const P = STORAGE_PREFIX
+
+beforeEach(() => {
+  // jsdom's localStorage persists across tests in the same suite.
+  localStorage.clear()
+})
+
+describe('STORAGE_PREFIX (H7 namespacing)', () => {
+  it('is namespaced as storyboard:<devDomain>:<branch>:', () => {
+    // jsdom default: hostname=localhost (no devDomain match), BASE_URL=/ (no branch).
+    expect(STORAGE_PREFIX).toBe('storyboard:default::')
+  })
+})
 
 describe('getLocal', () => {
   it('returns null for missing key', () => {
     expect(getLocal('nonexistent')).toBeNull()
   })
 
-  it('reads stored value using "storyboard:" prefix internally', () => {
-    localStorage.setItem('storyboard:mykey', 'hello')
+  it('reads stored value using P + "" prefix internally', () => {
+    localStorage.setItem(P + 'mykey', 'hello')
     expect(getLocal('mykey')).toBe('hello')
   })
 
@@ -28,12 +43,12 @@ describe('getLocal', () => {
 describe('setLocal', () => {
   it('stores value with prefix', () => {
     setLocal('color', 'blue')
-    expect(localStorage.getItem('storyboard:color')).toBe('blue')
+    expect(localStorage.getItem(P + 'color')).toBe('blue')
   })
 
   it('converts value to string', () => {
     setLocal('num', 42)
-    expect(localStorage.getItem('storyboard:num')).toBe('42')
+    expect(localStorage.getItem(P + 'num')).toBe('42')
   })
 
   it('dispatches storyboard-storage event on window', () => {
@@ -48,9 +63,9 @@ describe('setLocal', () => {
 describe('removeLocal', () => {
   it('removes prefixed key', () => {
     setLocal('temp', 'val')
-    expect(localStorage.getItem('storyboard:temp')).toBe('val')
+    expect(localStorage.getItem(P + 'temp')).toBe('val')
     removeLocal('temp')
-    expect(localStorage.getItem('storyboard:temp')).toBeNull()
+    expect(localStorage.getItem(P + 'temp')).toBeNull()
   })
 
   it('dispatches storyboard-storage event', () => {
@@ -118,7 +133,7 @@ describe('getStorageSnapshot', () => {
     window.dispatchEvent(new Event('storyboard-storage'))
     const snap = getStorageSnapshot()
     // Entries are sorted alphabetically
-    expect(snap).toBe('storyboard:a=1&storyboard:z=3')
+    expect(snap).toBe(P + 'a=1&' + P + 'z=3')
   })
 
   it('caches result (same reference on repeated calls)', () => {
@@ -137,12 +152,12 @@ describe('getStorageSnapshot', () => {
 
     const snap1 = getStorageSnapshot()
     // Directly mutate localStorage and fire event to invalidate
-    localStorage.setItem('storyboard:k', 'changed')
+    localStorage.setItem(P + 'k', 'changed')
     window.dispatchEvent(new Event('storyboard-storage'))
     const snap2 = getStorageSnapshot()
 
     expect(snap1).not.toBe(snap2)
-    expect(snap2).toContain('storyboard:k=changed')
+    expect(snap2).toContain(P + 'k=changed')
     unsub()
   })
 })

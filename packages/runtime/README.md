@@ -28,7 +28,7 @@ CLI commands (`sb dev`, `sb proxy`, …) become thin clients that *request* reso
 
 ## Status
 
-**M5b shipped.** Vite-side guards (H1 base-redirect hardening, H6 HMR namespacing) auto-injected by the runtime. M3 + M2 + M1 already in. M5c/M4/M5/M6 pending.
+**M5c shipped.** Browser-side guards (H5 hashPreserver foreign-branch bypass, H7 localStorage namespacing) live. M5b/M3/M2/M1 already in. M4/M5/M6 pending.
 
 ## Daemon
 

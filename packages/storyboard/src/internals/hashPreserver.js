@@ -32,6 +32,21 @@ export function installHashPreserver(router, basename = '') {
     // Skip external links
     if (targetUrl.origin !== window.location.origin) return
 
+    // H5 fix (closes server-state RCA hypothesis):
+    // If the click points at a different /branch--<x>/, do NOT intercept.
+    // Letting the browser do a full navigation routes the request through
+    // Caddy to the correct devserver instead of feeding a foreign path
+    // into our basename-aware router (which would prepend `base` and
+    // produce /branch--A/branch--B/...).
+    const foreignBranch = targetUrl.pathname.match(/^\/branch--([a-z0-9._-]+)(\/|$)/i)
+    if (foreignBranch) {
+      const ownBranch = base.match(/\/branch--([a-z0-9._-]+)$/i)?.[1] ?? null
+      if (foreignBranch[1] !== ownBranch) {
+        // Full navigation through Caddy — no preventDefault.
+        return
+      }
+    }
+
     // Determine the hash to carry forward
     const currentHash = window.location.hash
     const hasCurrentHash = currentHash && currentHash !== '#'

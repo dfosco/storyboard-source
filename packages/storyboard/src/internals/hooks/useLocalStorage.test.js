@@ -1,6 +1,7 @@
 import { renderHook, act } from '@testing-library/react'
 import { seedTestData, createWrapper, TEST_SCENES } from '../../test-utils.js'
 import { useLocalStorage } from './useLocalStorage.js'
+import { STORAGE_PREFIX } from '../../core/session/localStorage.js'
 
 beforeEach(() => {
   seedTestData()
@@ -26,7 +27,7 @@ describe('useLocalStorage', () => {
   })
 
   it('reads from localStorage when present', () => {
-    localStorage.setItem('storyboard:settings.theme', 'light')
+    localStorage.setItem(STORAGE_PREFIX + 'settings.theme', 'light')
     const { result } = renderHook(() => useLocalStorage('settings.theme'), {
       wrapper,
     })
@@ -34,7 +35,7 @@ describe('useLocalStorage', () => {
   })
 
   it('hash override takes priority over localStorage', () => {
-    localStorage.setItem('storyboard:settings.theme', 'light')
+    localStorage.setItem(STORAGE_PREFIX + 'settings.theme', 'light')
     window.location.hash = 'settings.theme=high-contrast'
     const { result } = renderHook(() => useLocalStorage('settings.theme'), {
       wrapper,
@@ -51,11 +52,11 @@ describe('useLocalStorage', () => {
       result.current[1]('light')
     })
 
-    expect(localStorage.getItem('storyboard:settings.theme')).toBe('light')
+    expect(localStorage.getItem(STORAGE_PREFIX + 'settings.theme')).toBe('light')
   })
 
   it('clearValue removes from localStorage', () => {
-    localStorage.setItem('storyboard:settings.theme', 'light')
+    localStorage.setItem(STORAGE_PREFIX + 'settings.theme', 'light')
     const { result } = renderHook(() => useLocalStorage('settings.theme'), {
       wrapper,
     })
@@ -64,7 +65,7 @@ describe('useLocalStorage', () => {
       result.current[2]()
     })
 
-    expect(localStorage.getItem('storyboard:settings.theme')).toBeNull()
+    expect(localStorage.getItem(STORAGE_PREFIX + 'settings.theme')).toBeNull()
   })
 
   it('throws when used outside StoryboardProvider', () => {

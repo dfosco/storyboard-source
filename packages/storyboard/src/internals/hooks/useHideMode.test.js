@@ -1,6 +1,7 @@
 import { renderHook, act } from '@testing-library/react'
 import { seedTestData } from '../../test-utils.js'
 import { useHideMode } from './useHideMode.js'
+import { STORAGE_PREFIX } from '../../core/session/localStorage.js'
 
 beforeEach(() => {
   seedTestData()
@@ -31,7 +32,7 @@ describe('useHideMode', () => {
 
   it('after calling show(), isHidden becomes false', () => {
     // Activate hide mode directly via localStorage to set known state
-    localStorage.setItem('storyboard:__hide__', '1')
+    localStorage.setItem(STORAGE_PREFIX + '__hide__', '1')
     const { result } = renderHook(() => useHideMode())
     expect(result.current.isHidden).toBe(true)
 
