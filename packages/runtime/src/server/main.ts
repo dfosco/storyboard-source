@@ -41,11 +41,12 @@ export async function startDaemon(): Promise<void> {
     shuttingDown = true
     // eslint-disable-next-line no-console
     console.log(`[storyboard-runtime] received ${signal}, shutting down…`)
+    // Kill all spawned Vite children before closing the HTTP server.
+    try { (globalThis as { __storyboardOrchestratorShutdown?: () => void }).__storyboardOrchestratorShutdown?.() } catch { /* */ }
     server.close(() => {
       release()
       process.exit(0)
     })
-    // Backstop — if connections won't close in 5s, kill anyway.
     setTimeout(() => {
       release()
       process.exit(0)

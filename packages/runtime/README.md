@@ -28,7 +28,7 @@ CLI commands (`sb dev`, `sb proxy`, …) become thin clients that *request* reso
 
 ## Status
 
-**M2 ProxyController landed.** The runtime owns Caddy admin writes; legacy `caddy reload` is no longer used for upserts. M3+ pending. See `.agents/plans/storyboard-runtime.md`.
+**M3 + M3b landed.** Runtime can spawn Vite, manage leases, enforce slot uniqueness, and refuse the default devDomain. M2 ProxyController + M1 daemon already in. M4/M5/M6 pending.
 
 ## Daemon
 

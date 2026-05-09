@@ -1,6 +1,12 @@
 import { z } from 'zod'
 
 /**
+ * The legacy/default devDomain. Acquire requests using this value are rejected
+ * unless `allowDefaultDomain` is set — see DevServerOrchestrator for details.
+ */
+export const DEFAULT_DEV_DOMAIN = 'storyboard'
+
+/**
  * A devDomain identifies a Storyboard repo on this machine.
  *
  * The literal default value `"storyboard"` is intentionally *not* allowed by

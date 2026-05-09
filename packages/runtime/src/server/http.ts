@@ -17,6 +17,12 @@ import {
 } from '../schema/index.js'
 import { ProxyController } from '../proxy/index.js'
 import { CaddyUnreachableError } from '../proxy/caddy.js'
+import {
+  DevServerOrchestrator,
+  ForbiddenDefaultDomainError,
+  LeaseNotFoundError,
+  DevServerSpawnError,
+} from '../devserver/index.js'
 import { RUNTIME_PORT, RUNTIME_HOST, RUNTIME_VERSION } from './constants.js'
 
 /**
@@ -34,17 +40,18 @@ import { RUNTIME_PORT, RUNTIME_HOST, RUNTIME_VERSION } from './constants.js'
 const startedAt = Date.now()
 
 /**
- * Process-wide singleton. The runtime is one-per-machine, so a module-level
- * controller is fine — there's never more than one instance per node process.
- * Tests inject their own via createRuntimeServer({ proxyController }).
+ * Process-wide singletons. The runtime is one-per-machine, so module-level
+ * controllers are fine — there's never more than one instance per node process.
+ * Tests inject their own via createRuntimeServer({ proxyController, orchestrator }).
  */
 let proxyController = new ProxyController()
+let orchestrator: DevServerOrchestrator = new DevServerOrchestrator({ proxy: proxyController })
 
-function sendJson<S extends z.ZodTypeAny>(
+function sendJson(
   res: http.ServerResponse,
   status: number,
-  body: z.output<S>,
-  schema?: S,
+  body: unknown,
+  schema?: z.ZodTypeAny,
 ): void {
   if (schema && process.env.NODE_ENV !== 'production') {
     schema.parse(body)
@@ -112,21 +119,58 @@ routes.set('GET /health', (_req, res) => {
 routes.set('POST /devserver/acquire', async (req, res) => {
   const body = await parseBody(req, res, AcquireRequest)
   if (!body) return
-  // M3 implements this. The schema is real; the orchestrator is not.
-  sendError(res, 501, 'NOT_IMPLEMENTED', 'devserver/acquire is implemented in M3 (DevServerOrchestrator)')
-  void AcquireResponse
+  try {
+    const result = await orchestrator.acquire(body)
+    sendJson(res, 200, result, AcquireResponse)
+  } catch (err) {
+    if (err instanceof ForbiddenDefaultDomainError) {
+      sendError(res, 403, 'FORBIDDEN_DEFAULT_DOMAIN', err.message)
+      return
+    }
+    if (err instanceof DevServerSpawnError) {
+      sendError(res, 500, 'INTERNAL', err.message, { stderr: err.stderr })
+      return
+    }
+    if (err instanceof CaddyUnreachableError) {
+      sendError(res, 503, 'CADDY_UNREACHABLE', err.message)
+      return
+    }
+    sendError(res, 500, 'INTERNAL', (err as Error).message)
+  }
 })
 
 routes.set('POST /devserver/release', async (req, res) => {
   const body = await parseBody(req, res, ReleaseRequest)
   if (!body) return
-  sendError(res, 501, 'NOT_IMPLEMENTED', 'devserver/release is implemented in M3')
+  try {
+    orchestrator.release(body.leaseId)
+    sendJson(res, 200, { ok: true })
+  } catch (err) {
+    if (err instanceof LeaseNotFoundError) {
+      sendError(res, 404, 'NOT_FOUND', err.message)
+      return
+    }
+    sendError(res, 500, 'INTERNAL', (err as Error).message)
+  }
 })
 
 routes.set('POST /devserver/renew', async (req, res) => {
   const body = await parseBody(req, res, RenewRequest)
   if (!body) return
-  sendError(res, 501, 'NOT_IMPLEMENTED', 'devserver/renew is implemented in M3')
+  try {
+    const lease = orchestrator.renew(body.leaseId, body.ttlSeconds)
+    sendJson(res, 200, lease)
+  } catch (err) {
+    if (err instanceof LeaseNotFoundError) {
+      sendError(res, 404, 'NOT_FOUND', err.message)
+      return
+    }
+    sendError(res, 500, 'INTERNAL', (err as Error).message)
+  }
+})
+
+routes.set('GET /devserver/list', (_req, res) => {
+  sendJson(res, 200, { devServers: orchestrator.list() })
 })
 
 routes.set('GET /proxy/state', async (_req, res) => {
@@ -199,8 +243,14 @@ routes.set('GET /pool/status', (_req, res) => {
   sendJson(res, 200, body, PoolStatus)
 })
 
-export function createRuntimeServer(opts: { proxyController?: ProxyController } = {}): http.Server {
+export function createRuntimeServer(opts: {
+  proxyController?: ProxyController
+  orchestrator?: DevServerOrchestrator
+} = {}): http.Server {
   if (opts.proxyController) proxyController = opts.proxyController
+  if (opts.orchestrator) orchestrator = opts.orchestrator
+  // Expose orchestrator shutdown for the daemon's signal handler.
+  ;(globalThis as { __storyboardOrchestratorShutdown?: () => void }).__storyboardOrchestratorShutdown = () => orchestrator.shutdown()
   const server = http.createServer(async (req, res) => {
     try {
       const url = new URL(req.url ?? '/', `http://${RUNTIME_HOST}:${RUNTIME_PORT}`)
