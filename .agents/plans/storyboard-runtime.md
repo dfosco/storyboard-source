@@ -69,9 +69,9 @@ Introduce a single-machine **Storyboard Runtime** daemon owning proxy + devserve
 | M1 scaffold + daemon | `worktrees/0.5.0--runtime` | `0.5.0--runtime` | ✅ pushed `eb70a24c2` |
 | M2 ProxyController | `worktrees/0.5.0--runtime--m2` | `0.5.0--runtime--m2` | ✅ local `beac800f2` |
 | M3 + M3b orchestrator | `worktrees/0.5.0--runtime--m3` | `0.5.0--runtime--m3` | ✅ local `e553403c5` (smoke tested by user) |
-| **M5b Vite guards** | `worktrees/0.5.0--runtime--m5b` | `0.5.0--runtime--m5b` | ✅ local `05fb773bf` |
-| M5c Browser guards | `worktrees/0.5.0--runtime--m5c` | — | ⏳ next |
-| M4 Hot pool | `worktrees/0.5.0--runtime--m4` | — | ⏳ |
+| M5b Vite guards | `worktrees/0.5.0--runtime--m5b` | `0.5.0--runtime--m5b` | ✅ local `05fb773bf` |
+| **M5c Browser guards** | `worktrees/0.5.0--runtime--m5c` | `0.5.0--runtime--m5c` | ✅ local `b1a8bb8d0` |
+| M4 Hot pool | `worktrees/0.5.0--runtime--m4` | — | ⏳ next |
 | M5 Per-domain origin | `worktrees/0.5.0--runtime--m5` | — | ⏳ |
 | M6 Docs + e2e | `worktrees/0.5.0--runtime--m6` | — | ⏳ |
 
