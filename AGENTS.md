@@ -62,6 +62,12 @@ The default location is in `.agents/plans`, but the user may ask for a specific 
 
 ## Skills
 
+> **NOTE: Storyboard Runtime (`packages/runtime/`)** is the single source of
+> truth for proxy + dev-server + port lifecycle on this machine. CLI commands
+> are migrating to be thin clients of `127.0.0.1:4321`. Architecture details
+> at `.agents/architecture/runtime.md`. Do **not** add new code that writes
+> to the Caddy admin API or spawns `vite` directly — go through the runtime.
+
 - **canvas** (`.agents/skills/canvas/SKILL.md`) - **Primary reference for all canvas operations.** Widget CRUD, positioning (`--near`, collision detection), batch ops, layout, spatial queries. Always invoke this skill for canvas work.
 
 - **create** (`.agents/skills/create/SKILL.md`) — Walks through creating Storyboard assets: prototype, external prototype, flow, page, canvas, object, or record.

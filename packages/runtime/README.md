@@ -28,7 +28,7 @@ CLI commands (`sb dev`, `sb proxy`, …) become thin clients that *request* reso
 
 ## Status
 
-**M5 shipped.** Per-devDomain origin enforcement: slot-CWD conflict refusal + Vite Host-header guard. Through M5, every RCA hypothesis is closed. M6 docs/changeset/e2e remains.
+**Runtime complete (M1–M6).** See `.agents/architecture/runtime.md` for the architecture overview, invariants, and bug-class closure table.
 
 ## Daemon
 
