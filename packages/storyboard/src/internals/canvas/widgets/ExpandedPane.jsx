@@ -29,6 +29,29 @@ const MIN_PANE_WIDTH_PX = 120
 const MIN_PANE_HEIGHT_PX = 80
 
 /**
+ * Read theme attributes + CSS custom properties from the canvas scroll element
+ * so the portal (which lives on document.body) renders with the same color mode
+ * and Primer tokens. Without this, dark/dimmed canvases would show a light modal.
+ */
+function readCanvasThemePortalProps() {
+  if (typeof document === 'undefined') return { attrs: {}, style: {} }
+  const scroll = document.querySelector('[data-storyboard-canvas-scroll]')
+  if (!scroll) return { attrs: {}, style: {} }
+  const attrs = {}
+  for (const name of ['data-color-mode', 'data-light-theme', 'data-dark-theme', 'data-sb-canvas-theme']) {
+    const v = scroll.getAttribute(name)
+    if (v) attrs[name] = v
+  }
+  const style = {}
+  const inline = scroll.style
+  for (let i = 0; i < inline.length; i++) {
+    const prop = inline[i]
+    if (prop.startsWith('--')) style[prop] = inline.getPropertyValue(prop)
+  }
+  return { attrs, style }
+}
+
+/**
  * @typedef {Object} ReactPane
  * @property {string} id — stable identifier (widgetId)
  * @property {string} label — display label for top bar
@@ -377,6 +400,14 @@ export default function ExpandedPane({ initialPanes, initialLayout, variant = 'm
     )
   }
 
+  // ── Capture canvas theme so portal renders with correct colors ──
+  const [themePortalProps, setThemePortalProps] = useState(() => readCanvasThemePortalProps())
+  useEffect(() => {
+    function refresh() { setThemePortalProps(readCanvasThemePortalProps()) }
+    document.addEventListener('storyboard:theme:changed', refresh)
+    return () => document.removeEventListener('storyboard:theme:changed', refresh)
+  }, [])
+
   // ── Single-pane modal variant ──
   if (!isSplit && variant === 'modal') {
     const pane = allPanes[0]
@@ -388,6 +419,8 @@ export default function ExpandedPane({ initialPanes, initialLayout, variant = 'm
         onPointerDown={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
         onWheel={(e) => e.stopPropagation()}
+        {...themePortalProps.attrs}
+        style={themePortalProps.style}
       >
         <div className={styles.modalContainer} onClick={(e) => e.stopPropagation()}>
           <ExpandedPaneTopBar
@@ -421,6 +454,8 @@ export default function ExpandedPane({ initialPanes, initialLayout, variant = 'm
         onKeyDown={(e) => e.stopPropagation()}
         onWheel={(e) => e.stopPropagation()}
         onAnimationEnd={() => { if (isClosing && !closedRef.current) { closedRef.current = true; onClose() } }}
+        {...themePortalProps.attrs}
+        style={themePortalProps.style}
       >
         <button
           className={styles.immersiveCloseBtn}
@@ -444,6 +479,8 @@ export default function ExpandedPane({ initialPanes, initialLayout, variant = 'm
       onPointerDown={(e) => e.stopPropagation()}
       onKeyDown={(e) => e.stopPropagation()}
       onWheel={(e) => e.stopPropagation()}
+      {...themePortalProps.attrs}
+      style={themePortalProps.style}
     >
       {isSplit ? (
         <div

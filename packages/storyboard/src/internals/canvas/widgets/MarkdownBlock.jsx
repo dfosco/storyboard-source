@@ -330,14 +330,16 @@ export function ExpandedMarkdownEditor({ content, onUpdate, editing, onToggleEdi
 
   if (editing && canEdit) {
     return (
-      <textarea
-        ref={textareaRef}
-        className={styles.expandedEditor}
-        value={content}
-        onChange={(e) => onUpdate({ content: e.target.value })}
-        onKeyDown={(e) => { if (e.key === 'Escape') onToggleEdit?.() }}
-        placeholder="Write markdown…"
-      />
+      <div className={styles.expandedEditorWrap}>
+        <textarea
+          ref={textareaRef}
+          className={styles.expandedEditor}
+          value={content}
+          onChange={(e) => onUpdate({ content: e.target.value })}
+          onKeyDown={(e) => { if (e.key === 'Escape') onToggleEdit?.() }}
+          placeholder="Write markdown…"
+        />
+      </div>
     )
   }
 
