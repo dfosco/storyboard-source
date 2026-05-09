@@ -1,0 +1,10 @@
+{
+  "widgetId": "agent-fx9d89",
+  "canvasId": "storyboarding/terminal-bus",
+  "prettyName": "systems-thinker",
+  "timestamp": "2026-05-03T08:30:48.248Z",
+  "cols": 89,
+  "rows": 32,
+  "paneContent": "┌  storyboard terminal\n│\n◇  How would you like to start?\n│  ✦ Start a new agent session\n│\n◆  Which agent?\n│  ● ✦ Start a new Copilot CLI session\n│  ○ ✦ Start a new Claude Code session\n│  ○ ✦ Start a new Codex CLI session\n└\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+  "scrollback": "┌  storyboard terminal\r\n│\r\n◇  How would you like to start?\r\n│  ✦ Start a new agent session\r\n│\r\n◆  Which agent?\r\n│  ● ✦ Start a new Copilot CLI session\r\n│  ○ ✦ Start a new Claude Code session\r\n│  ○ ✦ Start a new Codex CLI session\r\n└\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n┌  storyboard terminal\r\n│\r\n◇  How would you like to start?\r\n│  ✦ Start a new agent session\r\n│\r\n◆  Which agent?\r\n│  ● ✦ Start a new Copilot CLI session\r\n│  ○ ✦ Start a new Claude Code session\r\n│  ○ ✦ Start a new Codex CLI session\r\n└\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n┌  storyboard terminal\r\n│\r\n◇  How would you like to start?\r\n│  ✦ Start a new agent session\r\n│\r\n◆  Which agent?\r\n│  ● ✦ Start a new Copilot CLI session\r\n│  ○ ✦ Start a new Claude Code session\r\n│  ○ ✦ Start a new Codex CLI session\r\n└\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n┌  storyboard terminal\r\n│\r\n◇  How would you like to start?\r\n│  ✦ Start a new agent session\r\n│\r\n◆  Which agent?\r\n│  ● ✦ Start a new Copilot CLI session\r\n│  ○ ✦ Start a new Claude Code session\r\n│  ○ ✦ Start a new Codex CLI session\r\n└\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n"
+}

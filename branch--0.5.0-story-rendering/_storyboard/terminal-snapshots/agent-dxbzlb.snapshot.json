@@ -1,0 +1,10 @@
+{
+  "widgetId": "agent-dxbzlb",
+  "canvasId": "viewfinder-redesign/viewfinder-redesign",
+  "prettyName": "rust-kite",
+  "timestamp": "2026-05-02T20:25:50.379Z",
+  "cols": 89,
+  "rows": 32,
+  "paneContent": "\n░▒▓   …/0.5.0--messaging-bus   0.5.0--messaging-bus $!   22:25  \n❯\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+  "scrollback": "\u001b[?996n\u001b[>c\u001b[>q\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n[sb-0e0bea0:zsh*                           \"Daniels-MacBook-Pro\" 22:25 02-May-26\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n[sb-0e0bea0:zsh*                           \"Daniels-MacBook-Pro\" 22:25 02-May-26"
+}

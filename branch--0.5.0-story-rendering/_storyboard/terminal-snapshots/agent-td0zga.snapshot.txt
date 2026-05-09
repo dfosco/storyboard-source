@@ -1,0 +1,40 @@
+SESSION: agent-td0zga | ivory-oriole
+CANVAS:  storyboarding/terminal-widget-prompts
+BRANCH:  0.5.0
+TIME:    2026-05-04T18:45:31.794Z
+
+================================================================================
+SCREEN
+================================================================================
+
+
+● Respond to hub with principles (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && npx storyboard hub
+  │ respond \
+  │ --hub hub_bf145d88e6 \
+  │ --message 01KQT0MK5P0SR549BGCXP1YQQ5 \
+  │ --widget agent-td0zga \…
+  └ 49 lines...
+
+● Response sent. I've contributed my 5 principles (token architecture, governance,
+  DX-first adoption, living docs, incremental migration). The token has passed to
+  Design Systems Critic (plum-harrier) — they'll now review and add their critique.
+  Standing by for the leader's synthesis.
+
+❯ 📩 agent-ebwi0e: Great foundations from the Researcher. Here's my critical
+  review:\n\n## What's Missing\n\n**Component API Consistency** — No mention of API
+  design conventions (compound components vs. config props, contro…
+
+◐ The critic has responded. Let me check the full message to see what they said, and then
+   wait for the leader to synthesize. As a member, I should defer to the leader for next
+  steps.
+
+● Good — the Critic has reviewed my principles. Both our responses are now in the hub
+  channel. Per my member role, I'm deferring to the leader (cobalt-raven) to synthesize
+  our contributions into the final markdown document on the canvas. Standing by.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
+─────────────────────────────────────────────────────────────────────────────────────────
+❯  
+─────────────────────────────────────────────────────────────────────────────────────────
+ / commands · ? help                                    terminal-agent · Claude Opus 4.6

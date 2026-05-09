@@ -1,0 +1,1 @@
+var t=Object.defineProperty;var r=(e,o)=>t(e,"name",{value:o,configurable:!0});import{b as a}from"./vendor-react-B-2iXU3a.js";function i(){return a.useEffect(()=>{const e="/storyboard/branch--0.5.0-story-rendering/".replace(/\/+$/,"");window.location.replace(`${e}/workspace${window.location.hash}`)},[]),null}r(i,"ViewfinderRedirect");export{i as default};

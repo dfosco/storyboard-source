@@ -1,0 +1,118 @@
+SESSION: agent-h73ddo | sand-heron
+CANVAS:  viewfinder-redesign/viewfinder-redesign
+BRANCH:  0.5.0--messaging-bus
+TIME:    2026-05-02T20:25:50.254Z
+
+================================================================================
+SCREEN
+================================================================================
+
+
+0.5.0--messaging-bus on  0.5.0--messaging-bus [$!] via  v22.22.0 
+❯ storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "viewfinder-redesi
+gn/viewfinder-redesign" --name "sand-heron" --startup "copilot --agent terminal-agent"
+│
+●  name: sand-heron  branch: 0.5.0--messaging-bus  canvas: viewfinder-redesign
+│
+└  Starting Copilot CLI...
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+[?996n[>c[>q
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[sb-c5eccc0:tmux*                                   "Daniels-MacBook-Pro" 22:25 02-May-26
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[sb-c5eccc0:tmux*                                   "Daniels-MacBook-Pro" 22:25 02-May-26                                                                                         
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+░▒▓   …/0.5.0--messaging-bus   0.5.0--messaging-bus $!   22:25  
+❯ export STORYBOARD_WIDGET_ID="agent-h73ddo" && export STORYBOARD_CANVAS_ID="viewfinder-redesign/viewfinder-redesign" && export STORYBOARD_BRANCH="0.5.0--messaging-bus" && export STORYBOARD_SERVER_URL="http://localhost:1240" && export STARSHIP_CONFIG="/dev/null" && export POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD="true" && export ZSH_THEME="" && export TERM_PROGRAM="storyboard" && export PATH="/Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus/.storyboard/terminals/bin:/Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus/node_modules/.bin:/Users/dfosco/workspace/storyboard-core/wworktrees/0.5.0--messaging-bus/node_modules/.bin:/Users/dfosco/workspace/storyboard-core/worktrees/node_modules/.bin:/Users/dfosco/workspace/storyboard-core/node_modules/.bin:/Users/dfosco/workspace/node_modules/.bin:/Users/dfosco/node_modules/.bin:/Users/node_modules/.bin:/node_modules/.bin:/opt/homebr

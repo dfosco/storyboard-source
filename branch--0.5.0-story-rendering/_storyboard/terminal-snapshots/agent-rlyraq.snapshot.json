@@ -1,0 +1,10 @@
+{
+  "widgetId": "agent-rlyraq",
+  "canvasId": "viewfinder-redesign/viewfinder-redesign",
+  "prettyName": "amber-avocet",
+  "timestamp": "2026-04-26T17:35:40.845Z",
+  "cols": 89,
+  "rows": 32,
+  "paneContent": "\n4.3.0--prompt-widget on  4.3.0--prompt-widget [$✘!?] via  v22.22.0 \n❯ storyboard terminal-welcome --branch \"4.3.0--prompt-widget\" --canvas \"viewfinder-redesi\ngn/viewfinder-redesign\" --name \"amber-avocet\" --startup \"copilot --agent terminal-agent\"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+  "scrollback": "\u001b[?996n\u001b[>c\u001b[>q\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n[sb-4caa120:zsh*                                    \"Daniels-MacBook-Pro\" 19:35 26-Apr-26\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n[sb-4caa120:zsh*                                    \"Daniels-MacBook-Pro\" 19:35 26-Apr-26\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n                                                                                         \r\n\r\n░▒▓   …/4.3.0--prompt-widget   4.3.0--prompt-widget $✘!?   19:35  \r\n❯ export STORYBOARD_WIDGET_ID=\"agent-rlyraq\" && export STORYBOARD_CANVAS_ID=\"viewfinder-redesign/viewfinder-redesign\" && export STORYBOARD_BRANCH=\"4.3.0--prompt-widget\" && export STORYBOARD_SERVER_URL=\"http://localhost:1236\" && export STARSHIP_CONFIG=\"/dev/null\" && ex\rxport POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=\"tru\u001b("
+}

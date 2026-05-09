@@ -1,0 +1,318 @@
+SESSION: agent-nh16q8 | azure-raven
+CANVAS:  storyboarding/terminal-bus
+BRANCH:  0.5.0--messaging-bus
+TIME:    2026-05-03T18:18:37.728Z
+
+================================================================================
+SCREEN
+================================================================================
+
+╭───────────────────────────────────────────────────────────────────────────────────────╮
+│                                         ╭─╮╭─╮                                        │
+│                                         ╰─╯╰─╯                                        │
+│                                         █ ▘▝ █                                        │
+│                                          ▔▔▔▔                                         │
+│                                 GitHub Copilot v1.0.40                                │
+│                          Copilot uses AI. Check for mistakes.                         │
+│                                                                                       │
+╰───────────────────────────────────────────────────────────────────────────────────────╯
+
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+
+
+
+
+
+╭───────────────────────────────────────────────────────────────────────────────────────╮
+│ Session sync                                                                          │
+│ Sync sessions to GitHub.com so you can pick up where you left off, on any device.     │
+│ ───────────────────────────────────────────────────────────────────────────────────── │
+│ ❯ 1. Private: synced to my GitHub account                                             │
+│   2. Repository: synced and visible to repository collaborators                       │
+│   3. Local: stored on this device                                                     │
+│                                                                                       │
+│   Remember for: [All repositories]   This repository    This session                  │
+│                                                                                       │
+│ Enter to select · ←→ to change "remember for" · ↑↓ to navigate · Esc to dismiss       │
+╰───────────────────────────────────────────────────────────────────────────────────────╯
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+[?996n[>c[>q
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[sb-0e92060:zsh*                           "Daniels-MacBook-Pro" 20:18 03-May-26
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[sb-0e92060:zsh*                           "Daniels-MacBook-Pro" 20:18 03-May-26
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[sb-0e92060:zsh*                                    "Daniels-MacBook-Pro" 20:18 03-May-26
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                         
+
+░▒▓   …/0.5.0--messaging-bus   0.5.0--messaging-bus $!   20:18  
+❯ export STORYBOARD_WIDGET_ID="agent-nh16q8" && export STORYBOARD_CANVAS_ID="storyboarding/terminal-bus" && export STORYBOARD_BRANCH="0.5.0--messaging-bus" && export STORYBOARD_SEERVER_URL="http://localhost:1235" && export STARSHIP_CONFIG="/dev/null" && export POWERLEVVEL9K_DISABLE_CONFIGURATION_WIZARD="true" && export ZSH_THEME="" && export TERM_PROGRAM="sstoryboard" && export COLORTERM="truecolor" && export PATH="/Users/dfosco/workspace/storybboard-core/worktrees/0.5.0--messaging-bus/.storyboard/terminals/bin:/Users/dfosco/workspace/storyboard-core/worktrees/0.5.0--messaging-bus/node_modules/.bin:/Users/dfosco/workspacce/storyboard-core/worktrees/0.5.0--messaging-bus/node_modules/.bin:/Users/dfosco/workspacce/storyboard-core/worktrees/node_modules/.bin:/Users/dfosco/workspace/storyboard-core/nodde_modules/.bin:/Users/dfosco/workspace/node_modules/.bin:/Users/dfosco/node_modules/.bin::/Users/node_modules/.bin:/node_modules/.bin:/opt/homebrew/Cellar/node@22/22.22.0/lib/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/Users/dfosco/.local/bin:/Users/dfosco/.bun/bin:/usr/local/opt/python/libexec/bin:/opt/homebrew/opt/node@22/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/opt/pkg/env/active/bin::/opt/pmk/env/global/bin:/Applications/VMware Fusion.app/Contents/Public:/Users/dfosco/.caargo/bin:/Applications/Ghostty.app/Contents/MacOS" && clear
+                                                                                         storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "azure-raven" --startup "copilot --agent terminal-agent"
+
+
+0.5.0--messaging-bus on  0.5.0--messaging-bus [$!?] via  v22.22.0 
+❯ storyboard terminal-welcome --branch "0.5.0--messaging-bus" --canvas "storyboarding/terminal-bus" --name "azure-raven" --startup "copilot --agent terminal-agent"
+│
+●  name: azure-raven  branch: 0.5.0--messaging-bus  canvas: terminal-bus
+│
+└  Starting Copilot CLI...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+╭───────────────────────────────────────────────────────────────────────────────────────╮│ Session sync                                                                          ││ Sync sessions to GitHub.com so you can pick up where you left off, on any device.     ││ ───────────────────────────────────────────────────────────────────────────────────── ││ ❯ 1. Private: synced to my GitHub account                                             ││   2. Repository: synced and visible to repository collaborators                       ││   3. Local: stored on this device                                                     ││                                                                                       ││   Remember for: [All repositories]   This repository    This session                  ││                                                                                       ││ Enter to select · ←→ to change "remember for" · ↑↓ to navigate · Esc to dismiss       │╰───────────────────────────────────────────────────────────────────────────────────────╯╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+
+
+
+
+
+
+
+
+
+╭───────────────────────────────────────────────────────────────────────────────────────╮│ Session sync                                                                          ││ Sync sessions to GitHub.com so you can pick up where you left off, on any device.     ││ ───────────────────────────────────────────────────────────────────────────────────── ││ ❯ 1. Private: synced to my GitHub account                                             ││   2. Repository: synced and visible to repository collaborators                       ││   3. Local: stored on this device                                                     ││                                                                                       ││   Remember for: [All repositories]   This repository    This session                  ││                                                                                       ││ Enter to select · ←→ to change "remember for" · ↑↓ to navigate · Esc to dismiss       │╰───────────────────────────────────────────────────────────────────────────────────────╯! Failed to load 1 skill. Run /skills for more details.│                                         █ ╴╶ █                                        │● Selected custom agent: terminal-agent│                                         █    █                                        ││                                         █ ╴╶ █                                        ││                                         █ ▘▝ █                                        │╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+
+
+
+
+
+╭───────────────────────────────────────────────────────────────────────────────────────╮│ Session sync                                                                          ││ Sync sessions to GitHub.com so you can pick up where you left off, on any device.     ││ ───────────────────────────────────────────────────────────────────────────────────── ││ ❯ 1. Private: synced to my GitHub account                                             ││   2. Repository: synced and visible to repository collaborators                       ││   3. Local: stored on this device                                                     ││                                                                                       ││   Remember for: [All repositories]   This repository    This session                  ││                                                                                       ││ Enter to select · ←→ to change "remember for" · ↑↓ to navigate · Esc to dismiss       │╰───────────────────────────────────────────────────────────────────────────────────────╯│                                         █ ╴╶ █                                        ││                                         █    █                                        ││                                         █ ╴╶ █                                        ││                                         █ ▘▝ █                                        ││                                         █ ╴╶ █                                        ││                                         █    █                                        ││                                         █ ╴╶ █                                        ││                                         █ ▘▝ █                                        │╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+
+
+
+
+
+╭───────────────────────────────────────────────────────────────────────────────────────╮│ Session sync                                                                          ││ Sync sessions to GitHub.com so you can pick up where you left off, on any device.     ││ ───────────────────────────────────────────────────────────────────────────────────── ││ ❯ 1. Private: synced to my GitHub account                                             ││   2. Repository: synced and visible to repository collaborators                       ││   3. Local: stored on this device                                                     ││                                                                                       ││   Remember for: [All repositories]   This repository    This session                  ││                                                                                       ││ Enter to select · ←→ to change "remember for" · ↑↓ to navigate · Esc to dismiss       │╰───────────────────────────────────────────────────────────────────────────────────────╯╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+
+
+
+
+
+╭───────────────────────────────────────────────────────────────────────────────────────╮│ Session sync                                                                          ││ Sync sessions to GitHub.com so you can pick up where you left off, on any device.     ││ ───────────────────────────────────────────────────────────────────────────────────── ││ ❯ 1. Private: synced to my GitHub account                                             ││   2. Repository: synced and visible to repository collaborators                       ││   3. Local: stored on this device                                                     ││                                                                                       ││   Remember for: [All repositories]   This repository    This session                  ││                                                                                       ││ Enter to select · ←→ to change "remember for" · ↑↓ to navigate · Esc to dismiss       │╰───────────────────────────────────────────────────────────────────────────────────────╯╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+
+
+
+
+
+╭───────────────────────────────────────────────────────────────────────────────────────╮│ Session sync                                                                          ││ Sync sessions to GitHub.com so you can pick up where you left off, on any device.     ││ ───────────────────────────────────────────────────────────────────────────────────── ││ ❯ 1. Private: synced to my GitHub account                                             ││   2. Repository: synced and visible to repository collaborators                       ││   3. Local: stored on this device                                                     ││                                                                                       ││   Remember for: [All repositories]   This repository    This session                  ││                                                                                       ││ Enter to select · ←→ to change "remember for" · ↑↓ to navigate · Esc to dismiss       │╰───────────────────────────────────────────────────────────────────────────────────────╯╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+
+
+
+
+
+╭───────────────────────────────────────────────────────────────────────────────────────╮│ Session sync                                                                          ││ Sync sessions to GitHub.com so you can pick up where you left off, on any device.     ││ ───────────────────────────────────────────────────────────────────────────────────── ││ ❯ 1. Private: synced to my GitHub account                                             ││   2. Repository: synced and visible to repository collaborators                       ││   3. Local: stored on this device                                                     ││                                                                                       ││   Remember for: [All repositories]   This repository    This session                  ││                                                                                       ││ Enter to select · ←→ to change "remember for" · ↑↓ to navigate · Esc to dismiss       │╰───────────────────────────────────────────────────────────────────────────────────────╯
