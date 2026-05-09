@@ -15,6 +15,7 @@ import {
   slotKey,
 } from '../schema/index.js'
 import { ProxyController } from '../proxy/index.js'
+import { HotPool } from '../pool/index.js'
 import { PortPool } from './port-pool.js'
 
 /**
@@ -89,6 +90,9 @@ export class DevServerSpawnError extends Error {
 export interface DevServerOrchestratorOptions {
   proxy: ProxyController
   ports?: PortPool
+  /** Optional HotPool wrapping `ports` — when provided, acquire goes
+   *  through the warm ring first to avoid the OS-level probe loop. */
+  hotPool?: HotPool
   /** Override Vite spawn for tests — return a child you've prepared. */
   spawnVite?: (cwd: string, port: Port, basePath: string, devDomain: string) => ChildProcess
   readyTimeoutMs?: number
@@ -100,6 +104,7 @@ const STDERR_TAIL_MAX = 50
 export class DevServerOrchestrator {
   private readonly proxy: ProxyController
   private readonly ports: PortPool
+  private readonly hotPool: HotPool | null
   private readonly readyTimeoutMs: number
   private readonly spawnViteFn: NonNullable<DevServerOrchestratorOptions['spawnVite']>
 
@@ -111,8 +116,11 @@ export class DevServerOrchestrator {
   constructor(opts: DevServerOrchestratorOptions) {
     this.proxy = opts.proxy
     this.ports = opts.ports ?? new PortPool()
+    this.hotPool = opts.hotPool ?? null
     this.readyTimeoutMs = opts.readyTimeoutMs ?? DEFAULT_READY_TIMEOUT_MS
     this.spawnViteFn = opts.spawnVite ?? defaultSpawnVite
+    // Kick the warm ring as soon as the orchestrator is constructed.
+    this.hotPool?.warmInBackground()
   }
 
   async acquire(input: AcquireRequest): Promise<AcquireResponse> {
@@ -145,7 +153,7 @@ export class DevServerOrchestrator {
       }
     }
 
-    const port = await this.ports.acquire()
+    const port = await (this.hotPool ? this.hotPool.acquirePort() : this.ports.acquire())
     const id = randomUUID()
     const basePath = input.slot.worktree === 'main' ? '/' : `/branch--${input.slot.worktree}/`
     const child = this.spawnViteFn(input.targetCwd, port, basePath, input.slot.devDomain)
@@ -194,7 +202,10 @@ export class DevServerOrchestrator {
       this.transition(internal, 'stopped')
       this.bySlot.delete(key)
       this.byId.delete(id)
-      this.ports.release(internal.port)
+      // Return the port via hotPool when configured (decrements bound count
+      // AND triggers a refill); otherwise straight to the underlying pool.
+      if (this.hotPool) this.hotPool.release(internal.port)
+      else this.ports.release(internal.port)
       this.proxy.removeWorktree(internal.slot.devDomain, internal.slot.worktree).catch(() => undefined)
       if (!wasReady) {
         rejectReady(new DevServerSpawnError(internal.slot, code, stderrTail.join('')))
@@ -250,10 +261,16 @@ export class DevServerOrchestrator {
     return Array.from(this.byId.values()).map(toDevServer)
   }
 
+  /** Pool-status snapshot for the API endpoint. Null when no hot pool configured. */
+  poolStatus(): { warm: number; bound: number; capacity: number } | null {
+    return this.hotPool?.status() ?? null
+  }
+
   shutdown(): void {
     for (const ds of this.byId.values()) {
       try { ds.child.kill('SIGTERM') } catch { /* already dead */ }
     }
+    this.hotPool?.drain()
   }
 
   private mintLease(ds: DevServerInternal, ttlSeconds: number): LeaseInternal {

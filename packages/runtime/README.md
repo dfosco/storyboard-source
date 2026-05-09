@@ -28,7 +28,7 @@ CLI commands (`sb dev`, `sb proxy`, …) become thin clients that *request* reso
 
 ## Status
 
-**M5c shipped.** Browser-side guards (H5 hashPreserver foreign-branch bypass, H7 localStorage namespacing) live. M5b/M3/M2/M1 already in. M4/M5/M6 pending.
+**M4 shipped.** Hot pool of pre-allocated ports (default warm: 1, env-tunable). All bug-class fixes (M1–M3, M5b, M5c) plus M4 perf in. M5/M6 pending.
 
 ## Daemon
 

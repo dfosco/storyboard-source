@@ -23,6 +23,8 @@ import {
   LeaseNotFoundError,
   DevServerSpawnError,
 } from '../devserver/index.js'
+import { HotPool } from '../pool/index.js'
+import { PortPool } from '../devserver/port-pool.js'
 import { RUNTIME_PORT, RUNTIME_HOST, RUNTIME_VERSION } from './constants.js'
 
 /**
@@ -42,10 +44,30 @@ const startedAt = Date.now()
 /**
  * Process-wide singletons. The runtime is one-per-machine, so module-level
  * controllers are fine — there's never more than one instance per node process.
- * Tests inject their own via createRuntimeServer({ proxyController, orchestrator }).
+ * Tests inject their own via createRuntimeServer({ ... }).
+ *
+ * The default daemon ships with a 1-port hot pool so first-acquire latency
+ * is dominated by Vite startup, not by the OS-level free-port probe loop.
+ * Tunable via env: STORYBOARD_RUNTIME_WARM_PORTS, STORYBOARD_RUNTIME_POOL_CAP.
  */
 let proxyController = new ProxyController()
-let orchestrator: DevServerOrchestrator = new DevServerOrchestrator({ proxy: proxyController })
+let _ports = new PortPool()
+let _hotPool = new HotPool({
+  ports: _ports,
+  warmTarget: parsePositiveInt(process.env.STORYBOARD_RUNTIME_WARM_PORTS, 1),
+  capacity: parsePositiveInt(process.env.STORYBOARD_RUNTIME_POOL_CAP, 4),
+})
+let orchestrator: DevServerOrchestrator = new DevServerOrchestrator({
+  proxy: proxyController,
+  ports: _ports,
+  hotPool: _hotPool,
+})
+
+function parsePositiveInt(raw: string | undefined, fallback: number): number {
+  if (!raw) return fallback
+  const n = Number(raw)
+  return Number.isFinite(n) && n >= 0 ? Math.floor(n) : fallback
+}
 
 function sendJson(
   res: http.ServerResponse,
@@ -239,7 +261,10 @@ routes.set('POST /proxy/remove', async (req, res) => {
 })
 
 routes.set('GET /pool/status', (_req, res) => {
-  const body = PoolStatus.parse({ warm: 0, bound: 0, capacity: 0 })
+  // Prefer the orchestrator's view (reflects bound count); fall back to the
+  // raw-pool snapshot when no hot pool is configured.
+  const live = orchestrator.poolStatus()
+  const body = PoolStatus.parse(live ?? { warm: 0, bound: 0, capacity: 0 })
   sendJson(res, 200, body, PoolStatus)
 })
 
