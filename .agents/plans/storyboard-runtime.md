@@ -75,6 +75,7 @@ Introduce a single-machine **Storyboard Runtime** daemon owning proxy + devserve
 | M5 Per-domain origin | `worktrees/0.5.0--runtime--m5` | `0.5.0--runtime--m5` | ✅ |
 | **M6 Docs + e2e** | `worktrees/0.5.0--runtime--m6` | `0.5.0--runtime--m6` | ✅ |
 | **M7 Internalize + wire CLI** | `worktrees/0.5.0--runtime--m7` | `0.5.0--runtime--m7` | ✅ local `b01d11d7a` |
+| **M7a Root devDomain inherit** | `worktrees/0.5.0--runtime--m7a` | `0.5.0--runtime--m7a` | ✅ local `4efd93ee3` |
 
 ## ✅ All milestones complete (M1–M7)
 
