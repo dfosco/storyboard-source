@@ -8,7 +8,7 @@ import {
   Port,
   WorktreeName,
   slotKey,
-} from '../src/schema/index.js'
+} from '../../src/runtime/schema/index.js'
 
 describe('DevDomain', () => {
   it('rejects empty / uppercase / leading digit', () => {

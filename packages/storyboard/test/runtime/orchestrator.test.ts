@@ -4,10 +4,10 @@ import { Readable } from 'node:stream'
 import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { DevServerOrchestrator, ForbiddenDefaultDomainError, LeaseNotFoundError } from '../src/devserver/index.js'
-import { ProxyController } from '../src/proxy/index.js'
-import { CaddyAdminClient } from '../src/proxy/caddy.js'
-import { DevDomain, WorktreeName } from '../src/schema/index.js'
+import { DevServerOrchestrator, ForbiddenDefaultDomainError, LeaseNotFoundError } from '../../src/runtime/devserver/index.js'
+import { ProxyController } from '../../src/runtime/proxy/index.js'
+import { CaddyAdminClient } from '../../src/runtime/proxy/caddy.js'
+import { DevDomain, WorktreeName } from '../../src/runtime/schema/index.js'
 
 /**
  * Fake Vite child — emits "ready in 50ms" on stdout after a tick, mirrors

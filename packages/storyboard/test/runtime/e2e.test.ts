@@ -19,11 +19,11 @@ import { Readable } from 'node:stream'
 import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { createRuntimeServer } from '../src/server/http.js'
-import { ProxyController } from '../src/proxy/index.js'
-import { CaddyAdminClient } from '../src/proxy/caddy.js'
-import { DevServerOrchestrator } from '../src/devserver/index.js'
-import { storyboardRuntimePlugin } from '../src/vite-plugin/index.js'
+import { createRuntimeServer } from '../../src/runtime/server/http.js'
+import { ProxyController } from '../../src/runtime/proxy/index.js'
+import { CaddyAdminClient } from '../../src/runtime/proxy/caddy.js'
+import { DevServerOrchestrator } from '../../src/runtime/devserver/index.js'
+import { storyboardRuntimePlugin } from '../../src/runtime/vite-plugin/index.js'
 
 interface MockCaddy {
   port: number

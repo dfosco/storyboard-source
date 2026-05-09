@@ -1,8 +1,8 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import http from 'node:http'
-import { createRuntimeServer } from '../src/server/http.js'
-import { ProxyController } from '../src/proxy/controller.js'
-import { CaddyAdminClient } from '../src/proxy/caddy.js'
+import { createRuntimeServer } from '../../src/runtime/server/http.js'
+import { ProxyController } from '../../src/runtime/proxy/controller.js'
+import { CaddyAdminClient } from '../../src/runtime/proxy/caddy.js'
 
 interface MockCaddy {
   port: number

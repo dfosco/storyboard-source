@@ -24,7 +24,7 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./vitest.setup.js'],
-    include: ['packages/storyboard/src/**/*.test.{js,jsx}'],
+    include: ['packages/storyboard/src/**/*.test.{js,jsx}', 'packages/storyboard/test/**/*.test.ts'],
     server: {
       deps: {
         inline: [/@primer\//],

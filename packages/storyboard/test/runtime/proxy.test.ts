@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import http from 'node:http'
-import { ProxyController } from '../src/proxy/controller.js'
-import { CaddyAdminClient, buildRouteFor } from '../src/proxy/caddy.js'
-import { DevDomain, Port, WorktreeName } from '../src/schema/index.js'
+import { ProxyController } from '../../src/runtime/proxy/controller.js'
+import { CaddyAdminClient, buildRouteFor } from '../../src/runtime/proxy/caddy.js'
+import { DevDomain, Port, WorktreeName } from '../../src/runtime/schema/index.js'
 
 interface MockCaddy {
   port: number

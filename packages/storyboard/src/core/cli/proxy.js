@@ -1,319 +1,165 @@
 /**
- * storyboard proxy — Manage the Caddy reverse proxy.
+ * storyboard proxy — manage the Caddy reverse proxy via the Storyboard Runtime.
+ *
+ * Replaces the legacy direct-Caddyfile path (kept at proxy.legacy.js for
+ * reference). Mutations go through the runtime daemon, which is the SOLE
+ * writer to localhost:2019 — eliminating the destructive cross-repo
+ * `caddy reload` race that was hypothesis H2 in the server-state RCA.
  *
  * Usage:
- *   storyboard proxy start       Start or reload Caddy proxy
- *   storyboard proxy close       Stop Caddy proxy
- *
- * Caddy listens on port 80 for storyboard.localhost, routing:
- *   /storyboard/*              → main (port 1234)
- *   /<branchname>/storyboard/* → worktree (assigned port)
- *
- * Requires Caddy to be installed (brew install caddy).
+ *   storyboard proxy [start]   Bring runtime daemon up + ensure Caddy is reachable
+ *   storyboard proxy state     Print runtime's view of routes
+ *   storyboard proxy close     Stop runtime daemon
  */
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs'
+import * as p from '@clack/prompts'
 import { execSync } from 'child_process'
-import { dirname, resolve } from 'path'
-import { portsFilePath } from '../worktree/port.js'
-import { list as listRunningServers } from '../worktree/serverRegistry.js'
+import { existsSync, readFileSync } from 'fs'
+import { homedir } from 'os'
+import { join } from 'path'
+
+const PIDFILE = join(homedir(), '.storyboard', 'runtime.pid')
+
+function isCaddyInstalled() {
+  try { execSync('caddy version', { stdio: 'ignore' }); return true } catch { return false }
+}
+function isCaddyRunning() {
+  try { execSync('curl -sf http://localhost:2019/config/ >/dev/null 2>&1', { timeout: 2000 }); return true } catch { return false }
+}
+function startCaddyEmpty() {
+  try {
+    execSync('caddy start --config -', {
+      input: 'http://storyboard.localhost {\n}\n',
+      stdio: ['pipe', 'ignore', 'ignore'],
+      timeout: 5000,
+    })
+    return true
+  } catch { return false }
+}
+
+async function main() {
+  const subcommand = process.argv[3] || 'start'
+
+  if (subcommand === 'close' || subcommand === 'stop') {
+    p.intro('storyboard proxy close')
+    if (existsSync(PIDFILE)) {
+      try {
+        const pid = Number(readFileSync(PIDFILE, 'utf8').trim())
+        if (Number.isFinite(pid) && pid > 0) {
+          try { process.kill(pid, 'SIGTERM') } catch { /* dead */ }
+        }
+      } catch { /* */ }
+    }
+    if (isCaddyRunning()) {
+      try { execSync('curl -sf -X POST http://localhost:2019/stop', { timeout: 5000, stdio: 'ignore' }) } catch { /* */ }
+      p.log.success('Caddy stopped.')
+    }
+    p.log.success('Runtime daemon stopped.')
+    p.outro('')
+    return
+  }
+
+  if (subcommand === 'state') {
+    p.intro('storyboard proxy state')
+    const { RuntimeClient } = await import('../../../dist/runtime/client/index.js')
+    const runtime = new RuntimeClient()
+    try {
+      const state = await runtime.proxyState()
+      p.log.info(`Caddy reachable: ${state.caddyReachable}`)
+      for (const r of state.routes) {
+        p.log.info(`${r.devDomain}.localhost: ${JSON.stringify(r.upstreams)}`)
+      }
+    } catch (err) {
+      p.log.error(err.message || String(err))
+      process.exit(1)
+    }
+    p.outro('')
+    return
+  }
+
+  p.intro('storyboard proxy start')
+  if (!isCaddyInstalled()) {
+    p.log.error('Caddy is not installed. Run: brew install caddy')
+    process.exit(1)
+  }
+  if (!isCaddyRunning()) {
+    const s = p.spinner()
+    s.start('Starting Caddy…')
+    if (!startCaddyEmpty()) { s.stop('Failed'); p.log.error('Could not start Caddy.'); process.exit(1) }
+    s.stop('Caddy started')
+  }
+
+  // Booting the runtime client triggers an on-demand fork of the daemon if
+  // it isn't already running.
+  const { RuntimeClient } = await import('../../../dist/runtime/client/index.js')
+  const runtime = new RuntimeClient()
+  const s = p.spinner()
+  s.start('Starting Storyboard Runtime…')
+  try {
+    const health = await runtime.health()
+    s.stop(`Runtime ready (v${health.version}, port ${health.port})`)
+  } catch (err) {
+    s.stop('Failed')
+    p.log.error(err.message || String(err))
+    process.exit(1)
+  }
+  p.outro('Proxy + runtime ready')
+}
+
+main().catch((err) => {
+  p.log.error(err.message || String(err))
+  process.exit(1)
+})
+
+// ── Compatibility re-exports ──
+// The old proxy.js was imported by setup.js, dev.legacy.js, and
+// packages/storyboard/src/core/server/. We preserve named exports so
+// callers don't blow up; the implementations are deprecation shims.
+
+export { isCaddyInstalled, isCaddyRunning }
 
 export function readDevDomain(cwd) {
   try {
-    const configPath = resolve(cwd || process.cwd(), 'storyboard.config.json')
-    const config = JSON.parse(readFileSync(configPath, 'utf8'))
-    return `${config.devDomain || 'storyboard'}.localhost`
+    const cfg = JSON.parse(readFileSync(join(cwd || process.cwd(), 'storyboard.config.json'), 'utf8'))
+    return `${cfg.devDomain || 'storyboard'}.localhost`
   } catch {
     return 'storyboard.localhost'
   }
 }
 
-const DOMAIN = readDevDomain()
-
-/**
- * Build branch→port map from running servers (servers.json) + explicit overrides.
- * Only includes branches with live processes — prevents stale routes from
- * creating redirect loops when ports get reused by different Vite instances.
- * When multiple servers run for the same worktree, latest startedAt wins.
- */
-function livePortMap(portOverrides = {}) {
-  const map = {}
-  try {
-    for (const srv of listRunningServers()) {
-      if (srv.worktree === 'main') continue
-      const existing = map[srv.worktree]
-      if (!existing || srv.startedAt > existing.startedAt) {
-        map[srv.worktree] = { port: srv.port, startedAt: srv.startedAt }
-      }
-    }
-  } catch { /* registry unavailable — rely on overrides only */ }
-
-  // Build final branch→port, overrides always win
-  const result = {}
-  for (const [name, info] of Object.entries(map)) result[name] = info.port
-  Object.assign(result, portOverrides)
-  // Remove 'main' if accidentally passed — handled separately
-  delete result.main
-  return result
+export function generateCaddyfile() {
+  // eslint-disable-next-line no-console
+  console.warn('[storyboard] generateCaddyfile() is deprecated — runtime owns Caddy now.')
+  return null
 }
-
-export function generateCaddyfile(portOverrides = {}) {
-  const portsFile = portsFilePath()
-  const dir = dirname(portsFile)
-  if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
-
-  // Main port from ports.json (always 1234 unless overridden)
-  let mainPort = 1234
-  if (existsSync(portsFile)) {
-    try {
-      const ports = JSON.parse(readFileSync(portsFile, 'utf8'))
-      mainPort = ports.main || 1234
-    } catch { /* use default */ }
-  }
-
-  const branches = Object.entries(livePortMap(portOverrides))
-
-  // Build Caddy route blocks — branches first (more specific), main last (fallback)
-  const branchBlocks = branches
-    .map(([name, port]) => `\t# Worktree: ${name}\n\thandle /branch--${name}/* {\n\t\treverse_proxy localhost:${port}\n\t}`)
-    .join('\n\n')
-
-  const caddyfile = `# Auto-generated by storyboard CLI — do not edit manually.
-# Regenerated on every \`storyboard dev\` or \`storyboard proxy\`.
-
-http://${DOMAIN} {
-${branchBlocks ? branchBlocks + '\n\n' : ''}\t# Main
-\thandle {
-\t\treverse_proxy localhost:${mainPort}
-\t}
+export function generateRouteConfig() {
+  // eslint-disable-next-line no-console
+  console.warn('[storyboard] generateRouteConfig() is deprecated.')
+  return null
 }
-`
-
-  const caddyfilePath = portsFile.replace('ports.json', 'Caddyfile')
-  writeFileSync(caddyfilePath, caddyfile)
-  return caddyfilePath
+export function upsertCaddyRoute() {
+  // eslint-disable-next-line no-console
+  console.warn('[storyboard] upsertCaddyRoute() is deprecated — call RuntimeClient.proxyUpsert() instead.')
+  return false
 }
-
-export function isCaddyInstalled() {
-  try {
-    execSync('caddy version', { stdio: 'ignore' })
-    return true
-  } catch {
-    return false
-  }
+export function reloadCaddy() {
+  // eslint-disable-next-line no-console
+  console.warn('[storyboard] reloadCaddy() is deprecated — runtime keeps Caddy in sync via admin API.')
+  return false
 }
-
-export function isCaddyRunning() {
-  try {
-    // Caddy admin API on localhost:2019
-    execSync('curl -sf http://localhost:2019/config/ >/dev/null 2>&1', { timeout: 2000 })
-    return true
-  } catch {
-    return false
-  }
+export function startCaddy() { return startCaddyEmpty() }
+export function stopCaddy() {
+  try { execSync('curl -sf -X POST http://localhost:2019/stop', { timeout: 5000, stdio: 'ignore' }); return true }
+  catch { return false }
 }
-
-export function reloadCaddy(caddyfilePath) {
-  try {
-    execSync(`caddy reload --config "${caddyfilePath}" 2>/dev/null`, { stdio: 'ignore', timeout: 5000 })
-    return true
-  } catch {
-    return false
-  }
-}
-
-// ── Caddy admin API (additive route upsert) ──
-
-const CADDY_ADMIN = 'http://localhost:2019'
-
-/**
- * Build a Caddy JSON route object for this repo's devDomain.
- * Tagged with @id so it can be upserted independently of other repos.
- */
-export function generateRouteConfig(portOverrides = {}) {
-  // Main port from ports.json
-  const portsFile = portsFilePath()
-  let mainPort = 1234
-  if (existsSync(portsFile)) {
-    try {
-      const ports = JSON.parse(readFileSync(portsFile, 'utf8'))
-      mainPort = ports.main || 1234
-    } catch { /* use default */ }
-  }
-
-  const branches = Object.entries(livePortMap(portOverrides))
-
-  // Branch subroutes first (more specific), then main fallback
-  const subroutes = branches.map(([name, port]) => ({
-    match: [{ path: [`/branch--${name}/*`] }],
-    handle: [{ handler: 'reverse_proxy', upstreams: [{ dial: `localhost:${port}` }] }],
-  }))
-  subroutes.push({
-    handle: [{ handler: 'reverse_proxy', upstreams: [{ dial: `localhost:${mainPort}` }] }],
-  })
-
-  return {
-    '@id': DOMAIN.replace('.localhost', ''),
-    match: [{ host: [DOMAIN] }],
-    handle: [{ handler: 'subroute', routes: subroutes }],
-  }
-}
-
-/**
- * Find indices of stale routes that match the same host but lack an @id.
- * Returns indices sorted descending (highest first) for safe deletion.
- * Exported for testing.
- */
 export function findStaleRouteIndices(routes, keepId, host) {
   const indices = []
   for (let i = 0; i < routes.length; i++) {
     const route = routes[i]
     if (route['@id'] === keepId) continue
-    if (route['@id']) continue // different intentional route — leave it
+    if (route['@id']) continue
     const routeHosts = route.match?.[0]?.host || []
-    if (routeHosts.includes(host)) {
-      indices.push(i)
-    }
+    if (routeHosts.includes(host)) indices.push(i)
   }
   return indices.reverse()
-}
-
-/**
- * Remove stale routes that match the same host but lack an @id.
- * These are leftovers from Caddyfile reloads that shadow admin-API routes.
- * Deletes from highest index to lowest to preserve indices during removal.
- * Best-effort — warns on failure but does not throw.
- */
-function cleanupDuplicateRoutes(keepId, host) {
-  try {
-    const config = execSync(
-      `curl -sf '${CADDY_ADMIN}/config/apps/http/servers/srv0/routes'`,
-      { encoding: 'utf-8', timeout: 5000 },
-    )
-    const routes = JSON.parse(config)
-    const staleIndices = findStaleRouteIndices(routes, keepId, host)
-    for (const idx of staleIndices) {
-      try {
-        execSync(
-          `curl -sf -X DELETE '${CADDY_ADMIN}/config/apps/http/servers/srv0/routes/${idx}'`,
-          { encoding: 'utf-8', timeout: 5000, stdio: ['pipe', 'pipe', 'pipe'] },
-        )
-      } catch {
-        console.warn(`[storyboard] failed to remove stale proxy route at index ${idx}`)
-      }
-    }
-  } catch {
-    console.warn('[storyboard] failed to clean up stale proxy routes — branch URLs may not work via proxy')
-  }
-}
-
-/**
- * Upsert this repo's route in the running Caddy instance via admin API.
- * Uses PATCH if the @id exists, POST if it doesn't.
- * After a successful upsert, removes any stale non-@id routes for the
- * same host (leftovers from prior Caddyfile reloads).
- * Returns true on success, false on failure.
- */
-export function upsertCaddyRoute(routeConfig) {
-  const id = routeConfig['@id']
-  const host = routeConfig.match?.[0]?.host?.[0]
-  const payload = JSON.stringify(routeConfig)
-
-  // Try PATCH first (update existing route by @id)
-  try {
-    execSync(
-      `curl -sf -X PATCH '${CADDY_ADMIN}/id/${id}' -H 'Content-Type: application/json' -d '${payload.replace(/'/g, "'\\''")}'`,
-      { encoding: 'utf-8', timeout: 5000, stdio: ['pipe', 'pipe', 'pipe'] },
-    )
-    if (host) cleanupDuplicateRoutes(id, host)
-    return true
-  } catch {
-    // @id doesn't exist yet — POST a new route
-    try {
-      execSync(
-        `curl -sf -X POST '${CADDY_ADMIN}/config/apps/http/servers/srv0/routes' -H 'Content-Type: application/json' -d '${payload.replace(/'/g, "'\\''")}'`,
-        { encoding: 'utf-8', timeout: 5000, stdio: ['pipe', 'pipe', 'pipe'] },
-      )
-      if (host) cleanupDuplicateRoutes(id, host)
-      return true
-    } catch {
-      return false
-    }
-  }
-}
-
-export function startCaddy(caddyfilePath) {
-  try {
-    execSync(`caddy start --config "${caddyfilePath}" >/dev/null 2>&1`, { stdio: ['inherit', 'pipe', 'pipe'] })
-    return true
-  } catch {
-    return false
-  }
-}
-
-export function stopCaddy() {
-  try {
-    execSync('curl -sf -X POST http://localhost:2019/stop', { timeout: 5000, stdio: 'ignore' })
-    return true
-  } catch {
-    return false
-  }
-}
-
-// When run directly as `storyboard proxy` (not imported by setup.js)
-const isDirectRun = process.argv[2] === 'proxy'
-if (isDirectRun) {
-  const { intro, outro, log, spinner } = await import('@clack/prompts')
-  const subcommand = process.argv[3]
-
-  if (!isCaddyInstalled()) {
-    intro('storyboard proxy')
-    log.error('Caddy is not installed. Run: brew install caddy')
-    process.exit(1)
-  }
-
-  if (subcommand === 'close' || subcommand === 'stop') {
-    intro('storyboard proxy close')
-    if (!isCaddyRunning()) {
-      log.info('Proxy is not running.')
-      outro('')
-    } else if (stopCaddy()) {
-      log.success('Proxy stopped.')
-      outro('')
-    } else {
-      log.error('Failed to stop proxy.')
-      process.exit(1)
-    }
-  } else if (subcommand === 'start' || !subcommand) {
-    intro('storyboard proxy start')
-    const caddyfilePath = generateCaddyfile()
-
-    const s = spinner()
-    if (isCaddyRunning()) {
-      s.start('Updating proxy routes...')
-      const routeConfig = generateRouteConfig()
-      if (upsertCaddyRoute(routeConfig)) {
-        s.stop('Proxy routes updated (admin API)')
-      } else if (reloadCaddy(caddyfilePath)) {
-        s.stop('Proxy reloaded (Caddyfile fallback)')
-      } else {
-        s.stop('Failed to update proxy')
-        process.exit(1)
-      }
-    } else {
-      s.start('Starting proxy...')
-      if (startCaddy(caddyfilePath)) {
-        s.stop('Proxy started')
-      } else {
-        s.stop('Failed to start proxy')
-        process.exit(1)
-      }
-    }
-    outro(`Proxy ready at http://${DOMAIN}/`)
-  } else {
-    intro('storyboard proxy')
-    log.error(`Unknown subcommand: "${subcommand}"`)
-    log.info('Available: start, close')
-    process.exit(1)
-  }
 }

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { startDaemon } from '../dist/server/main.js'
+import { startDaemon } from '../dist/runtime/server/main.js'
 
 startDaemon().catch((err) => {
   // eslint-disable-next-line no-console

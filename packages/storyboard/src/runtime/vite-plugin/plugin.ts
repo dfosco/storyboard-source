@@ -2,7 +2,7 @@ import type { IncomingMessage, ServerResponse } from 'node:http'
 import type { Plugin, ViteDevServer } from 'vite'
 
 /**
- * @dfosco/storyboard-runtime/vite-plugin
+ * @dfosco/storyboard/runtime/vite-plugin
  *
  * Auto-injected by the runtime into every spawned Vite child via the
  * vite-config-wrapper. Closes two RCA hypotheses from the server-state
@@ -119,7 +119,7 @@ export function storyboardRuntimePlugin(opts: StoryboardRuntimePluginOptions = {
   const enabled = Boolean(branch || devDomain)
 
   return {
-    name: '@dfosco/storyboard-runtime/vite-plugin',
+    name: '@dfosco/storyboard/runtime/vite-plugin',
     enforce: 'pre',
 
     config() {

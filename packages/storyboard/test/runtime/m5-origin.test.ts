@@ -14,11 +14,11 @@ import { Readable } from 'node:stream'
 import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { DevServerOrchestrator, SlotCwdConflictError } from '../src/devserver/index.js'
-import { ProxyController } from '../src/proxy/index.js'
-import { CaddyAdminClient } from '../src/proxy/caddy.js'
-import { DevDomain, WorktreeName } from '../src/schema/index.js'
-import { storyboardRuntimePlugin } from '../src/vite-plugin/index.js'
+import { DevServerOrchestrator, SlotCwdConflictError } from '../../src/runtime/devserver/index.js'
+import { ProxyController } from '../../src/runtime/proxy/index.js'
+import { CaddyAdminClient } from '../../src/runtime/proxy/caddy.js'
+import { DevDomain, WorktreeName } from '../../src/runtime/schema/index.js'
+import { storyboardRuntimePlugin } from '../../src/runtime/vite-plugin/index.js'
 
 function fakeViteChild() {
   const child = new EventEmitter() as EventEmitter & {

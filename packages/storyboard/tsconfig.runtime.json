@@ -13,10 +13,10 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "outDir": "dist",
-    "rootDir": "src",
+    "outDir": "dist/runtime",
+    "rootDir": "src/runtime",
     "types": ["node"]
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/runtime/**/*.ts"],
   "exclude": ["dist", "node_modules"]
 }

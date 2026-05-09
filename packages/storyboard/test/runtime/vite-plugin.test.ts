@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { decideRedirect, storyboardRuntimePlugin } from '../src/vite-plugin/index.js'
+import { decideRedirect, storyboardRuntimePlugin } from '../../src/runtime/vite-plugin/index.js'
 
 describe('decideRedirect (H1 base-redirect hardening)', () => {
   describe('on /branch--0.5.0/', () => {

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
-import { HotPool } from '../src/pool/index.js'
-import { PortPool } from '../src/devserver/port-pool.js'
-import { Port } from '../src/schema/index.js'
+import { HotPool } from '../../src/runtime/pool/index.js'
+import { PortPool } from '../../src/runtime/devserver/port-pool.js'
+import { Port } from '../../src/runtime/schema/index.js'
 
 /**
  * Stub PortPool that hands out monotonically increasing ports without
