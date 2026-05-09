@@ -34,9 +34,20 @@ const flagSchema = {
   ttl: { type: 'number', default: 3600, description: 'Lease TTL in seconds (default 1h)' },
 }
 
-function readDevDomain(cwd) {
+/**
+ * Read the devDomain for this checkout from the **repo root**, never from
+ * the worktree's own cwd.
+ *
+ * Why root-only: every worktree is a checkout of the same repo, so its
+ * `storyboard.config.json` is just a branch's copy of the root's file.
+ * Reading the worktree's copy first would let an experimental branch edit
+ * silently pin a different devDomain, defeating the whole "one repo = one
+ * devDomain" invariant that closes RCA hypothesis H3.
+ */
+function readDevDomain(targetCwd) {
   try {
-    const cfg = JSON.parse(readFileSync(resolve(cwd, 'storyboard.config.json'), 'utf8'))
+    const root = repoRoot(targetCwd)
+    const cfg = JSON.parse(readFileSync(resolve(root, 'storyboard.config.json'), 'utf8'))
     return cfg.devDomain || null
   } catch {
     return null
@@ -147,13 +158,12 @@ async function main() {
   // suggestion derived from the repo folder name.
   const devDomain = readDevDomain(targetCwd)
   if (!devDomain) {
-    const suggested = (() => {
-      try { return resolve(repoRoot()).split('/').pop().toLowerCase().replace(/[^a-z0-9-]/g, '-') }
-      catch { return 'my-app' }
-    })()
+    const root = repoRoot(targetCwd)
+    const suggested = root.split('/').filter(Boolean).pop()?.toLowerCase().replace(/[^a-z0-9-]/g, '-') || 'my-app'
     p.log.error('storyboard.config.json is missing a `devDomain`.')
-    p.log.info(`Add e.g. {"devDomain": "${suggested}"} to storyboard.config.json and rerun.`)
+    p.log.info(`Add e.g. {"devDomain": "${suggested}"} to ${root}/storyboard.config.json and rerun.`)
     p.log.info('This is required because two repos sharing the default "storyboard" devDomain produce the cross-branch URL bug.')
+    p.log.info('Worktrees inherit the root devDomain — you only need to set this once at the repo root.')
     process.exit(1)
   }
 
