@@ -57,6 +57,21 @@ export const PoolStatus = z.object({
 })
 export type PoolStatus = z.infer<typeof PoolStatus>
 
+/** `POST /proxy/upsert` — bind (devDomain, worktree) → port in the proxy. */
+export const ProxyUpsertRequest = z.object({
+  devDomain: z.string(),
+  worktree: z.string(),
+  port: z.number(),
+})
+export type ProxyUpsertRequest = z.infer<typeof ProxyUpsertRequest>
+
+/** `POST /proxy/remove` — drop a worktree's route from the proxy. */
+export const ProxyRemoveRequest = z.object({
+  devDomain: z.string(),
+  worktree: z.string(),
+})
+export type ProxyRemoveRequest = z.infer<typeof ProxyRemoveRequest>
+
 /** `GET /health` — daemon liveness probe. */
 export const Health = z.object({
   ok: z.literal(true),

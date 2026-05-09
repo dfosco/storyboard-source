@@ -88,11 +88,14 @@ export type Lease = z.infer<typeof Lease>
 /**
  * A Caddy proxy route owned by the runtime. The `@id` is always the devDomain;
  * this lets the runtime PATCH a single route in place without touching others.
+ *
+ * `upstreams` is keyed by plain string (validated elsewhere as WorktreeName)
+ * to avoid `Partial<Record<branded, …>>` shenanigans at the value-spread sites.
  */
 export const ProxyRoute = z.object({
   devDomain: DevDomain,
   host: z.string(),
-  /** Branch → upstream port. `main` is the host's catch-all. */
-  upstreams: z.record(WorktreeName, Port),
+  /** worktree name → upstream port. `main` is the host's catch-all. */
+  upstreams: z.record(z.string(), Port),
 })
 export type ProxyRoute = z.infer<typeof ProxyRoute>

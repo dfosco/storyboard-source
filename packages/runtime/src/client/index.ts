@@ -6,7 +6,9 @@ import {
   AcquireResponse,
   Health,
   PoolStatus,
+  ProxyRemoveRequest,
   ProxyState,
+  ProxyUpsertRequest,
   ReleaseRequest,
   RenewRequest,
   RuntimeError,
@@ -145,6 +147,16 @@ export class RuntimeClient {
 
   async proxyState(): Promise<ProxyState> {
     return request(this.baseUrl, 'GET', '/proxy/state', undefined, ProxyState)
+  }
+
+  async proxyUpsert(input: z.input<typeof ProxyUpsertRequest>): Promise<ProxyState> {
+    const body = ProxyUpsertRequest.parse(input)
+    return request(this.baseUrl, 'POST', '/proxy/upsert', body, ProxyState)
+  }
+
+  async proxyRemove(input: z.input<typeof ProxyRemoveRequest>): Promise<ProxyState> {
+    const body = ProxyRemoveRequest.parse(input)
+    return request(this.baseUrl, 'POST', '/proxy/remove', body, ProxyState)
   }
 
   async poolStatus(): Promise<PoolStatus> {

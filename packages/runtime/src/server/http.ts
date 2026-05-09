@@ -3,13 +3,20 @@ import { z } from 'zod'
 import {
   AcquireRequest,
   AcquireResponse,
+  DevDomain,
   Health,
   PoolStatus,
+  Port,
+  ProxyRemoveRequest,
   ProxyState,
+  ProxyUpsertRequest,
   ReleaseRequest,
   RenewRequest,
   RuntimeError,
+  WorktreeName,
 } from '../schema/index.js'
+import { ProxyController } from '../proxy/index.js'
+import { CaddyUnreachableError } from '../proxy/caddy.js'
 import { RUNTIME_PORT, RUNTIME_HOST, RUNTIME_VERSION } from './constants.js'
 
 /**
@@ -25,6 +32,13 @@ import { RUNTIME_PORT, RUNTIME_HOST, RUNTIME_VERSION } from './constants.js'
  */
 
 const startedAt = Date.now()
+
+/**
+ * Process-wide singleton. The runtime is one-per-machine, so a module-level
+ * controller is fine — there's never more than one instance per node process.
+ * Tests inject their own via createRuntimeServer({ proxyController }).
+ */
+let proxyController = new ProxyController()
 
 function sendJson<S extends z.ZodTypeAny>(
   res: http.ServerResponse,
@@ -115,9 +129,69 @@ routes.set('POST /devserver/renew', async (req, res) => {
   sendError(res, 501, 'NOT_IMPLEMENTED', 'devserver/renew is implemented in M3')
 })
 
-routes.set('GET /proxy/state', (_req, res) => {
-  const body = ProxyState.parse({ routes: [], caddyReachable: false })
-  sendJson(res, 200, body, ProxyState)
+routes.set('GET /proxy/state', async (_req, res) => {
+  try {
+    const body = await proxyController.stateForApi()
+    sendJson(res, 200, body, ProxyState)
+  } catch (err) {
+    sendError(res, 500, 'INTERNAL', (err as Error).message)
+  }
+})
+
+routes.set('POST /proxy/upsert', async (req, res) => {
+  const body = await parseBody(req, res, ProxyUpsertRequest)
+  if (!body) return
+  // Re-validate with branded types — the API request schema is intentionally
+  // loose (string/number) so bad input gets a useful 400 rather than the
+  // brand regex's cryptic message.
+  const dev = DevDomain.safeParse(body.devDomain)
+  const wt = WorktreeName.safeParse(body.worktree)
+  const port = Port.safeParse(body.port)
+  if (!dev.success || !wt.success || !port.success) {
+    sendError(res, 400, 'BAD_REQUEST', 'Validation failed', {
+      devDomain: dev.success ? null : dev.error.flatten(),
+      worktree: wt.success ? null : wt.error.flatten(),
+      port: port.success ? null : port.error.flatten(),
+    })
+    return
+  }
+  if (dev.data === ('storyboard' as unknown as typeof dev.data)) {
+    sendError(res, 403, 'FORBIDDEN_DEFAULT_DOMAIN',
+      'Refusing to bind a route under the default devDomain "storyboard". ' +
+      'Set a unique devDomain in storyboard.config.json.')
+    return
+  }
+  try {
+    const route = await proxyController.upsert(dev.data, wt.data, port.data)
+    sendJson(res, 200, ProxyState.parse({ routes: [route], caddyReachable: true }), ProxyState)
+  } catch (err) {
+    if (err instanceof CaddyUnreachableError) {
+      sendError(res, 503, 'CADDY_UNREACHABLE', err.message)
+      return
+    }
+    sendError(res, 500, 'INTERNAL', (err as Error).message)
+  }
+})
+
+routes.set('POST /proxy/remove', async (req, res) => {
+  const body = await parseBody(req, res, ProxyRemoveRequest)
+  if (!body) return
+  const dev = DevDomain.safeParse(body.devDomain)
+  const wt = WorktreeName.safeParse(body.worktree)
+  if (!dev.success || !wt.success) {
+    sendError(res, 400, 'BAD_REQUEST', 'Validation failed')
+    return
+  }
+  try {
+    await proxyController.removeWorktree(dev.data, wt.data)
+    sendJson(res, 200, ProxyState.parse({ routes: [], caddyReachable: true }), ProxyState)
+  } catch (err) {
+    if (err instanceof CaddyUnreachableError) {
+      sendError(res, 503, 'CADDY_UNREACHABLE', err.message)
+      return
+    }
+    sendError(res, 500, 'INTERNAL', (err as Error).message)
+  }
 })
 
 routes.set('GET /pool/status', (_req, res) => {
@@ -125,7 +199,8 @@ routes.set('GET /pool/status', (_req, res) => {
   sendJson(res, 200, body, PoolStatus)
 })
 
-export function createRuntimeServer(): http.Server {
+export function createRuntimeServer(opts: { proxyController?: ProxyController } = {}): http.Server {
+  if (opts.proxyController) proxyController = opts.proxyController
   const server = http.createServer(async (req, res) => {
     try {
       const url = new URL(req.url ?? '/', `http://${RUNTIME_HOST}:${RUNTIME_PORT}`)

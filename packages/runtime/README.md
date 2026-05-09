@@ -28,7 +28,7 @@ CLI commands (`sb dev`, `sb proxy`, …) become thin clients that *request* reso
 
 ## Status
 
-**M1 scaffold.** All endpoints currently return `501 NOT_IMPLEMENTED`. See `.agents/plans/storyboard-runtime.md` for the milestone roadmap.
+**M2 ProxyController landed.** The runtime owns Caddy admin writes; legacy `caddy reload` is no longer used for upserts. M3+ pending. See `.agents/plans/storyboard-runtime.md`.
 
 ## Daemon
 
