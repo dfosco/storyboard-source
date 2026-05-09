@@ -73,19 +73,28 @@ Introduce a single-machine **Storyboard Runtime** daemon owning proxy + devserve
 | M5c Browser guards | `worktrees/0.5.0--runtime--m5c` | `0.5.0--runtime--m5c` | ✅ |
 | M4 Hot pool | `worktrees/0.5.0--runtime--m4` | `0.5.0--runtime--m4` | ✅ |
 | M5 Per-domain origin | `worktrees/0.5.0--runtime--m5` | `0.5.0--runtime--m5` | ✅ |
-| **M6 Docs + e2e** | `worktrees/0.5.0--runtime--m6` | `0.5.0--runtime--m6` | ✅ ALL COMPLETE |
+| **M6 Docs + e2e** | `worktrees/0.5.0--runtime--m6` | `0.5.0--runtime--m6` | ✅ |
+| **M7 Internalize + wire CLI** | `worktrees/0.5.0--runtime--m7` | `0.5.0--runtime--m7` | ✅ local `b01d11d7a` |
 
-## ✅ All milestones complete (M1–M6, 62/62 tests)
+## ✅ All milestones complete (M1–M7)
 
-The runtime is fully built. Final test totals:
-- **62 runtime tests pass** (10 schema + 7 ProxyController + 3 HTTP-proxy + 10 orchestrator + 12 vite-plugin + 9 hot-pool + 6 m5-origin + 5 e2e).
-- **1333 storyboard tests pass** (12 pre-existing canvas-widget failures unrelated to this work).
+The runtime is fully built **and wired into the CLI**. Final test totals:
+- **62 runtime tests pass** (relocated to `packages/storyboard/test/runtime/`).
+- **1395 storyboard tests pass** (12 pre-existing canvas-widget failures unrelated to this work).
 
-The e2e acceptance test (`packages/runtime/test/e2e.test.ts`) directly asserts: *every lease.url returned by the runtime contains at most one `/branch--` segment*. The doubled-URL bug class is structurally unreachable from the runtime API.
+### User-facing changes after M7
 
-## What's NOT yet done (separate workstream)
+- `sb dev`, `sb proxy`, `sb proxy state`, `sb proxy close` now go through the runtime.
+- New `sb proxy state` subcommand prints the runtime's view of routes.
+- `sb dev` fails fast with a helpful suggestion if `storyboard.config.json` is missing `devDomain`.
+- New bin `storyboard-runtime` boots the daemon directly (used internally; rarely needed by users).
+- Runtime ships as subpath exports of `@dfosco/storyboard` (`./runtime`, `./runtime/client`, `./runtime/schema`, `./runtime/vite-plugin`) — no separate npm package.
 
-- CLI integration: `packages/storyboard/src/core/cli/dev.js` and `proxy.js` still use the legacy per-repo server (`packages/storyboard/src/core/server/`). Migration steps are listed in `.agents/architecture/runtime.md`.
+### Legacy preserved
+
+- `packages/storyboard/src/core/cli/dev.legacy.js` — the previous per-repo server CLI, kept for reference and as a fallback.
+- `packages/storyboard/src/core/cli/proxy.legacy.js` — the previous Caddyfile-driven proxy CLI, same.
+- Direct-Caddy shims (`generateCaddyfile`, `upsertCaddyRoute`, `reloadCaddy`) remain as named exports of `proxy.js` but are now no-op shims with deprecation warnings.
 
 ## ▶︎ Stop point — user testing
 
