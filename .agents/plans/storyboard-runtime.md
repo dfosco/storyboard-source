@@ -65,15 +65,52 @@ Introduce a single-machine **Storyboard Runtime** daemon owning proxy + devserve
 
 | Milestone | Worktree | Branch | Status |
 |---|---|---|---|
-| Plan | `worktrees/0.5.0` | `0.5.0` | ✅ committed `06dfade52` |
-| M1 scaffold + daemon | `worktrees/0.5.0--runtime` | `0.5.0--runtime` | ✅ committed `eb70a24c2`, pushed |
-| M2 ProxyController | `worktrees/0.5.0--runtime--m2` | `0.5.0--runtime--m2` | ✅ committed `beac800f2` (local) |
-| M3 + M3b orchestrator | `worktrees/0.5.0--runtime--m3` *(next)* | — | ⏳ |
+| Plan | `worktrees/0.5.0` | `0.5.0` | ✅ committed `45b6e754e` |
+| M1 scaffold + daemon | `worktrees/0.5.0--runtime` | `0.5.0--runtime` | ✅ pushed `eb70a24c2` |
+| M2 ProxyController | `worktrees/0.5.0--runtime--m2` | `0.5.0--runtime--m2` | ✅ local `beac800f2` |
+| **M3 + M3b orchestrator** | `worktrees/0.5.0--runtime--m3` | `0.5.0--runtime--m3` | ✅ local `e553403c5` |
 | M5b Vite guards | `worktrees/0.5.0--runtime--m5b` | — | ⏳ |
 | M5c Browser guards | `worktrees/0.5.0--runtime--m5c` | — | ⏳ |
 | M4 Hot pool | `worktrees/0.5.0--runtime--m4` | — | ⏳ |
 | M5 Per-domain origin | `worktrees/0.5.0--runtime--m5` | — | ⏳ |
 | M6 Docs + e2e | `worktrees/0.5.0--runtime--m6` | — | ⏳ |
+
+## ▶︎ Stop point — user testing
+
+After M3, the runtime is **end-to-end usable** for the first time. Recommended manual smoke from `worktrees/0.5.0--runtime--m3`:
+
+```bash
+cd packages/runtime && node bin/runtime.js &           # start daemon
+
+curl -s http://127.0.0.1:4321/health
+
+# Refused (closes H3)
+curl -s -X POST http://127.0.0.1:4321/devserver/acquire \
+  -H 'content-type: application/json' \
+  -d '{"slot":{"devDomain":"storyboard","worktree":"main"},"targetCwd":"/tmp"}'
+
+# Real acquire — point targetCwd at a worktree of THIS repo with vite installed
+curl -s -X POST http://127.0.0.1:4321/devserver/acquire \
+  -H 'content-type: application/json' \
+  -d "{\"slot\":{\"devDomain\":\"storyboard-core\",\"worktree\":\"main\"},\"targetCwd\":\"$PWD/../../../..\"}" | jq
+
+# Inspect state
+curl -s http://127.0.0.1:4321/devserver/list | jq
+curl -s http://127.0.0.1:4321/proxy/state | jq
+
+# Release
+curl -s -X POST http://127.0.0.1:4321/devserver/release \
+  -H 'content-type: application/json' -d '{"leaseId":"<from acquire>"}'
+
+# Stop daemon
+kill %1
+```
+
+Things to watch for:
+- The daemon stays singleton (try a second `node bin/runtime.js`).
+- Two distinct `(devDomain, worktree)` slots can run simultaneously without interfering.
+- Hitting `acquire` for an already-running slot returns the same devserver with a fresh `lease.id`.
+- Caddy must already be running (`brew services start caddy` or `npm run setup`) for the proxy upsert to succeed.
 
 ## Open questions (decide during M1)
 
