@@ -10,6 +10,7 @@
  */
 import { forwardRef, useImperativeHandle, useRef, useCallback, useState, useEffect, useMemo } from 'react'
 import { getStoryData } from '../../../core/index.js'
+import { getConfig } from '../../../core/stores/configStore.js'
 import { createInspectorHighlighter } from '../../../core/inspector/highlighter.js'
 import Icon from '../../Icon.jsx'
 import WidgetWrapper from './WidgetWrapper.jsx'
@@ -17,11 +18,27 @@ import ResizeHandle from './ResizeHandle.jsx'
 import { useIframeDevLogs } from './iframeDevLogs.js'
 import { findAllConnectedSplitTargets, getSplitPaneLabel, buildPaneForWidget, buildSplitLayout, buildSecondaryIframeUrl } from './expandUtils.js'
 import ExpandedPane from './ExpandedPane.jsx'
+import InlineStoryRenderer from './InlineStoryRenderer.jsx'
 import styles from './StoryWidget.module.css'
 import overlayStyles from './embedOverlay.module.css'
 
 function ComponentIcon({ size = 36 }) {
   return <Icon name="iconoir/keyframe" size={size} />
+}
+
+function isInlineStoriesEnabled() {
+  try {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      if (params.has('_sb_inline_stories')) {
+        const v = params.get('_sb_inline_stories')
+        return v !== '0' && v !== 'false'
+      }
+    }
+  } catch { /* */ }
+  try {
+    return Boolean(getConfig('canvas')?.inlineStories)
+  } catch { return false }
 }
 
 function resolveStoryUrl(storyId, exportName) {
@@ -172,12 +189,14 @@ export default forwardRef(function StoryWidget({ id: widgetId, props, onUpdate, 
     [storyId, exportName, storyIndexKey],
   )
 
+  const inlineEnabled = isInlineStoriesEnabled()
+
   // When paused and not interactive, freeze the iframe src to prevent reloads
   const effectiveSrc = iframeSrc
 
   useIframeDevLogs({
     widget: 'StoryWidget',
-    loaded: interactive && !showCode && Boolean(effectiveSrc),
+    loaded: !inlineEnabled && interactive && !showCode && Boolean(effectiveSrc),
     src: effectiveSrc,
   })
 
@@ -196,7 +215,7 @@ export default forwardRef(function StoryWidget({ id: widgetId, props, onUpdate, 
     )
   }
 
-  if (!effectiveSrc) {
+  if (!inlineEnabled && !effectiveSrc) {
     return (
       <WidgetWrapper>
         <div className={styles.container} ref={containerRef}>
@@ -244,13 +263,17 @@ export default forwardRef(function StoryWidget({ id: widgetId, props, onUpdate, 
         ) : (
           <>
             <div className={styles.content}>
-              <iframe
-                ref={iframeRef}
-                src={effectiveSrc}
-                className={styles.iframe}
-                title={displayName}
-                onLoad={(e) => e.target.blur()}
-              />
+              {inlineEnabled ? (
+                <InlineStoryRenderer storyId={storyId} exportName={exportName} />
+              ) : (
+                <iframe
+                  ref={iframeRef}
+                  src={effectiveSrc}
+                  className={styles.iframe}
+                  title={displayName}
+                  onLoad={(e) => e.target.blur()}
+                />
+              )}
             </div>
 
             {!interactive && (

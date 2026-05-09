@@ -10,9 +10,10 @@
  *   export — the named export to render
  *   theme  — canvas theme (light / dark / dark_dimmed)
  */
-import { createElement, Component as ReactComponent } from 'react'
+import { createElement } from 'react'
 import { createRoot } from 'react-dom/client'
 import { ThemeProvider, BaseStyles } from '@primer/react'
+import { StoryErrorBoundary as IsolateErrorBoundary } from './StoryErrorBoundary.jsx'
 
 // ── Primer Primitives CSS (required for CSS variables) ──────────────
 import '@primer/primitives/dist/css/base/size/size.css'
@@ -31,27 +32,6 @@ import '@primer/primitives/dist/css/functional/themes/dark.css'
 import '@primer/primitives/dist/css/functional/themes/dark-colorblind.css'
 import '@primer/primitives/dist/css/functional/themes/dark-high-contrast.css'
 import '@primer/primitives/dist/css/functional/themes/dark-dimmed.css'
-
-// ── Error Boundary ──────────────────────────────────────────────────
-class IsolateErrorBoundary extends ReactComponent {
-  constructor(props) {
-    super(props)
-    this.state = { error: null }
-  }
-  static getDerivedStateFromError(error) {
-    return { error }
-  }
-  render() {
-    if (this.state.error) {
-      return createElement('div', { style: errorStyle },
-        createElement('strong', null, this.props.name || 'Component'),
-        createElement('br'),
-        String(this.state.error.message || this.state.error),
-      )
-    }
-    return this.props.children
-  }
-}
 
 // ── Styles ──────────────────────────────────────────────────────────
 const errorStyle = {

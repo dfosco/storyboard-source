@@ -42,6 +42,7 @@
  * @property {Record<string, CanvasAgentConfig>} [agents] — per-agent overrides
  * @property {CanvasZoomConfig} [zoom] — zoom min/max/step settings
  * @property {CanvasMessagingConfig} [messaging] — hub messaging settings
+ * @property {boolean} [inlineStories] — render StoryWidget inline (no iframe). Default false.
  */
 
 /**
@@ -191,6 +192,7 @@ export const configDefaults = {
       pollIntervalMs: 2000,
       maxMessagesPerHub: 200,
     },
+    inlineStories: false,
   },
   commandPalette: {
     providers: ['prototypes', 'flows', 'canvases', 'pages'],
