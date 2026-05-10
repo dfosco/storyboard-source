@@ -17,7 +17,8 @@ const TYPE_KEY_MAP = {
 
 function withBase(base, route) {
   const b = (base || '/').replace(/\/+$/, '')
-  return b === '/' ? route : `${b}${route}`
+  const r = route?.startsWith('/') ? route : `/${route || ''}`
+  return b === '' || b === '/' ? r : `${b}${r}`
 }
 
 export default function CreateDialog({ type, basePath, onClose }) {
@@ -69,8 +70,14 @@ export default function CreateDialog({ type, basePath, onClose }) {
       throw new Error(data?.error || `Request failed (${res.status})`)
     }
     const data = await res.json().catch(() => ({}))
-    const route = data.route || data.path || `/${values.name?.trim() || ''}`
-    window.location.href = withBase(basePath, route)
+    // Only navigate when the server gives us an explicit route. Falling back
+    // to data.path here is wrong — that's a filesystem path (e.g. "src/canvas"),
+    // not a URL route. Types without a route (object/record/component) just close.
+    if (data.route) {
+      window.location.href = withBase(basePath, data.route)
+    } else {
+      onClose?.()
+    }
   }
 
   return (

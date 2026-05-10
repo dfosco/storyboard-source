@@ -137,7 +137,7 @@ function createPrototype(values, root) {
     files.push(`${relDir}/${flowFile}`)
   }
 
-  return { success: true, type: 'prototype', name: values.name, path: relDir, files }
+  return { success: true, type: 'prototype', name: values.name, path: relDir, route: `/${values.name}`, files }
 }
 
 function createCanvas(values, root) {
@@ -159,7 +159,8 @@ function createCanvas(values, root) {
     files.push(path.relative(root, path.join(targetDir, jsxFile)))
   }
 
-  return { success: true, type: 'canvas', name: values.name, path: path.relative(root, targetDir), files }
+  const canvasRoute = `/canvas/${values.folder ? `${values.folder}/` : ''}${values.name}`
+  return { success: true, type: 'canvas', name: values.name, path: path.relative(root, targetDir), route: canvasRoute, files }
 }
 
 function createComponent(values, root) {
@@ -210,7 +211,7 @@ function createFlow(values, root) {
   }
 
   fs.writeFileSync(flowPath, content, 'utf-8')
-  return { success: true, type: 'flow', name: values.name, path: relPath, files: [relPath] }
+  return { success: true, type: 'flow', name: values.name, path: relPath, route: `/${values.prototype}?flow=${encodeURIComponent(values.name)}`, files: [relPath] }
 }
 
 function createObject(values, root) {
@@ -268,7 +269,7 @@ function createPage(values, root) {
   const relPath = path.relative(root, pagePath)
   fs.writeFileSync(pagePath, pageJsx(values.path), 'utf-8')
 
-  return { success: true, type: 'page', name: values.path, path: relPath, files: [relPath] }
+  return { success: true, type: 'page', name: values.path, path: relPath, route: `/${values.prototype}/${values.path}`, files: [relPath] }
 }
 
 // ---------------------------------------------------------------------------
