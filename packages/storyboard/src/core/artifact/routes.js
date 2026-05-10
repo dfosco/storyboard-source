@@ -13,6 +13,15 @@
 
 import { createArtifact, editArtifact, deleteArtifact, listArtifacts } from './operations.js'
 import { VALID_TYPES, loadSchema } from './validate.js'
+import path from 'node:path'
+
+function notifyArtifactChange(root, files, eventType) {
+  const hook = globalThis.__STORYBOARD_NOTIFY_ARTIFACT_CHANGE__
+  if (typeof hook !== 'function' || !Array.isArray(files)) return
+  for (const rel of files) {
+    try { hook(path.resolve(root, rel), eventType) } catch { /* best-effort */ }
+  }
+}
 
 export function createArtifactRoutes({ root, sendJson }) {
   return async function artifactHandler(req, res, ctx) {
@@ -76,6 +85,9 @@ export function createArtifactRoutes({ root, sendJson }) {
       const result = createArtifact(type, values, root)
 
       if (result.success) {
+        // Force-invalidate the data index synchronously so the client's
+        // immediate post-create navigation doesn't race chokidar and 404.
+        notifyArtifactChange(root, result.files, 'add')
         sendJson(res, 201, result)
       } else {
         const status = result.errors?.some(e => e.message?.includes('already exists')) ? 409 : 400
@@ -115,6 +127,7 @@ export function createArtifactRoutes({ root, sendJson }) {
       const result = deleteArtifact(type, name, options, root)
 
       if (result.success) {
+        notifyArtifactChange(root, result.files, 'unlink')
         sendJson(res, 200, result)
       } else {
         sendJson(res, result.error?.includes('not found') ? 404 : 400, { error: result.error })

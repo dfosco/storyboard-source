@@ -1348,6 +1348,17 @@ export default function storyboardDataPlugin() {
         invalidate(filePath)
         invalidateConfig(filePath)
       })
+
+      // Cross-plugin hook: lets the artifact route force a synchronous index
+      // rebuild + HMR notify after writing a new file, so the client doesn't
+      // race chokidar (which can lag 50-300ms behind a writeFile call) and
+      // hit a 404 on the just-created canvas/story/page.
+      globalThis.__STORYBOARD_NOTIFY_ARTIFACT_CHANGE__ = (filePath, eventType = 'add') => {
+        try {
+          if (filePath) invalidateOnAddRemove(filePath, eventType)
+          else softInvalidate()
+        } catch { /* best-effort */ }
+      }
     },
 
     handleHotUpdate(ctx) {

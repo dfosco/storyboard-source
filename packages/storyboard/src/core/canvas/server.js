@@ -2482,6 +2482,7 @@ export function createCanvasHandler(ctx) {
           const relPath = path.relative(root, newPagePath).replace(/\\/g, '/')
           const canonicalName = toCanvasId(relPath) || kebab
 
+          try { globalThis.__STORYBOARD_NOTIFY_ARTIFACT_CHANGE__?.(newPagePath, 'add') } catch { /* */ }
           sendJson(res, 201, {
             success: true,
             converted: true,
@@ -2569,6 +2570,7 @@ export function createCanvasHandler(ctx) {
           route: `/canvas/${canonicalName}`,
         }
 
+        try { globalThis.__STORYBOARD_NOTIFY_ARTIFACT_CHANGE__?.(canvasPath, 'add') } catch { /* */ }
         sendJson(res, 201, result)
       } catch (err) {
         sendJson(res, 500, { error: `Failed to create canvas: ${err.message}` })
@@ -2659,6 +2661,10 @@ export function Default() {
         fs.writeFileSync(storyPath, content, 'utf-8')
 
         const relPath = path.relative(root, storyPath)
+        // Force-invalidate the data index so a follow-up "add to canvas"
+        // doesn't race chokidar (StoryWidget would otherwise show
+        // "Story not found" until the next refresh).
+        try { globalThis.__STORYBOARD_NOTIFY_ARTIFACT_CHANGE__?.(storyPath, 'add') } catch { /* */ }
         sendJson(res, 201, {
           success: true,
           name: kebab,
