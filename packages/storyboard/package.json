@@ -1,9 +1,9 @@
 {
   "name": "@dfosco/storyboard",
-  "version": "0.5.0-alpha.19",
+  "version": "0.5.0-alpha.20",
   "type": "module",
   "license": "MIT",
-  "description": "Storyboard prototyping framework \u2014 core engine, React integration, and canvas",
+  "description": "Storyboard prototyping framework — core engine, React integration, and canvas",
   "bin": {
     "storyboard-scaffold": "./src/core/scaffold.js",
     "storyboard": "./src/core/cli/index.js",

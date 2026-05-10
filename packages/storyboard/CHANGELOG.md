@@ -1,5 +1,66 @@
 # @dfosco/storyboard
 
+## 0.5.0-alpha.20
+
+### Minor Changes
+
+-   Runtime CLI integration, unified create flows, and markdown polish
+
+    -   Internalize `@dfosco/storyboard-runtime` into `@dfosco/storyboard` and wire the CLI through it
+    -   `sb dev` now inherits `devDomain` from the repo root config
+    -   Route Add-widget flows in the canvas menu and CreateDialog through the unified `ArtifactForm`
+    -   Connector waypoints data layer and routing module (Part B)
+    -   Fix expanded markdown pane theme and edit-mode scroll
+
+-   [`dcb84d8`](https://github.com/dfosco/storyboard/commit/dcb84d814429dfdcac8887efe46e5f008658ff5e) Thanks [@dfosco](https://github.com/dfosco)! - Browser-side guards for the cross-repo branch-mixing bug class:
+
+    -   **`hashPreserver`** now passes through clicks targeting a different
+        `/branch--<x>/` than the current base. Lets the browser do a full
+        navigation through the proxy instead of feeding a foreign path into
+        the basename-aware router (which would produce
+        `/branch--A/branch--B/...`).
+    -   **`localStorage` keys** are now namespaced as
+        `storyboard:${devDomain}:${branch}:` derived from `window.location.hostname`
+        and `import.meta.env.BASE_URL`. Two repos sharing `storyboard.localhost`
+        (or one repo with multiple branch tabs) can no longer leak history
+        snapshots, hide-mode state, or pending-navigation tokens across apps.
+    -   A one-shot migration on first import drops legacy un-namespaced
+        `storyboard:*` keys to prevent stale state from being restored after
+        upgrade.
+    -   `STORAGE_PREFIX` is now exported for tooling that needs to introspect
+        the active namespace.
+
+-   [`dcb84d8`](https://github.com/dfosco/storyboard/commit/dcb84d814429dfdcac8887efe46e5f008658ff5e) Thanks [@dfosco](https://github.com/dfosco)! - Initial release of the Storyboard Runtime — a single-machine daemon that
+    owns the proxy and dev-server lifecycle so cross-repo races (the
+    `/branch--A/branch--B/...` bug class) become structurally impossible.
+
+    The runtime is the **only** process that:
+
+    -   Writes to the Caddy admin API (`http://localhost:2019`).
+    -   Spawns / kills Vite dev-server processes.
+    -   Allocates ports, leases, and Caddy routes.
+
+    CLI commands become thin clients that _acquire_ resources from the runtime;
+    they never spawn processes themselves.
+
+    Includes:
+
+    -   HTTP API on `127.0.0.1:4321` with zod-validated requests/responses
+        (`/devserver/{acquire,release,renew,list}`, `/proxy/{state,upsert,remove}`,
+        `/pool/status`, `/health`).
+    -   Singleton enforcement via `~/.storyboard/runtime.lock` (O_EXCL +
+        stale-PID reclaim).
+    -   `ProxyController` — sole writer to Caddy admin, serialized writes.
+    -   `DevServerOrchestrator` — explicit FSM (idle→spawning→ready→draining→stopped),
+        per-slot mutex, slot-CWD conflict refusal, lease enforcement.
+    -   `HotPool` — pre-allocated TCP ports for instant `acquire` (env-tunable
+        via `STORYBOARD_RUNTIME_WARM_PORTS` / `STORYBOARD_RUNTIME_POOL_CAP`).
+    -   Auto-injected Vite plugin (`vite-config-wrapper`) that hardens
+        `base-redirect` against cross-branch URL concatenation and namespaces
+        `server.hmr.path` so HMR rides the branch route instead of the catch-all.
+    -   Refuses the legacy default `devDomain "storyboard"` unless explicitly
+        opted in.
+
 ## 0.5.0-alpha.17
 
 ### Minor Changes

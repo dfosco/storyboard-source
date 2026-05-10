@@ -1,5 +1,5 @@
 ---
-"@dfosco/storyboard-runtime": minor
+"@dfosco/storyboard": minor
 ---
 
 Initial release of the Storyboard Runtime — a single-machine daemon that
