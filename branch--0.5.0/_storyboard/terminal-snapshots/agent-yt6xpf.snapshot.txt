@@ -1,427 +1,141 @@
 SESSION: agent-yt6xpf | green-plover
 CANVAS:  viewfinder-redesign/viewfinder-redesign
-BRANCH:  4.2.5
-TIME:    2026-05-01T18:38:37.804Z
+BRANCH:  0.5.0
+TIME:    2026-05-10T17:08:09.387Z
 
 ================================================================================
 SCREEN
 ================================================================================
 
-╭───────────────────────────────────────────────────────────────────────────────────────╮
-│                                         ╭─╮╭─╮                                        │
-│                                         ╰─╯╰─╯                                        │
-│                                         █ ▘▝ █                                        │
 │                                          ▔▔▔▔                                         │
-│                                 GitHub Copilot v1.0.40                                │
+│                                 GitHub Copilot v1.0.44                                │
 │                          Copilot uses AI. Check for mistakes.                         │
 │                                                                                       │
 ╰───────────────────────────────────────────────────────────────────────────────────────╯
 
-✗ Custom agent "terminal-agent" not found. Available agents: none 
+! Failed to load 1 skill. Run /skills for more details.
 
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server
+● Selected custom agent: terminal-agent
 
-● Connected to Visual Studio Code - Insiders
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents, Visual
+  Studio Code - Insiders connected
 
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
 
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
 
+❯ [System] Your terminal identity has been set. widgetId=agent-yt6xpf
+  displayName=green-plover canvasId=viewfinder-redesign/viewfinder-redesign
+  configFile=.storyboard/terminals/agent-yt6xpf.json serverUrl=http://localhost:1234 —
+  this is a configuration step, no response needed.
 
+● Understood, configuration acknowledged.
 
-
-
-
-
-
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]         @prompt-agent.agent.md
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
 ─────────────────────────────────────────────────────────────────────────────────────────
 ❯  
 ─────────────────────────────────────────────────────────────────────────────────────────
- / commands · ? help                         Claude Opus 4.6 (1M context)(Internal only)
+ / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
 
 ================================================================================
 SCROLLBACK (last 60s)
 ================================================================================
 
-──────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                         Claude Opus 4.6 (1M context)(Internal only)
-╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
-✗ Custom agent "terminal-agent" not found. Available agents: none 
+[?996n[>c[>q│                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.44                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+! Failed to load 1 skill. Run /skills for more details.
 
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server
+● Selected custom agent: terminal-agent
 
-● Connected to Visual Studio Code - Insiders
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents, Visual
+  Studio Code - Insiders connected
 
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
 
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
 
+❯ [System] Your terminal identity has been set. widgetId=agent-yt6xpf
+  displayName=green-plover canvasId=viewfinder-redesign/viewfinder-redesign
+  configFile=.storyboard/terminals/agent-yt6xpf.json serverUrl=http://localhost:1234 —
+  this is a configuration step, no response needed.
 
+● Understood, configuration acknowledged.
 
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+│                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.44                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+! Failed to load 1 skill. Run /skills for more details.
 
+● Selected custom agent: terminal-agent
 
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents, Visual
+  Studio Code - Insiders connected
 
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
 
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
 
+❯ [System] Your terminal identity has been set. widgetId=agent-yt6xpf
+  displayName=green-plover canvasId=viewfinder-redesign/viewfinder-redesign
+  configFile=.storyboard/terminals/agent-yt6xpf.json serverUrl=http://localhost:1234 —
+  this is a configuration step, no response needed.
 
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]         @prompt-agent.agent.md
+● Understood, configuration acknowledged.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
 ─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                         Claude Opus 4.6 (1M context)(Internal only)
-╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
-✗ Custom agent "terminal-agent" not found. Available agents: none 
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+│                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.44                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+! Failed to load 1 skill. Run /skills for more details.
 
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server
+● Selected custom agent: terminal-agent
 
-● Connected to Visual Studio Code - Insiders
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents, Visual
+  Studio Code - Insiders connected
 
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
 
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
 
+❯ [System] Your terminal identity has been set. widgetId=agent-yt6xpf
+  displayName=green-plover canvasId=viewfinder-redesign/viewfinder-redesign
+  configFile=.storyboard/terminals/agent-yt6xpf.json serverUrl=http://localhost:1234 —
+  this is a configuration step, no response needed.
 
+● Understood, configuration acknowledged.
 
-
-
-
-
-
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]         @prompt-agent.agent.md
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
 ─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                         Claude Opus 4.6 (1M context)(Internal only)
-╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
-✗ Custom agent "terminal-agent" not found. Available agents: none 
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+│                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.44                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+! Failed to load 1 skill. Run /skills for more details.
 
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server
+● Selected custom agent: terminal-agent
 
-● Connected to Visual Studio Code - Insiders
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents, Visual
+  Studio Code - Insiders connected
 
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
 
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
 
+❯ [System] Your terminal identity has been set. widgetId=agent-yt6xpf
+  displayName=green-plover canvasId=viewfinder-redesign/viewfinder-redesign
+  configFile=.storyboard/terminals/agent-yt6xpf.json serverUrl=http://localhost:1234 —
+  this is a configuration step, no response needed.
 
+● Understood, configuration acknowledged.
 
-
-
-
-
-
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]         @prompt-agent.agent.md
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
 ─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                         Claude Opus 4.6 (1M context)(Internal only)
-╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
-✗ Custom agent "terminal-agent" not found. Available agents: none 
-
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server
-
-● Connected to Visual Studio Code - Insiders
-
-
-
-
-
-
-
-
-
-
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]         @prompt-agent.agent.md
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                         Claude Opus 4.6 (1M context)(Internal only)
-╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
-✗ Custom agent "terminal-agent" not found. Available agents: none 
-
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server
-
-● Connected to Visual Studio Code - Insiders
-
-
-
-
-
-
-
-
-
-
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]         @prompt-agent.agent.md
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                         Claude Opus 4.6 (1M context)(Internal only)
-╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
-✗ Custom agent "terminal-agent" not found. Available agents: none 
-
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server
-
-● Connected to Visual Studio Code - Insiders
-
-
-
-
-
-
-
-
-
-
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]         @prompt-agent.agent.md
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                         Claude Opus 4.6 (1M context)(Internal only)
-╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
-✗ Custom agent "terminal-agent" not found. Available agents: none 
-
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server
-
-● Connected to Visual Studio Code - Insiders
-
-
-
-
-
-
-
-
-
-
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]         @prompt-agent.agent.md
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                         Claude Opus 4.6 (1M context)(Internal only)
-╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
-✗ Custom agent "terminal-agent" not found. Available agents: none 
-
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server
-
-● Connected to Visual Studio Code - Insiders
-
-
-
-
-
-
-
-
-
-
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]         @prompt-agent.agent.md
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                         Claude Opus 4.6 (1M context)(Internal only)
-╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
-✗ Custom agent "terminal-agent" not found. Available agents: none 
-
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server
-
-● Connected to Visual Studio Code - Insiders
-
-
-
-
-
-
-
-
-
-
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]         @prompt-agent.agent.md
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                         Claude Opus 4.6 (1M context)(Internal only)
-╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
-✗ Custom agent "terminal-agent" not found. Available agents: none 
-
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server
-
-● Connected to Visual Studio Code - Insiders
-
-
-
-
-
-
-
-
-
-
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]         @prompt-agent.agent.md
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                         Claude Opus 4.6 (1M context)(Internal only)
-╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
-✗ Custom agent "terminal-agent" not found. Available agents: none 
-
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server
-
-● Connected to Visual Studio Code - Insiders
-
-
-
-
-
-
-
-
-
-
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]         @prompt-agent.agent.md
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                         Claude Opus 4.6 (1M context)(Internal only)
-╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
-✗ Custom agent "terminal-agent" not found. Available agents: none 
-
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server
-
-● Connected to Visual Studio Code - Insiders
-
-
-
-
-
-
-
-
-
-
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]         @prompt-agent.agent.md
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                         Claude Opus 4.6 (1M context)(Internal only)
-╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
-✗ Custom agent "terminal-agent" not found. Available agents: none 
-
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server
-
-● Connected to Visual Studio Code - Insiders
-
-
-
-
-
-
-
-
-
-
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]         @prompt-agent.agent.md
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                         Claude Opus 4.6 (1M context)(Internal only)
-╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
-✗ Custom agent "terminal-agent" not found. Available agents: none 
-
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server
-
-● Connected to Visual Studio Code - Insiders
-
-
-
-
-
-
-
-
-
-
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]         @prompt-agent.agent.md
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                         Claude Opus 4.6 (1M context)(Internal only)
-╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
-✗ Custom agent "terminal-agent" not found. Available agents: none 
-
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server
-
-● Connected to Visual Studio Code - Insiders
-
-
-
-
-
-
-
-
-
-
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]         @prompt-agent.agent.md
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                         Claude Opus 4.6 (1M context)(Internal only)
-╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
-✗ Custom agent "terminal-agent" not found. Available agents: none 
-
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server
-
-● Connected to Visual Studio Code - Insiders
-
-
-
-
-
-
-
-
-
-
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]         @prompt-agent.agent.md
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                         Claude Opus 4.6 (1M context)(Internal only)
-╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
-✗ Custom agent "terminal-agent" not found. Available agents: none 
-
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server
-
-● Connected to Visual Studio Code - Insiders
-
-
-
-
-
-
-
-
-
-
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]         @prompt-agent.agent.md
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                         Claude Opus 4.6 (1M context)(Internal only)
-╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
-✗ Custom agent "terminal-agent" not found. Available agents: none 
-
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server
-
-● Connected to Visual Studio Code - Insiders
-
-
-
-
-
-
-
-
-
-
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]         @prompt-agent.agent.md
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                         Claude Opus 4.6 (1M context)(Internal only)
-╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.40                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
-✗ Custom agent "terminal-agent" not found. Available agents: none 
-
-● Environment loaded: 1 custom instruction, 20 skills, 1 MCP server
-
-● Connected to Visual Studio Code - Insiders
-
-
-
-
-
-
-
-
-
-
-
- ~/workspace/storyboard-core/.worktrees/4.2.5 [⎇ 4.2.5*%]         @prompt-agent.agent.md
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                         Claude Opus 4.6 (1M context)(Internal only)
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
