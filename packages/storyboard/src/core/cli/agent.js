@@ -3,7 +3,7 @@
  * storyboard agent signal — signal agent status to the canvas server.
  *
  * Usage:
- *   npx storyboard agent signal --widget <id> --canvas <canvasId> --status done|error|running [--message "..."]
+ *   npx storyboard agent signal --widget <id> --canvas <canvasId> --status done|error|running|working [--message "..."]
  *
  * Environment variables (auto-set by terminal server):
  *   STORYBOARD_WIDGET_ID  — widget ID (fallback if --widget not provided)
@@ -21,7 +21,7 @@ if (subcommand === 'signal') {
   const flagSchema = {
     widget: { type: 'string', description: 'Widget ID' },
     canvas: { type: 'string', description: 'Canvas ID' },
-    status: { type: 'string', required: true, description: 'Status: done, error, or running' },
+    status: { type: 'string', required: true, description: 'Status: done, error, running, or working' },
     message: { type: 'string', description: 'Optional status message' },
   }
 
@@ -35,12 +35,12 @@ if (subcommand === 'signal') {
   const branch = process.env.STORYBOARD_BRANCH || 'unknown'
 
   if (!widgetId || !canvasId || !status) {
-    console.error(`${bold('Usage:')} npx storyboard agent signal --status done|error|running`)
+    console.error(`${bold('Usage:')} npx storyboard agent signal --status done|error|running|working`)
     console.error(`${dim('Widget and canvas IDs are read from environment if not provided.')}`)
     process.exit(1)
   }
 
-  const validStatuses = ['done', 'error', 'running']
+  const validStatuses = ['done', 'error', 'running', 'working']
   if (!validStatuses.includes(status)) {
     console.error(`${bold('Error:')} Status must be one of: ${validStatuses.join(', ')}`)
     process.exit(1)

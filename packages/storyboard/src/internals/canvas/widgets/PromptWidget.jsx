@@ -123,6 +123,12 @@ const PromptWidget = forwardRef(function PromptWidget({ id, props, onUpdate, res
       } else if (data.status === 'cancelled') {
         setExecStatus('idle')
         onUpdateRef.current?.({ status: 'idle', sessionId: '', errorMessage: '' })
+      } else if (data.status === 'working') {
+        setExecStatus('pending')
+        onUpdateRef.current?.({ status: 'working' })
+      } else if (data.status === 'running' || data.status === 'pending') {
+        setExecStatus('pending')
+        onUpdateRef.current?.({ status: 'running' })
       }
     }
 

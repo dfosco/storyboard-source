@@ -1,6 +1,6 @@
 {
   "name": "@dfosco/storyboard",
-  "version": "0.5.0-alpha.21",
+  "version": "0.5.0-alpha.22",
   "type": "module",
   "license": "MIT",
   "description": "Storyboard prototyping framework — core engine, React integration, and canvas",
@@ -30,7 +30,7 @@
     "build:ui": "vite build --config vite.ui.config.js",
     "build:canvas": "vite build --config vite.canvas.config.js",
     "dev:ui": "vite build --config vite.ui.config.js --watch",
-    "prepublishOnly": "npm run build:css && npm run build:ui && npm run build:canvas",
+    "prepublishOnly": "npm run build:css && npm run build:ui && npm run build:canvas && npm run build:runtime",
     "check:imports": "echo 'no svelte checks needed'",
     "build:runtime": "tsup --config tsup.runtime.config.ts",
     "typecheck:runtime": "tsc --noEmit -p tsconfig.runtime.json"

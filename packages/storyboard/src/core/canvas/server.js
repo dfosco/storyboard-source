@@ -2933,7 +2933,7 @@ export function Default() {
         return
       }
 
-      const validStatuses = ['done', 'error', 'running']
+      const validStatuses = ['done', 'error', 'running', 'working']
       if (!validStatuses.includes(status)) {
         sendJson(res, 400, { error: `status must be one of: ${validStatuses.join(', ')}` })
         return

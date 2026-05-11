@@ -100,3 +100,33 @@
 .agents-ready-btn[data-ready] .agents-ready-btn-count {
   background: rgba(255, 255, 255, 0.22);
 }
+
+.agents-ready-btn-working {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: var(--sb--trigger-border, rgba(148, 163, 184, 0.35));
+  color: inherit;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+.agents-ready-btn[data-ready] .agents-ready-btn-working {
+  background: rgba(255, 255, 255, 0.22);
+}
+.agents-ready-btn-spinner {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  animation: sb-agents-spinner 0.85s linear infinite;
+  display: inline-block;
+}
+.agents-ready-btn-working-count {
+  line-height: 1;
+}
+@keyframes sb-agents-spinner {
+  to { transform: rotate(360deg); }
+}

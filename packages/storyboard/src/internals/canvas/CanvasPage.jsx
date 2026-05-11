@@ -2464,19 +2464,28 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
     return out
   }, [localWidgets])
 
+  const workingAgents = useMemo(() => {
+    const widgets = localWidgets ?? []
+    const out = []
+    for (const w of widgets) {
+      if (!isAgentWidget(w)) continue
+      if (w?.props?.status === 'working') {
+        out.push({ id: w.id, type: w.type, alias: w.props?.alias || null })
+      }
+    }
+    return out
+  }, [localWidgets])
+
   // Broadcast doneAgents to the collab bar (snapshots on demand too).
   useEffect(() => {
-    document.dispatchEvent(new CustomEvent('storyboard:done-agents-changed', {
-      detail: { canvasId, doneAgents },
-    }))
+    const detail = { canvasId, doneAgents, workingAgents }
+    document.dispatchEvent(new CustomEvent('storyboard:done-agents-changed', { detail }))
     function handleRequest() {
-      document.dispatchEvent(new CustomEvent('storyboard:done-agents-changed', {
-        detail: { canvasId, doneAgents },
-      }))
+      document.dispatchEvent(new CustomEvent('storyboard:done-agents-changed', { detail }))
     }
     document.addEventListener('storyboard:done-agents-request', handleRequest)
     return () => document.removeEventListener('storyboard:done-agents-request', handleRequest)
-  }, [canvasId, doneAgents])
+  }, [canvasId, doneAgents, workingAgents])
 
   // Prepend ✳️ to the page title while any agent on this canvas is done.
   useEffect(() => {
@@ -2506,6 +2515,7 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
       if (data.status === 'done' || data.status === 'completed') nextStatus = 'done'
       else if (data.status === 'error') nextStatus = 'error'
       else if (data.status === 'cancelled') nextStatus = 'idle'
+      else if (data.status === 'working') nextStatus = 'working'
       else if (data.status === 'running' || data.status === 'pending') nextStatus = 'running'
       if (!nextStatus) return
       if (widget.props?.status === nextStatus) return

@@ -252,6 +252,8 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
         onUpdateRef.current?.({ status: 'error', errorMessage: data.message || 'Unknown error' })
       } else if (data.status === 'cancelled') {
         onUpdateRef.current?.({ status: 'idle', errorMessage: '' })
+      } else if (data.status === 'working') {
+        onUpdateRef.current?.({ status: 'working' })
       } else if (data.status === 'running' || data.status === 'pending') {
         onUpdateRef.current?.({ status: 'running' })
       }
