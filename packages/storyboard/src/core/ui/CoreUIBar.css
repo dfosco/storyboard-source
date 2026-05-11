@@ -53,20 +53,64 @@
   right: var(--base-size-16);
 }
 
-.agents-ready-trigger-content {
+.agents-ready-btn {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 14px;
+  border: 1.6px solid var(--borderColor-muted, #d0d7de);
+  background: var(--bgColor-default, #ffffff);
+  color: var(--fgColor-muted, #656d76);
+  font-size: 12px;
+  font-weight: 500;
   line-height: 1;
+  transition: background 100ms, color 100ms, border-color 100ms;
 }
-.agents-ready-trigger-count {
+[data-sb-canvas-theme^='dark'] .agents-ready-btn,
+:root[data-color-mode='dark'] .agents-ready-btn {
+  background: var(--bgColor-muted, #161b22);
+  border-color: var(--borderColor-muted, #373e47);
+  color: var(--fgColor-muted, #8b949e);
+}
+.agents-ready-btn:hover:not(:disabled) {
+  background: var(--bgColor-neutral-muted, #eaeef2);
+  color: var(--fgColor-default, #1f2328);
+  border-color: var(--borderColor-default, #d0d7de);
+}
+[data-sb-canvas-theme^='dark'] .agents-ready-btn:hover:not(:disabled),
+:root[data-color-mode='dark'] .agents-ready-btn:hover:not(:disabled) {
+  background: var(--bgColor-neutral-muted, #272c33);
+  color: var(--fgColor-default, #e6edf3);
+  border-color: var(--borderColor-default, #484f58);
+}
+.agents-ready-btn:disabled {
+  cursor: default;
+}
+.agents-ready-btn[data-ready] {
+  background: var(--bgColor-success-emphasis, #1a7f37);
+  border-color: var(--bgColor-success-emphasis, #1a7f37);
+  color: var(--fgColor-onEmphasis, #ffffff);
+}
+.agents-ready-btn[data-ready]:hover {
+  filter: brightness(1.05);
+}
+.agents-ready-btn-label {
+  white-space: nowrap;
+}
+.agents-ready-btn-count {
   font-variant-numeric: tabular-nums;
   font-weight: 600;
-  font-size: 12px;
   min-width: 1ch;
-  text-align: center;
-  color: currentColor;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: var(--bgColor-neutral-muted, rgba(175, 184, 193, 0.2));
+  color: inherit;
 }
-[data-collab-bar-item="agents-ready"][data-count="0"] .agents-ready-trigger-count {
-  /* opacity: 0.5; */
+.agents-ready-btn[data-ready] .agents-ready-btn-count {
+  background: rgba(255, 255, 255, 0.22);
 }
