@@ -14,8 +14,8 @@
 
 import * as p from '@clack/prompts'
 import { execSync } from 'child_process'
-import { existsSync, readFileSync } from 'fs'
-import { homedir } from 'os'
+import { existsSync, readFileSync, writeFileSync, unlinkSync, mkdtempSync } from 'fs'
+import { homedir, tmpdir } from 'os'
 import { join } from 'path'
 
 const PIDFILE = join(homedir(), '.storyboard', 'runtime.pid')
@@ -27,14 +27,33 @@ function isCaddyRunning() {
   try { execSync('curl -sf http://localhost:2019/config/ >/dev/null 2>&1', { timeout: 2000 }); return true } catch { return false }
 }
 function startCaddyEmpty() {
+  // Caddy v2.11+ corrupts stdin reads on `--config -`, producing a garbled
+  // "subject does not qualify for certificate" error. Workaround: write
+  // the Caddyfile to a temp file and pass the path.
+  // Also: `caddy start` double-forks but the daemon inherits our stdio fds.
+  // We must ignore all stdio so execSync returns as soon as the parent
+  // exits — otherwise it hangs until the timeout.
+  let tmpDir
   try {
-    execSync('caddy start --config -', {
-      input: 'http://storyboard.localhost {\n}\n',
-      stdio: ['pipe', 'ignore', 'ignore'],
+    tmpDir = mkdtempSync(join(tmpdir(), 'storyboard-caddy-'))
+    const caddyfilePath = join(tmpDir, 'Caddyfile')
+    writeFileSync(caddyfilePath, 'http://storyboard.localhost {\n}\n', 'utf8')
+    execSync(`caddy start --config "${caddyfilePath}" --adapter caddyfile`, {
+      stdio: 'ignore',
       timeout: 5000,
     })
-    return true
-  } catch { return false }
+    return { ok: true }
+  } catch (err) {
+    // execSync rolls multiple failure modes (non-zero exit, timeout, signal)
+    // into a thrown error. Verify the daemon is actually up before reporting.
+    if (isCaddyRunning()) return { ok: true }
+    const stderr = err.stderr?.toString?.() || err.message || String(err)
+    return { ok: false, error: stderr }
+  } finally {
+    if (tmpDir) {
+      try { unlinkSync(join(tmpDir, 'Caddyfile')) } catch { /* */ }
+    }
+  }
 }
 
 async function main() {
@@ -85,7 +104,16 @@ async function main() {
   if (!isCaddyRunning()) {
     const s = p.spinner()
     s.start('Starting Caddy…')
-    if (!startCaddyEmpty()) { s.stop('Failed'); p.log.error('Could not start Caddy.'); process.exit(1) }
+    const result = startCaddyEmpty()
+    if (!result.ok) {
+      s.stop('Failed')
+      p.log.error('Could not start Caddy.')
+      if (result.error) {
+        const trimmed = result.error.trim().split('\n').slice(-5).join('\n')
+        p.log.message(trimmed)
+      }
+      process.exit(1)
+    }
     s.stop('Caddy started')
   }
 
@@ -147,7 +175,7 @@ export function reloadCaddy() {
   console.warn('[storyboard] reloadCaddy() is deprecated — runtime keeps Caddy in sync via admin API.')
   return false
 }
-export function startCaddy() { return startCaddyEmpty() }
+export function startCaddy() { return startCaddyEmpty().ok }
 export function stopCaddy() {
   try { execSync('curl -sf -X POST http://localhost:2019/stop', { timeout: 5000, stdio: 'ignore' }); return true }
   catch { return false }
