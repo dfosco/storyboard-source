@@ -83,7 +83,7 @@
   color: var(--fgColor-onEmphasis, #ffffff);
 }
 .agents-ready-btn[data-ready]:hover {
-  filter: brightness(1.05);
+  background: var(--bgColor-success-hover, #1a7f37cc);
 }
 .agents-ready-btn-label {
   white-space: nowrap;
