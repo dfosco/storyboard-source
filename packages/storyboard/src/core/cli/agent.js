@@ -48,19 +48,32 @@ if (subcommand === 'signal') {
 
   try {
     const url = `${serverUrl}/_storyboard/canvas/agent/signal`
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ widgetId, canvasId, branch, status, message }),
-    })
+    const body = JSON.stringify({ widgetId, canvasId, branch, status, message })
+    const headers = { 'Content-Type': 'application/json' }
 
-    if (res.ok) {
+    // Retry transient failures (404/5xx) once with a short backoff — the dev
+    // proxy can briefly route to a stale port during reloads.
+    let res = null
+    let lastErr = null
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        res = await fetch(url, { method: 'POST', headers, body })
+        if (res.ok) break
+        if (res.status >= 400 && res.status < 500 && res.status !== 404) break
+      } catch (err) {
+        lastErr = err
+      }
+      if (attempt < 2) await new Promise((r) => setTimeout(r, 250 * (attempt + 1)))
+    }
+
+    if (res && res.ok) {
       console.log(`${cyan('✓')} Agent status: ${bold(status)}${message ? ` — ${message}` : ''}`)
-    } else {
+    } else if (res) {
       const data = await res.json().catch(() => ({}))
       console.error(`${yellow('⚠')} Server returned ${res.status}: ${data.error || 'unknown error'}`)
-      // Fallback: write directly to terminal config
       await fallbackWrite({ branch, canvasId, widgetId, status, message })
+    } else {
+      throw lastErr || new Error('signal request failed')
     }
   } catch {
     // Server not reachable — write directly to terminal config file
