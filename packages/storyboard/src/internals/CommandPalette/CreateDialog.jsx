@@ -84,12 +84,14 @@ export default function CreateDialog({ type, basePath, onClose }) {
     <div style={overlayStyle} onClick={onClose}>
       <div style={dialogStyle} onClick={e => e.stopPropagation()}>
         <button style={closeBtnStyle} onClick={onClose} aria-label="Close">✕</button>
-        <ArtifactForm
-          type={schemaKey}
-          onSubmit={handleSubmit}
-          onCancel={onClose}
-          dynamicOptions={{ prototypes }}
-        />
+        <div style={scrollAreaStyle}>
+          <ArtifactForm
+            type={schemaKey}
+            onSubmit={handleSubmit}
+            onCancel={onClose}
+            dynamicOptions={{ prototypes }}
+          />
+        </div>
       </div>
     </div>
   )
@@ -109,7 +111,14 @@ const dialogStyle = {
   position: 'relative',
   background: 'transparent',
   width: '100%', maxWidth: 520,
-  maxHeight: '80vh', overflowY: 'auto',
+  maxHeight: '80vh',
+  display: 'flex', flexDirection: 'column',
+}
+
+const scrollAreaStyle = {
+  flex: 1,
+  minHeight: 0,
+  overflowY: 'auto',
 }
 
 const closeBtnStyle = {
