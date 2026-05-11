@@ -196,6 +196,12 @@ let currentBranch = 'unknown'
 /** Actual server port, resolved from httpServer at setup time */
 let actualServerPort = null
 
+/** Vite base path (e.g. "/branch--0.5.0/"), captured from setupTerminalServer */
+let actualBase = '/'
+
+/** httpServer reference, used to recompute port if it wasn't bound at setup time */
+let actualHttpServer = null
+
 /** Hot pool manager reference (set by setupTerminalServer) */
 let hotPoolRef = null
 
@@ -641,12 +647,24 @@ export function setupTerminalServer(httpServer, base = '/', branch = 'unknown', 
 
   currentBranch = branch
   hotPoolRef = hotPoolManager
+  actualBase = base || '/'
+  actualHttpServer = httpServer
 
-  // Capture the actual port from the running HTTP server
+  // Capture the actual port from the running HTTP server. At configureServer
+  // time the httpServer may not have bound yet (address() returns null), so
+  // we also listen for the 'listening' event to capture the port later.
   try {
     const addr = httpServer.address()
     if (addr && addr.port) actualServerPort = addr.port
   } catch { /* empty */ }
+  if (!actualServerPort && typeof httpServer.once === 'function') {
+    httpServer.once('listening', () => {
+      try {
+        const addr = httpServer.address()
+        if (addr && addr.port) actualServerPort = addr.port
+      } catch { /* empty */ }
+    })
+  }
 
   // Ensure node-pty spawn-helper has execute permission (npm install can strip it)
   try {
@@ -799,10 +817,20 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
   const { entry, conflict } = registerSession({ branch, canvasId, widgetId, prettyName })
 
   // Resolve server URL deterministically:
-  // 1. Use the actual port from httpServer (set at setup time)
+  // 1. Use the actual port from httpServer (set at setup time, or via the
+  //    'listening' event). Re-poll address() if it wasn't ready earlier.
   // 2. Fall back to server registry (tracks running dev servers)
-  // 3. Last resort: default port 1234
+  // 3. Last resort: default port 1234 (matches Vite default)
   let serverPort = actualServerPort
+  if (!serverPort && actualHttpServer) {
+    try {
+      const addr = actualHttpServer.address()
+      if (addr && addr.port) {
+        actualServerPort = addr.port
+        serverPort = addr.port
+      }
+    } catch { /* empty */ }
+  }
   if (!serverPort) {
     try {
       const name = detectWorktreeName()
@@ -811,7 +839,12 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
     } catch { /* empty */ }
   }
   if (!serverPort) serverPort = 1234
-  const serverUrl = `http://localhost:${serverPort}`
+  // Include the Vite base path so the URL works when the dev server is
+  // mounted under a sub-path (e.g. "/branch--0.5.0/" via the Caddy proxy).
+  // Without this, `${serverUrl}/_storyboard/canvas/...` would 404 because
+  // canvas routes are namespaced under the base.
+  const baseTrimmed = (actualBase || '/').replace(/\/$/, '')
+  const serverUrl = `http://localhost:${serverPort}${baseTrimmed}`
 
   // Write terminal config for agent context
   writeTermConfig({ branch, canvasId, widgetId, serverUrl, tmuxName, displayName: prettyName || null, widgetProps: prettyName ? { prettyName } : null })
