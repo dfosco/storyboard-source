@@ -893,7 +893,7 @@
           "type": "action",
           "action": "cycle-layout",
           "label": "Cycle layout (auto → wide → tall)",
-          "icon": "iconoir/view-grid"
+          "icon": "sync"
         },
         {
           "id": "copy",
