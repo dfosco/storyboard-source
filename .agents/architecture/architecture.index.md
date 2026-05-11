@@ -3,258 +3,305 @@
 > Auto-generated documentation of architecturally significant files.
 > Run `scan the codebase architecture` to regenerate.
 
+This repository is organized as a workspace root described by [`package.json`](./package.json.md) plus a single publishable package described by [`packages/storyboard/package.json`](./packages/storyboard/package.json.md). The root manifest supplies the app shell, shared React/Primer/routing toolchain, and repo-level build, test, and release scripts; the workspace package then exposes the actual Storyboard platform that the app and downstream consumers import.
+
+That package is intentionally unified rather than split across many npm packages. [`packages/storyboard/package.json`](./packages/storyboard/package.json.md) publishes the framework-agnostic data and server logic, the React-facing internals, the Primer integration surface, the canvas runtime, the developer CLI, and the proxy/runtime entrypoints from one versioned contract, while the root [`package.json`](./package.json.md) keeps local development pointed at source through Vite and workspace scripts.
+
 ## Storyboard System
 
-- [`packages/storyboard/src/core/autosync/server.js`](./packages/storyboard/src/core/autosync/server.js.md)
-- [`packages/storyboard/src/core/autosync/server.test.js`](./packages/storyboard/src/core/autosync/server.test.js.md)
-- [`packages/storyboard/src/core/canvas/collision.js`](./packages/storyboard/src/core/canvas/collision.js.md)
-- [`packages/storyboard/src/core/canvas/compact.js`](./packages/storyboard/src/core/canvas/compact.js.md)
-- [`packages/storyboard/src/core/canvas/githubEmbeds.js`](./packages/storyboard/src/core/canvas/githubEmbeds.js.md)
-- [`packages/storyboard/src/core/canvas/hot-pool.js`](./packages/storyboard/src/core/canvas/hot-pool.js.md)
-- [`packages/storyboard/src/core/canvas/hub-roles.js`](./packages/storyboard/src/core/canvas/hub-roles.js.md)
-- [`packages/storyboard/src/core/canvas/identity.js`](./packages/storyboard/src/core/canvas/identity.js.md)
-- [`packages/storyboard/src/core/canvas/materializer.js`](./packages/storyboard/src/core/canvas/materializer.js.md)
-- [`packages/storyboard/src/core/canvas/selectedWidgets.js`](./packages/storyboard/src/core/canvas/selectedWidgets.js.md)
-- [`packages/storyboard/src/core/canvas/server.js`](./packages/storyboard/src/core/canvas/server.js.md)
-- [`packages/storyboard/src/core/canvas/terminal-config.js`](./packages/storyboard/src/core/canvas/terminal-config.js.md)
-- [`packages/storyboard/src/core/canvas/terminal-registry.js`](./packages/storyboard/src/core/canvas/terminal-registry.js.md)
-- [`packages/storyboard/src/core/canvas/terminal-server.js`](./packages/storyboard/src/core/canvas/terminal-server.js.md)
-- [`packages/storyboard/src/core/cli/agent.js`](./packages/storyboard/src/core/cli/agent.js.md)
-- [`packages/storyboard/src/core/cli/artifact.js`](./packages/storyboard/src/core/cli/artifact.js.md)
-- [`packages/storyboard/src/core/cli/branch.js`](./packages/storyboard/src/core/cli/branch.js.md)
-- [`packages/storyboard/src/core/cli/canvasAdd.js`](./packages/storyboard/src/core/cli/canvasAdd.js.md)
-- [`packages/storyboard/src/core/cli/canvasAlias.js`](./packages/storyboard/src/core/cli/canvasAlias.js.md)
-- [`packages/storyboard/src/core/cli/canvasBatch.js`](./packages/storyboard/src/core/cli/canvasBatch.js.md)
-- [`packages/storyboard/src/core/cli/canvasBounds.js`](./packages/storyboard/src/core/cli/canvasBounds.js.md)
-- [`packages/storyboard/src/core/cli/canvasBroadcast.js`](./packages/storyboard/src/core/cli/canvasBroadcast.js.md)
-- [`packages/storyboard/src/core/cli/canvasConnector.js`](./packages/storyboard/src/core/cli/canvasConnector.js.md)
-- [`packages/storyboard/src/core/cli/canvasDelete.js`](./packages/storyboard/src/core/cli/canvasDelete.js.md)
-- [`packages/storyboard/src/core/cli/canvasDeleteCanvas.js`](./packages/storyboard/src/core/cli/canvasDeleteCanvas.js.md)
-- [`packages/storyboard/src/core/cli/canvasDuplicate.js`](./packages/storyboard/src/core/cli/canvasDuplicate.js.md)
-- [`packages/storyboard/src/core/cli/canvasRead.js`](./packages/storyboard/src/core/cli/canvasRead.js.md)
-- [`packages/storyboard/src/core/cli/canvasRoles.js`](./packages/storyboard/src/core/cli/canvasRoles.js.md)
-- [`packages/storyboard/src/core/cli/canvasUpdate.js`](./packages/storyboard/src/core/cli/canvasUpdate.js.md)
-- [`packages/storyboard/src/core/cli/cliHelpers.js`](./packages/storyboard/src/core/cli/cliHelpers.js.md)
-- [`packages/storyboard/src/core/cli/code.js`](./packages/storyboard/src/core/cli/code.js.md)
-- [`packages/storyboard/src/core/cli/compact.js`](./packages/storyboard/src/core/cli/compact.js.md)
-- [`packages/storyboard/src/core/cli/create.js`](./packages/storyboard/src/core/cli/create.js.md)
-- [`packages/storyboard/src/core/cli/dev-helpers.js`](./packages/storyboard/src/core/cli/dev-helpers.js.md)
-- [`packages/storyboard/src/core/cli/dev-helpers.test.js`](./packages/storyboard/src/core/cli/dev-helpers.test.js.md)
-- [`packages/storyboard/src/core/cli/dev.js`](./packages/storyboard/src/core/cli/dev.js.md)
-- [`packages/storyboard/src/core/cli/dev.legacy.js`](./packages/storyboard/src/core/cli/dev.legacy.js.md)
-- [`packages/storyboard/src/core/cli/exit.js`](./packages/storyboard/src/core/cli/exit.js.md)
-- [`packages/storyboard/src/core/cli/flags.js`](./packages/storyboard/src/core/cli/flags.js.md)
-- [`packages/storyboard/src/core/cli/flags.test.js`](./packages/storyboard/src/core/cli/flags.test.js.md)
-- [`packages/storyboard/src/core/cli/hubCommands.js`](./packages/storyboard/src/core/cli/hubCommands.js.md)
-- [`packages/storyboard/src/core/cli/index.js`](./packages/storyboard/src/core/cli/index.js.md)
-- [`packages/storyboard/src/core/cli/intro.js`](./packages/storyboard/src/core/cli/intro.js.md)
-- [`packages/storyboard/src/core/cli/messagesCommands.js`](./packages/storyboard/src/core/cli/messagesCommands.js.md)
-- [`packages/storyboard/src/core/cli/promptSpawn.js`](./packages/storyboard/src/core/cli/promptSpawn.js.md)
-- [`packages/storyboard/src/core/cli/proxy.js`](./packages/storyboard/src/core/cli/proxy.js.md)
-- [`packages/storyboard/src/core/cli/proxy.legacy.js`](./packages/storyboard/src/core/cli/proxy.legacy.js.md)
-- [`packages/storyboard/src/core/cli/proxy.test.js`](./packages/storyboard/src/core/cli/proxy.test.js.md)
-- [`packages/storyboard/src/core/cli/publish.js`](./packages/storyboard/src/core/cli/publish.js.md)
-- [`packages/storyboard/src/core/cli/pull.js`](./packages/storyboard/src/core/cli/pull.js.md)
-- [`packages/storyboard/src/core/cli/run.js`](./packages/storyboard/src/core/cli/run.js.md)
-- [`packages/storyboard/src/core/cli/schemas.js`](./packages/storyboard/src/core/cli/schemas.js.md)
-- [`packages/storyboard/src/core/cli/server.js`](./packages/storyboard/src/core/cli/server.js.md)
-- [`packages/storyboard/src/core/cli/serverUrl.js`](./packages/storyboard/src/core/cli/serverUrl.js.md)
-- [`packages/storyboard/src/core/cli/sessions.js`](./packages/storyboard/src/core/cli/sessions.js.md)
-- [`packages/storyboard/src/core/cli/setup.js`](./packages/storyboard/src/core/cli/setup.js.md)
-- [`packages/storyboard/src/core/cli/terminal-commands.js`](./packages/storyboard/src/core/cli/terminal-commands.js.md)
-- [`packages/storyboard/src/core/cli/terminal-messaging.js`](./packages/storyboard/src/core/cli/terminal-messaging.js.md)
-- [`packages/storyboard/src/core/cli/terminal-welcome.js`](./packages/storyboard/src/core/cli/terminal-welcome.js.md)
-- [`packages/storyboard/src/core/cli/updateVersion.js`](./packages/storyboard/src/core/cli/updateVersion.js.md)
-- [`packages/storyboard/src/core/comments/api.js`](./packages/storyboard/src/core/comments/api.js.md)
-- [`packages/storyboard/src/core/comments/api.test.js`](./packages/storyboard/src/core/comments/api.test.js.md)
-- [`packages/storyboard/src/core/comments/auth.js`](./packages/storyboard/src/core/comments/auth.js.md)
-- [`packages/storyboard/src/core/comments/auth.test.js`](./packages/storyboard/src/core/comments/auth.test.js.md)
-- [`packages/storyboard/src/core/comments/commentCache.js`](./packages/storyboard/src/core/comments/commentCache.js.md)
-- [`packages/storyboard/src/core/comments/commentCache.test.js`](./packages/storyboard/src/core/comments/commentCache.test.js.md)
-- [`packages/storyboard/src/core/comments/commentDrafts.js`](./packages/storyboard/src/core/comments/commentDrafts.js.md)
-- [`packages/storyboard/src/core/comments/commentMode.js`](./packages/storyboard/src/core/comments/commentMode.js.md)
-- [`packages/storyboard/src/core/comments/commentMode.test.js`](./packages/storyboard/src/core/comments/commentMode.test.js.md)
-- [`packages/storyboard/src/core/comments/config.js`](./packages/storyboard/src/core/comments/config.js.md)
-- [`packages/storyboard/src/core/comments/config.test.js`](./packages/storyboard/src/core/comments/config.test.js.md)
-- [`packages/storyboard/src/core/comments/graphql.js`](./packages/storyboard/src/core/comments/graphql.js.md)
-- [`packages/storyboard/src/core/comments/graphql.test.js`](./packages/storyboard/src/core/comments/graphql.test.js.md)
-- [`packages/storyboard/src/core/comments/index.js`](./packages/storyboard/src/core/comments/index.js.md)
-- [`packages/storyboard/src/core/comments/metadata.js`](./packages/storyboard/src/core/comments/metadata.js.md)
-- [`packages/storyboard/src/core/comments/metadata.test.js`](./packages/storyboard/src/core/comments/metadata.test.js.md)
-- [`packages/storyboard/src/core/comments/queries.js`](./packages/storyboard/src/core/comments/queries.js.md)
-- [`packages/storyboard/src/core/data/dotPath.js`](./packages/storyboard/src/core/data/dotPath.js.md)
-- [`packages/storyboard/src/core/data/dotPath.test.js`](./packages/storyboard/src/core/data/dotPath.test.js.md)
-- [`packages/storyboard/src/core/data/loader.js`](./packages/storyboard/src/core/data/loader.js.md)
-- [`packages/storyboard/src/core/data/loader.test.js`](./packages/storyboard/src/core/data/loader.test.js.md)
-- [`packages/storyboard/src/core/data/viewfinder.js`](./packages/storyboard/src/core/data/viewfinder.js.md)
-- [`packages/storyboard/src/core/data/viewfinder.test.js`](./packages/storyboard/src/core/data/viewfinder.test.js.md)
-- [`packages/storyboard/src/core/index.js`](./packages/storyboard/src/core/index.js.md)
-- [`packages/storyboard/src/core/messaging/bus.js`](./packages/storyboard/src/core/messaging/bus.js.md)
-- [`packages/storyboard/src/core/messaging/bus.test.js`](./packages/storyboard/src/core/messaging/bus.test.js.md)
-- [`packages/storyboard/src/core/messaging/delivery.js`](./packages/storyboard/src/core/messaging/delivery.js.md)
-- [`packages/storyboard/src/core/messaging/delivery.test.js`](./packages/storyboard/src/core/messaging/delivery.test.js.md)
-- [`packages/storyboard/src/core/messaging/hub-maintenance.js`](./packages/storyboard/src/core/messaging/hub-maintenance.js.md)
-- [`packages/storyboard/src/core/messaging/hub-manager.js`](./packages/storyboard/src/core/messaging/hub-manager.js.md)
-- [`packages/storyboard/src/core/messaging/index.js`](./packages/storyboard/src/core/messaging/index.js.md)
-- [`packages/storyboard/src/core/messaging/presence.js`](./packages/storyboard/src/core/messaging/presence.js.md)
-- [`packages/storyboard/src/core/messaging/presence.test.js`](./packages/storyboard/src/core/messaging/presence.test.js.md)
-- [`packages/storyboard/src/core/messaging/routes.js`](./packages/storyboard/src/core/messaging/routes.js.md)
-- [`packages/storyboard/src/core/messaging/schema.js`](./packages/storyboard/src/core/messaging/schema.js.md)
-- [`packages/storyboard/src/core/messaging/schema.test.js`](./packages/storyboard/src/core/messaging/schema.test.js.md)
-- [`packages/storyboard/src/core/messaging/token-manager.js`](./packages/storyboard/src/core/messaging/token-manager.js.md)
-- [`packages/storyboard/src/core/messaging/toon.js`](./packages/storyboard/src/core/messaging/toon.js.md)
-- [`packages/storyboard/src/core/scaffold.js`](./packages/storyboard/src/core/scaffold.js.md)
-- [`packages/storyboard/src/core/session/bodyClasses.js`](./packages/storyboard/src/core/session/bodyClasses.js.md)
-- [`packages/storyboard/src/core/session/bodyClasses.test.js`](./packages/storyboard/src/core/session/bodyClasses.test.js.md)
-- [`packages/storyboard/src/core/session/hashSubscribe.js`](./packages/storyboard/src/core/session/hashSubscribe.js.md)
-- [`packages/storyboard/src/core/session/hashSubscribe.test.js`](./packages/storyboard/src/core/session/hashSubscribe.test.js.md)
-- [`packages/storyboard/src/core/session/hideMode.js`](./packages/storyboard/src/core/session/hideMode.js.md)
-- [`packages/storyboard/src/core/session/hideMode.test.js`](./packages/storyboard/src/core/session/hideMode.test.js.md)
-- [`packages/storyboard/src/core/session/interceptHideParams.js`](./packages/storyboard/src/core/session/interceptHideParams.js.md)
-- [`packages/storyboard/src/core/session/interceptHideParams.test.js`](./packages/storyboard/src/core/session/interceptHideParams.test.js.md)
-- [`packages/storyboard/src/core/session/localStorage.js`](./packages/storyboard/src/core/session/localStorage.js.md)
-- [`packages/storyboard/src/core/session/localStorage.migration.test.js`](./packages/storyboard/src/core/session/localStorage.migration.test.js.md)
-- [`packages/storyboard/src/core/session/localStorage.test.js`](./packages/storyboard/src/core/session/localStorage.test.js.md)
-- [`packages/storyboard/src/core/session/session.js`](./packages/storyboard/src/core/session/session.js.md)
-- [`packages/storyboard/src/core/session/session.test.js`](./packages/storyboard/src/core/session/session.test.js.md)
-- [`packages/storyboard/src/core/stores/canvasConfig.js`](./packages/storyboard/src/core/stores/canvasConfig.js.md)
-- [`packages/storyboard/src/core/stores/canvasConfig.test.js`](./packages/storyboard/src/core/stores/canvasConfig.test.js.md)
-- [`packages/storyboard/src/core/stores/commandActions.js`](./packages/storyboard/src/core/stores/commandActions.js.md)
-- [`packages/storyboard/src/core/stores/commandPaletteConfig.js`](./packages/storyboard/src/core/stores/commandPaletteConfig.js.md)
-- [`packages/storyboard/src/core/stores/configSchema.js`](./packages/storyboard/src/core/stores/configSchema.js.md)
-- [`packages/storyboard/src/core/stores/configSchema.test.js`](./packages/storyboard/src/core/stores/configSchema.test.js.md)
-- [`packages/storyboard/src/core/stores/configStore.js`](./packages/storyboard/src/core/stores/configStore.js.md)
-- [`packages/storyboard/src/core/stores/customerModeConfig.js`](./packages/storyboard/src/core/stores/customerModeConfig.js.md)
-- [`packages/storyboard/src/core/stores/featureFlags.js`](./packages/storyboard/src/core/stores/featureFlags.js.md)
-- [`packages/storyboard/src/core/stores/paletteProviders.js`](./packages/storyboard/src/core/stores/paletteProviders.js.md)
-- [`packages/storyboard/src/core/stores/paletteProviders.test.js`](./packages/storyboard/src/core/stores/paletteProviders.test.js.md)
-- [`packages/storyboard/src/core/stores/plugins.js`](./packages/storyboard/src/core/stores/plugins.js.md)
-- [`packages/storyboard/src/core/stores/plugins.test.js`](./packages/storyboard/src/core/stores/plugins.test.js.md)
-- [`packages/storyboard/src/core/stores/recentArtifacts.js`](./packages/storyboard/src/core/stores/recentArtifacts.js.md)
-- [`packages/storyboard/src/core/stores/recentArtifacts.test.js`](./packages/storyboard/src/core/stores/recentArtifacts.test.js.md)
-- [`packages/storyboard/src/core/stores/sidePanelStore.ts`](./packages/storyboard/src/core/stores/sidePanelStore.ts.md)
-- [`packages/storyboard/src/core/stores/themeStore.ts`](./packages/storyboard/src/core/stores/themeStore.ts.md)
-- [`packages/storyboard/src/core/stores/toolbarConfigStore.js`](./packages/storyboard/src/core/stores/toolbarConfigStore.js.md)
-- [`packages/storyboard/src/core/stores/toolRegistry.js`](./packages/storyboard/src/core/stores/toolRegistry.js.md)
-- [`packages/storyboard/src/core/stores/toolStateStore.js`](./packages/storyboard/src/core/stores/toolStateStore.js.md)
-- [`packages/storyboard/src/core/stores/toolStateStore.test.js`](./packages/storyboard/src/core/stores/toolStateStore.test.js.md)
-- [`packages/storyboard/src/core/stores/uiConfig.js`](./packages/storyboard/src/core/stores/uiConfig.js.md)
-- [`packages/storyboard/src/core/stores/uiConfig.test.js`](./packages/storyboard/src/core/stores/uiConfig.test.js.md)
-- [`packages/storyboard/src/core/ui/ActionMenuButton.jsx`](./packages/storyboard/src/core/ui/ActionMenuButton.jsx.md)
-- [`packages/storyboard/src/core/ui/AgentsReadyTrigger.jsx`](./packages/storyboard/src/core/ui/AgentsReadyTrigger.jsx.md)
-- [`packages/storyboard/src/core/ui/AutosyncMenuButton.jsx`](./packages/storyboard/src/core/ui/AutosyncMenuButton.jsx.md)
-- [`packages/storyboard/src/core/ui/BranchSelect.jsx`](./packages/storyboard/src/core/ui/BranchSelect.jsx.md)
-- [`packages/storyboard/src/core/ui/CanvasAgentsMenu.jsx`](./packages/storyboard/src/core/ui/CanvasAgentsMenu.jsx.md)
-- [`packages/storyboard/src/core/ui/CanvasConnectorStyle.jsx`](./packages/storyboard/src/core/ui/CanvasConnectorStyle.jsx.md)
-- [`packages/storyboard/src/core/ui/CanvasCreateMenu.jsx`](./packages/storyboard/src/core/ui/CanvasCreateMenu.jsx.md)
-- [`packages/storyboard/src/core/ui/CanvasSnap.jsx`](./packages/storyboard/src/core/ui/CanvasSnap.jsx.md)
-- [`packages/storyboard/src/core/ui/CanvasUndoRedo.jsx`](./packages/storyboard/src/core/ui/CanvasUndoRedo.jsx.md)
-- [`packages/storyboard/src/core/ui/CanvasZoomControl.jsx`](./packages/storyboard/src/core/ui/CanvasZoomControl.jsx.md)
-- [`packages/storyboard/src/core/ui/CanvasZoomToFit.jsx`](./packages/storyboard/src/core/ui/CanvasZoomToFit.jsx.md)
-- [`packages/storyboard/src/core/ui/CommandMenu.jsx`](./packages/storyboard/src/core/ui/CommandMenu.jsx.md)
-- [`packages/storyboard/src/core/ui/CommandPalette.jsx`](./packages/storyboard/src/core/ui/CommandPalette.jsx.md)
-- [`packages/storyboard/src/core/ui/CommandPaletteTrigger.jsx`](./packages/storyboard/src/core/ui/CommandPaletteTrigger.jsx.md)
-- [`packages/storyboard/src/core/ui/CommentsMenuButton.jsx`](./packages/storyboard/src/core/ui/CommentsMenuButton.jsx.md)
-- [`packages/storyboard/src/core/ui/CoreUIBar.jsx`](./packages/storyboard/src/core/ui/CoreUIBar.jsx.md)
-- [`packages/storyboard/src/core/ui/CreateMenuButton.jsx`](./packages/storyboard/src/core/ui/CreateMenuButton.jsx.md)
-- [`packages/storyboard/src/core/ui/HideChromeTrigger.jsx`](./packages/storyboard/src/core/ui/HideChromeTrigger.jsx.md)
-- [`packages/storyboard/src/core/ui/Icon.jsx`](./packages/storyboard/src/core/ui/Icon.jsx.md)
-- [`packages/storyboard/src/core/ui/InspectorPanel.jsx`](./packages/storyboard/src/core/ui/InspectorPanel.jsx.md)
-- [`packages/storyboard/src/core/ui/PwaInstallBanner.jsx`](./packages/storyboard/src/core/ui/PwaInstallBanner.jsx.md)
-- [`packages/storyboard/src/core/ui/SidePanel.jsx`](./packages/storyboard/src/core/ui/SidePanel.jsx.md)
-- [`packages/storyboard/src/core/ui/ThemeMenuButton.jsx`](./packages/storyboard/src/core/ui/ThemeMenuButton.jsx.md)
-- [`packages/storyboard/src/core/vite/docs-handler.js`](./packages/storyboard/src/core/vite/docs-handler.js.md)
-- [`packages/storyboard/src/core/vite/server-plugin.js`](./packages/storyboard/src/core/vite/server-plugin.js.md)
-- [`packages/storyboard/src/core/worktree/port.js`](./packages/storyboard/src/core/worktree/port.js.md)
-- [`packages/storyboard/src/core/worktree/port.test.js`](./packages/storyboard/src/core/worktree/port.test.js.md)
-- [`packages/storyboard/src/core/worktree/serverRegistry.js`](./packages/storyboard/src/core/worktree/serverRegistry.js.md)
-- [`packages/storyboard/src/internals/AuthModal/AuthModal.jsx`](./packages/storyboard/src/internals/AuthModal/AuthModal.jsx.md)
-- [`packages/storyboard/src/internals/BranchBar/BranchBar.jsx`](./packages/storyboard/src/internals/BranchBar/BranchBar.jsx.md)
-- [`packages/storyboard/src/internals/canvas/canvasApi.js`](./packages/storyboard/src/internals/canvas/canvasApi.js.md)
-- [`packages/storyboard/src/internals/canvas/CanvasControls.jsx`](./packages/storyboard/src/internals/canvas/CanvasControls.jsx.md)
-- [`packages/storyboard/src/internals/canvas/CanvasPage.jsx`](./packages/storyboard/src/internals/canvas/CanvasPage.jsx.md)
-- [`packages/storyboard/src/internals/canvas/canvasTheme.js`](./packages/storyboard/src/internals/canvas/canvasTheme.js.md)
-- [`packages/storyboard/src/internals/canvas/CanvasToolbar.jsx`](./packages/storyboard/src/internals/canvas/CanvasToolbar.jsx.md)
-- [`packages/storyboard/src/internals/canvas/connectorGeometry.js`](./packages/storyboard/src/internals/canvas/connectorGeometry.js.md)
-- [`packages/storyboard/src/internals/canvas/ConnectorLayer.jsx`](./packages/storyboard/src/internals/canvas/ConnectorLayer.jsx.md)
-- [`packages/storyboard/src/internals/canvas/connectorRouting.js`](./packages/storyboard/src/internals/canvas/connectorRouting.js.md)
-- [`packages/storyboard/src/internals/canvas/MarqueeOverlay.jsx`](./packages/storyboard/src/internals/canvas/MarqueeOverlay.jsx.md)
-- [`packages/storyboard/src/internals/canvas/PageSelector.jsx`](./packages/storyboard/src/internals/canvas/PageSelector.jsx.md)
-- [`packages/storyboard/src/internals/canvas/useCanvas.js`](./packages/storyboard/src/internals/canvas/useCanvas.js.md)
-- [`packages/storyboard/src/internals/canvas/useMarqueeSelect.js`](./packages/storyboard/src/internals/canvas/useMarqueeSelect.js.md)
-- [`packages/storyboard/src/internals/canvas/useUndoRedo.js`](./packages/storyboard/src/internals/canvas/useUndoRedo.js.md)
-- [`packages/storyboard/src/internals/canvas/WebGLContextPool.jsx`](./packages/storyboard/src/internals/canvas/WebGLContextPool.jsx.md)
-- [`packages/storyboard/src/internals/canvas/widgets/CodePenEmbed.jsx`](./packages/storyboard/src/internals/canvas/widgets/CodePenEmbed.jsx.md)
-- [`packages/storyboard/src/internals/canvas/widgets/ComponentSetWidget.jsx`](./packages/storyboard/src/internals/canvas/widgets/ComponentSetWidget.jsx.md)
-- [`packages/storyboard/src/internals/canvas/widgets/ComponentWidget.jsx`](./packages/storyboard/src/internals/canvas/widgets/ComponentWidget.jsx.md)
-- [`packages/storyboard/src/internals/canvas/widgets/CropOverlay.jsx`](./packages/storyboard/src/internals/canvas/widgets/CropOverlay.jsx.md)
-- [`packages/storyboard/src/internals/canvas/widgets/ExpandedPane.jsx`](./packages/storyboard/src/internals/canvas/widgets/ExpandedPane.jsx.md)
-- [`packages/storyboard/src/internals/canvas/widgets/ExpandedPaneTopBar.jsx`](./packages/storyboard/src/internals/canvas/widgets/ExpandedPaneTopBar.jsx.md)
-- [`packages/storyboard/src/internals/canvas/widgets/FigmaEmbed.jsx`](./packages/storyboard/src/internals/canvas/widgets/FigmaEmbed.jsx.md)
-- [`packages/storyboard/src/internals/canvas/widgets/ImageWidget.jsx`](./packages/storyboard/src/internals/canvas/widgets/ImageWidget.jsx.md)
-- [`packages/storyboard/src/internals/canvas/widgets/index.js`](./packages/storyboard/src/internals/canvas/widgets/index.js.md)
-- [`packages/storyboard/src/internals/canvas/widgets/LinkPreview.jsx`](./packages/storyboard/src/internals/canvas/widgets/LinkPreview.jsx.md)
-- [`packages/storyboard/src/internals/canvas/widgets/MarkdownBlock.jsx`](./packages/storyboard/src/internals/canvas/widgets/MarkdownBlock.jsx.md)
-- [`packages/storyboard/src/internals/canvas/widgets/pasteRules.js`](./packages/storyboard/src/internals/canvas/widgets/pasteRules.js.md)
-- [`packages/storyboard/src/internals/canvas/widgets/PromptWidget.jsx`](./packages/storyboard/src/internals/canvas/widgets/PromptWidget.jsx.md)
-- [`packages/storyboard/src/internals/canvas/widgets/PrototypeEmbed.jsx`](./packages/storyboard/src/internals/canvas/widgets/PrototypeEmbed.jsx.md)
-- [`packages/storyboard/src/internals/canvas/widgets/StickyNote.jsx`](./packages/storyboard/src/internals/canvas/widgets/StickyNote.jsx.md)
-- [`packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx`](./packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx.md)
-- [`packages/storyboard/src/internals/canvas/widgets/StoryWidget.jsx`](./packages/storyboard/src/internals/canvas/widgets/StoryWidget.jsx.md)
-- [`packages/storyboard/src/internals/canvas/widgets/TerminalReadWidget.jsx`](./packages/storyboard/src/internals/canvas/widgets/TerminalReadWidget.jsx.md)
-- [`packages/storyboard/src/internals/canvas/widgets/TerminalWidget.jsx`](./packages/storyboard/src/internals/canvas/widgets/TerminalWidget.jsx.md)
-- [`packages/storyboard/src/internals/canvas/widgets/TilesWidget.jsx`](./packages/storyboard/src/internals/canvas/widgets/TilesWidget.jsx.md)
-- [`packages/storyboard/src/internals/canvas/widgets/WidgetChrome.jsx`](./packages/storyboard/src/internals/canvas/widgets/WidgetChrome.jsx.md)
-- [`packages/storyboard/src/internals/canvas/widgets/widgetConfig.js`](./packages/storyboard/src/internals/canvas/widgets/widgetConfig.js.md)
-- [`packages/storyboard/src/internals/canvas/widgets/widgetProps.js`](./packages/storyboard/src/internals/canvas/widgets/widgetProps.js.md)
-- [`packages/storyboard/src/internals/CommandPalette/CommandPalette.jsx`](./packages/storyboard/src/internals/CommandPalette/CommandPalette.jsx.md)
-- [`packages/storyboard/src/internals/context.jsx`](./packages/storyboard/src/internals/context.jsx.md)
-- [`packages/storyboard/src/internals/hashPreserver.js`](./packages/storyboard/src/internals/hashPreserver.js.md)
-- [`packages/storyboard/src/internals/hooks/useConfig.js`](./packages/storyboard/src/internals/hooks/useConfig.js.md)
-- [`packages/storyboard/src/internals/hooks/useFeatureFlag.js`](./packages/storyboard/src/internals/hooks/useFeatureFlag.js.md)
-- [`packages/storyboard/src/internals/hooks/useFlows.js`](./packages/storyboard/src/internals/hooks/useFlows.js.md)
-- [`packages/storyboard/src/internals/hooks/useFlows.test.js`](./packages/storyboard/src/internals/hooks/useFlows.test.js.md)
-- [`packages/storyboard/src/internals/hooks/useHideMode.js`](./packages/storyboard/src/internals/hooks/useHideMode.js.md)
-- [`packages/storyboard/src/internals/hooks/useHideMode.test.js`](./packages/storyboard/src/internals/hooks/useHideMode.test.js.md)
-- [`packages/storyboard/src/internals/hooks/useLocalStorage.js`](./packages/storyboard/src/internals/hooks/useLocalStorage.js.md)
-- [`packages/storyboard/src/internals/hooks/useLocalStorage.test.js`](./packages/storyboard/src/internals/hooks/useLocalStorage.test.js.md)
-- [`packages/storyboard/src/internals/hooks/useMode.js`](./packages/storyboard/src/internals/hooks/useMode.js.md)
-- [`packages/storyboard/src/internals/hooks/useObject.js`](./packages/storyboard/src/internals/hooks/useObject.js.md)
-- [`packages/storyboard/src/internals/hooks/useObject.test.js`](./packages/storyboard/src/internals/hooks/useObject.test.js.md)
-- [`packages/storyboard/src/internals/hooks/useOverride.js`](./packages/storyboard/src/internals/hooks/useOverride.js.md)
-- [`packages/storyboard/src/internals/hooks/useOverride.test.js`](./packages/storyboard/src/internals/hooks/useOverride.test.js.md)
-- [`packages/storyboard/src/internals/hooks/usePrototypeReloadGuard.js`](./packages/storyboard/src/internals/hooks/usePrototypeReloadGuard.js.md)
-- [`packages/storyboard/src/internals/hooks/useRecord.js`](./packages/storyboard/src/internals/hooks/useRecord.js.md)
-- [`packages/storyboard/src/internals/hooks/useRecord.test.js`](./packages/storyboard/src/internals/hooks/useRecord.test.js.md)
-- [`packages/storyboard/src/internals/hooks/useScene.js`](./packages/storyboard/src/internals/hooks/useScene.js.md)
-- [`packages/storyboard/src/internals/hooks/useScene.test.js`](./packages/storyboard/src/internals/hooks/useScene.test.js.md)
-- [`packages/storyboard/src/internals/hooks/useSceneData.js`](./packages/storyboard/src/internals/hooks/useSceneData.js.md)
-- [`packages/storyboard/src/internals/hooks/useSceneData.test.js`](./packages/storyboard/src/internals/hooks/useSceneData.test.js.md)
-- [`packages/storyboard/src/internals/hooks/useSession.js`](./packages/storyboard/src/internals/hooks/useSession.js.md)
-- [`packages/storyboard/src/internals/hooks/useSession.test.js`](./packages/storyboard/src/internals/hooks/useSession.test.js.md)
-- [`packages/storyboard/src/internals/hooks/useThemeState.js`](./packages/storyboard/src/internals/hooks/useThemeState.js.md)
-- [`packages/storyboard/src/internals/hooks/useThemeState.test.js`](./packages/storyboard/src/internals/hooks/useThemeState.test.js.md)
-- [`packages/storyboard/src/internals/hooks/useUndoRedo.js`](./packages/storyboard/src/internals/hooks/useUndoRedo.js.md)
-- [`packages/storyboard/src/internals/hooks/useUndoRedo.test.js`](./packages/storyboard/src/internals/hooks/useUndoRedo.test.js.md)
-- [`packages/storyboard/src/internals/Icon.jsx`](./packages/storyboard/src/internals/Icon.jsx.md)
-- [`packages/storyboard/src/internals/index.js`](./packages/storyboard/src/internals/index.js.md)
-- [`packages/storyboard/src/internals/PrototypeErrorBoundary.jsx`](./packages/storyboard/src/internals/PrototypeErrorBoundary.jsx.md)
-- [`packages/storyboard/src/internals/StoryboardContext.js`](./packages/storyboard/src/internals/StoryboardContext.js.md)
-- [`packages/storyboard/src/internals/Viewfinder.jsx`](./packages/storyboard/src/internals/Viewfinder.jsx.md)
-- [`packages/storyboard/src/internals/vite/data-plugin.js`](./packages/storyboard/src/internals/vite/data-plugin.js.md)
-- [`packages/storyboard/src/internals/Workspace.jsx`](./packages/storyboard/src/internals/Workspace.jsx.md)
-- [`packages/storyboard/src/primer/index.js`](./packages/storyboard/src/primer/index.js.md)
-- [`packages/storyboard/src/primer/ThemeSync.jsx`](./packages/storyboard/src/primer/ThemeSync.jsx.md)
+The architectural center of the repo lives under [`packages/storyboard/package.json`](./packages/storyboard/package.json.md), which publishes a single package whose source tree is split by responsibility. The framework-agnostic runtime lives in files such as [`packages/storyboard/src/core/data/loader.js`](./packages/storyboard/src/core/data/loader.js.md), the React bindings and canvas experience live behind [`packages/storyboard/src/internals/index.js`](./packages/storyboard/src/internals/index.js.md) and heavy UI entrypoints such as [`packages/storyboard/src/internals/canvas/CanvasPage.jsx`](./packages/storyboard/src/internals/canvas/CanvasPage.jsx.md), Primer-specific exports are surfaced from [`packages/storyboard/src/primer/index.js`](./packages/storyboard/src/primer/index.js.md), and the developer command surface is anchored by [`packages/storyboard/src/core/cli/index.js`](./packages/storyboard/src/core/cli/index.js.md). Together those files show a package that is meant to run both in Node and in the browser while still presenting one import surface to consuming apps.
+
+The data flow starts at build time in [`packages/storyboard/src/internals/vite/data-plugin.js`](./packages/storyboard/src/internals/vite/data-plugin.js.md). That plugin discovers `*.flow.json`, `*.object.json`, `*.record.json`, and `*.prototype.json` files, emits the virtual module that seeds the runtime index, and initializes config before React renders. At runtime, [`packages/storyboard/src/core/data/loader.js`](./packages/storyboard/src/core/data/loader.js.md) becomes the canonical resolver for `$global` merges, `$ref` expansion, prototype scoping, and immutable flow/object/record reads; React consumers then read that seeded state through the provider and hooks exported by [`packages/storyboard/src/internals/index.js`](./packages/storyboard/src/internals/index.js.md).
+
+The development server side of Storyboard is centered on [`packages/storyboard/src/core/canvas/server.js`](./packages/storyboard/src/core/canvas/server.js.md). That route hub owns canvas CRUD, story scaffolding, uploads, hub metadata, prompt/terminal coordination, and the websocket-backed custom-event bridge that keeps the browser in sync with filesystem-backed canvas state. Per repo convention, the HTTP surface is mirrored by CLI commands rooted at [`packages/storyboard/src/core/cli/index.js`](./packages/storyboard/src/core/cli/index.js.md), so agents and scripts can drive the same behaviors without bypassing the platform contract.
+
+On the UI side, [`packages/storyboard/src/core/ui/CoreUIBar.jsx`](./packages/storyboard/src/core/ui/CoreUIBar.jsx.md) mounts the floating developer chrome and projects declarative tool metadata onto the command-toolbar, canvas-toolbar, collab-bar, and command-palette surfaces. [`packages/storyboard/src/internals/canvas/CanvasPage.jsx`](./packages/storyboard/src/internals/canvas/CanvasPage.jsx.md) is the heaviest client component: it manages widgets, selection, viewport persistence, connectors, drag/drop, undo-redo, copy/paste, and the browser half of the HMR event bridge. Agent-aware widgets such as [`packages/storyboard/src/internals/canvas/widgets/TerminalWidget.jsx`](./packages/storyboard/src/internals/canvas/widgets/TerminalWidget.jsx.md) and [`packages/storyboard/src/internals/canvas/widgets/PromptWidget.jsx`](./packages/storyboard/src/internals/canvas/widgets/PromptWidget.jsx.md) feed status back into the collaboration surface, where [`packages/storyboard/src/core/ui/AgentsReadyTrigger.jsx`](./packages/storyboard/src/core/ui/AgentsReadyTrigger.jsx.md) exposes the ready/working signal that also drives the ✳️ title-state workflow.
+
+- [`packages/storyboard/src/core/autosync/server.js`](./packages/storyboard/src/core/autosync/server.js.md) — Dev-server middleware that provides automatic git commit + push functionality scoped to specific content
+- [`packages/storyboard/src/core/autosync/server.test.js`](./packages/storyboard/src/core/autosync/server.test.js.md) — Unit tests for the autosync server module
+- [`packages/storyboard/src/core/canvas/collision.js`](./packages/storyboard/src/core/canvas/collision.js.md) — packages/storyboard/src/core/canvas/collision.js provides the server-side geometry used for widget
+- [`packages/storyboard/src/core/canvas/compact.js`](./packages/storyboard/src/core/canvas/compact.js.md) — packages/storyboard/src/core/canvas/compact.js keeps append-only canvas logs from growing without bound
+- [`packages/storyboard/src/core/canvas/githubEmbeds.js`](./packages/storyboard/src/core/canvas/githubEmbeds.js.md) — packages/storyboard/src/core/canvas/githubEmbeds.js is the GitHub metadata adapter behind canvas URL
+- [`packages/storyboard/src/core/canvas/hot-pool.js`](./packages/storyboard/src/core/canvas/hot-pool.js.md) — packages/storyboard/src/core/canvas/hot-pool.js is the pre-warming system for canvas terminals and agents
+- [`packages/storyboard/src/core/canvas/hub-roles.js`](./packages/storyboard/src/core/canvas/hub-roles.js.md) — packages/storyboard/src/core/canvas/hub-roles.js loads the role catalog used by canvas hubs
+- [`packages/storyboard/src/core/canvas/identity.js`](./packages/storyboard/src/core/canvas/identity.js.md) — packages/storyboard/src/core/canvas/identity.js defines the canonical ID scheme for canvases
+- [`packages/storyboard/src/core/canvas/materializer.js`](./packages/storyboard/src/core/canvas/materializer.js.md) — packages/storyboard/src/core/canvas/materializer.js is the canonical replay engine for canvas state
+- [`packages/storyboard/src/core/canvas/selectedWidgets.js`](./packages/storyboard/src/core/canvas/selectedWidgets.js.md) — packages/storyboard/src/core/canvas/selectedWidgets.js is the bridge between the browser canvas UI and
+- [`packages/storyboard/src/core/canvas/server.js`](./packages/storyboard/src/core/canvas/server.js.md) — packages/storyboard/src/core/canvas/server.js is the route hub for the canvas dev server
+- [`packages/storyboard/src/core/canvas/terminal-config.js`](./packages/storyboard/src/core/canvas/terminal-config.js.md) — packages/storyboard/src/core/canvas/terminal-config.js is the persistent context layer for terminal-,
+- [`packages/storyboard/src/core/canvas/terminal-registry.js`](./packages/storyboard/src/core/canvas/terminal-registry.js.md) — packages/storyboard/src/core/canvas/terminal-registry.js is the durable session ledger for terminal and
+- [`packages/storyboard/src/core/canvas/terminal-server.js`](./packages/storyboard/src/core/canvas/terminal-server.js.md) — packages/storyboard/src/core/canvas/terminal-server.js is the PTY/WebSocket backend for canvas terminal,
+- [`packages/storyboard/src/core/cli/agent.js`](./packages/storyboard/src/core/cli/agent.js.md) — Implements the storyboard agent command group, which lets agents (and scripts) communicate their status
+- [`packages/storyboard/src/core/cli/artifact.js`](./packages/storyboard/src/core/cli/artifact.js.md) — Implements storyboard artifact — a CRUD interface for all storyboard artifact types (prototype, canvas,
+- [`packages/storyboard/src/core/cli/branch.js`](./packages/storyboard/src/core/cli/branch.js.md) — Implements storyboard branch — a deterministic, AI-free interactive guide for switching between git
+- [`packages/storyboard/src/core/cli/canvasAdd.js`](./packages/storyboard/src/core/cli/canvasAdd.js.md) — Implements storyboard canvas add <type> — adds a new widget to an existing canvas
+- [`packages/storyboard/src/core/cli/canvasAlias.js`](./packages/storyboard/src/core/cli/canvasAlias.js.md) — Implements storyboard canvas alias <get|set|clear> — reads, sets, or clears the human-readable alias
+- [`packages/storyboard/src/core/cli/canvasBatch.js`](./packages/storyboard/src/core/cli/canvasBatch.js.md) — Implements storyboard canvas batch — executes multiple canvas operations atomically in a single server
+- [`packages/storyboard/src/core/cli/canvasBounds.js`](./packages/storyboard/src/core/cli/canvasBounds.js.md) — Implements storyboard canvas bounds — queries and displays spatial bounds (position + size) for one or
+- [`packages/storyboard/src/core/cli/canvasBroadcast.js`](./packages/storyboard/src/core/cli/canvasBroadcast.js.md) — Implements storyboard canvas broadcast — toggles broadcast messaging for a widget and its connected peers
+- [`packages/storyboard/src/core/cli/canvasConnector.js`](./packages/storyboard/src/core/cli/canvasConnector.js.md) — Implements storyboard canvas connector — creates, updates, deletes, and manages waypoints on canvas
+- [`packages/storyboard/src/core/cli/canvasDelete.js`](./packages/storyboard/src/core/cli/canvasDelete.js.md) — Implements storyboard canvas delete <widgetId> — deletes a single widget from a canvas
+- [`packages/storyboard/src/core/cli/canvasDeleteCanvas.js`](./packages/storyboard/src/core/cli/canvasDeleteCanvas.js.md) — Implements storyboard canvas delete-canvas — deletes an entire canvas and its directory on disk
+- [`packages/storyboard/src/core/cli/canvasDuplicate.js`](./packages/storyboard/src/core/cli/canvasDuplicate.js.md) — Implements storyboard canvas duplicate — creates a copy of an existing canvas with a new title
+- [`packages/storyboard/src/core/cli/canvasRead.js`](./packages/storyboard/src/core/cli/canvasRead.js.md) — Implements storyboard canvas read [name] — the primary command for agents to inspect a canvas
+- [`packages/storyboard/src/core/cli/canvasRoles.js`](./packages/storyboard/src/core/cli/canvasRoles.js.md) — Implements storyboard canvas roles — lists the available hub roles from the server
+- [`packages/storyboard/src/core/cli/canvasUpdate.js`](./packages/storyboard/src/core/cli/canvasUpdate.js.md) — Implements storyboard canvas update <widgetId> — patches a widget's props or position in-place
+- [`packages/storyboard/src/core/cli/cliHelpers.js`](./packages/storyboard/src/core/cli/cliHelpers.js.md) — Shared fetch helpers and argument parser for non-interactive CLI commands
+- [`packages/storyboard/src/core/cli/code.js`](./packages/storyboard/src/core/cli/code.js.md) — Implements storyboard code [branch] — opens a git worktree in VS Code by running code <dir>
+- [`packages/storyboard/src/core/cli/compact.js`](./packages/storyboard/src/core/cli/compact.js.md) — Implements storyboard compact — compacts canvas JSONL files to remove accumulated bloat
+- [`packages/storyboard/src/core/cli/create.js`](./packages/storyboard/src/core/cli/create.js.md) — Implements storyboard create — an interactive wizard and non-interactive factory for prototypes,
+- [`packages/storyboard/src/core/cli/dev-helpers.js`](./packages/storyboard/src/core/cli/dev-helpers.js.md) — Pure git utility functions extracted from the dev CLI for testability
+- [`packages/storyboard/src/core/cli/dev-helpers.test.js`](./packages/storyboard/src/core/cli/dev-helpers.test.js.md) — Vitest integration tests for dev-helpers.js
+- [`packages/storyboard/src/core/cli/dev.js`](./packages/storyboard/src/core/cli/dev.js.md) — The active storyboard dev [branch] implementation
+- [`packages/storyboard/src/core/cli/dev.legacy.js`](./packages/storyboard/src/core/cli/dev.legacy.js.md) — The legacy storyboard dev implementation using the per-repo server model
+- [`packages/storyboard/src/core/cli/exit.js`](./packages/storyboard/src/core/cli/exit.js.md) — storyboard exit — stops all running dev servers and the Caddy proxy in a single command
+- [`packages/storyboard/src/core/cli/flags.js`](./packages/storyboard/src/core/cli/flags.js.md) — Schema-validated CLI flag parser for interactive/complex commands
+- [`packages/storyboard/src/core/cli/flags.test.js`](./packages/storyboard/src/core/cli/flags.test.js.md) — Vitest unit tests for flags.js
+- [`packages/storyboard/src/core/cli/hubCommands.js`](./packages/storyboard/src/core/cli/hubCommands.js.md) — storyboard hub <subcommand> — hub and conversation management CLI
+- [`packages/storyboard/src/core/cli/index.js`](./packages/storyboard/src/core/cli/index.js.md) — index.js is the main entry point for the storyboard (and sb) CLI binary
+- [`packages/storyboard/src/core/cli/intro.js`](./packages/storyboard/src/core/cli/intro.js.md) — Single source of truth for ANSI color helpers and getting-started content shared across CLI modules
+- [`packages/storyboard/src/core/cli/messagesCommands.js`](./packages/storyboard/src/core/cli/messagesCommands.js.md) — storyboard messages <subcommand> — low-level messaging bus CLI
+- [`packages/storyboard/src/core/cli/promptSpawn.js`](./packages/storyboard/src/core/cli/promptSpawn.js.md) — storyboard prompt spawn — acquires a pre-warmed agent session from the hot pool and assigns it to a
+- [`packages/storyboard/src/core/cli/proxy.js`](./packages/storyboard/src/core/cli/proxy.js.md) — storyboard proxy [start|state|close|restart] — manages the Caddy reverse proxy via the Storyboard
+- [`packages/storyboard/src/core/cli/proxy.legacy.js`](./packages/storyboard/src/core/cli/proxy.legacy.js.md) — The legacy Caddy proxy implementation that writes Caddyfiles directly and uses the admin API without
+- [`packages/storyboard/src/core/cli/proxy.test.js`](./packages/storyboard/src/core/cli/proxy.test.js.md) — Vitest unit tests for findStaleRouteIndices exported from proxy.js (actually delegated to
+- [`packages/storyboard/src/core/cli/publish.js`](./packages/storyboard/src/core/cli/publish.js.md) — storyboard publish — pushes local commits to the remote branch with an untracked-safe
+- [`packages/storyboard/src/core/cli/pull.js`](./packages/storyboard/src/core/cli/pull.js.md) — storyboard pull — pulls latest changes from the remote branch with an untracked-safe
+- [`packages/storyboard/src/core/cli/run.js`](./packages/storyboard/src/core/cli/run.js.md) — storyboard run — convenience command that combines storyboard proxy start and storyboard dev into a
+- [`packages/storyboard/src/core/cli/schemas.js`](./packages/storyboard/src/core/cli/schemas.js.md) — Canonical FlagSchema definitions for every storyboard create subcommand
+- [`packages/storyboard/src/core/cli/server.js`](./packages/storyboard/src/core/cli/server.js.md) — storyboard server [list|start|stop] — dev server lifecycle management for the legacy per-repo server
+- [`packages/storyboard/src/core/cli/serverUrl.js`](./packages/storyboard/src/core/cli/serverUrl.js.md) — Resolves the dev server base URL for the current worktree
+- [`packages/storyboard/src/core/cli/sessions.js`](./packages/storyboard/src/core/cli/sessions.js.md) — storyboard sessions — interactive terminal session browser
+- [`packages/storyboard/src/core/cli/setup.js`](./packages/storyboard/src/core/cli/setup.js.md) — storyboard setup — idempotent one-time dev environment bootstrapper
+- [`packages/storyboard/src/core/cli/terminal-commands.js`](./packages/storyboard/src/core/cli/terminal-commands.js.md) — storyboard terminal {close|open|remove} --id <name-or-id> — programmatic terminal session management by
+- [`packages/storyboard/src/core/cli/terminal-messaging.js`](./packages/storyboard/src/core/cli/terminal-messaging.js.md) — Terminal messaging handlers for sending messages between terminals, saving output, checking status,
+- [`packages/storyboard/src/core/cli/terminal-welcome.js`](./packages/storyboard/src/core/cli/terminal-welcome.js.md) — storyboard terminal-welcome — the interactive welcome supervisor for all terminal widget sessions
+- [`packages/storyboard/src/core/cli/updateVersion.js`](./packages/storyboard/src/core/cli/updateVersion.js.md) — storyboard update[:channel|:version] — updates all @dfosco/storyboard* and @dfosco/tiny-canvas packages
+- [`packages/storyboard/src/core/comments/api.js`](./packages/storyboard/src/core/comments/api.js.md) — This module is the high-level comments service for the Storyboard core comments feature
+- [`packages/storyboard/src/core/comments/api.test.js`](./packages/storyboard/src/core/comments/api.test.js.md) — This test file verifies the behavior of the public comments API module against mocked GraphQL responses
+- [`packages/storyboard/src/core/comments/auth.js`](./packages/storyboard/src/core/comments/auth.js.md) — This module owns personal access token persistence and validation for the comments system
+- [`packages/storyboard/src/core/comments/auth.test.js`](./packages/storyboard/src/core/comments/auth.test.js.md) — This file tests token storage, cached-user behavior, authentication checks, and the two-step token
+- [`packages/storyboard/src/core/comments/commentCache.js`](./packages/storyboard/src/core/comments/commentCache.js.md) — This module provides lightweight localStorage caching around route comment summaries and failed
+- [`packages/storyboard/src/core/comments/commentCache.test.js`](./packages/storyboard/src/core/comments/commentCache.test.js.md) — This test suite verifies the route cache behavior used by comment pins
+- [`packages/storyboard/src/core/comments/commentDrafts.js`](./packages/storyboard/src/core/comments/commentDrafts.js.md) — This module persists in-progress comment and reply drafts so authoring survives refreshes and reopened
+- [`packages/storyboard/src/core/comments/commentMode.js`](./packages/storyboard/src/core/comments/commentMode.js.md) — This file is the comments mode state machine for the core layer
+- [`packages/storyboard/src/core/comments/commentMode.test.js`](./packages/storyboard/src/core/comments/commentMode.test.js.md) — This suite validates the small state machine in the comment mode module
+- [`packages/storyboard/src/core/comments/config.js`](./packages/storyboard/src/core/comments/config.js.md) — This module normalizes the comments subset of storyboard.config.json into a compact runtime config object
+- [`packages/storyboard/src/core/comments/config.test.js`](./packages/storyboard/src/core/comments/config.test.js.md) — This file tests normalization and enablement rules for comments config
+- [`packages/storyboard/src/core/comments/graphql.js`](./packages/storyboard/src/core/comments/graphql.js.md) — This module is the low-level GitHub GraphQL transport for comments
+- [`packages/storyboard/src/core/comments/graphql.test.js`](./packages/storyboard/src/core/comments/graphql.test.js.md) — This suite verifies the GraphQL transport wrapper used by the comments subsystem
+- [`packages/storyboard/src/core/comments/index.js`](./packages/storyboard/src/core/comments/index.js.md) — This file is the public barrel for the core comments subsystem
+- [`packages/storyboard/src/core/comments/metadata.js`](./packages/storyboard/src/core/comments/metadata.js.md) — This module defines the metadata encoding used to pin comments to coordinates while keeping the visible
+- [`packages/storyboard/src/core/comments/metadata.test.js`](./packages/storyboard/src/core/comments/metadata.test.js.md) — This file tests the metadata wire format used by the comments API
+- [`packages/storyboard/src/core/comments/queries.js`](./packages/storyboard/src/core/comments/queries.js.md) — This file contains the raw GitHub GraphQL documents used by the comments subsystem
+- [`packages/storyboard/src/core/data/dotPath.js`](./packages/storyboard/src/core/data/dotPath.js.md) — Provides three pure utility functions for working with dot-notation paths ("user.profile.name",
+- [`packages/storyboard/src/core/data/dotPath.test.js`](./packages/storyboard/src/core/data/dotPath.test.js.md) — Unit tests for dotPath.js
+- [`packages/storyboard/src/core/data/loader.js`](./packages/storyboard/src/core/data/loader.js.md) — loader.js is the runtime data engine for the storyboard system
+- [`packages/storyboard/src/core/data/loader.test.js`](./packages/storyboard/src/core/data/loader.test.js.md) — Unit tests for loader.js
+- [`packages/storyboard/src/core/data/viewfinder.js`](./packages/storyboard/src/core/data/viewfinder.js.md) — Higher-level data layer that builds the structured prototype/canvas index powering the Workspace
+- [`packages/storyboard/src/core/data/viewfinder.test.js`](./packages/storyboard/src/core/data/viewfinder.test.js.md) — Unit tests for viewfinder.js
+- [`packages/storyboard/src/core/index.js`](./packages/storyboard/src/core/index.js.md) — This is the barrel module for @dfosco/storyboard-core — the framework-agnostic data and runtime layer
+- [`packages/storyboard/src/core/messaging/bus.js`](./packages/storyboard/src/core/messaging/bus.js.md) — packages/storyboard/src/core/messaging/bus.js is the process-local messaging kernel for Storyboard’s
+- [`packages/storyboard/src/core/messaging/bus.test.js`](./packages/storyboard/src/core/messaging/bus.test.js.md) — packages/storyboard/src/core/messaging/bus.test.js is the contract test suite for the core messaging bus
+- [`packages/storyboard/src/core/messaging/delivery.js`](./packages/storyboard/src/core/messaging/delivery.js.md) — packages/storyboard/src/core/messaging/delivery.js bridges the durable bus to live tmux-backed terminal
+- [`packages/storyboard/src/core/messaging/delivery.test.js`](./packages/storyboard/src/core/messaging/delivery.test.js.md) — packages/storyboard/src/core/messaging/delivery.test.js proves that the tmux delivery bridge behaves
+- [`packages/storyboard/src/core/messaging/hub-maintenance.js`](./packages/storyboard/src/core/messaging/hub-maintenance.js.md) — packages/storyboard/src/core/messaging/hub-maintenance.js runs the background housekeeping loop for
+- [`packages/storyboard/src/core/messaging/hub-manager.js`](./packages/storyboard/src/core/messaging/hub-manager.js.md) — packages/storyboard/src/core/messaging/hub-manager.js materializes and governs multi-agent hubs on a
+- [`packages/storyboard/src/core/messaging/index.js`](./packages/storyboard/src/core/messaging/index.js.md) — packages/storyboard/src/core/messaging/index.js is the public barrel for the messaging subsystem
+- [`packages/storyboard/src/core/messaging/presence.js`](./packages/storyboard/src/core/messaging/presence.js.md) — packages/storyboard/src/core/messaging/presence.js tracks which agent widgets are currently alive on
+- [`packages/storyboard/src/core/messaging/presence.test.js`](./packages/storyboard/src/core/messaging/presence.test.js.md) — packages/storyboard/src/core/messaging/presence.test.js captures the expected lifecycle for agent
+- [`packages/storyboard/src/core/messaging/routes.js`](./packages/storyboard/src/core/messaging/routes.js.md) — packages/storyboard/src/core/messaging/routes.js is the HTTP boundary for the messaging subsystem
+- [`packages/storyboard/src/core/messaging/schema.js`](./packages/storyboard/src/core/messaging/schema.js.md) — packages/storyboard/src/core/messaging/schema.js defines the canonical shape of a messaging envelope
+- [`packages/storyboard/src/core/messaging/schema.test.js`](./packages/storyboard/src/core/messaging/schema.test.js.md) — packages/storyboard/src/core/messaging/schema.test.js guards the foundational message-envelope
+- [`packages/storyboard/src/core/messaging/token-manager.js`](./packages/storyboard/src/core/messaging/token-manager.js.md) — packages/storyboard/src/core/messaging/token-manager.js manages ordered response turns inside hub
+- [`packages/storyboard/src/core/messaging/toon.js`](./packages/storyboard/src/core/messaging/toon.js.md) — packages/storyboard/src/core/messaging/toon.js isolates optional TOON serialization at the HTTP edge
+- [`packages/storyboard/src/core/scaffold.js`](./packages/storyboard/src/core/scaffold.js.md) — Node.js CLI script (storyboard-scaffold) executed via npx to bootstrap or update a consumer repository
+- [`packages/storyboard/src/core/session/bodyClasses.js`](./packages/storyboard/src/core/session/bodyClasses.js.md) — DOM synchronization layer that projects storyboard state into CSS classes on <body>
+- [`packages/storyboard/src/core/session/bodyClasses.test.js`](./packages/storyboard/src/core/session/bodyClasses.test.js.md) — Test suite for the body-class projection layer
+- [`packages/storyboard/src/core/session/hashSubscribe.js`](./packages/storyboard/src/core/session/hashSubscribe.js.md) — Tiny subscription bridge for reactive consumers that need to observe URL-hash changes
+- [`packages/storyboard/src/core/session/hashSubscribe.test.js`](./packages/storyboard/src/core/session/hashSubscribe.test.js.md) — Unit tests for the hash subscription bridge
+- [`packages/storyboard/src/core/session/hideMode.js`](./packages/storyboard/src/core/session/hideMode.js.md) — Hide mode moves override state out of the URL and into localStorage-backed history so storyboard can
+- [`packages/storyboard/src/core/session/hideMode.test.js`](./packages/storyboard/src/core/session/hideMode.test.js.md) — Extensive executable spec for hide mode
+- [`packages/storyboard/src/core/session/interceptHideParams.js`](./packages/storyboard/src/core/session/interceptHideParams.js.md) — Startup/navigation adapter for the ?hide and ?show query params
+- [`packages/storyboard/src/core/session/interceptHideParams.test.js`](./packages/storyboard/src/core/session/interceptHideParams.test.js.md) — Unit coverage for query-param interception
+- [`packages/storyboard/src/core/session/localStorage.js`](./packages/storyboard/src/core/session/localStorage.js.md) — Persistent storage adapter for storyboard session state
+- [`packages/storyboard/src/core/session/localStorage.migration.test.js`](./packages/storyboard/src/core/session/localStorage.migration.test.js.md) — Focused test for the legacy-key migration path in the storage adapter
+- [`packages/storyboard/src/core/session/localStorage.test.js`](./packages/storyboard/src/core/session/localStorage.test.js.md) — Main regression suite for the localStorage adapter
+- [`packages/storyboard/src/core/session/session.js`](./packages/storyboard/src/core/session/session.js.md) — Small hash-state adapter for storyboard overrides
+- [`packages/storyboard/src/core/session/session.test.js`](./packages/storyboard/src/core/session/session.test.js.md) — Behavioral coverage for the hash-session helpers
+- [`packages/storyboard/src/core/stores/canvasConfig.js`](./packages/storyboard/src/core/stores/canvasConfig.js.md) — canvasConfig.js is a thin runtime cache for the canvas section of Storyboard config
+- [`packages/storyboard/src/core/stores/canvasConfig.test.js`](./packages/storyboard/src/core/stores/canvasConfig.test.js.md) — canvasConfig.test.js locks down the normalization and precedence rules in
+- [`packages/storyboard/src/core/stores/commandActions.js`](./packages/storyboard/src/core/stores/commandActions.js.md) — commandActions.js is the runtime registry behind the command menu and command palette command provider
+- [`packages/storyboard/src/core/stores/commandPaletteConfig.js`](./packages/storyboard/src/core/stores/commandPaletteConfig.js.md) — commandPaletteConfig.js preserves the legacy command-palette config surface while the runtime migrates
+- [`packages/storyboard/src/core/stores/configSchema.js`](./packages/storyboard/src/core/stores/configSchema.js.md) — configSchema.js defines the canonical shape of storyboard.config.json
+- [`packages/storyboard/src/core/stores/configSchema.test.js`](./packages/storyboard/src/core/stores/configSchema.test.js.md) — configSchema.test.js verifies that packages/storyboard/src/core/stores/configSchema.js remains
+- [`packages/storyboard/src/core/stores/configStore.js`](./packages/storyboard/src/core/stores/configStore.js.md) — configStore.js centralizes Storyboard runtime configuration so the rest of the core can read one merged
+- [`packages/storyboard/src/core/stores/customerModeConfig.js`](./packages/storyboard/src/core/stores/customerModeConfig.js.md) — customerModeConfig.js is the minimal runtime holder for the customerMode domain
+- [`packages/storyboard/src/core/stores/featureFlags.js`](./packages/storyboard/src/core/stores/featureFlags.js.md) — featureFlags.js provides persistent, browser-local feature toggles for Storyboard
+- [`packages/storyboard/src/core/stores/paletteProviders.js`](./packages/storyboard/src/core/stores/paletteProviders.js.md) — paletteProviders.js adapts several Storyboard subsystems into a single search model for the command
+- [`packages/storyboard/src/core/stores/paletteProviders.test.js`](./packages/storyboard/src/core/stores/paletteProviders.test.js.md) — paletteProviders.test.js uses Vitest module mocks to verify that
+- [`packages/storyboard/src/core/stores/plugins.js`](./packages/storyboard/src/core/stores/plugins.js.md) — plugins.js is the enable/disable switchboard for optional Storyboard plugin features
+- [`packages/storyboard/src/core/stores/plugins.test.js`](./packages/storyboard/src/core/stores/plugins.test.js.md) — plugins.test.js defines the contract for packages/storyboard/src/core/stores/plugins.js: plugins are
+- [`packages/storyboard/src/core/stores/recentArtifacts.js`](./packages/storyboard/src/core/stores/recentArtifacts.js.md) — recentArtifacts.js persists a small, route-agnostic MRU list for the command palette
+- [`packages/storyboard/src/core/stores/recentArtifacts.test.js`](./packages/storyboard/src/core/stores/recentArtifacts.test.js.md) — recentArtifacts.test.js documents the behavioral guarantees for
+- [`packages/storyboard/src/core/stores/toolRegistry.js`](./packages/storyboard/src/core/stores/toolRegistry.js.md) — toolRegistry.js is the runtime catalog for declarative toolbar tools
+- [`packages/storyboard/src/core/stores/toolStateStore.js`](./packages/storyboard/src/core/stores/toolStateStore.js.md) — toolStateStore.js tracks per-tool runtime visibility and interaction state for declarative tools
+- [`packages/storyboard/src/core/stores/toolStateStore.test.js`](./packages/storyboard/src/core/stores/toolStateStore.test.js.md) — toolStateStore.test.js is the executable spec for packages/storyboard/src/core/stores/toolStateStore.js
+- [`packages/storyboard/src/core/stores/toolbarConfigStore.js`](./packages/storyboard/src/core/stores/toolbarConfigStore.js.md) — toolbarConfigStore.js maintains the merged toolbar configuration that drives CoreUIBar and tool
+- [`packages/storyboard/src/core/stores/uiConfig.js`](./packages/storyboard/src/core/stores/uiConfig.js.md) — uiConfig.js is the simplest chrome-visibility store in the core
+- [`packages/storyboard/src/core/stores/uiConfig.test.js`](./packages/storyboard/src/core/stores/uiConfig.test.js.md) — uiConfig.test.js validates that packages/storyboard/src/core/stores/uiConfig.js accepts hide arrays,
+- [`packages/storyboard/src/core/tools/handlers/agentsReady.js`](./packages/storyboard/src/core/tools/handlers/agentsReady.js.md) — This handler backs the canvas collaboration button that highlights completed agent work
+- [`packages/storyboard/src/core/tools/handlers/autosync.js`](./packages/storyboard/src/core/tools/handlers/autosync.js.md) — This handler is the UI entry point for the local-only autosync workflow
+- [`packages/storyboard/src/core/tools/handlers/canvasAddWidget.js`](./packages/storyboard/src/core/tools/handlers/canvasAddWidget.js.md) — This handler wires the canvas “add widget” control into the declarative toolbar system
+- [`packages/storyboard/src/core/tools/handlers/canvasAgents.js`](./packages/storyboard/src/core/tools/handlers/canvasAgents.js.md) — This handler exposes configured canvas agent presets as a toolbar menu
+- [`packages/storyboard/src/core/tools/handlers/canvasToolbar.js`](./packages/storyboard/src/core/tools/handlers/canvasToolbar.js.md) — This handler is the shared behavior layer for multiple canvas toolbar controls
+- [`packages/storyboard/src/core/tools/handlers/commandPalette.js`](./packages/storyboard/src/core/tools/handlers/commandPalette.js.md) — This handler adds the dedicated command-palette trigger to the main toolbar
+- [`packages/storyboard/src/core/tools/handlers/comments.js`](./packages/storyboard/src/core/tools/handlers/comments.js.md) — This handler is the declarative entry point for the comments system
+- [`packages/storyboard/src/core/tools/handlers/create.js`](./packages/storyboard/src/core/tools/handlers/create.js.md) — This handler turns workshop feature metadata into a configurable “Create” tool
+- [`packages/storyboard/src/core/tools/handlers/devtools.js`](./packages/storyboard/src/core/tools/handlers/devtools.js.md) — This handler builds the developer utilities submenu that hangs off the command palette or toolbar menus
+- [`packages/storyboard/src/core/tools/handlers/devtools.test.js`](./packages/storyboard/src/core/tools/handlers/devtools.test.js.md) — This test file protects the behavioral contract of the devtools handler
+- [`packages/storyboard/src/core/tools/handlers/featureFlags.js`](./packages/storyboard/src/core/tools/handlers/featureFlags.js.md) — This handler exposes the feature-flag store as a dynamic submenu
+- [`packages/storyboard/src/core/tools/handlers/flows.js`](./packages/storyboard/src/core/tools/handlers/flows.js.md) — This handler turns prototype flow metadata into a switcher menu
+- [`packages/storyboard/src/core/tools/handlers/hideChrome.js`](./packages/storyboard/src/core/tools/handlers/hideChrome.js.md) — This handler mounts the dedicated chrome-visibility toggle button
+- [`packages/storyboard/src/core/tools/handlers/hideToolbars.js`](./packages/storyboard/src/core/tools/handlers/hideToolbars.js.md) — This handler contributes a command-palette action for toggling toolbar visibility without a dedicated
+- [`packages/storyboard/src/core/tools/handlers/inspector.js`](./packages/storyboard/src/core/tools/handlers/inspector.js.md) — This handler exists for side-effectful setup rather than custom rendering
+- [`packages/storyboard/src/core/tools/handlers/paletteTheme.js`](./packages/storyboard/src/core/tools/handlers/paletteTheme.js.md) — This handler exposes theme choices inside the command palette
+- [`packages/storyboard/src/core/tools/handlers/prototypeFullscreen.js`](./packages/storyboard/src/core/tools/handlers/prototypeFullscreen.js.md) — This handler is a keyboard-oriented bridge between toolbar command plumbing and canvas behavior
+- [`packages/storyboard/src/core/tools/handlers/theme.js`](./packages/storyboard/src/core/tools/handlers/theme.js.md) — This handler is the toolbar-facing entry point for theme selection
+- [`packages/storyboard/src/core/tools/registry.js`](./packages/storyboard/src/core/tools/registry.js.md) — This file is the built-in module registry for declarative toolbar tools
+- [`packages/storyboard/src/core/tools/surfaces/canvasToolbar.js`](./packages/storyboard/src/core/tools/surfaces/canvasToolbar.js.md) — This surface describes the floating toolbar rendered on canvas pages
+- [`packages/storyboard/src/core/tools/surfaces/collabBar.js`](./packages/storyboard/src/core/tools/surfaces/collabBar.js.md) — This surface defines the compact floating collaboration bar shown at the top-right of canvas pages
+- [`packages/storyboard/src/core/tools/surfaces/commandList.js`](./packages/storyboard/src/core/tools/surfaces/commandList.js.md) — This surface represents the overlay command palette rather than a visible toolbar strip
+- [`packages/storyboard/src/core/tools/surfaces/mainToolbar.js`](./packages/storyboard/src/core/tools/surfaces/mainToolbar.js.md) — This surface defines the primary floating toolbar rendered at the bottom-right of the app chrome
+- [`packages/storyboard/src/core/tools/surfaces/registry.js`](./packages/storyboard/src/core/tools/surfaces/registry.js.md) — This registry centralizes the set of rendering surfaces that declarative tools may target
+- [`packages/storyboard/src/core/ui/ActionMenuButton.jsx`](./packages/storyboard/src/core/ui/ActionMenuButton.jsx.md) — Renders a dropdown trigger for command actions that expose children
+- [`packages/storyboard/src/core/ui/AgentsReadyTrigger.jsx`](./packages/storyboard/src/core/ui/AgentsReadyTrigger.jsx.md) — Shows ready and working agent counts in the collab bar and cycles focus across completed agents
+- [`packages/storyboard/src/core/ui/AutosyncMenuButton.jsx`](./packages/storyboard/src/core/ui/AutosyncMenuButton.jsx.md) — Provides the dev-only autosync menu for choosing a target branch and enabling background sync for canvas
+- [`packages/storyboard/src/core/ui/BranchSelect.jsx`](./packages/storyboard/src/core/ui/BranchSelect.jsx.md) — A tiny styled <select> wrapper used by autosync-related flows
+- [`packages/storyboard/src/core/ui/CanvasAgentsMenu.jsx`](./packages/storyboard/src/core/ui/CanvasAgentsMenu.jsx.md) — Adds configured agent widgets to the active canvas
+- [`packages/storyboard/src/core/ui/CanvasConnectorStyle.jsx`](./packages/storyboard/src/core/ui/CanvasConnectorStyle.jsx.md) — Toggles canvas connector rendering between fluid and orthogonal modes
+- [`packages/storyboard/src/core/ui/CanvasCreateMenu.jsx`](./packages/storyboard/src/core/ui/CanvasCreateMenu.jsx.md) — Implements the “add to canvas” dropdown for widgets, prototypes, components, and optional agent entries
+- [`packages/storyboard/src/core/ui/CanvasSnap.jsx`](./packages/storyboard/src/core/ui/CanvasSnap.jsx.md) — Exposes snap-to-grid as a standalone toggle on canvas pages
+- [`packages/storyboard/src/core/ui/CanvasUndoRedo.jsx`](./packages/storyboard/src/core/ui/CanvasUndoRedo.jsx.md) — Groups undo and redo actions into one canvas toolbar control
+- [`packages/storyboard/src/core/ui/CanvasZoomControl.jsx`](./packages/storyboard/src/core/ui/CanvasZoomControl.jsx.md) — Renders the three-button zoom cluster for canvas pages: zoom out, reset to 100%, and zoom in
+- [`packages/storyboard/src/core/ui/CanvasZoomToFit.jsx`](./packages/storyboard/src/core/ui/CanvasZoomToFit.jsx.md) — Provides a single-purpose “zoom to objects” canvas button
+- [`packages/storyboard/src/core/ui/CommandMenu.jsx`](./packages/storyboard/src/core/ui/CommandMenu.jsx.md) — Renders the main ⌘ dropdown menu from the command-action registry
+- [`packages/storyboard/src/core/ui/CommandPalette.jsx`](./packages/storyboard/src/core/ui/CommandPalette.jsx.md) — This file is actually a trigger button that dispatches storyboard:toggle-palette
+- [`packages/storyboard/src/core/ui/CommandPaletteTrigger.jsx`](./packages/storyboard/src/core/ui/CommandPaletteTrigger.jsx.md) — Minimal command-toolbar trigger for opening the command palette
+- [`packages/storyboard/src/core/ui/CommentsMenuButton.jsx`](./packages/storyboard/src/core/ui/CommentsMenuButton.jsx.md) — Toggles comment mode from the toolbar
+- [`packages/storyboard/src/core/ui/CoreUIBar.jsx`](./packages/storyboard/src/core/ui/CoreUIBar.jsx.md) — packages/storyboard/src/core/ui/CoreUIBar.jsx is the runtime UI shell for Storyboard's developer chrome
+- [`packages/storyboard/src/core/ui/CreateMenuButton.jsx`](./packages/storyboard/src/core/ui/CreateMenuButton.jsx.md) — Builds a generic create-menu dropdown from supplied feature overlays or an explicit action list
+- [`packages/storyboard/src/core/ui/HideChromeTrigger.jsx`](./packages/storyboard/src/core/ui/HideChromeTrigger.jsx.md) — Always-visible button for hiding or restoring Storyboard chrome
+- [`packages/storyboard/src/core/ui/Icon.jsx`](./packages/storyboard/src/core/ui/Icon.jsx.md) — Shared icon renderer for the core UI shell
+- [`packages/storyboard/src/core/ui/InspectorPanel.jsx`](./packages/storyboard/src/core/ui/InspectorPanel.jsx.md) — Implements the side-panel inspector for selecting DOM nodes and tracing them back to React component
+- [`packages/storyboard/src/core/ui/PwaInstallBanner.jsx`](./packages/storyboard/src/core/ui/PwaInstallBanner.jsx.md) — Displays the mobile-only install prompt for the Storyboard PWA
+- [`packages/storyboard/src/core/ui/SidePanel.jsx`](./packages/storyboard/src/core/ui/SidePanel.jsx.md) — Push-style side/bottom panel used for shell tabs such as the inspector
+- [`packages/storyboard/src/core/ui/ThemeMenuButton.jsx`](./packages/storyboard/src/core/ui/ThemeMenuButton.jsx.md) — Theme picker and theme-sync settings menu for the toolbar
+- [`packages/storyboard/src/core/vite/docs-handler.js`](./packages/storyboard/src/core/vite/docs-handler.js.md) — Express-style middleware factory for the /_storyboard/docs/ API segment
+- [`packages/storyboard/src/core/vite/server-plugin.js`](./packages/storyboard/src/core/vite/server-plugin.js.md) — The always-on Vite server plugin that mounts the entire storyboard middleware backbone at /_storyboard/
+- [`packages/storyboard/src/core/worktree/port.js`](./packages/storyboard/src/core/worktree/port.js.md) — Manages the worktrees/ports.json registry that assigns unique dev-server ports to each git worktree
+- [`packages/storyboard/src/core/worktree/port.test.js`](./packages/storyboard/src/core/worktree/port.test.js.md) — Unit tests for port.js
+- [`packages/storyboard/src/core/worktree/serverRegistry.js`](./packages/storyboard/src/core/worktree/serverRegistry.js.md) — Maintains .storyboard/servers.json — a shared file that records all currently running dev-server
+- [`packages/storyboard/src/internals/AuthModal/AuthModal.jsx`](./packages/storyboard/src/internals/AuthModal/AuthModal.jsx.md) — A global Personal Access Token (PAT) entry dialog for GitHub comments authentication
+- [`packages/storyboard/src/internals/BranchBar/BranchBar.jsx`](./packages/storyboard/src/internals/BranchBar/BranchBar.jsx.md) — A blue accent bar rendered at the very top of the page (via React portal, first child of <body>) that
+- [`packages/storyboard/src/internals/CommandPalette/CommandPalette.jsx`](./packages/storyboard/src/internals/CommandPalette/CommandPalette.jsx.md) — The global command palette — a cmdk-powered search overlay that aggregates all navigable and actionable
+- [`packages/storyboard/src/internals/Icon.jsx`](./packages/storyboard/src/internals/Icon.jsx.md) — A unified icon renderer that normalises icons from multiple sources under a single <Icon name="..." />
+- [`packages/storyboard/src/internals/PrototypeErrorBoundary.jsx`](./packages/storyboard/src/internals/PrototypeErrorBoundary.jsx.md) — Provides three error boundary / error display components for catching different failure modes in
+- [`packages/storyboard/src/internals/StoryboardContext.js`](./packages/storyboard/src/internals/StoryboardContext.js.md) — StoryboardContext is the minimal React context that carries flow data, loading state, current flow, and
+- [`packages/storyboard/src/internals/Viewfinder.jsx`](./packages/storyboard/src/internals/Viewfinder.jsx.md) — Viewfinder.jsx is the workspace homescreen — the SaaS-style landing page at /workspace that displays all
+- [`packages/storyboard/src/internals/Workspace.jsx`](./packages/storyboard/src/internals/Workspace.jsx.md) — Canonical entry point for the workspace homescreen component
+- [`packages/storyboard/src/internals/canvas/CanvasControls.jsx`](./packages/storyboard/src/internals/canvas/CanvasControls.jsx.md) — packages/storyboard/src/internals/canvas/CanvasControls.jsx is the focused bottom-left creation control
+- [`packages/storyboard/src/internals/canvas/CanvasPage.jsx`](./packages/storyboard/src/internals/canvas/CanvasPage.jsx.md) — packages/storyboard/src/internals/canvas/CanvasPage.jsx is the heart of Storyboard’s canvas widget
+- [`packages/storyboard/src/internals/canvas/CanvasToolbar.jsx`](./packages/storyboard/src/internals/canvas/CanvasToolbar.jsx.md) — packages/storyboard/src/internals/canvas/CanvasToolbar.jsx is a small legacy add-widget launcher for
+- [`packages/storyboard/src/internals/canvas/ConnectorLayer.jsx`](./packages/storyboard/src/internals/canvas/ConnectorLayer.jsx.md) — packages/storyboard/src/internals/canvas/ConnectorLayer.jsx renders canvas connectors as a dedicated
+- [`packages/storyboard/src/internals/canvas/MarqueeOverlay.jsx`](./packages/storyboard/src/internals/canvas/MarqueeOverlay.jsx.md) — packages/storyboard/src/internals/canvas/MarqueeOverlay.jsx is the visual half of marquee selection
+- [`packages/storyboard/src/internals/canvas/PageSelector.jsx`](./packages/storyboard/src/internals/canvas/PageSelector.jsx.md) — packages/storyboard/src/internals/canvas/PageSelector.jsx manages sibling-page navigation inside a
+- [`packages/storyboard/src/internals/canvas/WebGLContextPool.jsx`](./packages/storyboard/src/internals/canvas/WebGLContextPool.jsx.md) — packages/storyboard/src/internals/canvas/WebGLContextPool.jsx solves a browser resource problem:
+- [`packages/storyboard/src/internals/canvas/canvasApi.js`](./packages/storyboard/src/internals/canvas/canvasApi.js.md) — packages/storyboard/src/internals/canvas/canvasApi.js is the browser-side client for the canvas server
+- [`packages/storyboard/src/internals/canvas/canvasTheme.js`](./packages/storyboard/src/internals/canvas/canvasTheme.js.md) — packages/storyboard/src/internals/canvas/canvasTheme.js translates Storyboard’s canvas theme choice into
+- [`packages/storyboard/src/internals/canvas/connectorGeometry.js`](./packages/storyboard/src/internals/canvas/connectorGeometry.js.md) — packages/storyboard/src/internals/canvas/connectorGeometry.js provides the geometric primitives for
+- [`packages/storyboard/src/internals/canvas/connectorRouting.js`](./packages/storyboard/src/internals/canvas/connectorRouting.js.md) — packages/storyboard/src/internals/canvas/connectorRouting.js owns manual connector routing
+- [`packages/storyboard/src/internals/canvas/useCanvas.js`](./packages/storyboard/src/internals/canvas/useCanvas.js.md) — packages/storyboard/src/internals/canvas/useCanvas.js loads the canonical canvas model for the UI
+- [`packages/storyboard/src/internals/canvas/useMarqueeSelect.js`](./packages/storyboard/src/internals/canvas/useMarqueeSelect.js.md) — packages/storyboard/src/internals/canvas/useMarqueeSelect.js encapsulates lasso selection for the canvas
+- [`packages/storyboard/src/internals/canvas/useUndoRedo.js`](./packages/storyboard/src/internals/canvas/useUndoRedo.js.md) — packages/storyboard/src/internals/canvas/useUndoRedo.js is the canvas-specific history stack used by
+- [`packages/storyboard/src/internals/canvas/widgets/CodePenEmbed.jsx`](./packages/storyboard/src/internals/canvas/widgets/CodePenEmbed.jsx.md) — CodePenEmbed.jsx renders CodePen pens on canvas with the same interaction gate pattern used by other
+- [`packages/storyboard/src/internals/canvas/widgets/ComponentSetWidget.jsx`](./packages/storyboard/src/internals/canvas/widgets/ComponentSetWidget.jsx.md) — ComponentSetWidget.jsx is a backward-compatibility alias kept for older code that still imports the old
+- [`packages/storyboard/src/internals/canvas/widgets/ComponentWidget.jsx`](./packages/storyboard/src/internals/canvas/widgets/ComponentWidget.jsx.md) — ComponentWidget.jsx is a deprecated compatibility stub for an older jsx-based canvas path
+- [`packages/storyboard/src/internals/canvas/widgets/CropOverlay.jsx`](./packages/storyboard/src/internals/canvas/widgets/CropOverlay.jsx.md) — CropOverlay.jsx provides the transient crop-selection UI used by ImageWidget.jsx
+- [`packages/storyboard/src/internals/canvas/widgets/ExpandedPane.jsx`](./packages/storyboard/src/internals/canvas/widgets/ExpandedPane.jsx.md) — ExpandedPane.jsx is the shared fullscreen/split-screen shell for canvas widgets
+- [`packages/storyboard/src/internals/canvas/widgets/ExpandedPane.test.jsx`](./packages/storyboard/src/internals/canvas/widgets/ExpandedPane.test.jsx.md) — Vitest test file covering ExpandedPane.jsx
+- [`packages/storyboard/src/internals/canvas/widgets/ExpandedPaneTopBar.jsx`](./packages/storyboard/src/internals/canvas/widgets/ExpandedPaneTopBar.jsx.md) — ExpandedPaneTopBar.jsx is the per-pane toolbar used inside ExpandedPane.jsx
+- [`packages/storyboard/src/internals/canvas/widgets/ExpandedPaneTopBar.test.jsx`](./packages/storyboard/src/internals/canvas/widgets/ExpandedPaneTopBar.test.jsx.md) — Vitest test file covering ExpandedPaneTopBar.jsx
+- [`packages/storyboard/src/internals/canvas/widgets/FigmaEmbed.jsx`](./packages/storyboard/src/internals/canvas/widgets/FigmaEmbed.jsx.md) — FigmaEmbed.jsx embeds validated Figma board/design/prototype URLs inside the canvas with a
+- [`packages/storyboard/src/internals/canvas/widgets/FrozenTerminalOverlay.jsx`](./packages/storyboard/src/internals/canvas/widgets/FrozenTerminalOverlay.jsx.md) — FrozenTerminalOverlay.jsx is the fallback surface shown when a terminal widget loses its live
+- [`packages/storyboard/src/internals/canvas/widgets/ImageWidget.jsx`](./packages/storyboard/src/internals/canvas/widgets/ImageWidget.jsx.md) — ImageWidget.jsx displays pasted canvas images, preserving aspect ratio on resize and exposing
+- [`packages/storyboard/src/internals/canvas/widgets/InlineStoryRenderer.jsx`](./packages/storyboard/src/internals/canvas/widgets/InlineStoryRenderer.jsx.md) — InlineStoryRenderer.jsx renders a Storybook-style export directly inside the canvas React tree instead
+- [`packages/storyboard/src/internals/canvas/widgets/InlineStoryRenderer.test.jsx`](./packages/storyboard/src/internals/canvas/widgets/InlineStoryRenderer.test.jsx.md) — Vitest test file covering InlineStoryRenderer.jsx
+- [`packages/storyboard/src/internals/canvas/widgets/LinkPreview.jsx`](./packages/storyboard/src/internals/canvas/widgets/LinkPreview.jsx.md) — LinkPreview.jsx renders pasted link metadata as a card, with a special GitHub rendering path for issues,
+- [`packages/storyboard/src/internals/canvas/widgets/LinkPreview.test.jsx`](./packages/storyboard/src/internals/canvas/widgets/LinkPreview.test.jsx.md) — Vitest test file covering LinkPreview.jsx
+- [`packages/storyboard/src/internals/canvas/widgets/MarkdownBlock.jsx`](./packages/storyboard/src/internals/canvas/widgets/MarkdownBlock.jsx.md) — MarkdownBlock.jsx renders rich text content on canvas using remark + GitHub Flavored Markdown, then
+- [`packages/storyboard/src/internals/canvas/widgets/MarkdownBlock.test.jsx`](./packages/storyboard/src/internals/canvas/widgets/MarkdownBlock.test.jsx.md) — Vitest test file covering MarkdownBlock.jsx
+- [`packages/storyboard/src/internals/canvas/widgets/PromptWidget.jsx`](./packages/storyboard/src/internals/canvas/widgets/PromptWidget.jsx.md) — PromptWidget.jsx is the canvas-native "ask Copilot" widget
+- [`packages/storyboard/src/internals/canvas/widgets/PrototypeEmbed.jsx`](./packages/storyboard/src/internals/canvas/widgets/PrototypeEmbed.jsx.md) — PrototypeEmbed.jsx embeds another Storyboard route inside the canvas
+- [`packages/storyboard/src/internals/canvas/widgets/PrototypeEmbed.test.jsx`](./packages/storyboard/src/internals/canvas/widgets/PrototypeEmbed.test.jsx.md) — Vitest test file covering getEmbedChromeVars() from embedTheme.js
+- [`packages/storyboard/src/internals/canvas/widgets/ResizeHandle.jsx`](./packages/storyboard/src/internals/canvas/widgets/ResizeHandle.jsx.md) — ResizeHandle.jsx is the shared drag affordance used by multiple canvas widgets to persist width and
+- [`packages/storyboard/src/internals/canvas/widgets/StickyNote.jsx`](./packages/storyboard/src/internals/canvas/widgets/StickyNote.jsx.md) — StickyNote.jsx renders the simplest editable canvas widget: a colored note with inline text editing and
+- [`packages/storyboard/src/internals/canvas/widgets/StickyNote.test.jsx`](./packages/storyboard/src/internals/canvas/widgets/StickyNote.test.jsx.md) — Vitest test file covering StickyNote.jsx
+- [`packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx`](./packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx.md) — StorySetWidget.jsx renders every export from a story inside one isolate-set iframe instead of creating
+- [`packages/storyboard/src/internals/canvas/widgets/StoryWidget.jsx`](./packages/storyboard/src/internals/canvas/widgets/StoryWidget.jsx.md) — StoryWidget.jsx renders a single story export on canvas either inline or inside an isolated iframe, and
+- [`packages/storyboard/src/internals/canvas/widgets/TerminalReadWidget.jsx`](./packages/storyboard/src/internals/canvas/widgets/TerminalReadWidget.jsx.md) — TerminalReadWidget.jsx is the lightweight read-only terminal snapshot viewer
+- [`packages/storyboard/src/internals/canvas/widgets/TerminalWidget.jsx`](./packages/storyboard/src/internals/canvas/widgets/TerminalWidget.jsx.md) — TerminalWidget.jsx is the live canvas terminal/agent implementation
+- [`packages/storyboard/src/internals/canvas/widgets/TilesWidget.jsx`](./packages/storyboard/src/internals/canvas/widgets/TilesWidget.jsx.md) — TilesWidget.jsx renders a square-image tile grid backed by a fixed bundled image pool
+- [`packages/storyboard/src/internals/canvas/widgets/WidgetChrome.jsx`](./packages/storyboard/src/internals/canvas/widgets/WidgetChrome.jsx.md) — WidgetChrome.jsx is the universal chrome wrapper around every canvas widget
+- [`packages/storyboard/src/internals/canvas/widgets/WidgetWrapper.jsx`](./packages/storyboard/src/internals/canvas/widgets/WidgetWrapper.jsx.md) — WidgetWrapper.jsx is the minimal structural shell shared by several presentational canvas widgets
+- [`packages/storyboard/src/internals/canvas/widgets/index.js`](./packages/storyboard/src/internals/canvas/widgets/index.js.md) — index.js is the registry entry point for canvas widgets
+- [`packages/storyboard/src/internals/canvas/widgets/pasteRules.js`](./packages/storyboard/src/internals/canvas/widgets/pasteRules.js.md) — pasteRules.js is the config-driven resolver that maps pasted text or URLs to widget descriptors
+- [`packages/storyboard/src/internals/canvas/widgets/widgetConfig.js`](./packages/storyboard/src/internals/canvas/widgets/widgetConfig.js.md) — widgetConfig.js is the config loader for the canvas widget system
+- [`packages/storyboard/src/internals/canvas/widgets/widgetProps.js`](./packages/storyboard/src/internals/canvas/widgets/widgetProps.js.md) — widgetProps.js is the thin runtime schema API for canvas widgets
+- [`packages/storyboard/src/internals/context.jsx`](./packages/storyboard/src/internals/context.jsx.md) — context.jsx is the heart of the React data layer
+- [`packages/storyboard/src/internals/hashPreserver.js`](./packages/storyboard/src/internals/hashPreserver.js.md) — installHashPreserver patches navigation so storyboard override hashes survive route changes
+- [`packages/storyboard/src/internals/hooks/useConfig.js`](./packages/storyboard/src/internals/hooks/useConfig.js.md) — useConfig is the React face of the unified configuration store
+- [`packages/storyboard/src/internals/hooks/useFeatureFlag.js`](./packages/storyboard/src/internals/hooks/useFeatureFlag.js.md) — useFeatureFlag exposes storage-backed feature flags to React components
+- [`packages/storyboard/src/internals/hooks/useFlows.js`](./packages/storyboard/src/internals/hooks/useFlows.js.md) — useFlows gives prototype pages a navigation model for their available flows
+- [`packages/storyboard/src/internals/hooks/useFlows.test.js`](./packages/storyboard/src/internals/hooks/useFlows.test.js.md) — This test file locks down the public behavior of useFlows
+- [`packages/storyboard/src/internals/hooks/useHideMode.js`](./packages/storyboard/src/internals/hooks/useHideMode.js.md) — useHideMode is the small React API for toggling hide mode
+- [`packages/storyboard/src/internals/hooks/useHideMode.test.js`](./packages/storyboard/src/internals/hooks/useHideMode.test.js.md) — This test file locks down the public behavior of useHideMode
+- [`packages/storyboard/src/internals/hooks/useLocalStorage.js`](./packages/storyboard/src/internals/hooks/useLocalStorage.js.md) — useLocalStorage adds persistent, storage-backed overrides on top of flow data from
+- [`packages/storyboard/src/internals/hooks/useLocalStorage.test.js`](./packages/storyboard/src/internals/hooks/useLocalStorage.test.js.md) — This test file locks down the public behavior of useLocalStorage
+- [`packages/storyboard/src/internals/hooks/useMode.js`](./packages/storyboard/src/internals/hooks/useMode.js.md) — useMode exposes the design-mode registry to React components
+- [`packages/storyboard/src/internals/hooks/useObject.js`](./packages/storyboard/src/internals/hooks/useObject.js.md) — useObject loads an object data file directly, then layers runtime overrides on top
+- [`packages/storyboard/src/internals/hooks/useObject.test.js`](./packages/storyboard/src/internals/hooks/useObject.test.js.md) — This test file locks down the public behavior of useObject
+- [`packages/storyboard/src/internals/hooks/useOverride.js`](./packages/storyboard/src/internals/hooks/useOverride.js.md) — useOverride is the central React API for writable storyboard state
+- [`packages/storyboard/src/internals/hooks/useOverride.test.js`](./packages/storyboard/src/internals/hooks/useOverride.test.js.md) — This test file locks down the public behavior of useOverride
+- [`packages/storyboard/src/internals/hooks/usePrototypeReloadGuard.js`](./packages/storyboard/src/internals/hooks/usePrototypeReloadGuard.js.md) — usePrototypeReloadGuard is a lifecycle hook for the dev environment rather than for data consumption
+- [`packages/storyboard/src/internals/hooks/useRecord.js`](./packages/storyboard/src/internals/hooks/useRecord.js.md) — useRecord and useRecords bring record collections into React from the data system
+- [`packages/storyboard/src/internals/hooks/useRecord.test.js`](./packages/storyboard/src/internals/hooks/useRecord.test.js.md) — This test file locks down the public behavior of useRecord
+- [`packages/storyboard/src/internals/hooks/useScene.js`](./packages/storyboard/src/internals/hooks/useScene.js.md) — useFlow is the lightweight navigation hook for the current flow, and useScene is its
+- [`packages/storyboard/src/internals/hooks/useScene.test.js`](./packages/storyboard/src/internals/hooks/useScene.test.js.md) — This test file locks down the public behavior of useScene
+- [`packages/storyboard/src/internals/hooks/useSceneData.js`](./packages/storyboard/src/internals/hooks/useSceneData.js.md) — useFlowData is the primary React read hook for storyboard flow data
+- [`packages/storyboard/src/internals/hooks/useSceneData.test.js`](./packages/storyboard/src/internals/hooks/useSceneData.test.js.md) — This test file locks down the public behavior of useSceneData
+- [`packages/storyboard/src/internals/hooks/useSession.js`](./packages/storyboard/src/internals/hooks/useSession.js.md) — useSession exists solely as a backwards-compatible export name for useOverride
+- [`packages/storyboard/src/internals/hooks/useSession.test.js`](./packages/storyboard/src/internals/hooks/useSession.test.js.md) — This test file locks down the public behavior of useSession
+- [`packages/storyboard/src/internals/hooks/useThemeState.js`](./packages/storyboard/src/internals/hooks/useThemeState.js.md) — useThemeState and useThemeSyncTargets are React subscriptions over the global storyboard theme stores
+- [`packages/storyboard/src/internals/hooks/useThemeState.test.js`](./packages/storyboard/src/internals/hooks/useThemeState.test.js.md) — This test file locks down the public behavior of useThemeState
+- [`packages/storyboard/src/internals/hooks/useUndoRedo.js`](./packages/storyboard/src/internals/hooks/useUndoRedo.js.md) — useUndoRedo exposes history navigation for override state
+- [`packages/storyboard/src/internals/hooks/useUndoRedo.test.js`](./packages/storyboard/src/internals/hooks/useUndoRedo.test.js.md) — This test file locks down the public behavior of useUndoRedo
+- [`packages/storyboard/src/internals/index.js`](./packages/storyboard/src/internals/index.js.md) — This is the public barrel export for @dfosco/storyboard-react — the React-layer of the storyboard system
+- [`packages/storyboard/src/internals/vite/data-plugin.js`](./packages/storyboard/src/internals/vite/data-plugin.js.md) — data-plugin.js is the Vite plugin responsible for the entire data discovery and configuration pipeline
+- [`packages/storyboard/src/primer/ThemeSync.jsx`](./packages/storyboard/src/primer/ThemeSync.jsx.md) — An invisible React component that bridges the storyboard-core toolbar theme switcher (Svelte-based
 
 ## Entry Points
 
-- [`src/index.jsx`](./src/index.jsx.md)
+The root app has a deliberately small entry surface. [`src/index.jsx`](./src/index.jsx.md) bootstraps the host application, wires in the generated data/config state, and hands control to the routed Storyboard runtime built out of the package exports documented elsewhere in this index.
+
+- [`src/index.jsx`](./src/index.jsx.md) — src/index.jsx is the browser entry point for the prototype app
 
 ## Configuration
 
-- [`package.json`](./package.json.md)
-- [`packages/storyboard/package.json`](./packages/storyboard/package.json.md)
-- [`packages/storyboard/vite.ui.config.js`](./packages/storyboard/vite.ui.config.js.md)
-- [`storyboard.config.json`](./storyboard.config.json.md)
-- [`vite.config.js`](./vite.config.js.md)
+Configuration files define how the workspace shell consumes the unified Storyboard package. The root [`package.json`](./package.json.md) and [`vite.config.js`](./vite.config.js.md) describe repo-level scripts, aliasing, and build orchestration, while [`packages/storyboard/package.json`](./packages/storyboard/package.json.md) and [`packages/storyboard/vite.ui.config.js`](./packages/storyboard/vite.ui.config.js.md) describe what gets published and how package-local UI bundles are built. [`storyboard.config.json`](./storyboard.config.json.md) supplies application-level defaults that are folded into the plugin-driven config pipeline.
 
+- [`package.json`](./package.json.md) — package.json is the private workspace root for this repository
+- [`packages/storyboard/package.json`](./packages/storyboard/package.json.md) — packages/storyboard/package.json defines the publishable @dfosco/storyboard package that now
+- [`packages/storyboard/vite.ui.config.js`](./packages/storyboard/vite.ui.config.js.md) — packages/storyboard/vite.ui.config.js builds the package's precompiled UI runtime bundle
+- [`storyboard.config.json`](./storyboard.config.json.md) — storyboard.config.json is the repo's declarative runtime configuration
+- [`vite.config.js`](./vite.config.js.md) — vite.config.js is the root build and dev-server contract for the app
