@@ -1,11 +1,12 @@
 {
-  "mode": "exit",
+  "mode": "pre",
   "tag": "alpha",
   "initialVersions": {
-    "@dfosco/storyboard": "0.5.0-alpha.21"
+    "@dfosco/storyboard": "0.5.0-alpha.22"
   },
   "changesets": [
     "changeset-mp10nrwb",
-    "changeset-mp10vbzb"
+    "changeset-mp10vbzb",
+    "changeset-mp11j0hz"
   ]
 }
