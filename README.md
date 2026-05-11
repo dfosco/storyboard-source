@@ -59,8 +59,8 @@ Your storyboard instance will be available at the link provided, by default `htt
 When working in a [git worktree](https://git-scm.com/docs/git-worktree), each worktree gets its own URL:
 
 ```bash
-cd .worktrees/my-feature
-npx storyboard dev
+cd worktrees/my-feature
+npx storyboard run
 # → http://storyboard.localhost/branch--my-feature/storyboard/
 ```
 
