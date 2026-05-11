@@ -1,7 +1,7 @@
 SESSION: agent-mmrorn | scarlet-osprey
 CANVAS:  storyboarding/form-schema
 BRANCH:  0.5.0
-TIME:    2026-05-11T10:18:39.820Z
+TIME:    2026-05-11T10:18:59.839Z
 
 ================================================================================
 SCREEN
@@ -37,4 +37,67 @@ SCREEN
 ❯  
 ─────────────────────────────────────────────────────────────────────────────────────────
  1 background /tasks · / commands · ? help
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+
+  Root cause (in packages/storyboard/src/core/canvas/terminal-server.js): two
+  compounding bugs.
+
+   1. Racy port capture. actualServerPort = httpServer.address().port runs at Vite
+  configureServer time — but the server hasn't bound yet, so address() returns null.
+  The fallback (findByWorktree) is also empty because runtime-spawned vite isn't
+  registered. Result: default 1234 (nothing listens).
+   2. Missing base path. serverUrl = http://localhost:${port} omits the Vite base. The
+  runtime now mounts every worktree under /branch--<name>/, so even with the correct
+  port, all endpoints would
+    404.
+
+  Verified the real server is at
+  http://localhost:1240/branch--0.5.0/_storyboard/canvas/... for this worktree. Fix in
+  commit ba66226c3 (pushed):
+
+   - Capture port via httpServer.once('listening', ...) + re-poll at session-start
+   - Include base path: serverUrl = http://localhost:${port}${baseTrimmed}
+
+  ⚠️ Restart the dev server for the fix to load. Existing agent sessions also need to
+  be re-spawned since their config files have the wrong serverUrl already baked in.
+
+  Summary widget posted on canvas (markdown-z8yugh).
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]              @CanvasControls.jsx
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── 1 background /tasks · / commands · ? help
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+  Root cause (in packages/storyboard/src/core/canvas/terminal-server.js): two
+  compounding bugs.
+
+   1. Racy port capture. actualServerPort = httpServer.address().port runs at Vite
+  configureServer time — but the server hasn't bound yet, so address() returns null.
+  The fallback (findByWorktree) is also empty because runtime-spawned vite isn't
+  registered. Result: default 1234 (nothing listens).
+   2. Missing base path. serverUrl = http://localhost:${port} omits the Vite base. The
+  runtime now mounts every worktree under /branch--<name>/, so even with the correct
+  port, all endpoints would
+    404.
+
+  Verified the real server is at
+  http://localhost:1240/branch--0.5.0/_storyboard/canvas/... for this worktree. Fix in
+  commit ba66226c3 (pushed):
+
+   - Capture port via httpServer.once('listening', ...) + re-poll at session-start
+   - Include base path: serverUrl = http://localhost:${port}${baseTrimmed}
+
+  ⚠️ Restart the dev server for the fix to load. Existing agent sessions also need to
+  be re-spawned since their config files have the wrong serverUrl already baked in.
+
+  Summary widget posted on canvas (markdown-z8yugh).
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]              @CanvasControls.jsx
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── 1 background /tasks · / commands · ? help
  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)

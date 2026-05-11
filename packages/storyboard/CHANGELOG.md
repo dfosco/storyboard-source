@@ -1,5 +1,13 @@
 # @dfosco/storyboard
 
+## 0.5.0-alpha.24
+
+### Patch Changes
+
+-   fix(dev): allow explicit `devDomain: "storyboard"`
+
+    The runtime's FORBIDDEN_DEFAULT_DOMAIN guard was rejecting projects that legitimately picked "storyboard" as their devDomain (e.g. the canonical storyboard repo). The CLI now passes `allowDefaultDomain=true` when the field is explicitly set in `storyboard.config.json`. The guard still catches missing fields with a helpful suggestion.
+
 ## 0.5.0-alpha.23
 
 ### Patch Changes
