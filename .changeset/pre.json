@@ -1,8 +1,8 @@
 {
-  "mode": "exit",
+  "mode": "pre",
   "tag": "alpha",
   "initialVersions": {
-    "@dfosco/storyboard": "0.5.0-alpha.25"
+    "@dfosco/storyboard": "0.5.0-alpha.26"
   },
   "changesets": [
     "changeset-mp10nrwb",
@@ -10,6 +10,7 @@
     "changeset-mp11j0hz",
     "changeset-mp11uf6c",
     "changeset-mp122dl4",
-    "changeset-mp127yuk"
+    "changeset-mp127yuk",
+    "changeset-mp12hhmv"
   ]
 }
