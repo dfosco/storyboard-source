@@ -100,7 +100,7 @@ if (!existsSync('node_modules')) {
 let hasBrew = isInstalled('brew')
 if (!hasBrew) {
   const brewSpin = p.spinner()
-  brewSpin.start('Installing Homebrew...')
+  brewSpin.start('Installing Homebrew')
   try {
     run('/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"')
     const brewPaths = ['/opt/homebrew/bin/brew', '/usr/local/bin/brew', '/home/linuxbrew/.linuxbrew/bin/brew']
@@ -124,7 +124,7 @@ if (hasBrew) {
     p.log.success('Git installed')
   } else {
     const gitSpin = p.spinner()
-    gitSpin.start('Installing Git...')
+    gitSpin.start('Installing Git')
     try {
       run('brew install git')
       gitSpin.stop('Git installed')
@@ -141,7 +141,7 @@ if (hasBrew) {
     p.log.success('Caddy proxy installed')
   } else {
     const caddySpin = p.spinner()
-    caddySpin.start('Installing Caddy...')
+    caddySpin.start('Installing Caddy')
     try {
       run('brew install caddy')
       caddySpin.stop('Caddy proxy installed')
@@ -156,7 +156,7 @@ if (hasBrew) {
     p.log.success('GitHub CLI installed')
   } else {
     const ghSpin = p.spinner()
-    ghSpin.start('Installing GitHub CLI...')
+    ghSpin.start('Installing GitHub CLI')
     try {
       run('brew install gh')
       ghSpin.stop('GitHub CLI installed')
@@ -213,7 +213,7 @@ if (isInstalled('copilot')) {
   p.log.success('Copilot CLI installed')
 } else {
   const copilotSpin = p.spinner()
-  copilotSpin.start('Installing Copilot CLI...')
+  copilotSpin.start('Installing Copilot CLI')
   try {
     run('curl -fsSL https://gh.io/copilot-install | bash')
     // Add ~/.local/bin to PATH if not already there
@@ -365,7 +365,7 @@ if (isCaddyInstalled()) {
   if (isCaddyRunning()) {
     p.log.success('Proxy already running')
   } else {
-    proxySpin.start('Starting proxy...')
+    proxySpin.start('Starting proxy')
     if (startCaddy()) proxySpin.stop('Proxy started')
     else proxySpin.stop('Proxy failed to start (continuing)')
   }

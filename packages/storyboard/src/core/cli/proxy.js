@@ -96,7 +96,7 @@ async function main() {
     const { RuntimeClient } = await import('../../../dist/runtime/client/index.js')
     const runtime = new RuntimeClient()
     const s = p.spinner()
-    s.start('Starting fresh runtime…')
+    s.start('Starting fresh runtime')
     try {
       const health = await runtime.health()
       s.stop(`Runtime ready (v${health.version}, port ${health.port})`)
@@ -134,7 +134,7 @@ async function main() {
   }
   if (!isCaddyRunning()) {
     const s = p.spinner()
-    s.start('Starting Caddy…')
+    s.start('Starting Caddy')
     const result = startCaddyEmpty()
     if (!result.ok) {
       s.stop('Failed')
@@ -153,7 +153,7 @@ async function main() {
   const { RuntimeClient } = await import('../../../dist/runtime/client/index.js')
   const runtime = new RuntimeClient()
   const s = p.spinner()
-  s.start('Starting Storyboard Runtime…')
+  s.start('Starting Storyboard Runtime')
   try {
     const health = await runtime.health()
     s.stop(`Runtime ready (v${health.version}, port ${health.port})`)

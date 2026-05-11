@@ -94,7 +94,7 @@ async function ensureDevServer({ quiet = false } = {}) {
   let s
   if (!quiet) {
     s = p.spinner()
-    s.start('No running dev server found — starting one...')
+    s.start('No running dev server found — starting one')
   }
 
   const { spawn } = await import('child_process')
@@ -283,7 +283,7 @@ async function createPrototype() {
 
   // Submit
   const s = p.spinner()
-  s.start('Creating prototype...')
+  s.start('Creating prototype')
 
   try {
     const body = {
@@ -381,7 +381,7 @@ async function createCanvas() {
 
   // Submit
   const s = p.spinner()
-  s.start('Creating canvas...')
+  s.start('Creating canvas')
 
   try {
     const result = await serverPost('/_storyboard/canvas/create', {
@@ -449,7 +449,7 @@ async function createFlow() {
 
   // Submit
   const s = p.spinner()
-  s.start('Creating flow...')
+  s.start('Creating flow')
 
   try {
     const body = {
@@ -510,7 +510,7 @@ async function createPage() {
 
   // Submit
   const s = p.spinner()
-  s.start('Creating page...')
+  s.start('Creating page')
 
   try {
     const body = {
@@ -622,7 +622,7 @@ export function Default() {
 `
 
   const s = p.spinner()
-  s.start('Creating component...')
+  s.start('Creating component')
 
   fs.mkdirSync(targetDir, { recursive: true })
   fs.writeFileSync(storyFile, content)

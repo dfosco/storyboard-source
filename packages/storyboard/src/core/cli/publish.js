@@ -67,7 +67,7 @@ if (hasUncommittedChanges(cwd)) {
 
 // 2. Pull --rebase from origin first
 const pullSpin = p.spinner()
-pullSpin.start('Pulling latest from remote…')
+pullSpin.start('Pulling latest from remote')
 
 try {
   execFileSync('git', ['pull', '--rebase', 'origin', branch], { cwd, stdio: 'pipe' })
@@ -107,7 +107,7 @@ try {
 
 // 3. Push to origin
 const pushSpin = p.spinner()
-pushSpin.start('Publishing to remote…')
+pushSpin.start('Publishing to remote')
 
 try {
   execFileSync('git', ['push', 'origin', branch], { cwd, stdio: 'pipe' })

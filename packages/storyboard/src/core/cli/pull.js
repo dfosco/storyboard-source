@@ -52,7 +52,7 @@ if (hasUncommittedChanges(cwd)) {
 
 // 2. Pull --rebase from origin
 const spin = p.spinner()
-spin.start('Pulling latest changes…')
+spin.start('Pulling latest changes')
 
 let pullFailed = false
 try {

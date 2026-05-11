@@ -194,7 +194,7 @@ async function main() {
   const runtime = new RuntimeClient()
 
   const s = p.spinner()
-  s.start(`Acquiring dev server for ${devDomain}/${worktreeName}…`)
+  s.start(`Acquiring dev server for ${devDomain}/${worktreeName}`)
 
   let result
   try {

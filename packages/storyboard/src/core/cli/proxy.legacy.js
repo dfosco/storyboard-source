@@ -290,7 +290,7 @@ if (isDirectRun) {
 
     const s = spinner()
     if (isCaddyRunning()) {
-      s.start('Updating proxy routes...')
+      s.start('Updating proxy routes')
       const routeConfig = generateRouteConfig()
       if (upsertCaddyRoute(routeConfig)) {
         s.stop('Proxy routes updated (admin API)')
@@ -301,7 +301,7 @@ if (isDirectRun) {
         process.exit(1)
       }
     } else {
-      s.start('Starting proxy...')
+      s.start('Starting proxy')
       if (startCaddy(caddyfilePath)) {
         s.stop('Proxy started')
       } else {

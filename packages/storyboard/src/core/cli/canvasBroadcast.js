@@ -127,7 +127,7 @@ async function canvasBroadcast() {
   }
 
   const s = p.spinner()
-  s.start(`Setting broadcast ${mode}${passThrough ? ' (pass-through)' : ''}...`)
+  s.start(`Setting broadcast ${mode}${passThrough ? ' (pass-through)' : ''}`)
 
   try {
     const result = await serverPost('/_storyboard/canvas/broadcast', body)

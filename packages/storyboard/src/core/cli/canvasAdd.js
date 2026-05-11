@@ -220,7 +220,7 @@ async function canvasAdd() {
   }
 
   const s = p.spinner()
-  s.start(`Adding ${widgetType} widget...`)
+  s.start(`Adding ${widgetType} widget`)
 
   try {
     const body = { name: canvasName, type: widgetType, props }

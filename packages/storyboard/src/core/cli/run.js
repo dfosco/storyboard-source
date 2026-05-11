@@ -22,7 +22,7 @@ if (isCaddyInstalled()) {
     p.log.success('Proxy already running')
   } else {
     const spin = p.spinner()
-    spin.start('Starting proxy...')
+    spin.start('Starting proxy')
     try {
       if (startCaddy()) spin.stop('Proxy started')
       else { spin.stop('Proxy failed to start'); p.log.warning('Continuing without proxy') }
@@ -42,7 +42,7 @@ if (isCaddyInstalled()) {
 // "Cannot reach Storyboard Runtime at http://127.0.0.1:4321".
 {
   const spin = p.spinner()
-  spin.start('Starting runtime daemon...')
+  spin.start('Starting runtime daemon')
   try {
     const { RuntimeClient } = await import('../../../dist/runtime/client/index.js')
     const runtime = new RuntimeClient()

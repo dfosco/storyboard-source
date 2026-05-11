@@ -243,7 +243,7 @@ function createNewWorktree(targetBranch, { sourceDir, fromBranch, root }) {
 
   // Install dependencies
   try {
-    spin.start('Installing dependencies…')
+    spin.start('Installing dependencies')
     const npmBin = process.platform === 'win32' ? 'npm.cmd' : 'npm'
     execFileSync(npmBin, ['install'], { cwd: targetDir, stdio: 'pipe' })
     spin.stop('Dependencies installed')
@@ -257,7 +257,7 @@ function createNewWorktree(targetBranch, { sourceDir, fromBranch, root }) {
   // 4. Pull --rebase from origin
   if (!isNew) {
     try {
-      spin.start('Pulling latest changes…')
+      spin.start('Pulling latest changes')
       execFileSync('git', ['pull', '--rebase', 'origin', targetBranch], { cwd: targetDir, stdio: 'pipe' })
       spin.stop('Up to date with origin')
     } catch {
