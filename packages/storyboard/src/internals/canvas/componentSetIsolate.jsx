@@ -105,41 +105,28 @@ function ComponentSetGrid({ exports, layout, initialSelected }) {
     }
   }, [selected])
 
-  // Measure cells and post grid size to parent
+  // Measure cells and post grid size to parent — first mount only, so newly
+  // dropped widgets get a sensible initial size. After that the widget owns
+  // its dimensions (user can resize freely; cells just divide the available
+  // space).
   useLayoutEffect(() => {
     const grid = gridRef.current
     if (!grid || !exports) return
+    if (window.parent === window) return
 
-    const cells = grid.querySelectorAll('[data-cell-content]')
-    if (cells.length === 0) return
-
-    function measure() {
-      let maxW = 0
-      let maxH = 0
-      for (const el of cells) {
-        maxW = Math.max(maxW, el.scrollWidth)
-        maxH = Math.max(maxH, el.scrollHeight)
-      }
-      grid.style.setProperty('--cell-snap-w', `${maxW}px`)
-      grid.style.setProperty('--cell-snap-h', `${maxH}px`)
-
-      if (window.parent !== window) {
-        requestAnimationFrame(() => {
-          window.parent.postMessage({
-            type: 'storyboard:component-set:resize',
-            width: grid.scrollWidth,
-            height: grid.scrollHeight,
-          }, '*')
-        })
-      }
+    let posted = false
+    function postInitial() {
+      if (posted) return
+      posted = true
+      window.parent.postMessage({
+        type: 'storyboard:component-set:initial-size',
+        width: grid.scrollWidth,
+        height: grid.scrollHeight,
+      }, '*')
     }
 
-    measure()
-    document.fonts.ready.then(() => requestAnimationFrame(measure))
-
-    const ro = new ResizeObserver(measure)
-    for (const el of cells) ro.observe(el)
-    return () => ro.disconnect()
+    requestAnimationFrame(postInitial)
+    document.fonts.ready.then(() => requestAnimationFrame(postInitial))
   }, [exports, layout])
 
   // Signal snapshot-ready
@@ -189,7 +176,8 @@ function ComponentSetGrid({ exports, layout, initialSelected }) {
 // ── Main ────────────────────────────────────────────────────────────
 const params = new URLSearchParams(window.location.search)
 const modulePath = params.get('module')
-const layout = params.get('layout') || 'horizontal'
+const layoutParam = params.get('layout') || 'auto'
+const layout = layoutParam === 'horizontal' ? 'wide' : layoutParam === 'vertical' ? 'tall' : layoutParam
 const selected = params.get('selected') || ''
 const theme = params.get('theme') || 'light'
 

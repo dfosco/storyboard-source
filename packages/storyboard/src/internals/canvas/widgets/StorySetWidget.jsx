@@ -80,14 +80,14 @@ export default forwardRef(function StorySetWidget({ id: widgetId, props, onUpdat
         if (newSelected !== selected) {
           onUpdate?.({ selected: newSelected })
         }
-      } else if (e.data?.type === 'storyboard:component-set:resize') {
-        // Auto-size widget to fit the grid content (+ header height)
-        const headerH = 32
-        const newW = Math.max(200, Math.ceil(e.data.width))
-        const newH = Math.max(60, Math.ceil(e.data.height) + headerH)
-        if (newW !== width || newH !== height) {
-          onUpdate?.({ width: newW, height: newH })
-        }
+      } else if (e.data?.type === 'storyboard:component-set:initial-size') {
+        // Only honor the initial size hint when the widget has no dimensions
+        // yet — never override a user-resized widget.
+        if (typeof width === 'number' && typeof height === 'number') return
+        const headerH = 37
+        const newW = typeof width === 'number' ? width : Math.max(200, Math.ceil(e.data.width))
+        const newH = typeof height === 'number' ? height : Math.max(120, Math.ceil(e.data.height) + headerH)
+        onUpdate?.({ width: newW, height: newH })
       }
     }
     window.addEventListener('message', handleMessage)

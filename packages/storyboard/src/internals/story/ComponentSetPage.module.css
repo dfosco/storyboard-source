@@ -6,21 +6,51 @@
   flex-wrap: nowrap;
   gap: 0;
   padding: 0;
-  width: max-content;
-  min-width: 100%;
+  width: 100%;
+  height: 100%;
   box-sizing: border-box;
 }
 
+/* Wide / horizontal: cells share width, full height */
+.grid[data-layout="wide"],
 .grid[data-layout="horizontal"] {
   flex-direction: row;
 }
 
+.grid[data-layout="wide"] .cell,
+.grid[data-layout="horizontal"] .cell {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+}
+
+/* Tall / vertical: cells share height, full width */
+.grid[data-layout="tall"],
 .grid[data-layout="vertical"] {
   flex-direction: column;
 }
 
+.grid[data-layout="tall"] .cell,
+.grid[data-layout="vertical"] .cell {
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+}
+
+/* Auto: CSS grid that wraps and fills proportionally in both axes */
+.grid[data-layout="auto"] {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-auto-rows: minmax(120px, 1fr);
+  flex-wrap: initial;
+}
+
+.grid[data-layout="auto"] .cell {
+  min-width: 0;
+  min-height: 0;
+}
+
 .cell {
-  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
   border: 1px solid var(--borderColor-muted, #d8dee4);
@@ -32,29 +62,20 @@
 }
 
 /* Collapse double borders between adjacent cells */
+.grid[data-layout="wide"] .cell + .cell,
 .grid[data-layout="horizontal"] .cell + .cell {
   border-left: none;
 }
 
+.grid[data-layout="tall"] .cell + .cell,
 .grid[data-layout="vertical"] .cell + .cell {
   border-top: none;
-}
-
-/* In horizontal layout, cells snap to widest and tallest component */
-.grid[data-layout="horizontal"] .cell {
-  min-width: var(--cell-snap-w, 200px);
-  min-height: var(--cell-snap-h, 60px);
-}
-
-/* In vertical layout, cells snap to widest and tallest component */
-.grid[data-layout="vertical"] .cell {
-  min-height: var(--cell-snap-h, 120px);
-  min-width: 100%;
 }
 
 .cell[data-selected] {
   border-color: var(--fgColor-accent, #0969da);
   box-shadow: 0 0 0 1px var(--fgColor-accent, #0969da);
+  z-index: 1;
 }
 
 .cellLabel {
@@ -103,8 +124,9 @@
 }
 
 .cellContent {
-  flex: 1;
-  overflow: visible;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: auto;
   position: relative;
   padding: 12px;
 }
