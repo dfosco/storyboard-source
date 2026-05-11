@@ -606,11 +606,15 @@ export default function storyboardServer() {
           injectTo: 'head',
         })
 
-        // Inject dev domain name for branch bar display
-        if (config.devDomain) {
+        // Inject dev domain name for branch bar display.
+        // Falls back to the project directory name so every repo gets a
+        // labelled bar (matches the styling of repos that opt in via
+        // storyboard.config.json `devDomain`).
+        const devDomainLabel = config.devDomain || path.basename(process.cwd())
+        if (devDomainLabel) {
           tags.push({
             tag: 'script',
-            children: `window.__SB_DEV_DOMAIN__=${JSON.stringify(config.devDomain)}`,
+            children: `window.__SB_DEV_DOMAIN__=${JSON.stringify(devDomainLabel)}`,
             injectTo: 'head',
           })
         }
