@@ -177,9 +177,59 @@ if (subcommand === 'signal') {
     process.exit(1)
   }
 
+} else if (subcommand === 'list') {
+  // GET /agents — list storyboard-spawned agent sessions on a canvas
+  const { flags: listFlags } = parseFlags(process.argv.slice(4), {
+    canvas: { type: 'string', description: 'Canvas ID' },
+    branch: { type: 'string', description: 'Git branch (optional filter)' },
+    json: { type: 'boolean', description: 'Print raw JSON instead of a table' },
+  })
+
+  const canvasId = listFlags.canvas || process.env.STORYBOARD_CANVAS_ID
+  const branch = listFlags.branch || process.env.STORYBOARD_BRANCH || null
+  const serverUrl = process.env.STORYBOARD_SERVER_URL || 'http://localhost:1234'
+
+  if (!canvasId) {
+    console.error(`${bold('Usage:')} npx storyboard agent list --canvas <id> [--branch <name>] [--json]`)
+    process.exit(1)
+  }
+
+  try {
+    const params = new URLSearchParams({ canvasId })
+    if (branch) params.set('branch', branch)
+    const res = await fetch(`${serverUrl}/_storyboard/canvas/agents?${params.toString()}`, {
+      signal: AbortSignal.timeout(10000),
+    })
+    const data = await res.json().catch(() => ({}))
+    if (!res.ok) {
+      console.error(`${yellow('⚠')} ${data.error || `Status ${res.status}`}`)
+      process.exit(1)
+    }
+    if (listFlags.json) {
+      console.log(JSON.stringify(data, null, 2))
+    } else {
+      const agents = Array.isArray(data.agents) ? data.agents : []
+      if (agents.length === 0) {
+        console.log(`${dim('No storyboard-spawned agents on canvas')} ${bold(canvasId)}${branch ? ` (branch ${branch})` : ''}`)
+      } else {
+        console.log(`${bold(`${agents.length} agent${agents.length === 1 ? '' : 's'}`)} on canvas ${cyan(canvasId)}${branch ? dim(` · branch ${branch}`) : ''}`)
+        console.log(dim('(excludes external agents running outside storyboard)'))
+        for (const a of agents) {
+          const ts = a.statusUpdatedAt || a.updatedAt || ''
+          const when = ts ? dim(` · ${ts}`) : ''
+          const msg = a.message ? ` — ${a.message}` : ''
+          console.log(`  ${bold(a.widgetId)} ${cyan(a.status)}${when}${msg}`)
+        }
+      }
+    }
+  } catch (err) {
+    console.error(`Error: ${err.message}`)
+    process.exit(1)
+  }
+
 } else {
-  console.error(`${bold('Usage:')} npx storyboard agent <signal|spawn|status|peek>`)
-  console.error(`${dim('Subcommands: signal, spawn, status, peek')}`)
+  console.error(`${bold('Usage:')} npx storyboard agent <signal|spawn|status|peek|list>`)
+  console.error(`${dim('Subcommands: signal, spawn, status, peek, list')}`)
   process.exit(1)
 }
 

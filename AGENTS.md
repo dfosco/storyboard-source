@@ -137,10 +137,11 @@ The `storyboard` CLI (`sb` alias) wraps dev tooling:
 | `storyboard canvas delete-canvas` | Delete a canvas and its directory |
 | `storyboard canvas roles` | List available hub roles |
 | `storyboard canvas batch` | Batch create/update/move/delete widgets + connectors in one command |
-| `storyboard agent signal` | Signal agent status (done, error, running) |
+| `storyboard agent signal` | Signal agent status (done, error, running, working) |
 | `storyboard agent spawn` | Spawn a headless agent session |
 | `storyboard agent status` | Check agent status for a widget |
 | `storyboard agent peek` | Peek at a headless agent tmux session |
+| `storyboard agent list` | List storyboard-spawned agent sessions on a canvas (excludes external CLI/VS Code agents) |
 | `storyboard terminal kill <id>` | Kill a terminal/agent tmux session |
 | `storyboard prompt spawn` | Spawn a prompt agent session (from hot pool) |
 | `storyboard hub state` | Get hub state for a canvas |

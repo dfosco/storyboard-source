@@ -11,7 +11,7 @@
  * from the materialized canvas state at read time to stay fresh.
  */
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync, renameSync, symlinkSync, unlinkSync } from 'node:fs'
+import { readFileSync, writeFileSync, mkdirSync, existsSync, renameSync, symlinkSync, unlinkSync, readdirSync, lstatSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { createHash } from 'node:crypto'
 import { findByWorktree } from '../worktree/serverRegistry.js'
@@ -288,6 +288,56 @@ export function readTerminalConfigById(widgetId) {
   } catch {
     return null
   }
+}
+
+/**
+ * List storyboard-spawned agent sessions on a canvas.
+ *
+ * Scans `.storyboard/terminals/` for widget configs whose id starts with
+ * `agent-` and matches the requested canvasId/branch. External agents
+ * (running in a user's CLI / VS Code on the same repo) never write
+ * to this directory, so they're excluded by construction.
+ *
+ * @param {{ branch?: string|null, canvasId: string }} args
+ * @returns {Array<object>}
+ */
+export function listAgentsForCanvas({ branch = null, canvasId }) {
+  if (!canvasId) return []
+  const dir = join(rootDir, TERMINALS_DIR)
+  if (!existsSync(dir)) return []
+  let entries = []
+  try {
+    entries = readdirSync(dir)
+      .filter((name) => name.endsWith('.json') && name.startsWith('agent-'))
+      .filter((name) => {
+        try { return lstatSync(join(dir, name)).isSymbolicLink() } catch { return true }
+      })
+  } catch { /* fall through */ }
+  const out = []
+  for (const name of entries) {
+    const widgetId = name.replace(/\.json$/, '')
+    let cfg = null
+    try { cfg = JSON.parse(readFileSync(join(dir, name), 'utf8')) } catch { continue }
+    if (!cfg) continue
+    if (cfg.deleted) continue
+    if (cfg.canvasId !== canvasId) continue
+    if (branch && cfg.branch && cfg.branch !== branch) continue
+    out.push({
+      widgetId: cfg.widgetId || widgetId,
+      canvasId: cfg.canvasId,
+      branch: cfg.branch || null,
+      worktree: cfg.worktree || null,
+      displayName: cfg.displayName || null,
+      agentId: cfg.widgetProps?.agentId || null,
+      tmuxName: cfg.tmuxName || null,
+      status: cfg.agentStatus?.status || 'idle',
+      message: cfg.agentStatus?.message || null,
+      statusUpdatedAt: cfg.agentStatus?.updatedAt || null,
+      updatedAt: cfg.updatedAt || null,
+    })
+  }
+  out.sort((a, b) => (b.statusUpdatedAt || b.updatedAt || '').localeCompare(a.statusUpdatedAt || a.updatedAt || ''))
+  return out
 }
 
 /**

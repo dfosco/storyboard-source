@@ -2967,6 +2967,28 @@ export function Default() {
       return
     }
 
+    // GET /agents — list storyboard-spawned agent sessions on a canvas
+    if (routePath === '/agents' && method === 'GET') {
+      const url = new URL(req.url, 'http://localhost')
+      const canvasId = url.searchParams.get('canvasId')
+      const branch = url.searchParams.get('branch') || null
+
+      if (!canvasId) {
+        sendJson(res, 400, { error: 'canvasId query parameter is required' })
+        return
+      }
+
+      try {
+        const { listAgentsForCanvas, initTerminalConfig } = await import('./terminal-config.js')
+        initTerminalConfig(root)
+        const agents = listAgentsForCanvas({ branch, canvasId })
+        sendJson(res, 200, { agents })
+      } catch (err) {
+        sendJson(res, 500, { error: `Failed to list agents: ${err.message}` })
+      }
+      return
+    }
+
     // GET /agent/status — poll agent status for a widget
     if (routePath === '/agent/status' && method === 'GET') {
       const url = new URL(req.url, 'http://localhost')
