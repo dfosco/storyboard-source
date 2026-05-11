@@ -865,7 +865,8 @@
           "type": "text",
           "label": "Layout",
           "category": "settings",
-          "default": "horizontal"
+          "default": "auto",
+          "enum": ["auto", "wide", "tall"]
         },
         "selected": {
           "type": "text",
@@ -888,11 +889,11 @@
       },
       "features": [
         {
-          "id": "flip-layout",
+          "id": "cycle-layout",
           "type": "action",
-          "action": "flip-layout",
-          "label": "Flip layout",
-          "icon": "mirror"
+          "action": "cycle-layout",
+          "label": "Cycle layout (auto → wide → tall)",
+          "icon": "iconoir/view-grid"
         },
         {
           "id": "copy",

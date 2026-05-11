@@ -36,7 +36,9 @@ function resolveStorySetUrl(storyId, layout, selected) {
 
 export default forwardRef(function StorySetWidget({ id: widgetId, props, onUpdate, resizable }, ref) {
   const storyId = props?.storyId || ''
-  const layout = props?.layout || 'horizontal'
+  const rawLayout = props?.layout || 'auto'
+  // Migrate legacy values (horizontal/vertical) to the new vocabulary.
+  const layout = rawLayout === 'horizontal' ? 'wide' : rawLayout === 'vertical' ? 'tall' : rawLayout
   const selected = props?.selected || ''
   const width = props?.width
   const height = props?.height
@@ -98,8 +100,10 @@ export default forwardRef(function StorySetWidget({ id: widgetId, props, onUpdat
 
   useImperativeHandle(ref, () => ({
     handleAction(actionId) {
-      if (actionId === 'flip-layout') {
-        const next = layout === 'horizontal' ? 'vertical' : 'horizontal'
+      if (actionId === 'cycle-layout' || actionId === 'flip-layout') {
+        const order = ['auto', 'wide', 'tall']
+        const idx = order.indexOf(layout)
+        const next = order[(idx + 1) % order.length] || 'auto'
         onUpdate?.({ layout: next })
         return true
       } else if (actionId === 'open-external') {
@@ -168,7 +172,7 @@ export default forwardRef(function StorySetWidget({ id: widgetId, props, onUpdat
             <span className={styles.headerSelected}>· {selected}</span>
           )}
           <span className={styles.headerLayout} title={`Layout: ${layout}`}>
-            {layout === 'horizontal' ? '⇔' : '⇕'}
+            {layout === 'wide' ? '▭' : layout === 'tall' ? '▯' : '▦'}
           </span>
         </div>
         <div className={styles.content}>
