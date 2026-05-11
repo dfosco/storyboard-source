@@ -1,0 +1,466 @@
+SESSION: agent-ej07t1 | red-ibis
+CANVAS:  storyboarding/form-schema
+BRANCH:  0.5.0
+TIME:    2026-05-11T10:09:34.415Z
+
+================================================================================
+SCREEN
+================================================================================
+
+  └ 24 lines...
+
+◐ The goal command failed because it's not recognizing me as the leader, so I'm going to
+  try again with the --sender flag to properly identify myself in the request.
+
+● set goal with sender (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; cd
+  │ /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0; HUB_ID=hub_d8dfc4fb0f; npx
+  │ storyboard hub goal --hub "$HUB_ID" --sender "$STORYBOARD_WIDGET_ID" --goal "Fix …
+  └ 10 lines...
+
+● hub goal help (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; npx
+  │ storyboard hub goal --help 2>&1 | tail -30
+  └ 8 lines...
+
+◐ I passed the --sender flag, but I'm getting an error that only the leader can set the 
+  hub goal. Looking at the state, tokenHolder shows agent-ej07t1, which is me (red-ibis),
+   so I should definitely
+
+◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
+─────────────────────────────────────────────────────────────────────────────────────────
+❯  
+─────────────────────────────────────────────────────────────────────────────────────────
+ / commands · ? help · ctrl+q enqueue
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+◎ Spawning component-set hub (Esc to cancel · 11.6 KiB)◎ Spawning component-set hub (Esc to cancel · 11.8 KiB)◉ Spawning component-set hub (Esc to cancel · 11.8 KiB)
+● get full hub state (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0";
+  │ HUB_ID=hub_d8dfc4fb0f; SU="$STORYBOARD_SERVER_URL"; curl -s
+  │ "${SU}/_storyboard/hub/state?canvas=${STORYBOARD_CANVAS_ID}" | jq '.hubs[] | …
+  └ 3 lines...
+
+● hub state raw (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; curl -s
+  │ "${STORYBOARD_SERVER_URL}/_storyboard/hub/state?canvas=${STORYBOARD_CANVAS_ID}" | jq
+  │ '.'
+  └ 4 lines...
+
+● hub state name= (shell)
+  └ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+    "$ENV_FILE"; export
+    STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; curl -s
+    "${STORYBOARD_SERVER_URL}/_storyboard/hub/state?name=${STORYBOARD_CANVAS_ID}" | jq
+    '.hubs'● Spawning component-set hub (Esc to cancel · 11.8 KiB)◉ Spawning component-set hub (Esc to cancel · 11.8 KiB) / commands · ? help · ctrl+q enqueue · ctrl+x → b background task◎ Spawning component-set hub (Esc to cancel · 11.8 KiB)○ Spawning component-set hub (Esc to cancel · 11.8 KiB)◎ Spawning component-set hub (Esc to cancel · 11.8 KiB)◉ Spawning component-set hub (Esc to cancel · 11.8 KiB) / commands · ? help · ctrl+q enqueue● Spawning component-set hub (Esc to cancel · 11.8 KiB)● get full hub state (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0";
+  │ HUB_ID=hub_d8dfc4fb0f; SU="$STORYBOARD_SERVER_URL"; curl -s
+  │ "${SU}/_storyboard/hub/state?canvas=${STORYBOARD_CANVAS_ID}" | jq '.hubs[] | …
+  └ 3 lines...
+
+● hub state raw (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; curl -s
+  │ "${STORYBOARD_SERVER_URL}/_storyboard/hub/state?canvas=${STORYBOARD_CANVAS_ID}" | jq
+  │ '.'
+  └ 4 lines...
+
+● hub state name= (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; curl -s
+  │ "${STORYBOARD_SERVER_URL}/_storyboard/hub/state?name=${STORYBOARD_CANVAS_ID}" | jq
+  │ '.hubs'
+  └ 2 lines...◉ Spawning component-set hub (Esc to cancel · 11.8 KiB)◎ Spawning component-set hub (Esc to cancel · 11.8 KiB)○ Spawning component-set hub (Esc to cancel · 11.8 KiB)◎ Spawning component-set hub (Esc to cancel · 11.8 KiB)◉ Spawning component-set hub (Esc to cancel · 11.8 KiB)● Spawning component-set hub (Esc to cancel · 11.8 KiB)◉ Spawning component-set hub (Esc to cancel · 11.8 KiB)◎ Spawning component-set hub (Esc to cancel · 11.8 KiB)○ Spawning component-set hub (Esc to cancel · 11.8 KiB)◎ Spawning component-set hub (Esc to cancel · 11.8 KiB)◉ Spawning component-set hub (Esc to cancel · 11.8 KiB)● Spawning component-set hub (Esc to cancel · 11.8 KiB)◉ Spawning component-set hub (Esc to cancel · 11.8 KiB)◎ Spawning component-set hub (Esc to cancel · 11.8 KiB)○ Spawning component-set hub (Esc to cancel · 11.8 KiB)◎ Spawning component-set hub (Esc to cancel · 11.8 KiB)◉ Spawning component-set hub (Esc to cancel · 11.8 KiB)● Spawning component-set hub (Esc to cancel · 11.8 KiB)◉ Spawning component-set hub (Esc to cancel · 11.8 KiB)◎ Spawning component-set hub (Esc to cancel · 11.8 KiB)○ Spawning component-set hub (Esc to cancel · 11.8 KiB)◎ Spawning component-set hub (Esc to cancel · 11.8 KiB)◉ Spawning component-set hub (Esc to cancel · 11.8 KiB)● Spawning component-set hub (Esc to cancel · 11.8 KiB)◉ Spawning component-set hub (Esc to cancel · 11.8 KiB)◎ Spawning component-set hub (Esc to cancel · 11.8 KiB)○ Spawning component-set hub (Esc to cancel · 11.8 KiB)◎ Spawning component-set hub (Esc to cancel · 11.8 KiB)◉ Spawning component-set hub (Esc to cancel · 11.8 KiB)● Spawning component-set hub (Esc to cancel · 11.8 KiB)◉ Spawning component-set hub (Esc to cancel · 11.8 KiB)◎ Spawning component-set hub (Esc to cancel · 11.8 KiB)◉ Spawning component-set hub (Esc to cancel · 11.8 KiB)● Spawning component-set hub (Esc to cancel · 11.8 KiB)◉ Spawning component-set hub (Esc to cancel · 11.8 KiB)◎ Spawning component-set hub (Esc to cancel · 11.8 KiB)○ Spawning component-set hub (Esc to cancel · 11.8 KiB)◎ Spawning component-set hub (Esc to cancel · 11.8 KiB)◉ Spawning component-set hub (Esc to cancel · 11.8 KiB)● Spawning component-set hub (Esc to cancel · 11.8 KiB)◉ Spawning component-set hub (Esc to cancel · 11.8 KiB)◎ Spawning component-set hub (Esc to cancel · 11.8 KiB)○ Spawning component-set hub (Esc to cancel · 11.8 KiB)◎ Spawning component-set hub (Esc to cancel · 11.8 KiB)◉ Spawning component-set hub (Esc to cancel · 11.8 KiB)● Spawning component-set hub (Esc to cancel · 11.8 KiB)◉ Spawning component-set hub (Esc to cancel · 11.8 KiB)◉ Spawning component-set hub (Esc to cancel · 12.0 KiB)  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0";
+  │ HUB_ID=hub_d8dfc4fb0f; SU="$STORYBOARD_SERVER_URL"; curl -s
+  │ "${SU}/_storyboard/hub/state?canvas=${STORYBOARD_CANVAS_ID}" | jq '.hubs[] | …
+  └ 3 lines...
+
+● hub state raw (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; curl -s
+  │ "${STORYBOARD_SERVER_URL}/_storyboard/hub/state?canvas=${STORYBOARD_CANVAS_ID}" | jq
+  │ '.'
+  └ 4 lines...
+
+● hub state name= (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; curl -s
+  │ "${STORYBOARD_SERVER_URL}/_storyboard/hub/state?name=${STORYBOARD_CANVAS_ID}" | jq
+  │ '.hubs'
+  └ 2 lines...
+
+◐ I need to switch to the CLI app◎ Spawning component-set hub (Esc to cancel · 12.0 KiB)◐ I need to switch to the CLI approach and make sure the server URL is configured correct○ Spawning component-set hub (Esc to cancel · 12.0 KiB)  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0";
+  │ HUB_ID=hub_d8dfc4fb0f; SU="$STORYBOARD_SERVER_URL"; curl -s
+  │ "${SU}/_storyboard/hub/state?canvas=${STORYBOARD_CANVAS_ID}" | jq '.hubs[] | …
+  └ 3 lines...
+
+● hub state raw (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; curl -s
+  │ "${STORYBOARD_SERVER_URL}/_storyboard/hub/state?canvas=${STORYBOARD_CANVAS_ID}" | jq
+  │ '.'
+  └ 4 lines...
+
+● hub state name= (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; curl -s
+  │ "${STORYBOARD_SERVER_URL}/_storyboard/hub/state?name=${STORYBOARD_CANVAS_ID}" | jq
+  │ '.hubs'
+  └ 2 lines...
+
+◐ I need to switch to the CLI approach and make sure the server URL is configured 
+  correctly. The earlier attempt failed because the storyboard con  correctly. The earlier attempt failed because the storyboard config wasn't po  │ HUB_ID=hub_d8dfc4fb0f; SU="$STORYBOARD_SERVER_URL"; curl -s
+  │ "${SU}/_storyboard/hub/state?canvas=${STORYBOARD_CANVAS_ID}" | jq '.hubs[] | …
+  └ 3 lines...
+
+● hub state raw (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; curl -s
+  │ "${STORYBOARD_SERVER_URL}/_storyboard/hub/state?canvas=${STORYBOARD_CANVAS_ID}" | jq
+  │ '.'
+  └ 4 lines...
+
+● hub state name= (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; curl -s
+  │ "${STORYBOARD_SERVER_URL}/_storyboard/hub/state?name=${STORYBOARD_CANVAS_ID}" | jq
+  │ '.hubs'
+  └ 2 lines...
+
+◐ I need to switch to the CLI approach and make sure the server URL is configured 
+  correctly. The earlier attempt failed because the storyboard config wasn't pointing to   the right se◎ Spawning component-set hub (Esc to cancel · 12.0 KiB)  the right server—it w  the right server—it was defau◉ Spawning component-set hub (Esc to cancel · 12.0 KiB)  the right server—it was defaulting t  the right server—it was defaulting to loca  the right server—it was defaulting to localhost  the right server—it was defaulting to localhost:1234● Spawning component-set hub (Esc to cancel · 12.0 KiB)  the right server—it was defaulting to localhost:1234 fro  the right server—it was defaulting to localhost:1234 from th  the right server—it was defaulting to localhost:1234 from the en◉ Spawning component-set hub (Esc to cancel · 12.0 KiB)  the right server—it was defaulting to localhost:1234 from the enviro  the right server—it was defaulting to localhost:1234 from the environmen  the right server—it was defaulting to localhost:1234 from the environment f◎ Spawning component-set hub (Esc to cancel · 12.0 KiB)  the right server—it was defaulting to localhost:1234 from the environment fil  the right server—it was defaulting to localhost:1234 from the environment file.◎ Spawning component-set hub (Esc to cancel · 12.2 KiB)  the right server—it was defaulting to localhost:1234 from the environment file. I○ Spawning component-set hub (Esc to cancel · 12.2 KiB)  │ "${SU}/_storyboard/hub/state?canvas=${STORYBOARD_CANVAS_ID}" | jq '.hubs[] | …
+  └ 3 lines...
+
+● hub state raw (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; curl -s
+  │ "${STORYBOARD_SERVER_URL}/_storyboard/hub/state?canvas=${STORYBOARD_CANVAS_ID}" | jq
+  │ '.'
+  └ 4 lines...
+
+● hub state name= (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; curl -s
+  │ "${STORYBOARD_SERVER_URL}/_storyboard/hub/state?name=${STORYBOARD_CANVAS_ID}" | jq
+  │ '.hubs'
+  └ 2 lines...
+
+◐ I need to switch to the CLI approach and make sure the server URL is configured 
+  correctly. The earlier attempt failed because the storyboard config wasn't pointing to   the right server—it was defaulting to localhost:1234 from the environment file. I've 
+  alrea○ Spawning component-set hub (Esc to cancel · 12.4 KiB)  already exported the◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)  │ "${STORYBOARD_SERVER_URL}/_storyboard/hub/state?canvas=${STORYBOARD_CANVAS_ID}" | jq
+  │ '.'
+  └ 4 lines...
+
+● hub state name= (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; curl -s
+  │ "${STORYBOARD_SERVER_URL}/_storyboard/hub/state?name=${STORYBOARD_CANVAS_ID}" | jq
+  │ '.hubs'
+  └ 2 lines...
+
+◐ I need to switch to the CLI approach and make sure the server URL is configured 
+  correctly. The earlier attempt failed because the storyboard config wasn't pointing to   the right server—it was defaulting to localhost:1234 from the environment file. I've 
+  already exported the correct URL, so let me try running the CLI now.
+
+● hub state cli (shell)
+  └ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+    "$ENV_FILE"; export
+    STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; cd
+    /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0; npx storyboard hub state
+    --canvas "$STORYBOARD_CANVAS_ID" 2>&1 | tail -40● Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB) / commands · ? help · ctrl+q enqueue · ctrl+x → b background task◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)○ Spawning component-set hub (Esc to cancel · 12.4 KiB)◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)● Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)○ Spawning component-set hub (Esc to cancel · 12.4 KiB)◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)● Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)○ Spawning component-set hub (Esc to cancel · 12.4 KiB)◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)● Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)○ Spawning component-set hub (Esc to cancel · 12.4 KiB)◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)● Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)○ Spawning component-set hub (Esc to cancel · 12.4 KiB)◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)● Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)○ Spawning component-set hub (Esc to cancel · 12.4 KiB)◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)● Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)○ Spawning component-set hub (Esc to cancel · 12.4 KiB)◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)● Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB) / commands · ? help · ctrl+q enqueue○ Spawning component-set hub (Esc to cancel · 12.4 KiB)  │ '.'
+  └ 4 lines...
+
+● hub state name= (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; curl -s
+  │ "${STORYBOARD_SERVER_URL}/_storyboard/hub/state?name=${STORYBOARD_CANVAS_ID}" | jq
+  │ '.hubs'
+  └ 2 lines...
+
+◐ I need to switch to the CLI approach and make sure the server URL is configured 
+  correctly. The earlier attempt failed because the storyboard config wasn't pointing to   the right server—it was defaulting to localhost:1234 from the environment file. I've 
+  already exported the correct URL, so let me try running the CLI now.
+
+● hub state cli (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; cd
+  │ /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0; npx storyboard hub state
+  │ --canvas "$STORYBOARD_CANVAS_ID" 2>&1 | tail -40
+  └ 40 lines...◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)● Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)○ Spawning component-set hub (Esc to cancel · 12.4 KiB)◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)● Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)○ Spawning component-set hub (Esc to cancel · 12.4 KiB)◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)● Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)○ Spawning component-set hub (Esc to cancel · 12.4 KiB)◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)● Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)○ Spawning component-set hub (Esc to cancel · 12.4 KiB)◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)● Spawning component-set hub (Esc to cancel · 12.4 KiB)◉ Spawning component-set hub (Esc to cancel · 12.4 KiB)◎ Spawning component-set hub (Esc to cancel · 12.4 KiB)◎ Spawning component-set hub (Esc to cancel · 12.5 KiB)
+● hub state name= (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; curl -s
+  │ "${STORYBOARD_SERVER_URL}/_storyboard/hub/state?name=${STORYBOARD_CANVAS_ID}" | jq
+  │ '.hubs'
+  └ 2 lines...
+
+◐ I need to switch to the CLI approach and make sure the server URL is configured 
+  correctly. The earlier attempt failed because the storyboard config wasn't pointing to   the right server—it was defaulting to localhost:1234 from the environment file. I've 
+  already exported the correct URL, so let me try running the CLI now.
+
+● hub state cli (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; cd
+  │ /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0; npx storyboard hub state
+  │ --canvas "$STORYBOARD_CANVAS_ID" 2>&1 | tail -40
+  └ 40 lines...
+
+● Hub is health○ Spawning component-set hub (Esc to cancel · 12.5 KiB)● Hub is healthy. I'm leade● Hub is healthy. I'm leader, hold th● Hub is healthy. I'm leader, hold the token,◎ Spawning component-set hub (Esc to cancel · 12.5 KiB)● Hub is healthy. I'm leader, hold the token, and have● Hub is healthy. I'm leader, hold the token, and have 2 peers (Gri● Hub is healthy. I'm leader, hold the token, and have 2 peers (Grid Log◉ Spawning component-set hub (Esc to cancel · 12.5 KiB)● Hub is healthy. I'm leader, hold the token, and have 2 peers (Grid Logic +● Hub is healthy. I'm leader, hold the token, and have 2 peers (Grid Logic + Widg● Hub is healthy. I'm leader, hold the token, and have 2 peers (Grid Logic + Widget I● Spawning component-set hub (Esc to cancel · 12.5 KiB)● hub state name= (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; curl -s
+  │ "${STORYBOARD_SERVER_URL}/_storyboard/hub/state?name=${STORYBOARD_CANVAS_ID}" | jq
+  │ '.hubs'
+  └ 2 lines...
+
+◐ I need to switch to the CLI approach and make sure the server URL is configured 
+  correctly. The earlier attempt failed because the storyboard config wasn't pointing to   the right server—it was defaulting to localhost:1234 from the environment file. I've 
+  already exported the correct URL, so let me try running the CLI now.
+
+● hub state cli (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; cd
+  │ /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0; npx storyboard hub state
+  │ --canvas "$STORYBOARD_CANVAS_ID" 2>&1 | tail -40
+  └ 40 lines...
+
+● Hub is healthy. I'm leader, hold the token, and have 2 peers (Grid Logic + Widget
+  Integ  Integrati  Integration).◉ Spawning component-set hub (Esc to cancel · 12.5 KiB)  Integration). No  Integration). Now  Integration). Now s◎ Spawning component-set hub (Esc to cancel · 12.5 KiB)  Integration). Now se  Integration). Now set○ Spawning component-set hub (Esc to cancel · 12.5 KiB)◉ Spawning component-set hub (Esc to cancel · 12.5 KiB)● Spawning component-set hub (Esc to cancel · 12.5 KiB)◉ Spawning component-set hub (Esc to cancel · 12.5 KiB)◎ Spawning component-set hub (Esc to cancel · 12.5 KiB)○ Spawning component-set hub (Esc to cancel · 12.5 KiB)◎ Spawning component-set hub (Esc to cancel · 12.5 KiB)◉ Spawning component-set hub (Esc to cancel · 12.5 KiB)● Spawning component-set hub (Esc to cancel · 12.5 KiB)◉ Spawning component-set hub (Esc to cancel · 12.5 KiB)◎ Spawning component-set hub (Esc to cancel · 12.5 KiB)○ Spawning component-set hub (Esc to cancel · 12.5 KiB)◎ Spawning component-set hub (Esc to cancel · 12.5 KiB)◉ Spawning component-set hub (Esc to cancel · 12.5 KiB)● Spawning component-set hub (Esc to cancel · 12.5 KiB)◉ Spawning component-set hub (Esc to cancel · 12.5 KiB)◎ Spawning component-set hub (Esc to cancel · 12.5 KiB)○ Spawning component-set hub (Esc to cancel · 12.5 KiB)◎ Spawning component-set hub (Esc to cancel · 12.5 KiB)◉ Spawning component-set hub (Esc to cancel · 12.5 KiB)● Spawning component-set hub (Esc to cancel · 12.5 KiB)◉ Spawning component-set hub (Esc to cancel · 12.5 KiB)◎ Spawning component-set hub (Esc to cancel · 12.5 KiB)○ Spawning component-set hub (Esc to cancel · 12.5 KiB)◎ Spawning component-set hub (Esc to cancel · 12.5 KiB)◉ Spawning component-set hub (Esc to cancel · 12.5 KiB)● Spawning component-set hub (Esc to cancel · 12.5 KiB)◉ Spawning component-set hub (Esc to cancel · 12.5 KiB)◎ Spawning component-set hub (Esc to cancel · 12.5 KiB)○ Spawning component-set hub (Esc to cancel · 12.5 KiB)◎ Spawning component-set hub (Esc to cancel · 12.5 KiB)◉ Spawning component-set hub (Esc to cancel · 12.5 KiB)● Spawning component-set hub (Esc to cancel · 12.5 KiB)◉ Spawning component-set hub (Esc to cancel · 12.5 KiB)◎ Spawning component-set hub (Esc to cancel · 12.5 KiB)○ Spawning component-set hub (Esc to cancel · 12.5 KiB)◎ Spawning component-set hub (Esc to cancel · 12.5 KiB)◉ Spawning component-set hub (Esc to cancel · 12.5 KiB)● Spawning component-set hub (Esc to cancel · 12.5 KiB)◉ Spawning component-set hub (Esc to cancel · 12.5 KiB)◉ Spawning component-set hub (Esc to cancel · 12.7 KiB)◉ Spawning component-set hub (Esc to cancel · 13.1 KiB)  Integration). Now set goa◎ Spawning component-set hub (Esc to cancel · 13.1 KiB)  Integration). Now set goal and st  Integration). Now set goal and start  Integration). Now set goal and start conv○ Spawning component-set hub (Esc to cancel · 13.1 KiB)  Integration). Now set goal and start convers○ Spawning component-set hub (Esc to cancel · 13.3 KiB)  Integration). Now set goal and start conversat◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)
+◐ I need to switch to the CLI approach and make sure the server URL is configured 
+  correctly. The earlier attempt failed because the storyboard config wasn't pointing to   the right server—it was defaulting to localhost:1234 from the environment file. I've 
+  already exported the correct URL, so let me try running the CLI now.
+
+● hub state cli (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; cd
+  │ /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0; npx storyboard hub state
+  │ --canvas "$STORYBOARD_CANVAS_ID" 2>&1 | tail -40
+  └ 40 lines...
+
+● Hub is healthy. I'm leader, hold the token, and have 2 peers (Grid Logic + Widget
+  Integration). Now set goal and start conversation.
+
+● set goal + start convo (shell)
+  └ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+    "$ENV_FILE"; export
+    STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; cd
+    /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0; HUB_ID=hub_d8dfc4fb0f; npx
+    storyboard hub goal --hub "$HUB_ID" --goal "Fix Component Set widget: replace …● Spawning component-set hub (Esc to cancel · 13.3 KiB) / commands · ? help · ctrl+q enqueue · ctrl+x → b background task◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)○ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)● Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)○ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)● Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)○ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)● Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)○ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)● Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)○ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)● Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)○ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)● Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)○ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)● Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)○ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)● Spawning component-set hub (Esc to cancel · 13.3 KiB)◐ I need to switch to the CLI approach and make sure the server URL is configured 
+  correctly. The earlier attempt failed because the storyboard config wasn't pointing to   the right server—it was defaulting to localhost:1234 from the environment file. I've 
+  already exported the correct URL, so let me try running the CLI now.
+
+● hub state cli (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; cd
+  │ /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0; npx storyboard hub state
+  │ --canvas "$STORYBOARD_CANVAS_ID" 2>&1 | tail -40
+  └ 40 lines...
+
+● Hub is healthy. I'm leader, hold the token, and have 2 peers (Grid Logic + Widget
+  Integration). Now set goal and start conversation.
+
+● set goal + start convo (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; cd
+  │ /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0; HUB_ID=hub_d8dfc4fb0f; npx
+  │ storyboard hub goal --hub "$HUB_ID" --goal "Fix Component Set widget: replace …
+  └ 13 lines...◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)○ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)● Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)○ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)● Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)○ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)● Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)○ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)● Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)○ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)● Spawning component-set hub (Esc to cancel · 13.3 KiB) / commands · ? help · ctrl+q enqueue◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)  └ 24 lines...○ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)● Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)○ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)● Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)○ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)● Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)○ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)● Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)○ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)● Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)○ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)● Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)○ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)● Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)○ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)● Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)○ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)● Spawning component-set hub (Esc to cancel · 13.3 KiB)◉ Spawning component-set hub (Esc to cancel · 13.3 KiB)◎ Spawning component-set hub (Esc to cancel · 13.3 KiB)○ Spawning component-set hub (Esc to cancel · 13.3 KiB)○ Spawning component-set hub (Esc to cancel · 13.7 KiB)○ Spawning component-set hub (Esc to cancel · 13.9 KiB)  the right server—it was defaulting to localhost:1234 from the environment file. I've 
+  already exported the correct URL, so let me try running the CLI now.
+
+● hub state cli (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; cd
+  │ /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0; npx storyboard hub state
+  │ --canvas "$STORYBOARD_CANVAS_ID" 2>&1 | tail -40
+  └ 40 lines...
+
+● Hub is healthy. I'm leader, hold the token, and have 2 peers (Grid Logic + Widget
+  Integration). Now set goal and start conversation.
+
+● set goal + start convo (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; cd
+  │ /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0; HUB_ID=hub_d8dfc4fb0f; npx
+  │ storyboard hub goal --hub "$HUB_ID" --goal "Fix Component Set widget: replace …
+  └ 24 lines...
+
+◐ The goal command fai◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)◐ The goal command failed because it's not recognizing m◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)  │ --canvas "$STORYBOARD_CANVAS_ID" 2>&1 | tail -40
+  └ 40 lines...● Hub is healthy. I'm leader, hold the token, and have 2 peers (Grid Logic + Widget
+  Integration). Now set goal and start conversation.
+
+● set goal + start convo (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; cd
+  │ /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0; HUB_ID=hub_d8dfc4fb0f; npx
+  │ storyboard hub goal --hub "$HUB_ID" --goal "Fix Component Set widget: replace …
+  └ 24 lines...◐ The goal command failed because it's not recognizing me as the leader, so I'm going to   try again with the --sender flag to properly identify myself in the request.
+
+● set goal with sender (shell)
+  └ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+    "$ENV_FILE"; export
+    STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; cd
+    /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0; HUB_ID=hub_d8dfc4fb0f; npx
+    storyboard hub goal --hub "$HUB_ID" --sender "$STORYBOARD_WIDGET_ID" --goal "Fix …● Spawning component-set hub (Esc to cancel · 14.1 KiB) / commands · ? help · ctrl+q enqueue · ctrl+x → b background task◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)○ Spawning component-set hub (Esc to cancel · 14.1 KiB)◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)● Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)○ Spawning component-set hub (Esc to cancel · 14.1 KiB)◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)● Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)○ Spawning component-set hub (Esc to cancel · 14.1 KiB)◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)● Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)○ Spawning component-set hub (Esc to cancel · 14.1 KiB)◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)● Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)● Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)○ Spawning component-set hub (Esc to cancel · 14.1 KiB)◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)● Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)○ Spawning component-set hub (Esc to cancel · 14.1 KiB)◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)● Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)○ Spawning component-set hub (Esc to cancel · 14.1 KiB)◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.1 KiB) / commands · ? help · ctrl+q enqueue● Spawning component-set hub (Esc to cancel · 14.1 KiB)  └ 40 lines...
+
+● Hub is healthy. I'm leader, hold the token, and have 2 peers (Grid Logic + Widget
+  Integration). Now set goal and start conversation.
+
+● set goal + start convo (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; cd
+  │ /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0; HUB_ID=hub_d8dfc4fb0f; npx
+  │ storyboard hub goal --hub "$HUB_ID" --goal "Fix Component Set widget: replace …
+  └ 24 lines...
+
+◐ The goal command failed because it's not recognizing me as the leader, so I'm going to   try again with the --sender flag to properly identify myself in the request.
+
+● set goal with sender (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; cd
+  │ /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0; HUB_ID=hub_d8dfc4fb0f; npx
+  │ storyboard hub goal --hub "$HUB_ID" --sender "$STORYBOARD_WIDGET_ID" --goal "Fix …
+  └ 10 lines...◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)○ Spawning component-set hub (Esc to cancel · 14.1 KiB)◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)● Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)○ Spawning component-set hub (Esc to cancel · 14.1 KiB)◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)● Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)○ Spawning component-set hub (Esc to cancel · 14.1 KiB)◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)● Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)○ Spawning component-set hub (Esc to cancel · 14.1 KiB)◎ Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)● Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.1 KiB)◉ Spawning component-set hub (Esc to cancel · 14.3 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; cd
+  │ /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0; HUB_ID=hub_d8dfc4fb0f; npx
+  │ storyboard hub goal --hub "$HUB_ID" --goal "Fix Component Set widget: replace …
+  └ 24 lines...
+
+◐ The goal command failed because it's not recognizing me as the leader, so I'm going to   try again with the --sender flag to properly identify myself in the request.
+
+● set goal with sender (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; cd
+  │ /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0; HUB_ID=hub_d8dfc4fb0f; npx
+  │ storyboard hub goal --hub "$HUB_ID" --sender "$STORYBOARD_WIDGET_ID" --goal "Fix …
+  └ 10 lines...
+
+● hub goal help (shell)
+  └ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+    "$ENV_FILE"; export
+    STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; npx
+    storyboard hub goal --help 2>&1 | tail -30○ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB) / commands · ? help · ctrl+q enqueue · ctrl+x → b background task◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)● Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)○ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)● Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)○ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)● Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)○ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)● Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)○ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)● Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)○ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)● Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)○ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)● Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)○ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)● Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB) / commands · ? help · ctrl+q enqueue  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; cd
+  │ /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0; HUB_ID=hub_d8dfc4fb0f; npx
+  │ storyboard hub goal --hub "$HUB_ID" --goal "Fix Component Set widget: replace …
+  └ 24 lines...
+
+◐ The goal command failed because it's not recognizing me as the leader, so I'm going to   try again with the --sender flag to properly identify myself in the request.
+
+● set goal with sender (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; cd
+  │ /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0; HUB_ID=hub_d8dfc4fb0f; npx
+  │ storyboard hub goal --hub "$HUB_ID" --sender "$STORYBOARD_WIDGET_ID" --goal "Fix …
+  └ 10 lines...
+
+● hub goal help (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; npx
+  │ storyboard hub goal --help 2>&1 | tail -30
+  └ 8 lines...◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)● Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)○ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)● Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)○ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)● Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)○ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)● Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)○ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)● Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)○ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)● Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)● Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)○ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)● Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)○ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)● Spawning component-set hub (Esc to cancel · 14.4 KiB)◉ Spawning component-set hub (Esc to cancel · 14.4 KiB)◎ Spawning component-set hub (Esc to cancel · 14.4 KiB)○ Spawning component-set hub (Esc to cancel · 14.4 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)  │ /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0; HUB_ID=hub_d8dfc4fb0f; npx
+  │ storyboard hub goal --hub "$HUB_ID" --goal "Fix Component Set widget: replace …
+  └ 24 lines...
+
+◐ The goal command failed because it's not recognizing me as the leader, so I'm going to   try again with the --sender flag to properly identify myself in the request.
+
+● set goal with sender (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; cd
+  │ /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0; HUB_ID=hub_d8dfc4fb0f; npx
+  │ storyboard hub goal --hub "$HUB_ID" --sender "$STORYBOARD_WIDGET_ID" --goal "Fix …
+  └ 10 lines...
+
+● hub goal help (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; npx
+  │ storyboard hub goal --help 2>&1 | tail -30
+  └ 8 lines...
+
+◐ I passed the --sender fl◐ I passed the --sender flag, but I'm getting an◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◐ I passed the --sender flag, but I'm getting an error that only th◐ I passed the --sender flag, but I'm getting an error that only the leader can set  │ storyboard hub goal --hub "$HUB_ID" --goal "Fix Component Set widget: replace …
+  └ 24 lines...
+
+◐ The goal command failed because it's not recognizing me as the leader, so I'm going to   try again with the --sender flag to properly identify myself in the request.
+
+● set goal with sender (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; cd
+  │ /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0; HUB_ID=hub_d8dfc4fb0f; npx
+  │ storyboard hub goal --hub "$HUB_ID" --sender "$STORYBOARD_WIDGET_ID" --goal "Fix …
+  └ 10 lines...
+
+● hub goal help (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; npx
+  │ storyboard hub goal --help 2>&1 | tail -30
+  └ 8 lines...
+
+◐ I passed the --sender flag, but I'm getting an error that only the leader can set the 
+  hub goal. L● Spawning component-set hub (Esc to cancel · 14.6 KiB)  hub goal. Looking at the  hub goal. Looking at the state, tokenHolder s  hub goal. Looking at the state, tokenHolder shows agen◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)  hub goal. Looking at the state, tokenHolder shows agent-ej07t  hub goal. Looking at the state, tokenHolder shows agent-ej07t1, whic  hub goal. Looking at the state, tokenHolder shows agent-ej07t1, which is m◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)  hub goal. Looking at the state, tokenHolder shows agent-ej07t1, which is me (re  hub goal. Looking at the state, tokenHolder shows agent-ej07t1, which is me (red-ib  hub goal. Looking at the state, tokenHolder shows agent-ej07t1, which is me (red-ibis),  └ 24 lines...
+
+◐ The goal command failed because it's not recognizing me as the leader, so I'm going to   try again with the --sender flag to properly identify myself in the request.
+
+● set goal with sender (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; cd
+  │ /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0; HUB_ID=hub_d8dfc4fb0f; npx
+  │ storyboard hub goal --hub "$HUB_ID" --sender "$STORYBOARD_WIDGET_ID" --goal "Fix …
+  └ 10 lines...
+
+● hub goal help (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source
+  │ "$ENV_FILE"; export
+  │ STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"; npx
+  │ storyboard hub goal --help 2>&1 | tail -30
+  └ 8 lines...
+
+◐ I passed the --sender flag, but I'm getting an error that only the leader can set the 
+  hub goal. Looking at the state, tokenHolder shows agent-ej07t1, which is me (red-ibis),   so○ Spawning component-set hub (Esc to cancel · 14.6 KiB)   so I sh   so I should   so I should def◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)   so I should defini   so I should definite   so I should definitel◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)   so I should definitely● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)● Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)○ Spawning component-set hub (Esc to cancel · 14.6 KiB)◎ Spawning component-set hub (Esc to cancel · 14.6 KiB)◉ Spawning component-set hub (Esc to cancel · 14.6 KiB)

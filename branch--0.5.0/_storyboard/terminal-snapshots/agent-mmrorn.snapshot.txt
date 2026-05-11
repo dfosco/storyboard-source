@@ -1,38 +1,38 @@
 SESSION: agent-mmrorn | scarlet-osprey
 CANVAS:  storyboarding/form-schema
 BRANCH:  0.5.0
-TIME:    2026-05-11T09:51:55.059Z
+TIME:    2026-05-11T10:09:35.904Z
 
 ================================================================================
 SCREEN
 ================================================================================
 
-  meant for the API—it's serving the SPA instead of routing to the actual endpoint. The 
-  real API probably lives at a different path without that prefix, so I should try 
-  adjusting the request URL.
+  │ packages/storyboard/src/core/vite/server-plugin.js
+  └ L290:330 (41 lines read)
 
-● drop /0.5.0 (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | head -c 200; echo
-  └ 2 lines...
+◐ I'm seeing a timing issue where `setupTerminalServer` gets called during Vite's 
+  `configureServer` hook, which runs before the HTTP server actually starts listening. 
+  When it tries to capture the server's port via `httpServer.address()`, it returns null
+  because the binding hasn't completed yet, leaving `actualServerPort` unset.
 
-● Found the working API base. Let me set it and run the batch:
+  There's also a separate problem: the dev server never registers itself in the 
+  `.storyboard/servers.json` registry since that only happens in the CLI background mode,
+   so `findByWorktree` always fails and both fallbacks collapse to port 1234.
 
-● batch create agents via http (shell)
-  │ export STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"
-  │ echo "$STORYBOARD_SERVER_URL" > /tmp/sb_url
-  │ curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/batch" -H "Content-Type:
-  │ application/json" -d "{\"name\":\"$STORYBOARD_CANVAS_ID\",\"operations\":[
-  │ {\"op\":\"create-widget\",\"type\":\"agent\",\"near\":\"$STORYBOARD_WIDGET_ID\",\…
-  └ 35 lines...
-❯ Your role in the hub is leader, read .agents/roles/leader.role.md to follow
-  additional instructions
-  └ [pending]
-❯ 📡 [Broadcast two-way ACTIVE with Layout Investigator, Grid Implementer]
-  └ [pending]
+  The solution needs two parts: defer the port capture until after the server is actually
+   listening (using the `'listening'` event), and also register the dev server in the 
+  registry so lookups work. I'm also wondering if the canvas API endpoints might actually
+   be available on the Vite server under the base path, so I should test that directly.
 
-◎ Creating component-set hub (Esc to cancel · 7.9 KiB)
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]
+● probe each port directly (shell)
+  │ for p in 1235 1241; do echo "=== port $p ==="; curl -s -m 2 "http://localhost:$p/bran
+  │ ch--0.5.0/_storyboard/canvas/read?name=$STORYBOARD_CANVAS_ID" | head -c 100; echo;
+  │ curl -s -m 2 "http://localhost:$p/_storyboard/canvas/read?name=$STORYBOARD_CANVAS_ID"
+  │ | head -c 100; echo; done
+  └ 5 lines...
+
+◎ Checking peer agent buffer (Esc to cancel · 7.0 KiB)
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
 ─────────────────────────────────────────────────────────────────────────────────────────
 ❯  
 ─────────────────────────────────────────────────────────────────────────────────────────
@@ -43,279 +43,912 @@ SCREEN
 SCROLLBACK (last 60s)
 ================================================================================
 
-○ Creating component-set hub (Esc to cancel · 4.8 KiB)◎ Creating component-set hub (Esc to cancel · 4.8 KiB)◉ Creating component-set hub (Esc to cancel · 4.8 KiB)[lost tty]
-[?996n[>c[>q  │ host/0.5.0/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" -D - -o /tmp/r2 |
-  │ head -10; head -c 300 /tmp/r2
-  └ 14 lines...
+○ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.2 KiB)● Checking peer agent buffer (Esc to cancel · 3.2 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.2 KiB)○ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.2 KiB)● Checking peer agent buffer (Esc to cancel · 3.2 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.2 KiB)○ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.2 KiB)● Checking peer agent buffer (Esc to cancel · 3.2 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.2 KiB)○ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.2 KiB)● Checking peer agent buffer (Esc to cancel · 3.2 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.2 KiB)○ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.2 KiB)● Checking peer agent buffer (Esc to cancel · 3.2 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.2 KiB)○ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.2 KiB)● Checking peer agent buffer (Esc to cancel · 3.2 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.2 KiB)○ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.2 KiB)● Checking peer agent buffer (Esc to cancel · 3.2 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.2 KiB)○ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.2 KiB)● Checking peer agent buffer (Esc to cancel · 3.2 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.2 KiB)○ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.2 KiB)● Checking peer agent buffer (Esc to cancel · 3.2 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.2 KiB)○ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.2 KiB)● Checking peer agent buffer (Esc to cancel · 3.2 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.2 KiB)○ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.2 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)● Checking peer agent buffer (Esc to cancel · 3.4 KiB)
+◐ I see the user received a broadcast notification through the passive system, so I should continue examining what's in the buffer.◐ So another peer agent ran into the exact same issue with the CLI batch command pointing to the wrong port, and they applied the same HTTP fallback workaround I 
+  discovered.
 
-● try full base (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0/0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | jq '.widgets | length'  └ 2 lines...
+  This confirms the root cause: the server/proxy refactor broke endpoint discovery for agents. The `serverUrl` is being set to `http://localhost:1234` but 
+  nothing's actually listening there — the real server is only accessible through the Caddy proxy at `http://storyboard-core.localhost/branch--0.5.0`. I need to 
+  track down where `serverUrl` gets computed and fix the bug, plus check how the CLI resolves ports.
 
-● see raw (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0/0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | head -c 400
-  └ 13 lines...
+● Confirmed — agent-ej07t1 hit the exact same bug I did:   - CLI npx storyboard canvas batch failed
+   - They explicitly logged: "The CLI seems to be routing requests to the wrong endpoint"
+   - Same workaround: switching to http://storyboard-core.localhost/branch--0.5.0 directly via curl
 
-◐ I think the issue is that the `/0.5.0/_storyboard/...` path is intercepting requests 
-  meant for the API—it's serving the SPA instead of routing to the actual endpoint. The 
-  real API probably lives at a different path without that prefix, so I should try 
-  adjusting the request URL.
+  Both terminal configs have serverUrl: "http://localhost:1234" but nothing is listening on 1234 — the actual server is only reachable through the Caddy proxy.
+  Let me find where this is set.
 
-● drop /0.5.0 (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | head -c 200; echo
-  └ 2 lines...
+● find serverUrl writers (shell)
+  │ grep -rn "serverUrl" packages/storyboard/src/core/canvas/terminal-server.js packages/storyboard/src/runtime/ 2>/dev/null | grep -v node_modules | head -20
+  └ 11 lines...
 
-○ Creating component-set hub (Esc to cancel · 6.6 KiB)
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
-─────────────────────────────────────────────────────────────────────────────────────────❯
-───────────────────────────────────────────────────────────────────────────────────────── 1 background /tasks · / commands · ? help · ctrl+q enqueue
- terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-  │ host/0.5.0/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" -D - -o /tmp/r2 |
-  │ head -10; head -c 300 /tmp/r2
-  └ 14 lines...
+● Read terminal-server.js
+  │ packages/storyboard/src/core/canvas/terminal-server.js
+  └ L795:850 (56 lines read)
 
-● try full base (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0/0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | jq '.widgets | length'  └ 2 lines...
+◐ I found the server port detection logic. It tries to identify the current worktree and look up any existing servers associated with it, falling back to port 1234   if nothing's found, then constructs the server URL.
 
-● see raw (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0/0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | head -c 400
-  └ 13 lines...
+  The issue is that after the refactor, the canvas-server endpoints moved into the proxy/runtime layer and aren't tied to individual worktree ports anymore, so 
+  `findByWorktree` returns nothing and the fallback port is incorrect. The actual reachable URL should be built from the dev domain and branch name instead — 
+  something like `http://${devDomain}.localhost/branch--${branch}`, which would give us `http://storyboard-core.localhost/branch--0.5.0` based on the terminal 
+  config. Now I need to find where `actualServerPort` gets set in the first place.
 
-◐ I think the issue is that the `/0.5.0/_storyboard/...` path is intercepting requests 
-  meant for the API—it's serving the SPA instead of routing to the actual endpoint. The 
-  real API probably lives at a different path without that prefix, so I should try 
-  adjusting the request URL.
+● find actualServerPort setter (shell)
+  │ grep -n "actualServerPort" packages/storyboard/src/core/canvas/terminal-server.js | head -20
+  └ 4 lines...
 
-● drop /0.5.0 (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | head -c 200; echo
-  └ 2 lines...
+● Read terminal-server.js
+  │ packages/storyboard/src/core/canvas/terminal-server.js
+  └ L630:660 (31 lines read)
 
-◎ Creating component-set hub (Esc to cancel · 6.6 KiB)
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
-─────────────────────────────────────────────────────────────────────────────────────────❯
-───────────────────────────────────────────────────────────────────────────────────────── 1 background /tasks · / commands · ? help · ctrl+q enqueue
- terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-❯  ◉ Creating component-set hub (Esc to cancel · 6.6 KiB)● Creating component-set hub (Esc to cancel · 6.6 KiB)  │ host/0.5.0/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" -D - -o /tmp/r2 |
-  │ head -10; head -c 300 /tmp/r2
-  └ 14 lines...
+◐ I'm realizing the ser◐ I'm realizing the server might be bindin◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◐ I'm realizing the server might be binding to an ephemeral port instead o◐ I'm realizing the server might be binding to an ephemeral port instead of 1234 when running behind a proxy,○ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◐ I'm realizing the server might be binding to an ephemeral port instead of 1234 when running behind a proxy, so I need◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◐ I'm realizing the server might be binding to an ephemeral port instead of 1234 when running behind a proxy, so I need to check what's actually liste◐ I'm realizing the server might be binding to an ephemeral port instead of 1234 when running behind a proxy, so I need to check what's actually listening on◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◐ I see the user received a broadcast notification through the passive system, so I should continue examining what's in the buffer.
 
-● try full base (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0/0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | jq '.widgets | length'  └ 2 lines...
+◐ So another peer agent ran into the exact same issue with the CLI batch command pointing to the wrong port, and they applied the same HTTP fallback workaround I 
+  discovered.
 
-● see raw (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0/0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | head -c 400
-  └ 13 lines...
+  This confirms the root cause: the server/proxy refactor broke endpoint discovery for agents. The `serverUrl` is being set to `http://localhost:1234` but 
+  nothing's actually listening there — the real server is only accessible through the Caddy proxy at `http://storyboard-core.localhost/branch--0.5.0`. I need to 
+  track down where `serverUrl` gets computed and fix the bug, plus check how the CLI resolves ports.
 
-◐ I think the issue is that the `/0.5.0/_storyboard/...` path is intercepting requests 
-  meant for the API—it's serving the SPA instead of routing to the actual endpoint. The 
-  real API probably lives at a different path without that prefix, so I should try 
-  adjusting the request URL.
+● Confirmed — agent-ej07t1 hit the exact same bug I did:
 
-● drop /0.5.0 (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | head -c 200; echo
-  └ 2 lines...
+   - CLI npx storyboard canvas batch failed
+   - They explicitly logged: "The CLI seems to be routing requests to the wrong endpoint"
+   - Same workaround: switching to http://storyboard-core.localhost/branch--0.5.0 directly via curl
 
-● Creating component-set hub (Esc to cancel · 6.6 KiB)
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── 1 background /tasks · / commands · ? help · ctrl+q enqueue
- terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-  │ host/0.5.0/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" -D - -o /tmp/r2 |
-  │ head -10; head -c 300 /tmp/r2
-  └ 14 lines...
+  Both terminal configs have serverUrl: "http://localhost:1234" but nothing is listening on 1234 — the actual server is only reachable through the Caddy proxy.
+  Let me find where this is set.
 
-● try full base (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0/0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | jq '.widgets | length'  └ 2 lines...
+● find serverUrl writers (shell)
+  │ grep -rn "serverUrl" packages/storyboard/src/core/canvas/terminal-server.js packages/storyboard/src/runtime/ 2>/dev/null | grep -v node_modules | head -20
+  └ 11 lines...
 
-● see raw (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0/0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | head -c 400
-  └ 13 lines...
+● Read terminal-server.js
+  │ packages/storyboard/src/core/canvas/terminal-server.js
+  └ L795:850 (56 lines read)
 
-◐ I think the issue is that the `/0.5.0/_storyboard/...` path is intercepting requests 
-  meant for the API—it's serving the SPA instead of routing to the actual endpoint. The 
-  real API probably lives at a different path without that prefix, so I should try 
-  adjusting the request URL.
+◐ I found the server port detection logic. It tries to identify the current worktree and look up any existing servers associated with it, falling back to port 1234   if nothing's found, then constructs the server URL.
 
-● drop /0.5.0 (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | head -c 200; echo
-  └ 2 lines...
+  The issue is that after the refactor, the canvas-server endpoints moved into the proxy/runtime layer and aren't tied to individual worktree ports anymore, so 
+  `findByWorktree` returns nothing and the fallback port is incorrect. The actual reachable URL should be built from the dev domain and branch name instead — 
+  something like `http://${devDomain}.localhost/branch--${branch}`, which would give us `http://storyboard-core.localhost/branch--0.5.0` based on the terminal 
+  config. Now I need to find where `actualServerPort` gets set in the first place.
 
-◎ Creating component-set hub (Esc to cancel · 6.6 KiB)
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── 1 background /tasks · / commands · ? help · ctrl+q enqueue
- terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-◉ Creating component-set hub (Esc to cancel · 6.6 KiB)● Creating component-set hub (Esc to cancel · 6.6 KiB)◉ Creating component-set hub (Esc to cancel · 6.6 KiB)◎ Creating component-set hub (Esc to cancel · 6.6 KiB)○ Creating component-set hub (Esc to cancel · 6.6 KiB)◎ Creating component-set hub (Esc to cancel · 6.6 KiB)◉ Creating component-set hub (Esc to cancel · 6.6 KiB)● Creating component-set hub (Esc to cancel · 6.6 KiB)◉ Creating component-set hub (Esc to cancel · 6.6 KiB)◎ Creating component-set hub (Esc to cancel · 6.6 KiB)○ Creating component-set hub (Esc to cancel · 6.6 KiB)◎ Creating component-set hub (Esc to cancel · 6.6 KiB)◉ Creating component-set hub (Esc to cancel · 6.6 KiB)● Creating component-set hub (Esc to cancel · 6.6 KiB)◉ Creating component-set hub (Esc to cancel · 6.6 KiB)◎ Creating component-set hub (Esc to cancel · 6.6 KiB)○ Creating component-set hub (Esc to cancel · 6.6 KiB)◎ Creating component-set hub (Esc to cancel · 6.6 KiB)◉ Creating component-set hub (Esc to cancel · 6.6 KiB)● Creating component-set hub (Esc to cancel · 6.6 KiB)◉ Creating component-set hub (Esc to cancel · 6.6 KiB)◉ Creating component-set hub (Esc to cancel · 6.7 KiB)  └ 14 lines...
+● find actualServerPort setter (shell)
+  │ grep -n "actualServerPort" packages/storyboard/src/core/canvas/terminal-server.js | head -20
+  └ 4 lines...
 
-● try full base (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0/0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | jq '.widgets | length'  └ 2 lines...
+● Read terminal-server.js
+  │ packages/storyboard/src/core/canvas/terminal-server.js
+  └ L630:660 (31 lines read)
 
-● see raw (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0/0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | head -c 400
-  └ 13 lines...
+◐ I'm realizing the server might be binding to an ephemeral port instead of 1234 when running behind a proxy, so I need to check what's actually listening on the 
+  system● Checking peer agent buffer (Esc to cancel · 3.4 KiB)  system to see◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)○ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)● Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)○ Checking peer agent buffer (Esc to cancel · 3.4 KiB)
+  Both terminal configs have serverUrl: "http://localhost:1234" but nothing is listening   Let me find where this is set.
 
-◐ I think the issue is that the `/0.5.0/_storyboard/...` path is intercepting requests 
-  meant for the API—it's serving the SPA instead of routing to the actual endpoint. The 
-  real API probably lives at a different path without that prefix, so I should try 
-  adjusting the request URL.
+● find serverUrl writers (shell)
+  │ grep -rn "serverUrl" packages/storyboard/src/core/canvas/terminal-server.js packages/  └ 11 lines...
 
-● drop /0.5.0 (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | head -c 200; echo
-  └ 2 lines...
+● Read terminal-server.js
+  │ packages/storyboard/src/core/canvas/terminal-server.js
+  └ L795:850 (56 lines read)
 
-● Found th◎ Creating component-set hub (Esc to cancel · 7.7 KiB)● Found the working API● Found the working API base. Let● Found the working API base. Let me s○ Creating component-set hub (Esc to cancel · 7.9 KiB)● Found the working API base. Let me set i◎ Creating component-set hub (Esc to cancel · 7.9 KiB)● see raw (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0/0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | head -c 400
-  └ 13 lines...
+◐ I found the server port detection logic. It tries to identify the current worktree and    if nothing's found, then constructs the server URL.
 
-◐ I think the issue is that the `/0.5.0/_storyboard/...` path is intercepting requests 
-  meant for the API—it's serving the SPA instead of routing to the actual endpoint. The 
-  real API probably lives at a different path without that prefix, so I should try 
-  adjusting the request URL.
+  The issue is that after the refactor, the canvas-server endpoints moved into the proxy/  `findByWorktree` returns nothing and the fallback port is incorrect. The actual reachab  something like `http://${devDomain}.localhost/branch--${branch}`, which would give us `  config. Now I need to find where `actualServerPort` gets set in the first place.
 
-● drop /0.5.0 (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | head -c 200; echo
-  └ 2 lines...
+● find actualServerPort setter (shell)
+  │ grep -n "actualServerPort" packages/storyboard/src/core/canvas/terminal-server.js | h  └ 4 lines...
 
-● Found the working API base. Let me set it and run the batch:● batch create agents via http (shell)
-  └ export STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"
-    echo "$STORYBOARD_SERVER_URL" > /tmp/sb_url
-    curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/batch" -H "Content-Type:
-    application/json" -d "{\"name\":\"$STORYBOARD_CANVAS_ID\",\"operations\":[
-    {\"op\":\"create-widget\",\"type\":\"agent\",\"near\":\"$STORYBOARD_WIDGET_ID\",\…◉ Creating component-set hub (Esc to cancel · 7.9 KiB) 1 background /tasks · / commands · ? help · ctrl+q enqueue · ctrl+x → b background task● Creating component-set hub (Esc to cancel · 7.9 KiB)◉ Creating component-set hub (Esc to cancel · 7.9 KiB)◎ Creating component-set hub (Esc to cancel · 7.9 KiB)○ Creating component-set hub (Esc to cancel · 7.9 KiB)◎ Creating component-set hub (Esc to cancel · 7.9 KiB)◉ Creating component-set hub (Esc to cancel · 7.9 KiB)● Creating component-set hub (Esc to cancel · 7.9 KiB)◉ Creating component-set hub (Esc to cancel · 7.9 KiB)○ Creating component-set hub (Esc to cancel · 7.9 KiB)◎ Creating component-set hub (Esc to cancel · 7.9 KiB)◉ Creating component-set hub (Esc to cancel · 7.9 KiB)● Creating component-set hub (Esc to cancel · 7.9 KiB)◉ Creating component-set hub (Esc to cancel · 7.9 KiB)◎ Creating component-set hub (Esc to cancel · 7.9 KiB)● see raw (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0/0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | head -c 400
-  └ 13 lines...
+● Read terminal-server.js
+  │ packages/storyboard/src/core/canvas/terminal-server.js
+  └ L630:660 (31 lines read)
 
-◐ I think the issue is that the `/0.5.0/_storyboard/...` path is intercepting requests 
-  meant for the API—it's serving the SPA instead of routing to the actual endpoint. The 
-  real API probably lives at a different path without that prefix, so I should try 
-  adjusting the request URL.
+◐ I'm realizing the server might be binding to an ephemeral port instead of 1234 when run  system to see
 
-● drop /0.5.0 (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | head -c 200; echo
-  └ 2 lines...
-
-● Found the working API base. Let me set it and run the batch:
-
-● batch create agents via http (shell)
-  └ export STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"
-    echo "$STORYBOARD_SERVER_URL" > /tmp/sb_url
-    curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/batch" -H "Content-Type:
-    application/json" -d "{\"name\":\"$STORYBOARD_CANVAS_ID\",\"operations\":[
-    {\"op\":\"create-widget\",\"type\":\"agent\",\"near\":\"$STORYBOARD_WIDGET_ID\",\…
-
-◎ Creating component-set hub (Esc to cancel · 7.9 KiB)
+○ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◐ I see the user received a broadcast notification through the passive system, so I shou…look up any existing servers associated with it, falling back to port 1234
+   if nothing's found, then constructs the server URL.  The issue is that after the refactor, the canvas-server endpoints moved into the 
+proxy/runtime layer and aren't tied to individual worktree ports anymore, so 
+  `findByWorktree` returns nothing and the fallback port is incorrect. The actual 
+reachable URL should be built from the dev domain and branch name instead — 
+  something like `http://${devDomain}.localhost/branch--${branch}`, which would give us 
+`http://storyboard-core.localhost/branch--0.5.0` based on the terminal 
+  config. Now I need to find where `actualServerPort` gets set in the first place.● find actualServerPort setter (shell)
+  │ grep -n "actualServerPort" packages/storyboard/src/core/canvas/terminal-server.js |
+head -20
+  └ 4 lines...● Read terminal-server.js
+  │ packages/storyboard/src/core/canvas/terminal-server.js
+  └ L630:660 (31 lines read)◐ I'm realizing the server might be binding to an ephemeral port instead of 1234 when 
+running behind a proxy, so I need to check what's actually listening on the 
+  system to see○ Checking peer agent buffer (Esc to cancel · 3.4 KiB)
  ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
 ─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── 1 background /tasks · / commands · ? help · ctrl+q enqueue · ctrl+x → b background task
- terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-● see raw (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0/0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | head -c 400
+───────────────────────────────────────────────────────────────────────────────────────── 1 background /tasks · / commands · ? help · ctrl+q enqueue
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)  look up any existing servers associated with it, falling back to port 1234 if nothing's   found, then constructs the server URL.  proxy/runtime layer and aren't tied to individual worktree ports anymore, so   reachable URL should be built from the dev domain and branch name instead — something 
+  like `http://${devDomain}.localhost/branch--${branch}`, which would give us 
+  `http://storyboard-core.localhost/branch--0.5.0` based on the terminal config. Now I 
+  need to find where `actualServerPort` gets set in the first place.  │ head -20  running behind a proxy, so I need to check what's actually listening on the system to 
+  see◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)● Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)● Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)○ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)● Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)○ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)● Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)○ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)● Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)○ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)● Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)○ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)● Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)● Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)○ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)● Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)○ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)● Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)○ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)● Checking peer agent buffer (Esc to cancel · 3.4 KiB)◉ Checking peer agent buffer (Esc to cancel · 3.4 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.4 KiB)○ Checking peer agent buffer (Esc to cancel · 3.4 KiB)○ Checking peer agent buffer (Esc to cancel · 3.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 3.7 KiB)
+  The issue is that after the refactor, the canvas-server endpoints moved into the 
+  proxy/runtime layer and aren't tied to individual worktree ports anymore, so 
+  `findByWorktree` returns nothing and the fallback port is incorrect. The actual 
+  reachable URL should be built from the dev domain and branch name instead — something 
+  like `http://${devDomain}.localhost/branch--${branch}`, which would give us 
+  `http://storyboard-core.localhost/branch--0.5.0` based on the terminal config. Now I 
+  need to find where `actualServerPort` gets set in the first place.
+
+● find actualServerPort setter (shell)
+  │ grep -n "actualServerPort" packages/storyboard/src/core/canvas/terminal-server.js |
+  │ head -20
+  └ 4 lines...
+
+● Read terminal-server.js
+  │ packages/storyboard/src/core/canvas/terminal-server.js
+  └ L630:660 (31 lines read)
+
+◐ I'm realizing the server might be binding to an ephemeral port instead of 1234 when 
+  running behind a proxy, so I need to check what's actually listening on the system to 
+  see which port it's using.
+
+  Looking at the p  Looking at the process list, the dev server is runni  Looking at the process list, the dev server is running on port 1241 (or 1235), not◉ Checking peer agent buffer (Esc to cancel · 3.7 KiB)  The issue is that after the refactor, the canvas-server endpoints moved into the 
+  proxy/runtime layer and aren't tied to individual worktree ports anymore, so 
+  `findByWorktree` returns nothing and the fallback port is incorrect. The actual 
+  reachable URL should be built from the dev domain and branch name instead — something 
+  like `http://${devDomain}.localhost/branch--${branch}`, which would give us 
+  `http://storyboard-core.localhost/branch--0.5.0` based on the terminal config. Now I 
+  need to find where `actualServerPort` gets set in the first place.
+
+● find actualServerPort setter (shell)
+  │ grep -n "actualServerPort" packages/storyboard/src/core/canvas/terminal-server.js |
+  │ head -20
+  └ 4 lines...
+
+● Read terminal-server.js
+  │ packages/storyboard/src/core/canvas/terminal-server.js
+  └ L630:660 (31 lines read)
+
+◐ I'm realizing the server might be binding to an ephemeral port instead of 1234 when 
+  running behind a proxy, so I need to check what's actually listening on the system to 
+  see which port it's using.
+
+  Looking at the process list, the dev server is running on port 1241 (or 1235), not 
+  1234, but the terminal conf  1234, but the terminal config is hardcoded to use 1  1234, but the terminal config is hardcoded to use 1234 — which is just t● Checking peer agent buffer (Esc to cancel · 3.7 KiB)  proxy/runtime layer and aren't tied to individual worktree ports anymore, so 
+  `findByWorktree` returns nothing and the fallback port is incorrect. The actual 
+  reachable URL should be built from the dev domain and branch name instead — something 
+  like `http://${devDomain}.localhost/branch--${branch}`, which would give us 
+  `http://storyboard-core.localhost/branch--0.5.0` based on the terminal config. Now I 
+  need to find where `actualServerPort` gets set in the first place.
+
+● find actualServerPort setter (shell)
+  │ grep -n "actualServerPort" packages/storyboard/src/core/canvas/terminal-server.js |
+  │ head -20
+  └ 4 lines...
+
+● Read terminal-server.js
+  │ packages/storyboard/src/core/canvas/terminal-server.js
+  └ L630:660 (31 lines read)
+
+◐ I'm realizing the server might be binding to an ephemeral port instead of 1234 when 
+  running behind a proxy, so I need to check what's actually listening on the system to 
+  see which port it's using.
+
+  Looking at the process list, the dev server is running on port 1241 (or 1235), not 
+  1234, but the terminal config is hardcoded to use 1234 — which is just the fallback 
+  defaul  default. This suggests  default. This suggests `actualServer◉ Checking peer agent buffer (Esc to cancel · 3.7 KiB)  default. This suggests `actualServerPort` is sti◎ Checking peer agent buffer (Esc to cancel · 3.7 KiB)  `findByWorktree` returns nothing and the fallback port is incorrect. The actual 
+  reachable URL should be built from the dev domain and branch name instead — something 
+  like `http://${devDomain}.localhost/branch--${branch}`, which would give us 
+  `http://storyboard-core.localhost/branch--0.5.0` based on the terminal config. Now I 
+  need to find where `actualServerPort` gets set in the first place.
+
+● find actualServerPort setter (shell)
+  │ grep -n "actualServerPort" packages/storyboard/src/core/canvas/terminal-server.js |
+  │ head -20
+  └ 4 lines...
+
+● Read terminal-server.js
+  │ packages/storyboard/src/core/canvas/terminal-server.js
+  └ L630:660 (31 lines read)
+
+◐ I'm realizing the server might be binding to an ephemeral port instead of 1234 when 
+  running behind a proxy, so I need to check what's actually listening on the system to 
+  see which port it's using.
+
+  Looking at the process list, the dev server is running on port 1241 (or 1235), not 
+  1234, but the terminal config is hardcoded to use 1234 — which is just the fallback 
+  default. This suggests `actualServerPort` is still null when the sessions are being 
+  created,  created, mean○ Checking peer agent buffer (Esc to cancel · 3.7 KiB)  created, meaning the p  created, meaning the port  created, meaning the port capt  created, meaning the port capture◎ Checking peer agent buffer (Esc to cancel · 3.7 KiB)  created, meaning the port capture at s  created, meaning the port capture at setu  created, meaning the port capture at setup◉ Checking peer agent buffer (Esc to cancel · 3.7 KiB)  created, meaning the port capture at setup i  created, meaning the port capture at setup is  created, meaning the port capture at setup isn● Checking peer agent buffer (Esc to cancel · 4.1 KiB)  like `http://${devDomain}.localhost/branch--${branch}`, which would give us 
+  `http://storyboard-core.localhost/branch--0.5.0` based on the terminal config. Now I 
+  need to find where `actualServerPort` gets set in the first place.
+
+● find actualServerPort setter (shell)
+  │ grep -n "actualServerPort" packages/storyboard/src/core/canvas/terminal-server.js |
+  │ head -20
+  └ 4 lines...
+
+● Read terminal-server.js
+  │ packages/storyboard/src/core/canvas/terminal-server.js
+  └ L630:660 (31 lines read)
+
+◐ I'm realizing the server might be binding to an ephemeral port instead of 1234 when 
+  running behind a proxy, so I need to check what's actually listening on the system to 
+  see which port it's using.
+
+  Looking at the process list, the dev server is running on port 1241 (or 1235), not 
+  1234, but the terminal config is hardcoded to use 1234 — which is just the fallback 
+  default. This suggests `actualServerPort` is still null when the sessions are being 
+  created, meaning the port capture at setup isn't working as expected.
+
+  The runtime refactor pro  The runtime refactor probably moved the canvas server endpoints int◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)  `http://storyboard-core.localhost/branch--0.5.0` based on the terminal config. Now I 
+  need to find where `actualServerPort` gets set in the first place.
+
+● find actualServerPort setter (shell)
+  │ grep -n "actualServerPort" packages/storyboard/src/core/canvas/terminal-server.js |
+  │ head -20
+  └ 4 lines...
+
+● Read terminal-server.js
+  │ packages/storyboard/src/core/canvas/terminal-server.js
+  └ L630:660 (31 lines read)
+
+◐ I'm realizing the server might be binding to an ephemeral port instead of 1234 when 
+  running behind a proxy, so I need to check what's actually listening on the system to 
+  see which port it's using.
+
+  Looking at the process list, the dev server is running on port 1241 (or 1235), not 
+  1234, but the terminal config is hardcoded to use 1234 — which is just the fallback 
+  default. This suggests `actualServerPort` is still null when the sessions are being 
+  created, meaning the port capture at setup isn't working as expected.
+
+  The runtime refactor probably moved the canvas server endpoints into the daemon running   on port 4321, so   on port 4321, so the per-worktree httpServer no lo   on port 4321, so the per-worktree httpServer no longer has those endpoints. Whe  need to find where `actualServerPort` gets set in the first place.
+
+● find actualServerPort setter (shell)
+  │ grep -n "actualServerPort" packages/storyboard/src/core/canvas/terminal-server.js |
+  │ head -20
+  └ 4 lines...
+
+● Read terminal-server.js
+  │ packages/storyboard/src/core/canvas/terminal-server.js
+  └ L630:660 (31 lines read)
+
+◐ I'm realizing the server might be binding to an ephemeral port instead of 1234 when 
+  running behind a proxy, so I need to check what's actually listening on the system to 
+  see which port it's using.
+
+  Looking at the process list, the dev server is running on port 1241 (or 1235), not 
+  1234, but the terminal config is hardcoded to use 1234 — which is just the fallback 
+  default. This suggests `actualServerPort` is still null when the sessions are being 
+  created, meaning the port capture at setup isn't working as expected.
+
+  The runtime refactor probably moved the canvas server endpoints into the daemon running   on port 4321, so the per-worktree httpServer no longer has those endpoints. When I 
+  can't determine the r◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)  can't determine the real serverUrl, I shoul  can't determine the real serverUrl, I should fall back to cons  can't determine the real serverUrl, I should fall back to constructing a proxy○ Checking peer agent buffer (Esc to cancel · 4.1 KiB)
+● find actualServerPort setter (shell)
+  │ grep -n "actualServerPort" packages/storyboard/src/core/canvas/terminal-server.js |
+  │ head -20
+  └ 4 lines...
+
+● Read terminal-server.js
+  │ packages/storyboard/src/core/canvas/terminal-server.js
+  └ L630:660 (31 lines read)
+
+◐ I'm realizing the server might be binding to an ephemeral port instead of 1234 when 
+  running behind a proxy, so I need to check what's actually listening on the system to 
+  see which port it's using.
+
+  Looking at the process list, the dev server is running on port 1241 (or 1235), not 
+  1234, but the terminal config is hardcoded to use 1234 — which is just the fallback 
+  default. This suggests `actualServerPort` is still null when the sessions are being 
+  created, meaning the port capture at setup isn't working as expected.
+
+  The runtime refactor probably moved the canvas server endpoints into the daemon running   on port 4321, so the per-worktree httpServer no longer has those endpoints. When I 
+  can't determine the real serverUrl, I should fall back to constructing a proxy URL 
+  using the d  using the devDomain and  using the devDomain and branch path◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)  using the devDomain and branch path, since `http://sto  using the devDomain and branch path, since `http://storyboard  using the devDomain and branch path, since `http://storyboard-core.l● Checking peer agent buffer (Esc to cancel · 4.1 KiB)  using the devDomain and branch path, since `http://storyboard-core.localho  using the devDomain and branch path, since `http://storyboard-core.localhost/br◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)  using the devDomain and branch path, since `http://storyboard-core.localhost/branch  using the devDomain and branch path, since `http://storyboard-core.localhost/branch--0.● find actualServerPort setter (shell)
+  │ grep -n "actualServerPort" packages/storyboard/src/core/canvas/terminal-server.js |
+  │ head -20
+  └ 4 lines...
+
+● Read terminal-server.js
+  │ packages/storyboard/src/core/canvas/terminal-server.js
+  └ L630:660 (31 lines read)
+
+◐ I'm realizing the server might be binding to an ephemeral port instead of 1234 when 
+  running behind a proxy, so I need to check what's actually listening on the system to 
+  see which port it's using.
+
+  Looking at the process list, the dev server is running on port 1241 (or 1235), not 
+  1234, but the terminal config is hardcoded to use 1234 — which is just the fallback 
+  default. This suggests `actualServerPort` is still null when the sessions are being 
+  created, meaning the port capture at setup isn't working as expected.
+
+  The runtime refactor probably moved the canvas server endpoints into the daemon running   on port 4321, so the per-worktree httpServer no longer has those endpoints. When I 
+  can't determine the real serverUrl, I should fall back to constructing a proxy URL 
+  using the devDomain and branch path, since 
+  `http://storyboard-core.localhost/branch--0.5.0`  `http://storyboard-core.localhost/branch--0.5.0` alr◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)  `http://storyboard-core.localhost/branch--0.5.0` already  `http://storyboard-core.localhost/branch--0.5.0` already wor  `http://storyboard-core.localhost/branch--0.5.0` already works.○ Checking peer agent buffer (Esc to cancel · 4.1 KiB)  `http://storyboard-core.localhost/branch--0.5.0` already works. T  `http://storyboard-core.localhost/branch--0.5.0` already works. Th◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)  `http://storyboard-core.localhost/branch--0.5.0` already works. The◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)● Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)○ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)● Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)○ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)● Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)○ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)● Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)○ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)● Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)○ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)● Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)○ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)● Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)○ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)● Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)○ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)● Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)○ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)● Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)○ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)● Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)○ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)● Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)○ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)● Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)○ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)● Checking peer agent buffer (Esc to cancel · 4.1 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.1 KiB)○ Checking peer agent buffer (Esc to cancel · 4.1 KiB)○ Checking peer agent buffer (Esc to cancel · 4.4 KiB)  │ grep -n "actualServerPort" packages/storyboard/src/core/canvas/terminal-server.js |
+  │ head -20
+  └ 4 lines...
+
+● Read terminal-server.js
+  │ packages/storyboard/src/core/canvas/terminal-server.js
+  └ L630:660 (31 lines read)
+
+◐ I'm realizing the server might be binding to an ephemeral port instead of 1234 when 
+  running behind a proxy, so I need to check what's actually listening on the system to 
+  see which port it's using.
+
+  Looking at the process list, the dev server is running on port 1241 (or 1235), not 
+  1234, but the terminal config is hardcoded to use 1234 — which is just the fallback 
+  default. This suggests `actualServerPort` is still null when the sessions are being 
+  created, meaning the port capture at setup isn't working as expected.
+
+  The runtime refactor probably moved the canvas server endpoints into the daemon running   on port 4321, so the per-worktree httpServer no longer has those endpoints. When I 
+  can't determine the real serverUrl, I should fall back to constructing a proxy URL 
+  using the devDomain and branch path, since 
+  `http://storyboard-core.localhost/branch--0.5.0` already works. The branch prefix is 
+  conditional though —  conditional though — the main worktree doesn't use one.◎ Checking peer agent buffer (Esc to cancel · 4.4 KiB)  conditional though — the main worktree doesn't use one. I need to find what the runti◎ Checking peer agent buffer (Esc to cancel · 4.5 KiB)  │ head -20
+  └ 4 lines...
+
+● Read terminal-server.js
+  │ packages/storyboard/src/core/canvas/terminal-server.js
+  └ L630:660 (31 lines read)
+
+◐ I'm realizing the server might be binding to an ephemeral port instead of 1234 when 
+  running behind a proxy, so I need to check what's actually listening on the system to 
+  see which port it's using.
+
+  Looking at the process list, the dev server is running on port 1241 (or 1235), not 
+  1234, but the terminal config is hardcoded to use 1234 — which is just the fallback 
+  default. This suggests `actualServerPort` is still null when the sessions are being 
+  created, meaning the port capture at setup isn't working as expected.
+
+  The runtime refactor probably moved the canvas server endpoints into the daemon running   on port 4321, so the per-worktree httpServer no longer has those endpoints. When I 
+  can't determine the real serverUrl, I should fall back to constructing a proxy URL 
+  using the devDomain and branch path, since 
+  `http://storyboard-core.localhost/branch--0.5.0` already works. The branch prefix is 
+  conditional though — the main worktree doesn't use one. I need to find what the runtime   exposes to get the canonical URL — the◎ Checking peer agent buffer (Esc to cancel · 4.7 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.7 KiB)◐ I'm realizing the server might be binding to an ephemeral port instead of 1234 when 
+  running behind a proxy, so I need to check what's actually listening on the system to 
+  see which port it's using.
+
+  Looking at the process list, the dev server is running on port 1241 (or 1235), not 
+  1234, but the terminal config is hardcoded to use 1234 — which is just the fallback 
+  default. This suggests `actualServerPort` is still null when the sessions are being 
+  created, meaning the port capture at setup isn't working as expected.
+
+  The runtime refactor probably moved the canvas server endpoints into the daemon running   on port 4321, so the per-worktree httpServer no longer has those endpoints. When I 
+  can't determine the real serverUrl, I should fall back to constructing a proxy URL 
+  using the devDomain and branch path, since 
+  `http://storyboard-core.localhost/branch--0.5.0` already works. The branch prefix is 
+  conditional though — the main worktree doesn't use one. I need to find what the runtime   exposes to get the canonical URL — the `/api` endpoint returned a 404, so there might   be an undocumented way to query it. Looking at the terminal-server code, there's a 
+  `findByWorktree` function that retrieves the running dev server for a given worktree 
+  from the registry, so let me check what's actually stored there.
+
+● find server registry (shell)
+  └ grep -rn "findByWorktree\|server-registry\|registerServer" packages/storyboard/src
+    --include="*.js" 2>/dev/null | head -15● Checking peer agent buffer (Esc to cancel · 4.7 KiB) 1 background /tasks · / commands · ? help · ctrl+q enqueue · ctrl+x → b background task◉ Checking peer agent buffer (Esc to cancel · 4.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.7 KiB)○ Checking peer agent buffer (Esc to cancel · 4.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.7 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.7 KiB)● Checking peer agent buffer (Esc to cancel · 4.7 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.7 KiB)○ Checking peer agent buffer (Esc to cancel · 4.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.7 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.7 KiB)● Checking peer agent buffer (Esc to cancel · 4.7 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.7 KiB)○ Checking peer agent buffer (Esc to cancel · 4.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.7 KiB) 1 background /tasks · / commands · ? help · ctrl+q enqueue◉ Checking peer agent buffer (Esc to cancel · 4.7 KiB)  running behind a proxy, so I need to check what's actually listening on the system to 
+  see which port it's using.
+
+  Looking at the process list, the dev server is running on port 1241 (or 1235), not 
+  1234, but the terminal config is hardcoded to use 1234 — which is just the fallback 
+  default. This suggests `actualServerPort` is still null when the sessions are being 
+  created, meaning the port capture at setup isn't working as expected.
+
+  The runtime refactor probably moved the canvas server endpoints into the daemon running   on port 4321, so the per-worktree httpServer no longer has those endpoints. When I 
+  can't determine the real serverUrl, I should fall back to constructing a proxy URL 
+  using the devDomain and branch path, since 
+  `http://storyboard-core.localhost/branch--0.5.0` already works. The branch prefix is 
+  conditional though — the main worktree doesn't use one. I need to find what the runtime   exposes to get the canonical URL — the `/api` endpoint returned a 404, so there might   be an undocumented way to query it. Looking at the terminal-server code, there's a 
+  `findByWorktree` function that retrieves the running dev server for a given worktree 
+  from the registry, so let me check what's actually stored there.
+
+● find server registry (shell)
+  │ grep -rn "findByWorktree\|server-registry\|registerServer" packages/storyboard/src
+  │ --include="*.js" 2>/dev/null | head -15
+  └ 13 lines...● Checking peer agent buffer (Esc to cancel · 4.7 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.7 KiB)○ Checking peer agent buffer (Esc to cancel · 4.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.7 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.7 KiB)○ Checking peer agent buffer (Esc to cancel · 4.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.7 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.7 KiB)● Checking peer agent buffer (Esc to cancel · 4.7 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.7 KiB)○ Checking peer agent buffer (Esc to cancel · 4.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.7 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.7 KiB)● Checking peer agent buffer (Esc to cancel · 4.7 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.7 KiB)○ Checking peer agent buffer (Esc to cancel · 4.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.8 KiB)  Looking at the process list, the dev server is running on port 1241 (or 1235), not 
+  1234, but the terminal config is hardcoded to use 1234 — which is just the fallback 
+  default. This suggests `actualServerPort` is still null when the sessions are being 
+  created, meaning the port capture at setup isn't working as expected.
+
+  The runtime refactor probably moved the canvas server endpoints into the daemon running   on port 4321, so the per-worktree httpServer no longer has those endpoints. When I 
+  can't determine the real serverUrl, I should fall back to constructing a proxy URL 
+  using the devDomain and branch path, since 
+  `http://storyboard-core.localhost/branch--0.5.0` already works. The branch prefix is 
+  conditional though — the main worktree doesn't use one. I need to find what the runtime   exposes to get the canonical URL — the `/api` endpoint returned a 404, so there might   be an undocumented way to query it. Looking at the terminal-server code, there's a 
+  `findByWorktree` function that retrieves the running dev server for a given worktree 
+  from the registry, so let me check what's actually stored there.
+
+● find server registry (shell)
+  │ grep -rn "findByWorktree\|server-registry\|registerServer" packages/storyboard/src
+  │ --include="*.js" 2>/dev/null | head -15
   └ 13 lines...
 
-◐ I think the issue is that the `/0.5.0/_storyboard/...` path is intercepting requests 
-  meant for the API—it's serving the SPA instead of routing to the actual endpoint. The 
-  real API probably lives at a different path without that prefix, so I should try 
-  adjusting the request URL.
+○ Read serverRegistry.js
+  └ packages/storyboard/src/core/worktree/serverRegistry.js● Checking peer agent buffer (Esc to cancel · 4.8 KiB)  1234, but the terminal config is hardcoded to use 1234 — which is just the fallback 
+  default. This suggests `actualServerPort` is still null when the sessions are being 
+  created, meaning the port capture at setup isn't working as expected.
 
-● drop /0.5.0 (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | head -c 200; echo
-  └ 2 lines...
+  The runtime refactor probably moved the canvas server endpoints into the daemon running   on port 4321, so the per-worktree httpServer no longer has those endpoints. When I 
+  can't determine the real serverUrl, I should fall back to constructing a proxy URL 
+  using the devDomain and branch path, since 
+  `http://storyboard-core.localhost/branch--0.5.0` already works. The branch prefix is 
+  conditional though — the main worktree doesn't use one. I need to find what the runtime   exposes to get the canonical URL — the `/api` endpoint returned a 404, so there might   be an undocumented way to query it. Looking at the terminal-server code, there's a 
+  `findByWorktree` function that retrieves the running dev server for a given worktree 
+  from the registry, so let me check what's actually stored there.
 
-● Found the working API base. Let me set it and run the batch:
-
-● batch create agents via http (shell)
-  └ export STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"
-    echo "$STORYBOARD_SERVER_URL" > /tmp/sb_url
-    curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/batch" -H "Content-Type:
-    application/json" -d "{\"name\":\"$STORYBOARD_CANVAS_ID\",\"operations\":[
-    {\"op\":\"create-widget\",\"type\":\"agent\",\"near\":\"$STORYBOARD_WIDGET_ID\",\…
-
-◎ Creating component-set hub (Esc to cancel · 7.9 KiB)
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── 1 background /tasks · / commands · ? help · ctrl+q enqueue · ctrl+x → b background task
- terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-○ Creating component-set hub (Esc to cancel · 7.9 KiB) 1 background /tasks · / commands · ? help · ctrl+q enqueue◎ Creating component-set hub (Esc to cancel · 7.9 KiB)  │ BASE="http://storyboard-core.localhost/branch--0.5.0/0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | head -c 400
+● find server registry (shell)
+  │ grep -rn "findByWorktree\|server-registry\|registerServer" packages/storyboard/src
+  │ --include="*.js" 2>/dev/null | head -15
   └ 13 lines...
 
-◐ I think the issue is that the `/0.5.0/_storyboard/...` path is intercepting requests 
-  meant for the API—it's serving the SPA instead of routing to the actual endpoint. The 
-  real API probably lives at a different path without that prefix, so I should try 
-  adjusting the request URL.
+● Read serverRegistry.js
+  │ packages/storyboard/src/core/worktree/serverRegistry.js
+  └ L1:60 (60 lines read)◉ Checking peer agent buffer (Esc to cancel · 4.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.8 KiB)○ Checking peer agent buffer (Esc to cancel · 4.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.8 KiB)● Checking peer agent buffer (Esc to cancel · 4.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.8 KiB)○ Checking peer agent buffer (Esc to cancel · 4.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.8 KiB)● Checking peer agent buffer (Esc to cancel · 4.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.8 KiB)○ Checking peer agent buffer (Esc to cancel · 4.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.8 KiB)● Checking peer agent buffer (Esc to cancel · 4.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.8 KiB)○ Checking peer agent buffer (Esc to cancel · 4.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.8 KiB)● Checking peer agent buffer (Esc to cancel · 4.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.8 KiB)○ Checking peer agent buffer (Esc to cancel · 4.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)
+  The runtime refactor probably moved the canvas server endpoints into the daemon running   on port 4321, so the per-worktree httpServer no longer has those endpoints. When I 
+  can't determine the real serverUrl, I should fall back to constructing a proxy URL 
+  using the devDomain and branch path, since 
+  `http://storyboard-core.localhost/branch--0.5.0` already works. The branch prefix is 
+  conditional though — the main worktree doesn't use one. I need to find what the runtime   exposes to get the canonical URL — the `/api` endpoint returned a 404, so there might   be an undocumented way to query it. Looking at the terminal-server code, there's a 
+  `findByWorktree` function that retrieves the running dev server for a given worktree 
+  from the registry, so let me check what's actually stored there.
 
-● drop /0.5.0 (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | head -c 200; echo
-  └ 2 lines...
+● find server registry (shell)
+  │ grep -rn "findByWorktree\|server-registry\|registerServer" packages/storyboard/src
+  │ --include="*.js" 2>/dev/null | head -15
+  └ 13 lines...
 
-● Found the working API base. Let me set it and run the batch:
+● Read serverRegistry.js
+  │ packages/storyboard/src/core/worktree/serverRegistry.js
+  └ L1:60 (60 lines read)
 
-● batch create agents via http (shell)
-  │ export STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"
-  │ echo "$STORYBOARD_SERVER_URL" > /tmp/sb_url
-  │ curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/batch" -H "Content-Type:
-  │ application/json" -d "{\"name\":\"$STORYBOARD_CANVAS_ID\",\"operations\":[
-  │ {\"op\":\"create-widget\",\"type\":\"agent\",\"near\":\"$STORYBOARD_WIDGET_ID\",\…
-  └ 35 lines... ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]◉ Creating component-set hub (Esc to cancel · 7.9 KiB)● Creating component-set hub (Esc to cancel · 7.9 KiB)
-◐ I think the issue is that the `/0.5.0/_storyboard/...` path is intercepting requests 
-  meant for the API—it's serving the SPA instead of routing to the actual endpoint. The 
-  real API probably lives at a different path without that prefix, so I should try 
-  adjusting the request URL.
+● inspect server registry (shell)
+  └ cat .storyboard/servers.json 2>/dev/null | jq '.'◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)● Checking peer agent buffer (Esc to cancel · 4.9 KiB) 1 background /tasks · / commands · ? help · ctrl+q enqueue · ctrl+x → b background task◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB) 1 background /tasks · / commands · ? help · ctrl+q enqueue  The runtime refactor probably moved the canvas server endpoints into the daemon running   on port 4321, so the per-worktree httpServer no longer has those endpoints. When I 
+  can't determine the real serverUrl, I should fall back to constructing a proxy URL 
+  using the devDomain and branch path, since 
+  `http://storyboard-core.localhost/branch--0.5.0` already works. The branch prefix is 
+  conditional though — the main worktree doesn't use one. I need to find what the runtime   exposes to get the canonical URL — the `/api` endpoint returned a 404, so there might   be an undocumented way to query it. Looking at the terminal-server code, there's a 
+  `findByWorktree` function that retrieves the running dev server for a given worktree 
+  from the registry, so let me check what's actually stored there.
 
-● drop /0.5.0 (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | head -c 200; echo
-  └ 2 lines...
+● find server registry (shell)
+  │ grep -rn "findByWorktree\|server-registry\|registerServer" packages/storyboard/src
+  │ --include="*.js" 2>/dev/null | head -15
+  └ 13 lines...
 
-● Found the working API base. Let me set it and run the batch:
+● Read serverRegistry.js
+  │ packages/storyboard/src/core/worktree/serverRegistry.js
+  └ L1:60 (60 lines read)
 
-● batch create agents via http (shell)
-  │ export STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"
-  │ echo "$STORYBOARD_SERVER_URL" > /tmp/sb_url
-  │ curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/batch" -H "Content-Type:
-  │ application/json" -d "{\"name\":\"$STORYBOARD_CANVAS_ID\",\"operations\":[
-  │ {\"op\":\"create-widget\",\"type\":\"agent\",\"near\":\"$STORYBOARD_WIDGET_ID\",\…
-  └ 35 lines...
-❯ Your role in the hub is leader, read .agents/roles/leader.role.md to follow
-  additional instructions
-  └ [pending]  meant for the API—it's serving the SPA instead of routing to the actual endpoint. The 
-  real API probably lives at a different path without that prefix, so I should try 
-  adjusting the request URL.
+● inspect server registry (shell)
+  │ cat .storyboard/servers.json 2>/dev/null | jq '.'
+  └ 13 lines...◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)● Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)○ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)● Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)○ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)● Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)○ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)● Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)○ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)● Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)○ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)● Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)○ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)● Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)○ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)○ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)● Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)○ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)● Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)○ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)● Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.1 KiB)  can't determine the real serverUrl, I should fall back to constructing a proxy URL 
+  using the devDomain and branch path, since 
+  `http://storyboard-core.localhost/branch--0.5.0` already works. The branch prefix is 
+  conditional though — the main worktree doesn't use one. I need to find what the runtime   exposes to get the canonical URL — the `/api` endpoint returned a 404, so there might   be an undocumented way to query it. Looking at the terminal-server code, there's a 
+  `findByWorktree` function that retrieves the running dev server for a given worktree 
+  from the registry, so let me check what's actually stored there.
 
-● drop /0.5.0 (shell)
-  │ BASE="http://storyboard-core.localhost/branch--0.5.0"; curl -s -m 3
-  │ "$BASE/_storyboard/canvas/read?name=${STORYBOARD_CANVAS_ID}" | head -c 200; echo
-  └ 2 lines...
+● find server registry (shell)
+  │ grep -rn "findByWorktree\|server-registry\|registerServer" packages/storyboard/src
+  │ --include="*.js" 2>/dev/null | head -15
+  └ 13 lines...
 
-● Found the working API base. Let me set it and run the batch:● batch create agents via http (shell)
-  │ export STORYBOARD_SERVER_URL="http://storyboard-core.localhost/branch--0.5.0"
-  │ echo "$STORYBOARD_SERVER_URL" > /tmp/sb_url
-  │ curl -s -X POST "$STORYBOARD_SERVER_URL/_storyboard/canvas/batch" -H "Content-Type:
-  │ application/json" -d "{\"name\":\"$STORYBOARD_CANVAS_ID\",\"operations\":[
-  │ {\"op\":\"create-widget\",\"type\":\"agent\",\"near\":\"$STORYBOARD_WIDGET_ID\",\…
-  └ 35 lines...
-❯ Your role in the hub is leader, read .agents/roles/leader.role.md to follow
-  additional instructions
-  └ [pending]
-❯ 📡 [Broadcast two-way ACTIVE with Layout Investigator, Grid Implementer]◉ Creating component-set hub (Esc to cancel · 7.9 KiB)◎ Creating component-set hub (Esc to cancel · 7.9 KiB)
+● Read serverRegistry.js
+  │ packages/storyboard/src/core/worktree/serverRegistry.js
+  └ L1:60 (60 lines read)
+
+● inspect server registry (shell)
+  │ cat .storyboard/servers.json 2>/dev/null | jq '.'
+  └ 13 lines...
+
+◐ The registry has a stale e◐ The registry has a stale entry from a different w○ Checking peer agent buffer (Esc to cancel · 5.1 KiB)◐ The registry has a stale entry from a different worktree that's likel◐ The registry has a stale entry from a different worktree that's likely dead, but the cu  using the devDomain and branch path, since 
+  `http://storyboard-core.localhost/branch--0.5.0` already works. The branch prefix is 
+  conditional though — the main worktree doesn't use one. I need to find what the runtime   exposes to get the canonical URL — the `/api` endpoint returned a 404, so there might   be an undocumented way to query it. Looking at the terminal-server code, there's a 
+  `findByWorktree` function that retrieves the running dev server for a given worktree 
+  from the registry, so let me check what's actually stored there.
+
+● find server registry (shell)
+  │ grep -rn "findByWorktree\|server-registry\|registerServer" packages/storyboard/src
+  │ --include="*.js" 2>/dev/null | head -15
+  └ 13 lines...
+
+● Read serverRegistry.js
+  │ packages/storyboard/src/core/worktree/serverRegistry.js
+  └ L1:60 (60 lines read)
+
+● inspect server registry (shell)
+  │ cat .storyboard/servers.json 2>/dev/null | jq '.'
+  └ 13 lines...
+
+◐ The registry has a stale entry from a different worktree that's likely dead, but the 
+  current worktree i◎ Checking peer agent buffer (Esc to cancel · 5.1 KiB)  current worktree isn't registere  current worktree isn't registered at all, so  current worktree isn't registered at all, so the looku◉ Checking peer agent buffer (Esc to cancel · 5.1 KiB)  current worktree isn't registered at all, so the lookup returns  current worktree isn't registered at all, so the lookup returns nothing  current worktree isn't registered at all, so the lookup returns nothing and de● Checking peer agent buffer (Esc to cancel · 5.1 KiB)  current worktree isn't registered at all, so the lookup returns nothing and defaults  `http://storyboard-core.localhost/branch--0.5.0` already works. The branch prefix is 
+  conditional though — the main worktree doesn't use one. I need to find what the runtime   exposes to get the canonical URL — the `/api` endpoint returned a 404, so there might   be an undocumented way to query it. Looking at the terminal-server code, there's a 
+  `findByWorktree` function that retrieves the running dev server for a given worktree 
+  from the registry, so let me check what's actually stored there.
+
+● find server registry (shell)
+  │ grep -rn "findByWorktree\|server-registry\|registerServer" packages/storyboard/src
+  │ --include="*.js" 2>/dev/null | head -15
+  └ 13 lines...
+
+● Read serverRegistry.js
+  │ packages/storyboard/src/core/worktree/serverRegistry.js
+  └ L1:60 (60 lines read)
+
+● inspect server registry (shell)
+  │ cat .storyboard/servers.json 2>/dev/null | jq '.'
+  └ 13 lines...
+
+◐ The registry has a stale entry from a different worktree that's likely dead, but the 
+  current worktree isn't registered at all, so the lookup returns nothing and defaults to   p◉ Checking peer agent buffer (Esc to cancel · 5.1 KiB)   port 1234.   port 1234. It look◎ Checking peer agent buffer (Esc to cancel · 5.1 KiB)   port 1234. It looks li   port 1234. It looks like the r   port 1234. It looks like the run○ Checking peer agent buffer (Esc to cancel · 5.1 KiB)   port 1234. It looks like the runti   port 1234. It looks like the runtime◎ Checking peer agent buffer (Esc to cancel · 5.1 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.3 KiB)   port 1234. It looks like the runtime refactor● Checking peer agent buffer (Esc to cancel · 5.5 KiB)   port 1234. It looks like the runtime refactor removed the code that was
+● find server registry (shell)
+  │ grep -rn "findByWorktree\|server-registry\|registerServer" packages/storyboard/src
+  │ --include="*.js" 2>/dev/null | head -15
+  └ 13 lines...
+
+● Read serverRegistry.js
+  │ packages/storyboard/src/core/worktree/serverRegistry.js
+  └ L1:60 (60 lines read)
+
+● inspect server registry (shell)
+  │ cat .storyboard/servers.json 2>/dev/null | jq '.'
+  └ 13 lines...
+
+◐ The registry has a stale entry from a different worktree that's likely dead, but the 
+  current worktree isn't registered at all, so the lookup returns nothing and defaults to   port 1234. It looks like the runtime refactor removed the code that was registering 
+  the dev server in the registry.
+
+● find server registration call sites (shell)
+  └ grep -rn "register(\|registerServer\|servers.json\|registerDevServer"
+    packages/storyboard/src --include="*.js" --include="*.ts" 2>/dev/null | grep -v test
+    | grep -v "//" | head -20◉ Checking peer agent buffer (Esc to cancel · 5.5 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.5 KiB) 1 background /tasks · / commands · ? help · ctrl+q enqueue · ctrl+x → b background task○ Checking peer agent buffer (Esc to cancel · 5.5 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.5 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.5 KiB)● Checking peer agent buffer (Esc to cancel · 5.5 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.5 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.5 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.5 KiB)● Checking peer agent buffer (Esc to cancel · 5.5 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.5 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.5 KiB)○ Checking peer agent buffer (Esc to cancel · 5.5 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.5 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.5 KiB) 1 background /tasks · / commands · ? help · ctrl+q enqueue● Checking peer agent buffer (Esc to cancel · 5.5 KiB)● find server registry (shell)
+  │ grep -rn "findByWorktree\|server-registry\|registerServer" packages/storyboard/src
+  │ --include="*.js" 2>/dev/null | head -15
+  └ 13 lines...
+
+● Read serverRegistry.js
+  │ packages/storyboard/src/core/worktree/serverRegistry.js
+  └ L1:60 (60 lines read)
+
+● inspect server registry (shell)
+  │ cat .storyboard/servers.json 2>/dev/null | jq '.'
+  └ 13 lines...
+
+◐ The registry has a stale entry from a different worktree that's likely dead, but the 
+  current worktree isn't registered at all, so the lookup returns nothing and defaults to   port 1234. It looks like the runtime refactor removed the code that was registering 
+  the dev server in the registry.
+
+● find server registration call sites (shell)
+  │ grep -rn "register(\|registerServer\|servers.json\|registerDevServer"
+  │ packages/storyboard/src --include="*.js" --include="*.ts" 2>/dev/null | grep -v test
+  │ | grep -v "//" | head -20
+  └ 13 lines...◉ Checking peer agent buffer (Esc to cancel · 5.5 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.5 KiB)○ Checking peer agent buffer (Esc to cancel · 5.5 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.5 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.5 KiB)● Checking peer agent buffer (Esc to cancel · 5.5 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.5 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.5 KiB)○ Checking peer agent buffer (Esc to cancel · 5.5 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.5 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.5 KiB)● Checking peer agent buffer (Esc to cancel · 5.5 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.5 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.5 KiB)○ Checking peer agent buffer (Esc to cancel · 5.5 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.5 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.5 KiB)● Checking peer agent buffer (Esc to cancel · 5.5 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.5 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.5 KiB)○ Checking peer agent buffer (Esc to cancel · 5.5 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.5 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.5 KiB)● Checking peer agent buffer (Esc to cancel · 5.5 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.5 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.5 KiB)○ Checking peer agent buffer (Esc to cancel · 5.5 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.5 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.5 KiB)● Checking peer agent buffer (Esc to cancel · 5.5 KiB)● Checking peer agent buffer (Esc to cancel · 5.6 KiB)● Checking peer agent buffer (Esc to cancel · 5.7 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.7 KiB)
+● Read serverRegistry.js
+  │ packages/storyboard/src/core/worktree/serverRegistry.js
+  └ L1:60 (60 lines read)● inspect server registry (shell)
+  │ cat .storyboard/servers.json 2>/dev/null | jq '.'
+  └ 13 lines...◐ The registry has a stale entry from a different worktree that's likely dead, but the 
+  current worktree isn't registered at all, so the lookup returns nothing and defaults to   port 1234. It looks like the runtime refactor removed the code that was registering 
+  the dev server in the registry.
+
+● find server registration call sites (shell)
+  │ grep -rn "register(\|registerServer\|servers.json\|registerDevServer"
+  │ packages/storyboard/src --include="*.js" --include="*.ts" 2>/dev/null | grep -v test
+  │ | grep -v "//" | head -20
+  └ 13 lines...
+
+● find where setupTerminalServer is called (shell)
+  └ grep -rn "setupTerminalServer\|server-plugin" packages/storyboard/src
+    --include="*.js" --include="*.ts" 2>/dev/null | grep -v test | head◎ Checking peer agent buffer (Esc to cancel · 5.7 KiB) 1 background /tasks · / commands · ? help · ctrl+q enqueue · ctrl+x → b background task◉ Checking peer agent buffer (Esc to cancel · 5.7 KiB)● Checking peer agent buffer (Esc to cancel · 5.7 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.7 KiB)○ Checking peer agent buffer (Esc to cancel · 5.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.7 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.7 KiB)● Checking peer agent buffer (Esc to cancel · 5.7 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.7 KiB)○ Checking peer agent buffer (Esc to cancel · 5.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.7 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.7 KiB) 1 background /tasks · / commands · ? help · ctrl+q enqueue● Checking peer agent buffer (Esc to cancel · 5.7 KiB)● Read serverRegistry.js
+  │ packages/storyboard/src/core/worktree/serverRegistry.js
+  └ L1:60 (60 lines read)
+
+● inspect server registry (shell)
+  │ cat .storyboard/servers.json 2>/dev/null | jq '.'
+  └ 13 lines...
+
+◐ The registry has a stale entry from a different worktree that's likely dead, but the 
+  current worktree isn't registered at all, so the lookup returns nothing and defaults to   port 1234. It looks like the runtime refactor removed the code that was registering 
+  the dev server in the registry.
+
+● find server registration call sites (shell)
+  │ grep -rn "register(\|registerServer\|servers.json\|registerDevServer"
+  │ packages/storyboard/src --include="*.js" --include="*.ts" 2>/dev/null | grep -v test
+  │ | grep -v "//" | head -20
+  └ 13 lines...
+
+● find where setupTerminalServer is called (shell)
+  │ grep -rn "setupTerminalServer\|server-plugin" packages/storyboard/src
+  │ --include="*.js" --include="*.ts" 2>/dev/null | grep -v test | head
+  └ 8 lines...◉ Checking peer agent buffer (Esc to cancel · 5.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.7 KiB)○ Checking peer agent buffer (Esc to cancel · 5.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.7 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.7 KiB)● Checking peer agent buffer (Esc to cancel · 5.7 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.7 KiB)○ Checking peer agent buffer (Esc to cancel · 5.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.7 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.7 KiB)● Checking peer agent buffer (Esc to cancel · 5.7 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.7 KiB)○ Checking peer agent buffer (Esc to cancel · 5.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.7 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.7 KiB)● Checking peer agent buffer (Esc to cancel · 5.7 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.7 KiB)○ Checking peer agent buffer (Esc to cancel · 5.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.7 KiB)● Checking peer agent buffer (Esc to cancel · 5.7 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.7 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.7 KiB)○ Checking peer agent buffer (Esc to cancel · 5.7 KiB)○ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.8 KiB)
+● inspect server registry (shell)
+  │ cat .storyboard/servers.json 2>/dev/null | jq '.'
+  └ 13 lines...
+
+◐ The registry has a stale entry from a different worktree that's likely dead, but the 
+  current worktree isn't registered at all, so the lookup returns nothing and defaults to   port 1234. It looks like the runtime refactor removed the code that was registering 
+  the dev server in the registry.
+
+● find server registration call sites (shell)
+  │ grep -rn "register(\|registerServer\|servers.json\|registerDevServer"
+  │ packages/storyboard/src --include="*.js" --include="*.ts" 2>/dev/null | grep -v test
+  │ | grep -v "//" | head -20
+  └ 13 lines...
+
+● find where setupTerminalServer is called (shell)
+  │ grep -rn "setupTerminalServer\|server-plugin" packages/storyboard/src
+  │ --include="*.js" --include="*.ts" 2>/dev/null | grep -v test | head
+  └ 8 lines...
+
+○ Read server-plugin.js
+  └ packages/storyboard/src/core/vite/server-plugin.js◉ Checking peer agent buffer (Esc to cancel · 5.8 KiB)● inspect server registry (shell)
+  │ cat .storyboard/servers.json 2>/dev/null | jq '.'
+  └ 13 lines...
+
+◐ The registry has a stale entry from a different worktree that's likely dead, but the 
+  current worktree isn't registered at all, so the lookup returns nothing and defaults to   port 1234. It looks like the runtime refactor removed the code that was registering 
+  the dev server in the registry.
+
+● find server registration call sites (shell)
+  │ grep -rn "register(\|registerServer\|servers.json\|registerDevServer"
+  │ packages/storyboard/src --include="*.js" --include="*.ts" 2>/dev/null | grep -v test
+  │ | grep -v "//" | head -20
+  └ 13 lines...
+
+● find where setupTerminalServer is called (shell)
+  │ grep -rn "setupTerminalServer\|server-plugin" packages/storyboard/src
+  │ --include="*.js" --include="*.ts" 2>/dev/null | grep -v test | head
+  └ 8 lines...
+
+● Read server-plugin.js
+  │ packages/storyboard/src/core/vite/server-plugin.js
+  └ L290:330 (41 lines read)● Checking peer agent buffer (Esc to cancel · 5.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.8 KiB)○ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.8 KiB)● Checking peer agent buffer (Esc to cancel · 5.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.8 KiB)○ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.8 KiB)● Checking peer agent buffer (Esc to cancel · 5.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.8 KiB)○ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.8 KiB)● Checking peer agent buffer (Esc to cancel · 5.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.8 KiB)○ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.8 KiB)● Checking peer agent buffer (Esc to cancel · 5.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.8 KiB)○ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.8 KiB)● Checking peer agent buffer (Esc to cancel · 5.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.8 KiB)○ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.8 KiB)● Checking peer agent buffer (Esc to cancel · 5.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.8 KiB)○ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.8 KiB)● Checking peer agent buffer (Esc to cancel · 5.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.8 KiB)○ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.8 KiB)◉ Checking peer agent buffer (Esc to cancel · 5.8 KiB)● Checking peer agent buffer (Esc to cancel · 5.8 KiB)● Checking peer agent buffer (Esc to cancel · 6.0 KiB)  └ 13 lines...
+
+◐ The registry has a stale entry from a different worktree that's likely dead, but the 
+  current worktree isn't registered at all, so the lookup returns nothing and defaults to   port 1234. It looks like the runtime refactor removed the code that was registering 
+  the dev server in the registry.
+
+● find server registration call sites (shell)
+  │ grep -rn "register(\|registerServer\|servers.json\|registerDevServer"
+  │ packages/storyboard/src --include="*.js" --include="*.ts" 2>/dev/null | grep -v test
+  │ | grep -v "//" | head -20
+  └ 13 lines...
+
+● find where setupTerminalServer is called (shell)
+  │ grep -rn "setupTerminalServer\|server-plugin" packages/storyboard/src
+  │ --include="*.js" --include="*.ts" 2>/dev/null | grep -v test | head
+  └ 8 lines...
+
+● Read server-plugin.js
+  │ packages/storyboard/src/core/vite/server-plugin.js
+  └ L290:330 (41 lines read)
+
+◐ I'm seeing a timing issue whe◐ I'm seeing a timing issue where `setupTerminalServer` ge◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◐ I'm seeing a timing issue where `setupTerminalServer` gets called during Vite's
+◐ The registry has a stale entry from a different worktree that's likely dead, but the 
+  current worktree isn't registered at all, so the lookup returns nothing and defaults to   port 1234. It looks like the runtime refactor removed the code that was registering 
+  the dev server in the registry.
+
+● find server registration call sites (shell)
+  │ grep -rn "register(\|registerServer\|servers.json\|registerDevServer"
+  │ packages/storyboard/src --include="*.js" --include="*.ts" 2>/dev/null | grep -v test
+  │ | grep -v "//" | head -20
+  └ 13 lines...
+
+● find where setupTerminalServer is called (shell)
+  │ grep -rn "setupTerminalServer\|server-plugin" packages/storyboard/src
+  │ --include="*.js" --include="*.ts" 2>/dev/null | grep -v test | head
+  └ 8 lines...
+
+● Read server-plugin.js
+  │ packages/storyboard/src/core/vite/server-plugin.js
+  └ L290:330 (41 lines read)
+
+◐ I'm seeing a timing issue where `setupTerminalServer` gets called during Vite's 
+  `configureServer` h  `configureServer` hook, which runs be  `configureServer` hook, which runs before the HTTP se◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)  `configureServer` hook, which runs before the HTTP server actually  `configureServer` hook, which runs before the HTTP server actually starts liste◐ The registry has a stale entry from a different worktree that's likely dead, but the 
+  current worktree isn't registered at all, so the lookup returns nothing and defaults to   port 1234. It looks like the runtime refactor removed the code that was registering 
+  the dev server in the registry.
+
+● find server registration call sites (shell)
+  │ grep -rn "register(\|registerServer\|servers.json\|registerDevServer"
+  │ packages/storyboard/src --include="*.js" --include="*.ts" 2>/dev/null | grep -v test
+  │ | grep -v "//" | head -20
+  └ 13 lines...
+
+● find where setupTerminalServer is called (shell)
+  │ grep -rn "setupTerminalServer\|server-plugin" packages/storyboard/src
+  │ --include="*.js" --include="*.ts" 2>/dev/null | grep -v test | head
+  └ 8 lines...
+
+● Read server-plugin.js
+  │ packages/storyboard/src/core/vite/server-plugin.js
+  └ L290:330 (41 lines read)
+
+◐ I'm seeing a timing issue where `setupTerminalServer` gets called during Vite's 
+  `configureServer` hook, which runs before the HTTP server actually starts listening. 
+  When○ Checking peer agent buffer (Esc to cancel · 6.0 KiB)  When it tries  When it tries to capt  When it tries to capture the  When it tries to capture the serve◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)  When it tries to capture the server's p  When it tries to capture the server's port v  When it tries to capture the server's port via `  When it tries to capture the server's port via `http◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)  When it tries to capture the server's port via `httpServ  When it tries to capture the server's port via `httpServer.a  When it tries to capture the server's port via `httpServer.addre● Checking peer agent buffer (Esc to cancel · 6.0 KiB)  When it tries to capture the server's port via `httpServer.address(  When it tries to capture the server's port via `httpServer.address()`  When it tries to capture the server's port via `httpServer.address()`,  When it tries to capture the server's port via `httpServer.address()`, i◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)  When it tries to capture the server's port via `httpServer.address()`, it◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)○ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)● Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)○ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)● Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)○ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)● Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)○ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)● Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)○ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)● Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)○ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)● Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)○ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)● Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)● Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)○ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)● Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)○ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)● Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)○ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)● Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)○ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)● Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)○ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)● Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)○ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)● Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)○ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)● Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 6.4 KiB)  current worktree isn't registered at all, so the lookup returns nothing and defaults to   port 1234. It looks like the runtime refactor removed the code that was registering 
+  the dev server in the registry.
+
+● find server registration call sites (shell)
+  │ grep -rn "register(\|registerServer\|servers.json\|registerDevServer"
+  │ packages/storyboard/src --include="*.js" --include="*.ts" 2>/dev/null | grep -v test
+  │ | grep -v "//" | head -20
+  └ 13 lines...
+
+● find where setupTerminalServer is called (shell)
+  │ grep -rn "setupTerminalServer\|server-plugin" packages/storyboard/src
+  │ --include="*.js" --include="*.ts" 2>/dev/null | grep -v test | head
+  └ 8 lines...
+
+● Read server-plugin.js
+  │ packages/storyboard/src/core/vite/server-plugin.js
+  └ L290:330 (41 lines read)
+
+◐ I'm seeing a timing issue where `setupTerminalServer` gets called during Vite's 
+  `configureServer` hook, which runs before the HTTP server actually starts listening. 
+  When it tries to capture the server's port via `httpServer.address()`, it returns null   because the binding hasn't comp  because the binding hasn't completed yet, leaving `actualServerPort` u◎ Checking peer agent buffer (Esc to cancel · 6.4 KiB)  the dev server in the registry.
+
+● find server registration call sites (shell)
+  │ grep -rn "register(\|registerServer\|servers.json\|registerDevServer"
+  │ packages/storyboard/src --include="*.js" --include="*.ts" 2>/dev/null | grep -v test
+  │ | grep -v "//" | head -20
+  └ 13 lines...
+
+● find where setupTerminalServer is called (shell)
+  │ grep -rn "setupTerminalServer\|server-plugin" packages/storyboard/src
+  │ --include="*.js" --include="*.ts" 2>/dev/null | grep -v test | head
+  └ 8 lines...
+
+● Read server-plugin.js
+  │ packages/storyboard/src/core/vite/server-plugin.js
+  └ L290:330 (41 lines read)
+
+◐ I'm seeing a timing issue where `setupTerminalServer` gets called during Vite's 
+  `configureServer` hook, which runs before the HTTP server actually starts listening. 
+  When it tries to capture the server's port via `httpServer.address()`, it returns null   because the binding hasn't completed yet, leaving `actualServerPort` unset.
+
+  There's also a separate pro  There's also a separate problem: the dev server never reg  There's also a separate problem: the dev server never registers itself in the `.sto○ Checking peer agent buffer (Esc to cancel · 6.4 KiB)
+● find server registration call sites (shell)
+  │ grep -rn "register(\|registerServer\|servers.json\|registerDevServer"
+  │ packages/storyboard/src --include="*.js" --include="*.ts" 2>/dev/null | grep -v test
+  │ | grep -v "//" | head -20
+  └ 13 lines...
+
+● find where setupTerminalServer is called (shell)
+  │ grep -rn "setupTerminalServer\|server-plugin" packages/storyboard/src
+  │ --include="*.js" --include="*.ts" 2>/dev/null | grep -v test | head
+  └ 8 lines...
+
+● Read server-plugin.js
+  │ packages/storyboard/src/core/vite/server-plugin.js
+  └ L290:330 (41 lines read)
+
+◐ I'm seeing a timing issue where `setupTerminalServer` gets called during Vite's 
+  `configureServer` hook, which runs before the HTTP server actually starts listening. 
+  When it tries to capture the server's port via `httpServer.address()`, it returns null   because the binding hasn't completed yet, leaving `actualServerPort` unset.
+
+  There's also a separate problem: the dev server never registers itself in the 
+  `.storyboard/servers.json` r  `.storyboard/servers.json` registry since that o  `.storyboard/servers.json` registry since that only happens in the  `.storyboard/servers.json` registry since that only happens in the CLI background◎ Checking peer agent buffer (Esc to cancel · 6.4 KiB)● find server registration call sites (shell)
+  │ grep -rn "register(\|registerServer\|servers.json\|registerDevServer"
+  │ packages/storyboard/src --include="*.js" --include="*.ts" 2>/dev/null | grep -v test
+  │ | grep -v "//" | head -20
+  └ 13 lines...
+
+● find where setupTerminalServer is called (shell)
+  │ grep -rn "setupTerminalServer\|server-plugin" packages/storyboard/src
+  │ --include="*.js" --include="*.ts" 2>/dev/null | grep -v test | head
+  └ 8 lines...
+
+● Read server-plugin.js
+  │ packages/storyboard/src/core/vite/server-plugin.js
+  └ L290:330 (41 lines read)
+
+◐ I'm seeing a timing issue where `setupTerminalServer` gets called during Vite's 
+  `configureServer` hook, which runs before the HTTP server actually starts listening. 
+  When it tries to capture the server's port via `httpServer.address()`, it returns null   because the binding hasn't completed yet, leaving `actualServerPort` unset.
+
+  There's also a separate problem: the dev server never registers itself in the 
+  `.storyboard/servers.json` registry since that only happens in the CLI background mode,   so `fin   so `findByWorktree`   so `findByWorktree` always fa◉ Checking peer agent buffer (Esc to cancel · 6.4 KiB)   so `findByWorktree` always fails and b   so `findByWorktree` always fails and both fall   so `findByWorktree` always fails and both fallbacks c   so `findByWorktree` always fails and both fallbacks collaps● Checking peer agent buffer (Esc to cancel · 6.7 KiB)  │ packages/storyboard/src --include="*.js" --include="*.ts" 2>/dev/null | grep -v test
+  │ | grep -v "//" | head -20
+  └ 13 lines...
+
+● find where setupTerminalServer is called (shell)
+  │ grep -rn "setupTerminalServer\|server-plugin" packages/storyboard/src
+  │ --include="*.js" --include="*.ts" 2>/dev/null | grep -v test | head
+  └ 8 lines...
+
+● Read server-plugin.js
+  │ packages/storyboard/src/core/vite/server-plugin.js
+  └ L290:330 (41 lines read)
+
+◐ I'm seeing a timing issue where `setupTerminalServer` gets called during Vite's 
+  `configureServer` hook, which runs before the HTTP server actually starts listening. 
+  When it tries to capture the server's port via `httpServer.address()`, it returns null   because the binding hasn't completed yet, leaving `actualServerPort` unset.
+
+  There's also a separate problem: the dev server never registers itself in the 
+  `.storyboard/servers.json` registry since that only happens in the CLI background mode,   so `findByWorktree` always fails and both fallbacks collapse to port 1234.
+
+  The solution needs two parts  The solution needs two parts: defer the port capture until after the  │ | grep -v "//" | head -20
+  └ 13 lines...
+
+● find where setupTerminalServer is called (shell)
+  │ grep -rn "setupTerminalServer\|server-plugin" packages/storyboard/src
+  │ --include="*.js" --include="*.ts" 2>/dev/null | grep -v test | head
+  └ 8 lines...
+
+● Read server-plugin.js
+  │ packages/storyboard/src/core/vite/server-plugin.js
+  └ L290:330 (41 lines read)
+
+◐ I'm seeing a timing issue where `setupTerminalServer` gets called during Vite's 
+  `configureServer` hook, which runs before the HTTP server actually starts listening. 
+  When it tries to capture the server's port via `httpServer.address()`, it returns null   because the binding hasn't completed yet, leaving `actualServerPort` unset.
+
+  There's also a separate problem: the dev server never registers itself in the 
+  `.storyboard/servers.json` registry since that only happens in the CLI background mode,   so `findByWorktree` always fails and both fallbacks collapse to port 1234.
+
+  The solution needs two parts: defer the port capture until after the server is actually   listening (usin◉ Checking peer agent buffer (Esc to cancel · 6.7 KiB)   listening (using the `'listening'` event), an   listening (using the `'listening'` event), and also register the dev ser  └ 13 lines...
+
+● find where setupTerminalServer is called (shell)
+  │ grep -rn "setupTerminalServer\|server-plugin" packages/storyboard/src
+  │ --include="*.js" --include="*.ts" 2>/dev/null | grep -v test | head
+  └ 8 lines...
+
+● Read server-plugin.js
+  │ packages/storyboard/src/core/vite/server-plugin.js
+  └ L290:330 (41 lines read)
+
+◐ I'm seeing a timing issue where `setupTerminalServer` gets called during Vite's 
+  `configureServer` hook, which runs before the HTTP server actually starts listening. 
+  When it tries to capture the server's port via `httpServer.address()`, it returns null   because the binding hasn't completed yet, leaving `actualServerPort` unset.
+
+  There's also a separate problem: the dev server never registers itself in the 
+  `.storyboard/servers.json` registry since that only happens in the CLI background mode,   so `findByWorktree` always fails and both fallbacks collapse to port 1234.
+
+  The solution needs two parts: defer the port capture until after the server is actually   listening (using the `'listening'` event), and also register the dev server in the 
+  registry so  registry so lookups work. I'm al◎ Checking peer agent buffer (Esc to cancel · 6.7 KiB)  registry so lookups work. I'm also wondering if th  registry so lookups work. I'm also wondering if the canvas API end  registry so lookups work. I'm also wondering if the canvas API endpoints might a○ Checking peer agent buffer (Esc to cancel · 6.7 KiB)
+● find where setupTerminalServer is called (shell)
+  │ grep -rn "setupTerminalServer\|server-plugin" packages/storyboard/src
+  │ --include="*.js" --include="*.ts" 2>/dev/null | grep -v test | head
+  └ 8 lines...
+
+● Read server-plugin.js
+  │ packages/storyboard/src/core/vite/server-plugin.js
+  └ L290:330 (41 lines read)
+
+◐ I'm seeing a timing issue where `setupTerminalServer` gets called during Vite's 
+  `configureServer` hook, which runs before the HTTP server actually starts listening. 
+  When it tries to capture the server's port via `httpServer.address()`, it returns null   because the binding hasn't completed yet, leaving `actualServerPort` unset.
+
+  There's also a separate problem: the dev server never registers itself in the 
+  `.storyboard/servers.json` registry since that only happens in the CLI background mode,   so `findByWorktree` always fails and both fallbacks collapse to port 1234.
+
+  The solution needs two parts: defer the port capture until after the server is actually   listening (using the `'listening'` event), and also register the dev server in the 
+  registry so lookups work. I'm also wondering if the canvas API endpoints might actually   be a   be available o   be available on the Vit   be available on the Vite server◎ Checking peer agent buffer (Esc to cancel · 6.7 KiB)   be available on the Vite server under   be available on the Vite server under the ba   be available on the Vite server under the base pa◉ Checking peer agent buffer (Esc to cancel · 6.7 KiB)   be available on the Vite server under the base path, s   be available on the Vite server under the base path, so I   be available on the Vite server under the base path, so I shou   be available on the Vite server under the base path, so I should t● Checking peer agent buffer (Esc to cancel · 6.7 KiB)   be available on the Vite server under the base path, so I should test● Checking peer agent buffer (Esc to cancel · 6.8 KiB)   be available on the Vite server under the base path, so I should test that   be available on the Vite server under the base path, so I should test that dir◉ Checking peer agent buffer (Esc to cancel · 6.8 KiB)   be available on the Vite server under the base path, so I should test that direc◉ Checking peer agent buffer (Esc to cancel · 7.0 KiB)   be available on the Vite server under the base path, so I should test that directl◎ Checking peer agent buffer (Esc to cancel · 7.0 KiB)● Read server-plugin.js
+  │ packages/storyboard/src/core/vite/server-plugin.js
+  └ L290:330 (41 lines read)
+
+◐ I'm seeing a timing issue where `setupTerminalServer` gets called during Vite's 
+  `configureServer` hook, which runs before the HTTP server actually starts listening. 
+  When it tries to capture the server's port via `httpServer.address()`, it returns null   because the binding hasn't completed yet, leaving `actualServerPort` unset.
+
+  There's also a separate problem: the dev server never registers itself in the 
+  `.storyboard/servers.json` registry since that only happens in the CLI background mode,   so `findByWorktree` always fails and both fallbacks collapse to port 1234.
+
+  The solution needs two parts: defer the port capture until after the server is actually   listening (using the `'listening'` event), and also register the dev server in the 
+  registry so lookups work. I'm also wondering if the canvas API endpoints might actually   be available on the Vite server under the base path, so I should test that directly.
+
+● probe each port directly (shell)
+  └ for p in 1235 1241; do echo "=== port $p ==="; curl -s -m 2 "http://localhost:$p/bran    ch--0.5.0/_storyboard/canvas/read?name=$STORYBOARD_CANVAS_ID" | head -c 100; echo;
+    curl -s -m 2 "http://localhost:$p/_storyboard/canvas/read?name=$STORYBOARD_CANVAS_ID"    | head -c 100; echo; done○ Checking peer agent buffer (Esc to cancel · 7.0 KiB) 1 background /tasks · / commands · ? help · ctrl+q enqueue · ctrl+x → b background task◎ Checking peer agent buffer (Esc to cancel · 7.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 7.0 KiB)● Checking peer agent buffer (Esc to cancel · 7.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 7.0 KiB)◎ Checking peer agent buffer (Esc to cancel · 7.0 KiB) 1 background /tasks · / commands · ? help · ctrl+q enqueue○ Checking peer agent buffer (Esc to cancel · 7.0 KiB)  │ packages/storyboard/src/core/vite/server-plugin.js
+  └ L290:330 (41 lines read)
+
+◐ I'm seeing a timing issue where `setupTerminalServer` gets called during Vite's 
+  `configureServer` hook, which runs before the HTTP server actually starts listening. 
+  When it tries to capture the server's port via `httpServer.address()`, it returns null   because the binding hasn't completed yet, leaving `actualServerPort` unset.
+
+  There's also a separate problem: the dev server never registers itself in the 
+  `.storyboard/servers.json` registry since that only happens in the CLI background mode,   so `findByWorktree` always fails and both fallbacks collapse to port 1234.
+
+  The solution needs two parts: defer the port capture until after the server is actually   listening (using the `'listening'` event), and also register the dev server in the 
+  registry so lookups work. I'm also wondering if the canvas API endpoints might actually   be available on the Vite server under the base path, so I should test that directly.
+
+● probe each port directly (shell)
+  │ for p in 1235 1241; do echo "=== port $p ==="; curl -s -m 2 "http://localhost:$p/bran  │ ch--0.5.0/_storyboard/canvas/read?name=$STORYBOARD_CANVAS_ID" | head -c 100; echo;
+  │ curl -s -m 2 "http://localhost:$p/_storyboard/canvas/read?name=$STORYBOARD_CANVAS_ID"  │ | head -c 100; echo; done
+  └ 5 lines...◎ Checking peer agent buffer (Esc to cancel · 7.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 7.0 KiB)● Checking peer agent buffer (Esc to cancel · 7.0 KiB)◉ Checking peer agent buffer (Esc to cancel · 7.0 KiB)
