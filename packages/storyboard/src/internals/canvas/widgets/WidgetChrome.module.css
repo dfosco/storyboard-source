@@ -109,6 +109,17 @@
   outline-style: solid;
 }
 
+/* Agent done — paint outline green whether or not the widget is selected.
+   Targets the inner widget slot via the chromeContainer's data attribute. */
+.chromeContainer[data-agent-status="done"] .widgetSlot {
+  outline: 4px solid var(--bgColor-success-emphasis, #1a7f37);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.chromeContainer[data-agent-status="done"] .widgetSlotSelected {
+  outline-color: var(--bgColor-success-emphasis, #1a7f37);
+}
+
 /* Toolbar — absolutely positioned below the widget so it doesn't affect
    the draggable box dimensions (tiny-canvas measures children for drag). */
 .toolbar {

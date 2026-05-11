@@ -64,7 +64,7 @@ function resolveMenus(cfg) {
   if (cfg.tools) {
     const result = {}
     for (const [key, tool] of Object.entries(cfg.tools)) {
-      if (tool.surface === 'command-palette' || tool.surface === 'canvas-toolbar') continue
+      if (tool.surface === 'command-palette' || tool.surface === 'canvas-toolbar' || tool.surface === 'collab-bar') continue
       const menu = { ...tool }
       if (tool.render === 'menu' && tool.handler) {
         menu.action = tool.handler
@@ -234,6 +234,15 @@ export default function CoreUIBar({ basePath = '/', toolbarConfig, customHandler
     return config.tools
       ? Object.entries(config.tools)
           .filter(([, tool]) => tool.surface === 'canvas-toolbar')
+          .filter(([, tool]) => tool.prod || isLocalDev)
+          .map(([key, tool]) => ({ key, ...tool }))
+      : []
+  }, [config])
+
+  const collabBarMenus = useMemo(() => {
+    return config.tools
+      ? Object.entries(config.tools)
+          .filter(([, tool]) => tool.surface === 'collab-bar')
           .filter(([, tool]) => tool.prod || isLocalDev)
           .map(([key, tool]) => ({ key, ...tool }))
       : []
@@ -756,6 +765,36 @@ export default function CoreUIBar({ basePath = '/', toolbarConfig, customHandler
 
   return (
     <>
+      {/* Collab bar (top-right, canvas only) */}
+      {canvasActive && visible && !completelyHidden && collabBarMenus.length > 0 && (
+        <div
+          className="fixed top-6 right-6 z-[9999] font-sans flex items-center gap-3"
+          data-collab-bar=""
+          role="toolbar"
+          aria-label="Collab bar"
+        >
+          {collabBarMenus.map((collabTool) => {
+            const CollabToolComponent = toolComponents[collabTool.key]
+            if (!CollabToolComponent) return null
+            return (
+              <Tooltip.Root key={collabTool.key}>
+                <Tooltip.Trigger>
+                  <span data-local-only={isToolbarToolLocalOnly(collabTool.key) || undefined}>
+                    <CollabToolComponent
+                      config={collabTool}
+                      data={toolData[collabTool.key]}
+                      canvasName={activeCanvasId}
+                      tabIndex={0}
+                    />
+                  </span>
+                </Tooltip.Trigger>
+                <Tooltip.Content side="bottom">{collabTool.ariaLabel || collabTool.key}</Tooltip.Content>
+              </Tooltip.Root>
+            )
+          })}
+        </div>
+      )}
+
       {/* Canvas toolbar */}
       {canvasActive && visible && !completelyHidden && canvasMenus.length > 0 && (
         <div

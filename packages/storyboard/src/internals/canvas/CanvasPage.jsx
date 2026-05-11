@@ -238,6 +238,18 @@ function centerPositionForWidget(pos, type, props) {
   }
 }
 
+/**
+ * Identify widgets that can act as agents — PromptWidget instances and
+ * Terminal widgets whose id starts with `agent-`. Used to derive the
+ * "done agents" list surfaced by the collab bar.
+ */
+function isAgentWidget(widget) {
+  if (!widget) return false
+  if (widget.type === 'prompt') return true
+  if (widget.type === 'terminal' && typeof widget.id === 'string' && widget.id.startsWith('agent-')) return true
+  return false
+}
+
 function roundPosition(value) {
   return Math.round(value)
 }
@@ -785,6 +797,11 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
    * plain click single-selects (clears others).
    * Suppressed immediately after a multi-drag to prevent the post-drag
    * click from collapsing the selection.
+   *
+   * Side effect: selecting a widget that is currently in `done` agent
+   * status flips it back to `running` (re-engaged by the user). The flip
+   * goes through handleWidgetUpdate so it lands in the undo history —
+   * Cmd+Z restores `done`.
    */
   const handleWidgetSelect = useCallback((widgetId, shiftKey) => {
     if (justDraggedRef.current) return
@@ -800,6 +817,12 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
       })
     } else {
       setSelectedWidgetIds(new Set([widgetId]))
+    }
+    // Re-engage a "done" agent on user-initiated selection.
+    const widgets = stateRef.current.widgets ?? []
+    const target = widgets.find((w) => w?.id === widgetId)
+    if (target?.props?.status === 'done' && isAgentWidget(target)) {
+      handleWidgetUpdateRef.current?.(widgetId, { status: 'running' })
     }
   }, [])
 
@@ -924,6 +947,11 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
       return next
     })
   }, [canvasId, debouncedSave, undoRedo, snapEnabled, snapGridSize])
+
+  // Stable ref so handleWidgetSelect can flip a "done" agent back to
+  // "running" without re-creating itself on every widget update.
+  const handleWidgetUpdateRef = useRef(handleWidgetUpdate)
+  useEffect(() => { handleWidgetUpdateRef.current = handleWidgetUpdate }, [handleWidgetUpdate])
 
   const handleWidgetRoleChange = useCallback((widgetId, roleId) => {
     const targetRole = typeof roleId === 'string' && roleId ? roleId : defaultHubRole
@@ -2406,6 +2434,75 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
     bridge.connectors = localConnectors
     window[CANVAS_BRIDGE_STATE_KEY] = bridge
   }, [localWidgets, localConnectors])
+
+  // ── Done agents: surface readiness in tab title + collab bar ──
+  // Derives the list of agent widgets currently in `done` state from
+  // localWidgets, broadcasts changes for AgentsReadyTrigger, prepends a
+  // sparkle to document.title, and centers the viewport on a target
+  // agent when the trigger asks (without selecting it).
+  const doneAgents = useMemo(() => {
+    const widgets = localWidgets ?? []
+    const out = []
+    for (const w of widgets) {
+      if (!isAgentWidget(w)) continue
+      if (w?.props?.status === 'done') {
+        out.push({ id: w.id, type: w.type, alias: w.props?.alias || null })
+      }
+    }
+    return out
+  }, [localWidgets])
+
+  // Broadcast doneAgents to the collab bar (snapshots on demand too).
+  useEffect(() => {
+    document.dispatchEvent(new CustomEvent('storyboard:done-agents-changed', {
+      detail: { canvasId, doneAgents },
+    }))
+    function handleRequest() {
+      document.dispatchEvent(new CustomEvent('storyboard:done-agents-changed', {
+        detail: { canvasId, doneAgents },
+      }))
+    }
+    document.addEventListener('storyboard:done-agents-request', handleRequest)
+    return () => document.removeEventListener('storyboard:done-agents-request', handleRequest)
+  }, [canvasId, doneAgents])
+
+  // Prepend ✳️ to the page title while any agent on this canvas is done.
+  useEffect(() => {
+    if (doneAgents.length === 0) return
+    const original = document.title
+    const sparkle = '✳️ '
+    if (!original.startsWith(sparkle)) {
+      document.title = sparkle + original
+    }
+    return () => { document.title = original }
+  }, [doneAgents.length])
+
+  // Pan/zoom the viewport to center a specific widget without selecting it.
+  // Mirrors the `?widget=<id>` URL handling. Used by AgentsReadyTrigger.
+  useEffect(() => {
+    function handleCenterOnWidget(e) {
+      const targetId = e?.detail?.widgetId
+      if (!targetId) return
+      const el = scrollRef.current
+      if (!el) return
+      const widgets = localWidgets ?? []
+      const widget = widgets.find((wgt) => wgt.id === targetId)
+      if (!widget) return
+      const fallback = WIDGET_FALLBACK_SIZES[widget.type] || { width: 200, height: 150 }
+      const x = widget.position?.x ?? 0
+      const y = widget.position?.y ?? 0
+      const w = widget.props?.width ?? fallback.width
+      const h = widget.props?.height ?? fallback.height
+      const scale = (zoomRef.current || 100) / 100
+      el.scrollTo({
+        left: (x + w / 2) * scale - el.clientWidth / 2,
+        top: (y + h / 2) * scale - el.clientHeight / 2,
+        behavior: 'smooth',
+      })
+    }
+    document.addEventListener('storyboard:canvas:center-on-widget', handleCenterOnWidget)
+    return () => document.removeEventListener('storyboard:canvas:center-on-widget', handleCenterOnWidget)
+  }, [localWidgets])
 
   // ── WebGL context pool: viewport-based visibility tracking ──
   const updatePoolVisibility = usePoolVisibilityUpdater()

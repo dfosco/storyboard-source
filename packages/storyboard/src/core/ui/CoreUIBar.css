@@ -45,3 +45,22 @@
   pointer-events: none;
   z-index: 1;
 }
+
+/* ── Collab bar / Agents Ready trigger ───────────────────────────── */
+.agents-ready-trigger-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1;
+}
+.agents-ready-trigger-count {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: 12px;
+  min-width: 1ch;
+  text-align: center;
+  color: currentColor;
+}
+[data-collab-bar-item="agents-ready"][data-count="0"] .agents-ready-trigger-count {
+  opacity: 0.5;
+}

@@ -236,6 +236,30 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
     if (multiSelected && interactive) setInteractive(false)
   }, [multiSelected])
 
+  // Persist agent status (done/error/cancelled) so chrome can paint the
+  // ready indicator and CanvasPage can derive the "agents ready" list.
+  // Only agent-* terminals receive these events.
+  const onUpdateRef = useRef(onUpdate)
+  useEffect(() => { onUpdateRef.current = onUpdate }, [onUpdate])
+  useEffect(() => {
+    if (!isAgent) return
+    if (!import.meta.hot) return
+    const handler = (data) => {
+      if (data?.widgetId !== id) return
+      if (data.status === 'done' || data.status === 'completed') {
+        onUpdateRef.current?.({ status: 'done' })
+      } else if (data.status === 'error') {
+        onUpdateRef.current?.({ status: 'error', errorMessage: data.message || 'Unknown error' })
+      } else if (data.status === 'cancelled') {
+        onUpdateRef.current?.({ status: 'idle', errorMessage: '' })
+      } else if (data.status === 'running' || data.status === 'pending') {
+        onUpdateRef.current?.({ status: 'running' })
+      }
+    }
+    import.meta.hot.on('storyboard:agent-status', handler)
+    return () => import.meta.hot.off('storyboard:agent-status', handler)
+  }, [id, isAgent])
+
   // Connect terminal + WebSocket (only when pool grants a live slot)
   useEffect(() => {
     if (!isLive) return

@@ -17,6 +17,7 @@ export const coreHandlers = {
   'canvas-add-widget':  () => import('./handlers/canvasAddWidget.js'),
   'canvas-agents':      () => import('./handlers/canvasAgents.js'),
   'canvas-toolbar':     () => import('./handlers/canvasToolbar.js'),
+  'agents-ready':       () => import('./handlers/agentsReady.js'),
   'hide-toolbars':      () => import('./handlers/hideToolbars.js'),
   'command-palette':    () => import('./handlers/commandPalette.js'),
   'hide-chrome':        () => import('./handlers/hideChrome.js'),

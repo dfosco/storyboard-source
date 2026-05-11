@@ -12,8 +12,9 @@
 export { id as commandToolbar } from './mainToolbar.js'
 export { id as canvasToolbar } from './canvasToolbar.js'
 export { id as commandPalette } from './commandList.js'
+export { id as collabBar } from './collabBar.js'
 
 /**
  * All surface IDs for validation.
  */
-export const SURFACE_IDS = ['command-toolbar', 'canvas-toolbar', 'command-palette']
+export const SURFACE_IDS = ['command-toolbar', 'canvas-toolbar', 'command-palette', 'collab-bar']

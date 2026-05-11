@@ -2,6 +2,7 @@
   "surfaces": {
     "command-toolbar": { "position": "bottom-right", "layout": "row" },
     "canvas-toolbar": { "position": "bottom-left", "layout": "row" },
+    "collab-bar":     { "position": "top-right",    "layout": "row" },
     "command-palette": { "position": "command-menu", "layout": "list" }
   },
 
@@ -277,6 +278,19 @@
       "modes": ["*"],
       "prod": true,
       "shortcut": { "key": "k", "label": "cmd + K" },
+      "hideInCommandPalette": [".*"]
+    },
+    "agents-ready": {
+      "label": "Agents ready",
+      "ariaLabel": "Jump to next ready agent",
+      "icon": "primer/sparkle-fill",
+      "render": "button",
+      "surface": "collab-bar",
+      "handler": "core:agents-ready",
+      "modes": ["*"],
+      "prod": true,
+      "trailingVisual": "count",
+      "alwaysVisible": true,
       "hideInCommandPalette": [".*"]
     }
   }
