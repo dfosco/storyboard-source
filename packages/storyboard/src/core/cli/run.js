@@ -36,6 +36,25 @@ if (isCaddyInstalled()) {
   p.log.info('Continuing without proxy (will use direct port URLs)')
 }
 
-// 2. Hand off to dev.js (passes through all args)
+// 2. Ensure the Storyboard Runtime daemon is up. dev.js calls
+// runtime.acquire() directly, which does NOT auto-spawn — only
+// runtime.health() does. Without this step a fresh machine fails with
+// "Cannot reach Storyboard Runtime at http://127.0.0.1:4321".
+{
+  const spin = p.spinner()
+  spin.start('Starting runtime daemon...')
+  try {
+    const { RuntimeClient } = await import('../../../dist/runtime/client/index.js')
+    const runtime = new RuntimeClient()
+    const health = await runtime.health()
+    spin.stop(`Runtime ready (v${health.version})`)
+  } catch (err) {
+    spin.stop('Runtime failed to start')
+    p.log.error(err.message || String(err))
+    process.exit(1)
+  }
+}
+
+// 3. Hand off to dev.js (passes through all args)
 p.log.step('Starting dev server...')
 await import('./dev.js')
