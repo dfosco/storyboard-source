@@ -885,10 +885,29 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
     // Skip replacing local state with server data when optimistic edits are
     // pending — the local state is more recent. The next save will persist it
     // and the subsequent server push (after dirty clears) will reconcile.
+    // EXCEPTION: if the server push contains widgets/connectors we don't know
+    // about locally, merge those in. Otherwise a stale local list would
+    // overwrite freshly-created widgets (e.g. those just added via batch API
+    // by an agent) on the next debounced save.
     if (!dirtyRef.current || isCanvasSwitch) {
       setLocalWidgets(canvas?.widgets ?? null)
       setLocalConnectors(canvas?.connectors ?? [])
       setLocalSources(canvas?.sources ?? [])
+    } else {
+      const serverWidgets = canvas?.widgets ?? []
+      const serverConnectors = canvas?.connectors ?? []
+      setLocalWidgets((prev) => {
+        if (!prev) return serverWidgets
+        const localIds = new Set(prev.map((w) => w.id))
+        const additions = serverWidgets.filter((w) => !localIds.has(w.id))
+        return additions.length > 0 ? [...prev, ...additions] : prev
+      })
+      setLocalConnectors((prev) => {
+        if (!prev || prev.length === 0) return serverConnectors
+        const localIds = new Set(prev.map((c) => c.id))
+        const additions = serverConnectors.filter((c) => !localIds.has(c.id))
+        return additions.length > 0 ? [...prev, ...additions] : prev
+      })
     }
 
     setSnapEnabled(canvas?.snapToGrid ?? false)

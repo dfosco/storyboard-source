@@ -1000,20 +1000,27 @@ export function createCanvasHandler(ctx) {
         const ts = new Date().toISOString()
 
         if (widgets) {
-          // Guard against accidental canvas wipes: if the incoming widget count
-          // is much smaller than the current canvas, reject unless explicitly confirmed.
-          // This protects against agents/scripts that accidentally send a partial widget
-          // array to the widgets_replaced endpoint (which replaces ALL widgets).
+          // Guard against accidental canvas wipes. Any widget IDs present in
+          // current but missing from the incoming array are deletions; we
+          // refuse those unless the caller explicitly opts in via replaceAll.
+          // This protects against stale-state writers (e.g. a debounced client
+          // save fired before an HMR push containing newly-added widgets was
+          // reconciled) silently wiping freshly-created widgets.
           const current = readCanvas(filePath)
-          const currentCount = (current.widgets || []).length
-          if (currentCount > 1 && widgets.length < currentCount * 0.5 && body.replaceAll !== true) {
-            sendJson(res, 400, {
-              error: `Refusing to replace ${currentCount} widgets with ${widgets.length}. `
-                + `This would delete ${currentCount - widgets.length} widgets. `
-                + `Use PATCH /_storyboard/canvas/widget to update individual widgets, `
-                + `or pass "replaceAll": true to confirm full replacement.`,
-            })
-            return
+          const currentWidgets = current.widgets || []
+          if (body.replaceAll !== true) {
+            const incomingIds = new Set(widgets.map((w) => w && w.id).filter(Boolean))
+            const missing = currentWidgets.filter((w) => !incomingIds.has(w.id))
+            if (missing.length > 0) {
+              sendJson(res, 400, {
+                error: `Refusing to drop ${missing.length} widget(s) on PUT /update. `
+                  + `Missing IDs: ${missing.map((w) => w.id).slice(0, 10).join(', ')}${missing.length > 10 ? '…' : ''}. `
+                  + `Use DELETE /_storyboard/canvas/widget to remove widgets, PATCH to update them, `
+                  + `or pass "replaceAll": true to confirm full replacement.`,
+                missingIds: missing.map((w) => w.id),
+              })
+              return
+            }
           }
           const stamped = stampBoundsAll(widgets)
           appendEvent(filePath, { event: 'widgets_replaced', timestamp: ts, widgets: stamped })
