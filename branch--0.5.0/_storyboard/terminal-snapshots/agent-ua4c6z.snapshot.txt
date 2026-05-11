@@ -1,41 +1,41 @@
 SESSION: agent-ua4c6z | teal-dove
 CANVAS:  storyboarding/terminal-widget-prompts
 BRANCH:  0.5.0
-TIME:    2026-05-11T13:53:50.509Z
+TIME:    2026-05-11T14:10:05.000Z
 
 ================================================================================
 SCREEN
 ================================================================================
 
-● inspect commit (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager show
-  │ --stat 5341a2ce4
-  └ 21 lines...
 
-◐ A parallel agent already committed my staged changes in commit 5341a2ce4, so I need to
-  push those updates now.
+● Read agent.js
+  │ packages/storyboard/src/core/cli/agent.js
+  └ L1:20 (20 lines read)
 
-● My changes were swept up in a parallel agent's commit. Pushing now:
+● Edit agent.js +21 -8
+  └ packages/storyboard/src/core/cli/agent.js
 
-● push (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager push
-  │ origin 0.5.0 2>&1 | tail -3
-  └ 4 lines...
-
-● signal done (shell)
+● test signal, commit, push (shell)
   │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && source $(ls -t
   │ .storyboard/terminals/*.env | head -1) && npx storyboard agent signal --status done
-  │ --message "Component-set is now fullscreen-able via expand action"
-  └ 4 lines...
+  │ --message "Verified signal works; added retry/backoff for transient proxy reloads"
+  │ 2>&1 | tail -3 && git add packages/storyboard/src/core/cli/agent.js && git
+  │ --no-pager commit -m "fix(cli): retry agent signal on transient 404/5xx…
+  └ 15 lines...
 
-● Done. Component-set widgets now have an Expand button in their toolbar (↗ icon) that
-  opens the grid in a fullscreen modal — same pattern as story/prototype widgets. HMR
-  will reload the canvas; you should see the new action appear on the widget chrome.
-  Pushed as 5341a2ce4.
+● Verified + hardened.
 
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]         @WidgetChrome.module.css
+  Status: Yes, signals are going through. The earlier 404 happened because the proxy
+  port flipped (1240→1241) during a reload — the CLI's existing fallback wrote the
+  status to the config file anyway, so agentStatus was correctly recorded both times.
+
+  Improvement just shipped (22b41e47a): Added a 3-attempt retry with 250ms backoff on
+  404/5xx so transient proxy reloads get retried before falling back to direct file
+  write. Re-tested live — signal succeeded.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]       @storyboard.config.json:4
 ─────────────────────────────────────────────────────────────────────────────────────────
-❯ Remove the ct 
+❯ Also  
 ─────────────────────────────────────────────────────────────────────────────────────────
  @ files · # issues         terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
 
@@ -43,145 +43,119 @@ SCREEN
 SCROLLBACK (last 60s)
 ================================================================================
 
-[lost tty]
-[?996n[>c[>q● inspect commit (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager show
-  │ --stat 5341a2ce4
-  └ 21 lines...
 
-◐ A parallel agent already committed my staged changes in commit 5341a2ce4, so I need to   push those updates now.
+● Read agent.js
+  │ packages/storyboard/src/core/cli/agent.js
+  └ L1:20 (20 lines read)
 
-● My changes were swept up in a parallel agent's commit. Pushing now:
+● Edit agent.js +21 -8
+  └ packages/storyboard/src/core/cli/agent.js
 
-● push (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager push
-  │ origin 0.5.0 2>&1 | tail -3
-  └ 4 lines...
-
-● signal done (shell)
+● test signal, commit, push (shell)
   │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && source $(ls -t
   │ .storyboard/terminals/*.env | head -1) && npx storyboard agent signal --status done
-  │ --message "Component-set is now fullscreen-able via expand action"
-  └ 4 lines...
+  │ --message "Verified signal works; added retry/backoff for transient proxy reloads"
+  │ 2>&1 | tail -3 && git add packages/storyboard/src/core/cli/agent.js && git
+  │ --no-pager commit -m "fix(cli): retry agent signal on transient 404/5xx…
+  └ 15 lines...
 
-● Done. Component-set widgets now have an Expand button in their toolbar (↗ icon) that
-  opens the grid in a fullscreen modal — same pattern as story/prototype widgets. HMR
-  will reload the canvas; you should see the new action appear on the widget chrome.
-  Pushed as 5341a2ce4.
+● Verified + hardened.
 
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]         @WidgetChrome.module.css
-─────────────────────────────────────────────────────────────────────────────────────────❯
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-● inspect commit (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager show
-  │ --stat 5341a2ce4
-  └ 21 lines...
+  Status: Yes, signals are going through. The earlier 404 happened because the proxy
+  port flipped (1240→1241) during a reload — the CLI's existing fallback wrote the
+  status to the config file anyway, so agentStatus was correctly recorded both times.
 
-◐ A parallel agent already committed my staged changes in commit 5341a2ce4, so I need to   push those updates now.
+  Improvement just shipped (22b41e47a): Added a 3-attempt retry with 250ms backoff on
+  404/5xx so transient proxy reloads get retried before falling back to direct file
+  write. Re-tested live — signal succeeded.
 
-● My changes were swept up in a parallel agent's commit. Pushing now:
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]       @storyboard.config.json:4
+─────────────────────────────────────────────────────────────────────────────────────────❯ Also  
+───────────────────────────────────────────────────────────────────────────────────────── @ files · # issues         terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
 
-● push (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager push
-  │ origin 0.5.0 2>&1 | tail -3
-  └ 4 lines...
+● Read agent.js
+  │ packages/storyboard/src/core/cli/agent.js
+  └ L1:20 (20 lines read)
 
-● signal done (shell)
+● Edit agent.js +21 -8
+  └ packages/storyboard/src/core/cli/agent.js
+
+● test signal, commit, push (shell)
   │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && source $(ls -t
   │ .storyboard/terminals/*.env | head -1) && npx storyboard agent signal --status done
-  │ --message "Component-set is now fullscreen-able via expand action"
-  └ 4 lines...
+  │ --message "Verified signal works; added retry/backoff for transient proxy reloads"
+  │ 2>&1 | tail -3 && git add packages/storyboard/src/core/cli/agent.js && git
+  │ --no-pager commit -m "fix(cli): retry agent signal on transient 404/5xx…
+  └ 15 lines...
 
-● Done. Component-set widgets now have an Expand button in their toolbar (↗ icon) that
-  opens the grid in a fullscreen modal — same pattern as story/prototype widgets. HMR
-  will reload the canvas; you should see the new action appear on the widget chrome.
-  Pushed as 5341a2ce4.
+● Verified + hardened.
 
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]         @WidgetChrome.module.css
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-● inspect commit (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager show
-  │ --stat 5341a2ce4
-  └ 21 lines...
+  Status: Yes, signals are going through. The earlier 404 happened because the proxy
+  port flipped (1240→1241) during a reload — the CLI's existing fallback wrote the
+  status to the config file anyway, so agentStatus was correctly recorded both times.
 
-◐ A parallel agent already committed my staged changes in commit 5341a2ce4, so I need to   push those updates now.
+  Improvement just shipped (22b41e47a): Added a 3-attempt retry with 250ms backoff on
+  404/5xx so transient proxy reloads get retried before falling back to direct file
+  write. Re-tested live — signal succeeded.
 
-● My changes were swept up in a parallel agent's commit. Pushing now:
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]       @storyboard.config.json:4
+─────────────────────────────────────────────────────────────────────────────────────────❯ Also  
+───────────────────────────────────────────────────────────────────────────────────────── @ files · # issues         terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]         @storyboard.config.json ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]       @storyboard.config.json:4
+● Read agent.js
+  │ packages/storyboard/src/core/cli/agent.js
+  └ L1:20 (20 lines read)
 
-● push (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager push
-  │ origin 0.5.0 2>&1 | tail -3
-  └ 4 lines...
+● Edit agent.js +21 -8
+  └ packages/storyboard/src/core/cli/agent.js
 
-● signal done (shell)
+● test signal, commit, push (shell)
   │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && source $(ls -t
   │ .storyboard/terminals/*.env | head -1) && npx storyboard agent signal --status done
-  │ --message "Component-set is now fullscreen-able via expand action"
-  └ 4 lines...
+  │ --message "Verified signal works; added retry/backoff for transient proxy reloads"
+  │ 2>&1 | tail -3 && git add packages/storyboard/src/core/cli/agent.js && git
+  │ --no-pager commit -m "fix(cli): retry agent signal on transient 404/5xx…
+  └ 15 lines...
 
-● Done. Component-set widgets now have an Expand button in their toolbar (↗ icon) that
-  opens the grid in a fullscreen modal — same pattern as story/prototype widgets. HMR
-  will reload the canvas; you should see the new action appear on the widget chrome.
-  Pushed as 5341a2ce4.
+● Verified + hardened.
 
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]         @WidgetChrome.module.css
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-● inspect commit (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager show
-  │ --stat 5341a2ce4
-  └ 21 lines...
+  Status: Yes, signals are going through. The earlier 404 happened because the proxy
+  port flipped (1240→1241) during a reload — the CLI's existing fallback wrote the
+  status to the config file anyway, so agentStatus was correctly recorded both times.
 
-◐ A parallel agent already committed my staged changes in commit 5341a2ce4, so I need to   push those updates now.
+  Improvement just shipped (22b41e47a): Added a 3-attempt retry with 250ms backoff on
+  404/5xx so transient proxy reloads get retried before falling back to direct file
+  write. Re-tested live — signal succeeded.
 
-● My changes were swept up in a parallel agent's commit. Pushing now:
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]       @storyboard.config.json:4
+─────────────────────────────────────────────────────────────────────────────────────────❯ Also  
+───────────────────────────────────────────────────────────────────────────────────────── @ files · # issues         terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
 
-● push (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager push
-  │ origin 0.5.0 2>&1 | tail -3
-  └ 4 lines...
+● Read agent.js
+  │ packages/storyboard/src/core/cli/agent.js
+  └ L1:20 (20 lines read)
 
-● signal done (shell)
+● Edit agent.js +21 -8
+  └ packages/storyboard/src/core/cli/agent.js
+
+● test signal, commit, push (shell)
   │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && source $(ls -t
   │ .storyboard/terminals/*.env | head -1) && npx storyboard agent signal --status done
-  │ --message "Component-set is now fullscreen-able via expand action"
-  └ 4 lines...
+  │ --message "Verified signal works; added retry/backoff for transient proxy reloads"
+  │ 2>&1 | tail -3 && git add packages/storyboard/src/core/cli/agent.js && git
+  │ --no-pager commit -m "fix(cli): retry agent signal on transient 404/5xx…
+  └ 15 lines...
 
-● Done. Component-set widgets now have an Expand button in their toolbar (↗ icon) that
-  opens the grid in a fullscreen modal — same pattern as story/prototype widgets. HMR
-  will reload the canvas; you should see the new action appear on the widget chrome.
-  Pushed as 5341a2ce4.
+● Verified + hardened.
 
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]         @WidgetChrome.module.css
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-● inspect commit (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager show
-  │ --stat 5341a2ce4
-  └ 21 lines...
+  Status: Yes, signals are going through. The earlier 404 happened because the proxy
+  port flipped (1240→1241) during a reload — the CLI's existing fallback wrote the
+  status to the config file anyway, so agentStatus was correctly recorded both times.
 
-◐ A parallel agent already committed my staged changes in commit 5341a2ce4, so I need to   push those updates now.
+  Improvement just shipped (22b41e47a): Added a 3-attempt retry with 250ms backoff on
+  404/5xx so transient proxy reloads get retried before falling back to direct file
+  write. Re-tested live — signal succeeded.
 
-● My changes were swept up in a parallel agent's commit. Pushing now:
-
-● push (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager push
-  │ origin 0.5.0 2>&1 | tail -3
-  └ 4 lines...
-
-● signal done (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && source $(ls -t
-  │ .storyboard/terminals/*.env | head -1) && npx storyboard agent signal --status done
-  │ --message "Component-set is now fullscreen-able via expand action"
-  └ 4 lines...
-
-● Done. Component-set widgets now have an Expand button in their toolbar (↗ icon) that
-  opens the grid in a fullscreen modal — same pattern as story/prototype widgets. HMR
-  will reload the canvas; you should see the new action appear on the widget chrome.
-  Pushed as 5341a2ce4.
-
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]         @WidgetChrome.module.css
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-❯ R  @ files · # issues         terminal-agent · Claude Opus 4.7 (1M context)(Internal only)❯ Re ❯ Rem ❯ Remo ❯ Remov ❯ Remove ❯ Remove  ❯ Remove t ❯ Remove th ❯ Remove the ❯ Remove the  ❯ Remove the c ❯ Remove the ct ❯ Remove the cty ❯ Remove the ct 
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]       @storyboard.config.json:4
+─────────────────────────────────────────────────────────────────────────────────────────❯ Also  
+───────────────────────────────────────────────────────────────────────────────────────── @ files · # issues         terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
