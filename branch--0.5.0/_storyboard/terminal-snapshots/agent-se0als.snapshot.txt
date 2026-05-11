@@ -1,7 +1,7 @@
 SESSION: agent-se0als | opal-magpie
 CANVAS:  storyboarding/form-schema
 BRANCH:  0.5.0
-TIME:    2026-05-11T08:56:40.932Z
+TIME:    2026-05-11T09:00:16.255Z
 
 ================================================================================
 SCREEN
@@ -23,15 +23,51 @@ SCROLLBACK (last 60s)
 ================================================================================
 
 [lost tty]
-[?996n[>c[>q" --name "opal-magpie" --startup "copilot --agent terminal-agent"
+[?996n[>c[>qstoryboard terminal-welcome --branch "0.5.0" --canvas "storyboarding/form-schema" --name "opal-magpie" --startup "copilot --agent terminal-agent"
 
 0.5.0 on  0.5.0 [$] via  v22.22.0 
-❯ storyboard terminal-welcome --branch "0.5.0" --canvas "storyboarding/form-schema" --nam
-e "opal-magpie" --startup "copilot --agent terminal-agent"
+❯ storyboard terminal-welcome --branch "0.5.0" --canvas "storyboarding/form-schema" --name "opal-magpie" --startup "copilot --agent terminal-agent"
 zsh: command not found: storyboard
 
 0.5.0 on  0.5.0 [$!⇡] via  v22.22.0 
 ❯ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+storyboard terminal-welcome --branch "0.5.0" --canvas "storyboarding/form-schema" --name "opal-magpie" --startup "copilot --agent terminal-agent"
+
+0.5.0 on  0.5.0 [$] via  v22.22.0 
+❯ storyboard terminal-welcome --branch "0.5.0" --canvas "storyboarding/form-schema" --name "opal-magpie" --startup "copilot --agent terminal-agent"
+zsh: command not found: storyboard
+
+0.5.0 on  0.5.0 [$!⇡] via  v22.22.0 
+❯ 
+
+
+
+
+
+
+
+
 
 
 
@@ -82,3 +118,83 @@ zsh: command not found: storyboard
 
 0.5.0 on  0.5.0 [$!⇡] via  v22.22.0 
 ❯ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+storyboard terminal-welcome --branch "0.5.0" --canvas "storyboarding/form-schema" --name "opal-magpie" --startup "copilot --agent terminal-agent"
+
+0.5.0 on  0.5.0 [$] via  v22.22.0 
+❯ storyboard terminal-welcome --branch "0.5.0" --canvas "storyboarding/form-schema" --name "opal-magpie" --startup "copilot --agent terminal-agent"
+zsh: command not found: storyboard
+
+0.5.0 on  0.5.0 [$!⇡] via  v22.22.0 
+❯ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+storyboard terminal-welcome --branch "0.5.0" --canvas "storyboarding/form-schema" --name "opal-magpie" --startup "copilot --agent terminal-agent"
+
+0.5.0 on  0.5.0 [$] via  v22.22.0 
+❯ storyboard terminal-welcome --branch "0.5.0" --canvas "storyboarding/form-schema" --name "opal-magpie" --startup "copilot --agent terminal-agent"
+zsh: command not found: storyboard
+
+0.5.0 on  0.5.0 [$!⇡] via  v22.22.0 
+❯ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

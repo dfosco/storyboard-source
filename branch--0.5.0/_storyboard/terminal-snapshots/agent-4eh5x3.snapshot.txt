@@ -1,0 +1,18 @@
+SESSION: agent-4eh5x3 | dusk-avocet
+CANVAS:  storyboarding/form-schema
+BRANCH:  0.5.0
+TIME:    2026-05-11T09:09:02.446Z
+
+================================================================================
+SCREEN
+================================================================================
+
+storyboard terminal-welcome --branch "0.5.0" --canvas "storyboarding/form-schema" --name
+
+0.5.0 on  0.5.0 [$!?] via  v22.22.0 
+❯ storyboard terminal-welcome --branch "0.5.0" --canvas "storyboarding/form-schema" --nam
+e "dusk-avocet" --startup "copilot --agent terminal-agent"
+zsh: command not found: storyboard
+
+0.5.0 on  0.5.0 [$!?] via  v22.22.0 
+❯
