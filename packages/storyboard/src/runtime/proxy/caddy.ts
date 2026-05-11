@@ -48,7 +48,13 @@ export class CaddyAdminClient {
     const controller = new AbortController()
     const t = setTimeout(() => controller.abort(), this.timeoutMs)
     try {
-      return await fetch(`${this.baseUrl}${path}`, { ...init, signal: controller.signal })
+      // Caddy's admin API rejects requests with 403 when the Origin header
+      // doesn't match an allowed origin. Node's undici fetch sends an empty
+      // Origin by default, which Caddy refuses. Set it explicitly to the
+      // admin URL.
+      const headers = new Headers(init.headers)
+      if (!headers.has('origin')) headers.set('origin', this.baseUrl)
+      return await fetch(`${this.baseUrl}${path}`, { ...init, headers, signal: controller.signal })
     } catch (err) {
       throw new CaddyUnreachableError(this.baseUrl, err)
     } finally {
