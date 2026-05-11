@@ -346,7 +346,7 @@ export default function CanvasCreateMenu({ config = {}, data: _data, canvasName 
                   inputRef={componentSearchRef}
                   header={
                     <>
-                      <DropdownMenu.Label>Add component to canvas</DropdownMenu.Label>
+                      <DropdownMenu.Label>Add component</DropdownMenu.Label>
                       <button
                         className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground w-full text-left bg-transparent border-none"
                         onClick={(e) => { e.preventDefault(); e.stopPropagation(); showCreateForm() }}

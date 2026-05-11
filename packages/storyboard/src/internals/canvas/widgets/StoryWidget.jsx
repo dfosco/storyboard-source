@@ -172,6 +172,13 @@ export default forwardRef(function StoryWidget({ id: widgetId, props, onUpdate, 
     handleAction(actionId) {
       if (actionId === 'show-code') toggleShowCode()
       else if (actionId === 'copy-code') copyCode()
+      else if (actionId === 'refresh-frame') {
+        const iframe = iframeRef.current
+        if (iframe) {
+          // eslint-disable-next-line no-self-assign
+          iframe.src = iframe.src
+        }
+      }
       else if (actionId === 'expand' || actionId === 'expand-single') setExpandMode('single')
       else if (actionId === 'split-screen') setExpandMode('split')
       else if (actionId === 'open-external') {

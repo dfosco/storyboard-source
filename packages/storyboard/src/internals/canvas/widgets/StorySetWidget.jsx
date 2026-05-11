@@ -103,14 +103,16 @@ export default forwardRef(function StorySetWidget({ id: widgetId, props, onUpdat
 
   useImperativeHandle(ref, () => ({
     handleAction(actionId) {
-      if (actionId === 'cycle-layout' || actionId === 'flip-layout') {
-        const order = ['auto', 'wide', 'tall']
-        const idx = order.indexOf(layout)
-        const next = order[(idx + 1) % order.length] || 'auto'
-        onUpdate?.({ layout: next })
-        return true
-      } else if (actionId === 'expand' || actionId === 'expand-single') {
+      if (actionId === 'expand' || actionId === 'expand-single') {
         setExpanded(true)
+        return true
+      } else if (actionId === 'refresh-frame') {
+        const iframe = iframeRef.current
+        if (iframe) {
+          // Force reload by re-assigning src
+          // eslint-disable-next-line no-self-assign
+          iframe.src = iframe.src
+        }
         return true
       } else if (actionId === 'open-external') {
         const story = getStoryData(storyId)

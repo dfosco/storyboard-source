@@ -219,7 +219,7 @@ function StoryPicker({ type, onPick, onClose }) {
 export default function WidgetArtifactDialog({ type, onClose }) {
   if (!type) return null
   const isPrototype = type === 'prototype'
-  const title = type === 'story' ? 'Add component to canvas' : (TYPE_LABELS[type] || 'Pick an artifact')
+  const title = type === 'story' ? 'Add component' : (TYPE_LABELS[type] || 'Pick an artifact')
   const subtitle = TYPE_SUBTITLES[type] || ''
 
   function handlePick(payload) {

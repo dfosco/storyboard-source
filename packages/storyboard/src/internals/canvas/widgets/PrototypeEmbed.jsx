@@ -294,6 +294,12 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
         setExpandMode('split')
       } else if (actionId === 'open-external') {
         if (rawSrc) window.open(rawSrc, '_blank', 'noopener')
+      } else if (actionId === 'refresh-frame') {
+        const iframe = iframeRef.current
+        if (iframe) {
+          // eslint-disable-next-line no-self-assign
+          iframe.src = iframe.src
+        }
       } else if (actionId === 'zoom-in') {
         const step = zoom < 75 ? 5 : 25
         onUpdate?.({ zoom: Math.min(200, zoom + step) })

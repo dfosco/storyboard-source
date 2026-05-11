@@ -330,6 +330,15 @@
           "icon": "copy"
         },
         {
+          "id": "refresh-frame",
+          "type": "action",
+          "action": "refresh-frame",
+          "label": "Refresh frame",
+          "icon": "sync",
+          "menu": true,
+          "prod": true
+        },
+        {
           "id": "copy-link",
           "type": "action",
           "action": "copy-link",
@@ -810,6 +819,15 @@
           "prod": true
         },
         {
+          "id": "refresh-frame",
+          "type": "action",
+          "action": "refresh-frame",
+          "label": "Refresh frame",
+          "icon": "sync",
+          "menu": true,
+          "prod": true
+        },
+        {
           "id": "copy-link",
           "type": "action",
           "action": "copy-link",
@@ -897,13 +915,6 @@
           "prod": true
         },
         {
-          "id": "cycle-layout",
-          "type": "action",
-          "action": "cycle-layout",
-          "label": "Cycle layout (auto → wide → tall)",
-          "icon": "sync"
-        },
-        {
           "id": "copy",
           "type": "action",
           "action": "copy",
@@ -916,6 +927,15 @@
           "action": "open-external",
           "label": "$label:open-ext",
           "icon": "open-external",
+          "prod": true
+        },
+        {
+          "id": "refresh-frame",
+          "type": "action",
+          "action": "refresh-frame",
+          "label": "Refresh frame",
+          "icon": "sync",
+          "menu": true,
           "prod": true
         },
         {
