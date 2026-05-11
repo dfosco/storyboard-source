@@ -610,7 +610,17 @@ export default function storyboardServer() {
         // Falls back to the project directory name so every repo gets a
         // labelled bar (matches the styling of repos that opt in via
         // storyboard.config.json `devDomain`).
-        const devDomainLabel = config.devDomain || path.basename(process.cwd())
+        // Use the main repo root (not cwd) so worktrees don't shadow the
+        // project name with the worktree directory name (which often equals
+        // the branch name).
+        let projectRoot = process.cwd()
+        try {
+          const commonDir = cpExecSync('git rev-parse --path-format=absolute --git-common-dir', {
+            cwd: process.cwd(), encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'],
+          }).trim()
+          if (commonDir) projectRoot = commonDir.replace(/\/?\.git\/?$/, '') || projectRoot
+        } catch { /* not a git repo — fall back to cwd */ }
+        const devDomainLabel = config.devDomain || path.basename(projectRoot)
         if (devDomainLabel) {
           tags.push({
             tag: 'script',
