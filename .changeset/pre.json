@@ -1,24 +1,10 @@
 {
-  "mode": "exit",
+  "mode": "pre",
   "tag": "alpha",
   "initialVersions": {
-    "@dfosco/storyboard": "0.5.0-alpha.19"
+    "@dfosco/storyboard": "0.5.0-alpha.20"
   },
   "changesets": [
-    "changeset-moojzicz",
-    "changeset-moop92eo",
-    "changeset-moq6mauh",
-    "changeset-moq7lh83",
-    "changeset-mou1wsk4",
-    "changeset-mou2nsy2",
-    "changeset-mov73qos",
-    "changeset-movfun2a",
-    "changeset-mp010hx3",
-    "changeset-runtime-browser-guards",
-    "changeset-runtime-initial",
-    "changeset-tematd",
-    "changeset-temcrx",
-    "dev-worktree-setup-fixes",
-    "workspace-sidebar-visibility"
+    "changeset-mp10nrwb"
   ]
 }
