@@ -52,9 +52,9 @@ function parseDataFile(filePath) {
   // Handle .canvas.jsonl files
   const canvasJsonlMatch = base.match(/^(.+)\.canvas\.jsonl$/)
   if (canvasJsonlMatch) {
-    if (canvasJsonlMatch[1].startsWith('_')) return null
+    if (canvasJsonlMatch[1].startsWith('_') || canvasJsonlMatch[1].startsWith('~')) return null
     const normalized = filePath.replace(/\\/g, '/')
-    if (normalized.split('/').some(seg => seg.startsWith('_'))) return null
+    if (normalized.split('/').some(seg => seg.startsWith('_') || seg.startsWith('~'))) return null
 
     const baseName = canvasJsonlMatch[1]
     let name = baseName
