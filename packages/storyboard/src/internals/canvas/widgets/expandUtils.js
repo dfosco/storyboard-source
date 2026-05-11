@@ -4,7 +4,7 @@
  * Reads the canvas bridge state to find connected widgets eligible
  * for split-screen, and builds iframe URLs for secondary panes.
  */
-import { createElement, useCallback, useState } from 'react'
+import { createElement, useCallback, useEffect, useState } from 'react'
 import { getStoryData } from '../../../core/index.js'
 import { isSplitScreenCapable, getWidgetMeta, getFeaturesForSurface } from './widgetConfig.js'
 import { ExpandedMarkdownEditor } from './MarkdownBlock.jsx'
@@ -31,7 +31,18 @@ function MarkdownSecondaryPane({ widget, editingRef, onUpdate }) {
     document.dispatchEvent(new CustomEvent('storyboard:expanded-pane:refresh'))
   }
 
-  const content = widget.props?.content || ''
+  // Subscribe to canvas bridge updates so edits to this widget reflect here.
+  // The `widget` prop is captured at split-open time and never updates, so we
+  // re-read the current content from the live bridge state on every render.
+  const [, forceTick] = useState(0)
+  useEffect(() => {
+    const handler = () => forceTick((n) => n + 1)
+    document.addEventListener('storyboard:canvas:bridge-updated', handler)
+    return () => document.removeEventListener('storyboard:canvas:bridge-updated', handler)
+  }, [])
+
+  const liveWidget = window.__storyboardCanvasBridgeState?.widgets?.find((w) => w.id === widget.id)
+  const content = (liveWidget?.props?.content ?? widget.props?.content) || ''
 
   // eslint-disable-next-line react-hooks/refs
   return createElement(ExpandedMarkdownEditor, {

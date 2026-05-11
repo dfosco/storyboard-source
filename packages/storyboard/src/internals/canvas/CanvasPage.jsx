@@ -2437,11 +2437,14 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
   // Keep bridge in sync with widgets/connectors for expand features.
   // Child widgets now use props directly for split-screen gating, but
   // FigmaEmbed/PrototypeEmbed/etc. still read this bridge at expand time.
-  useMemo(() => {
+  useEffect(() => {
     const bridge = window[CANVAS_BRIDGE_STATE_KEY] || {}
     bridge.widgets = localWidgets
     bridge.connectors = localConnectors
     window[CANVAS_BRIDGE_STATE_KEY] = bridge
+    // Notify subscribers (e.g. split-screen secondary panes) that the bridge
+    // has fresh widget data so they can re-read live content.
+    document.dispatchEvent(new CustomEvent('storyboard:canvas:bridge-updated'))
   }, [localWidgets, localConnectors])
 
   // ── Done agents: surface readiness in tab title + collab bar ──
