@@ -6,84 +6,105 @@ category: config
 importance: high
 -->
 
-> [← Architecture Index](../architecture.index.md)
+> [← Architecture Index](./architecture.index.md)
 
 ## Goal
 
-Root Vite configuration for the Storyboard prototyping app. Configures the entire dev/build pipeline: React compilation, file-based routing via generouted, storyboard data discovery, PostCSS processing with Primer Design Tokens, Tailwind CSS, and production chunk splitting. Critically, it maps all `@dfosco/storyboard-*` package imports to local source paths so that git worktrees resolve to their own source rather than the main worktree's `node_modules`.
+[`vite.config.js`](./vite.config.js.md) is the root build and dev-server contract for the app. It wires React, Tailwind, file-based routing, Storyboard's Vite plugins, and the alias strategy that makes this worktree behave like an isolated source checkout instead of accidentally resolving package code from another workspace.
 
-This file is the single source of truth for how the app is served in development (`port 1234`) and how it is built for production, including manual vendor chunk splitting for React, Primer, Octicons, and Reshaped.
+It also encodes several repo-specific runtime constraints: base-path-aware redirects for branch URLs, warmup hints for frequently edited source, custom PostCSS setup for Primer tokens, and manual vendor chunking for production builds. Together with [`src/index.jsx`](./src/index.jsx.md), [`storyboard.config.json`](./storyboard.config.json.md), and the root [`package.json`](./package.json.md), it defines how the prototype app starts, reloads, and ships.
 
 ## Composition
 
-### Resolve Aliases
+The config is wrapped in `defineConfig(() => { ... })` so it can compute `base` from `VITE_BASE_PATH` at runtime:
 
-The `resolve.alias` map is the largest section (~40 entries). It redirects every `@dfosco/storyboard-*` sub-path import to its local `packages/*/src/` source file. This is essential for git worktree isolation — without it, npm workspace symlinks resolve to the main worktree.
+```js
+export default defineConfig(() => {
+    const base = process.env.VITE_BASE_PATH || '/'
+
+    return {
+        base,
+        // ...
+    }
+})
+```
+
+A large `resolve.alias` block forces `@dfosco/storyboard` subpath imports back to local source files inside `packages/storyboard/`. That avoids workspace links pointing at another worktree and preserves HMR against the files in this checkout:
 
 ```js
 alias: {
     '@': path.resolve(__dirname, './src'),
-    '@dfosco/storyboard-core': path.resolve(__dirname, 'packages/core/src/index.js'),
-    '@dfosco/storyboard-react': path.resolve(__dirname, 'packages/react/src/index.js'),
-    // ... ~35 more sub-path aliases
+    '@dfosco/storyboard/ui-runtime': path.resolve(__dirname, 'packages/storyboard/src/core/ui-entry.js'),
+    '@dfosco/storyboard/core': path.resolve(__dirname, 'packages/storyboard/src/core/index.js'),
+    '@dfosco/storyboard/hash-preserver': path.resolve(__dirname, 'packages/storyboard/src/internals/hashPreserver.js'),
+    '@dfosco/storyboard': path.resolve(__dirname, 'packages/storyboard/src/internals/index.js'),
 }
 ```
 
-**Important:** Sub-path aliases (e.g. `@dfosco/storyboard-core/canvas/materializer`) must come BEFORE base package aliases (e.g. `@dfosco/storyboard-core`) for correct resolution.
-
-### Plugins
-
-1. **`tailwindcss()`** — Tailwind CSS v4 Vite plugin
-2. **`storyboardData()`** — Custom Vite plugin from [`packages/react/src/vite/data-plugin.js`](./packages/react/src/vite/data-plugin.js.md) that discovers `.flow.json`, `.object.json`, `.record.json`, `.canvas.jsonl` files and generates a virtual module
-3. **`storyboardServer()`** — Custom Vite plugin from [`packages/core/src/vite/server-plugin.js`](./packages/core/src/vite/server-plugin.js.md) that adds WebSocket and middleware to the dev server
-4. **`react()`** — React Fast Refresh
-5. **`generouted()`** — File-based routing scanning `src/prototypes/**/*.{jsx,tsx,mdx}`
-6. **`prototypes-watcher`** (inline) — Sends full-reload on prototype file add/unlink since generouted only watches `/src/pages/`
-7. **`base-redirect`** (inline) — Redirects requests that don't include the `base` prefix
-
-### Server Config
+The plugin chain mixes ecosystem plugins with inline repo-specific middleware. The two local Storyboard plugins are imported by relative path specifically so the current worktree's source is used:
 
 ```js
-server: {
-    port: 1234,
-    fs: { allow: ['..'] },
-    warmup: { clientFiles: ['src/index.jsx', 'src/prototypes/**/*.jsx', ...] },
+plugins: [
+    tailwindcss(),
+    storyboardData(),
+    storyboardServer(),
+    react(),
+    generouted({
+        source: {
+            routes: './src/prototypes/**/[\\w[-]*.{jsx,tsx,mdx}',
+            modals: './src/prototypes/**/[+]*.{jsx,tsx,mdx}',
+        },
+    }),
+]
+```
+
+Two inline plugins handle gaps in upstream tooling: `prototypes-watcher` triggers a full reload when prototype files are added or removed, and `base-redirect` normalizes requests so branch-prefixed base paths still resolve correctly:
+
+```js
+{
+    name: 'base-redirect',
+    configureServer(server) {
+        const baseNoTrail = base.replace(/\/$/, '')
+        server.middlewares.use((req, res, next) => {
+            if (req.url === baseNoTrail) {
+                res.writeHead(302, { Location: base })
+                res.end()
+                return
+            }
+            if (req.url && req.url !== baseNoTrail && !req.url.startsWith(base) && !req.url.startsWith('/@') && !req.url.startsWith('/node_modules/')) {
+                const newUrl = baseNoTrail + req.url
+                res.writeHead(302, { Location: newUrl })
+                res.end()
+                return
+            }
+            next()
+        })
+    },
 }
 ```
 
-### Build Config
-
-- **`chunkSizeWarningLimit: 700`** — Raised from default 500 KB to accommodate `@primer/react` barrel export
-- **`manualChunks`** — Splits `vendor-react`, `vendor-primer`, `vendor-octicons`, `vendor-reshaped` into separate cacheable chunks
-
-### CSS / PostCSS
-
-- **`postcssGlobalData`** — Injects Primer Design Token CSS custom properties globally
-- **`postcssPresetEnv`** — Stage 2 CSS features with `nesting-rules` enabled, targeted at `@github/browserslist-config`
+The rest of the file tunes developer and production behavior: a fixed dev port, permissive FS access for workspace-relative reads, warmup globs that pre-transform hot paths such as [`src/index.jsx`](./src/index.jsx.md), dependency prebundling for Primer, `keepNames` for inspector readability, manual vendor chunking, and PostCSS setup that injects Primer CSS data before `postcss-preset-env` rewrites modern syntax.
 
 ## Dependencies
 
-| Import | Purpose |
-|--------|---------|
-| `@vitejs/plugin-react` | React Fast Refresh + JSX transform |
-| `@tailwindcss/vite` | Tailwind CSS v4 plugin |
-| `@generouted/react-router/plugin` | File-based routing generation |
-| [`packages/react/src/vite/data-plugin.js`](./packages/react/src/vite/data-plugin.js.md) | Storyboard data discovery (relative import) |
-| [`packages/core/src/vite/server-plugin.js`](./packages/core/src/vite/server-plugin.js.md) | Storyboard dev server WebSocket/middleware (relative import) |
-| `@csstools/postcss-global-data` | Primer CSS custom properties injection |
-| `postcss-preset-env` | Modern CSS transpilation |
-| `@github/browserslist-config` | Browser targets |
-| `storyboard.config.json` | Repository config (read via `fs` to avoid Vite config dependency) |
+- `@vitejs/plugin-react` — enables JSX transform and Fast Refresh for the React app bootstrapped in [`src/index.jsx`](./src/index.jsx.md).
+- `@tailwindcss/vite` — injects Tailwind's Vite integration for both app styles and the UI runtime bundle consumed from [`packages/storyboard/package.json`](./packages/storyboard/package.json.md).
+- `@generouted/react-router/plugin` — generates the `routes` module later consumed by [`src/index.jsx`](./src/index.jsx.md).
+- `./packages/storyboard/src/internals/vite/data-plugin.js` — Storyboard data discovery plugin for flows, objects, records, and canvases.
+- `./packages/storyboard/src/core/vite/server-plugin.js` — Storyboard dev-server plugin for server-side behaviors layered onto Vite.
+- `node:fs` — reads [`storyboard.config.json`](./storyboard.config.json.md) without making it a watched Vite config dependency.
+- `glob`, `@csstools/postcss-global-data`, `postcss-preset-env`, and `@github/browserslist-config` — build the CSS pipeline around Primer token files.
 
 ## Dependents
 
-- Referenced by [`eslint.config.js`](./eslint.config.js.md) (linting config)
-- Used implicitly by all `npm run dev`, `npm run build`, `npm run preview` scripts in [`package.json`](./package.json.md)
-- [`packages/core/src/vite/server-plugin.js`](./packages/core/src/vite/server-plugin.js.md) — configures server within this config
-- [`packages/react/src/canvas/canvasReloadGuard.js`](./packages/react/src/canvas/canvasReloadGuard.js.md) — references vite config context
+- [`package.json`](./package.json.md) runs this config through `dev`, `dev:vite`, `build`, and `preview` scripts.
+- [`src/index.jsx`](./src/index.jsx.md) is explicitly warmed up by `server.warmup.clientFiles`.
+- `index.html` loads the app entry that this config serves and builds.
+- `packages/storyboard/src/core/vite/server-plugin.js`, `packages/storyboard/src/runtime/vite-plugin/plugin.ts`, and `packages/storyboard/src/runtime/vite-plugin/wrapper.ts` reference this file as the expected integration point for Storyboard's Vite-side runtime.
+- `packages/storyboard/src/internals/canvas/canvasReloadGuard.js` documents server coordination with behavior configured here.
 
 ## Notes
 
-- The `storyboard.config.json` is intentionally read with `fs.readFileSync` instead of a static import to prevent Vite from treating it as a config dependency (which would restart the entire server on every edit instead of hot-reloading).
-- The `esbuild.keepNames: true` setting preserves function names so the storyboard inspector displays real component names.
-- The `VITE_BASE_PATH` env var controls the base path, enabling branch deploys at `/branch--{name}/`.
+- [`storyboard.config.json`](./storyboard.config.json.md) is parsed via `fs.readFileSync(...)` only to validate availability; avoiding a static import prevents full Vite server restarts on config edits.
+- The alias order matters: specific subpaths must be declared before `@dfosco/storyboard` itself or Vite will collapse them to the broadest match.
+- `base-redirect` and `basename` handling in [`src/index.jsx`](./src/index.jsx.md) are a paired design; changing one without the other breaks branch-prefixed URLs.

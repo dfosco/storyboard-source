@@ -6,101 +6,66 @@ category: config
 importance: high
 -->
 
-> [← Architecture Index](../architecture.index.md)
+> [← Architecture Index](./architecture.index.md)
 
 ## Goal
 
-Root package manifest for the Storyboard monorepo. This is a **private** npm workspace root that orchestrates five publishable packages under `packages/*`, hosts the prototype app itself, and defines all top-level scripts for development, building, testing, linting, and releasing.
+[`package.json`](./package.json.md) is the private workspace root for this repository. It defines the app-level dependency set used by the prototype shell, exposes the top-level developer workflows, and declares the `packages/*` workspace that currently resolves to the publishable [`packages/storyboard/package.json`](./packages/storyboard/package.json.md) package.
 
-The root package is not published to npm — it exists solely to run the app and coordinate workspace packages.
+Architecturally, this file is the coordination layer between repo-local development and package publishing: scripts here invoke Vite, Vitest, Changesets, release helpers, and package-scoped commands, while the dependency graph supplies the React, Primer, routing, terminal, and build tooling used by [`vite.config.js`](./vite.config.js.md) and [`src/index.jsx`](./src/index.jsx.md).
 
 ## Composition
 
-### Identity
-
-- **name:** `storyboard`
-- **private:** `true`
-- **type:** `module` (ESM throughout)
-- **version:** `4.1.0` (root version, tracked separately from packages)
-
-### Workspaces
+The manifest establishes a single-workspace monorepo rooted in ESM:
 
 ```json
-"workspaces": ["packages/*"]
+{
+    "name": "storyboard",
+    "private": true,
+    "type": "module",
+    "workspaces": [
+        "packages/*"
+    ],
+    "version": "0.5.0"
+}
 ```
 
-This enables npm workspace resolution for all five packages:
-- [`@dfosco/storyboard-core`](./packages/core/package.json.md)
-- [`@dfosco/storyboard-react`](./packages/react/package.json.md)
-- [`@dfosco/storyboard-react-primer`](./packages/react-primer/package.json.md)
-- [`@dfosco/storyboard-react-reshaped`](./packages/react-reshaped/package.json.md)
-- [`@dfosco/tiny-canvas`](./packages/tiny-canvas/package.json.md)
+Its scripts separate everyday app workflows from package-targeted workflows. The top-level commands are mostly thin wrappers over Storyboard CLI, Vite, Vitest, and the workspace package:
 
-### Key Scripts
+```json
+"scripts": {
+    "dev": "storyboard dev",
+    "build": "vite build",
+    "lint": "eslint . && npm run check:imports -w @dfosco/storyboard",
+    "test": "vitest run",
+    "build:ui": "npm run build:ui -w @dfosco/storyboard",
+    "dev:ui": "npm run dev:ui -w @dfosco/storyboard",
+    "release": "./scripts/release.sh",
+    "setup": "./scripts/setup.sh"
+}
+```
 
-| Script | Command | Purpose |
-|--------|---------|---------|
-| `dev` | `storyboard dev` | Start dev server via storyboard CLI |
-| `dev:vite` | `vite` | Start Vite directly (bypasses CLI) |
-| `build` | `vite build` | Production build |
-| `lint` | `eslint . && npm run check:imports -w @dfosco/storyboard-core` | Lint + import check |
-| `test` | `vitest run` | Run all tests |
-| `test:integration` | `vitest run --config vitest.integration.config.js` | Run integration tests |
-| `test:core` | `vitest run packages/core` | Test core package only |
-| `test:react` | `vitest run packages/react` | Test react package only |
-| `version` | `changeset version && node scripts/sync-root-version.js` | Bump versions via changesets |
-| `build:ui` | `npm run build:ui -w @dfosco/storyboard-core` | Build externalized core UI bundle |
-| `release` | `./scripts/release.sh` | Full release workflow |
-| `setup` | `./scripts/setup.sh` | First-time project setup |
+The dependency list shows that the root app is a consumer of the unified `@dfosco/storyboard` package rather than hosting several split local packages. Core runtime dependencies include React 19, `react-router-dom`, `@generouted/react-router`, Primer, Radix primitives, `ghostty-web`, `node-pty`, and `ws`; dev dependencies add Vite, Vitest, ESLint, Changesets, Tailwind, and Testing Library.
 
-### Runtime Dependencies
-
-Key app-level dependencies (consumed by `src/` prototypes and components):
-
-| Package | Purpose |
-|---------|---------|
-| `react`, `react-dom` | ^19.2.0 — React framework |
-| `react-router-dom` | ^7.12.0 — Routing |
-| `@generouted/react-router` | ^1.19.11 — File-based route generation |
-| `@primer/react` | ^38.5.0 — GitHub Primer design system |
-| `@primer/octicons-react` | ^19.21.1 — GitHub icons |
-| `@primer/primitives` | ^11.3.2 — Design tokens |
-| `reshaped` | ^3.9.0 — Alternative UI library |
-| `styled-components` | ^6.1.19 — Required peer dep for Primer |
-| `@radix-ui/react-*` | Radix UI primitives (avatar, checkbox, collapsible, dialog, dropdown-menu, label, popover, select, separator, slot, toggle, toggle-group, tooltip) |
-| `cmdk` | Command palette component |
-| `ghostty-web` | ^0.4.0 — Terminal emulation |
-| `node-pty` | ^1.1.0 — PTY for terminal widgets |
-| `ws` | ^8.20.0 — WebSocket for dev server |
-
-### Dev Dependencies
-
-| Package | Purpose |
-|---------|---------|
-| `vite` | ^7.3.1 — Build tool |
-| `vitest` | ^4.0.18 — Test runner |
-| `eslint` | ^9.39.2 — Linting |
-| `@changesets/cli` | ^2.29.8 — Version management |
-| `@vitejs/plugin-react` | ^5.1.2 — React Vite plugin |
-| `@tailwindcss/vite` | ^4.2.2 — Tailwind CSS |
-| `tailwindcss` | ^4.2.2 — Tailwind CSS engine |
-| `jsdom` | ^28.1.0 — Test DOM environment |
-| `@testing-library/*` | Test utilities (dom, react, user-event) |
+Because this is the root manifest, there are no `exports`; package export surfaces live in [`packages/storyboard/package.json`](./packages/storyboard/package.json.md). The architectural job here is instead to define workspaces, scripts, and the shared dependency versions that the rest of the repo assumes.
 
 ## Dependencies
 
-The root `package.json` doesn't import anything directly — it defines the dependency graph that [`vite.config.js`](./vite.config.js.md) and app source code consume.
+- [`packages/storyboard/package.json`](./packages/storyboard/package.json.md) — receives workspace-scoped script execution through `npm run ... -w @dfosco/storyboard`.
+- `./scripts/release.sh`, `./scripts/release-resume.sh`, `./scripts/setup.sh`, and `./scripts/sync-root-version.js` — implement release, setup, and version synchronization behind the declared scripts.
+- `vite`, `vitest`, `eslint`, and `@changesets/cli` — provide the repo's build, test, lint, and versioning toolchain.
+- `react`, `react-dom`, `react-router-dom`, `@primer/react`, and related UI packages — supply the runtime used by [`src/index.jsx`](./src/index.jsx.md) and code built through [`vite.config.js`](./vite.config.js.md).
 
 ## Dependents
 
-- All workspace packages inherit workspace linking from this file
-- [`vite.config.js`](./vite.config.js.md) — reads dependencies for pre-bundling
-- [`vitest.config.js`](./vitest.config.js.md) — test configuration
-- [`eslint.config.js`](./eslint.config.js.md) — linting configuration
-- CI/CD workflows use scripts defined here
+- [`vite.config.js`](./vite.config.js.md) is executed by the `dev`, `dev:vite`, `build`, and `preview` scripts defined here.
+- [`packages/storyboard/package.json`](./packages/storyboard/package.json.md) is driven by the `build:ui`, `dev:ui`, and `lint` workspace commands declared here.
+- `scripts/sync-root-version.js` reads both this manifest and [`packages/storyboard/package.json`](./packages/storyboard/package.json.md) to keep versions aligned.
+- `packages/storyboard/src/core/cli/index.js` and `packages/storyboard/src/core/cli/updateVersion.js` read project `package.json` files as part of CLI behavior.
+- Tooling files such as `vitest.config.js`, `eslint.config.js`, and `package-lock.json` rely on the dependency and script declarations here.
 
 ## Notes
 
-- The `postinstall` script (`chmod +x node_modules/node-pty/prebuilds/darwin-*/spawn-helper`) works around a macOS permission issue with `node-pty` prebuilt binaries.
-- The `prepare` script sets `core.hooksPath` to `.githooks` for custom git hooks.
-- Version bumping uses `changeset version` followed by `scripts/sync-root-version.js` to keep the root version in sync with packages.
+- `postinstall` fixes executable permissions for `node-pty`'s macOS helper binary, which is required for terminal widgets to function reliably after install.
+- `prepare` sets `core.hooksPath` to `.githooks`, so cloning and installing the repo also activates repo-managed git hooks.
+- The root version is intentionally synced with [`packages/storyboard/package.json`](./packages/storyboard/package.json.md) by `scripts/sync-root-version.js` instead of being managed independently.

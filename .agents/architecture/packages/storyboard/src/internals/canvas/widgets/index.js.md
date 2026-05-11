@@ -3,16 +3,16 @@
 <!--
 source: packages/storyboard/src/internals/canvas/widgets/index.js
 category: storyboard
-importance: high
+importance: medium
 -->
 
 > [← Architecture Index](../../../../../../architecture.index.md)
 
 ## Goal
 
-[`packages/storyboard/src/internals/canvas/widgets/index.js`](./index.js.md) is the widget registry for the canvas runtime. It defines the authoritative mapping from persisted widget `type` strings to concrete React components, which lets [`packages/storyboard/src/internals/canvas/CanvasPage.jsx`](../CanvasPage.jsx.md) render heterogeneous canvas content without hard-coding imports or switch statements in the page itself.
+`index.js` is the registry entry point for canvas widgets. [`CanvasPage.jsx`](../CanvasPage.jsx.md) imports `getWidgetComponent(type)` from here to translate persisted widget type strings into concrete React components.
 
-Because the registry is centralized, it is also the seam where new widget types become part of the canvas platform. A widget is not fully “real” to the runtime until it is imported here and added to `widgetRegistry`, so this file effectively describes the supported widget surface for notes, markdown, embeds, images, stories, terminals, prompt agents, tiles, and terminal-read fallbacks.
+This file is the top of the widget component layer: [`widgetConfig.js`](./widgetConfig.js.md) decides what metadata and features exist, [`widgetProps.js`](./widgetProps.js.md) interprets widget props, and [`WidgetChrome.jsx`](./WidgetChrome.jsx.md) wraps whatever component this registry returns.
 
 ## Composition
 
@@ -35,27 +35,30 @@ export const widgetRegistry = {
 }
 ```
 
-```js
-export function getWidgetComponent(type) {
-  return widgetRegistry[type] ?? null
-}
-```
+Two public exports:
+
+- `widgetRegistry` for callers that need the whole map
+- `getWidgetComponent(type)` as the common lookup helper
 
 Notable mappings:
 
-- `agent` intentionally reuses `TerminalWidget`, meaning agent widgets inherit the same rendering shell as terminals.
-- `terminal-read` points at a dedicated read-only fallback for production or degraded states.
-- `component-set` and `story` separate storybook-like compositions from generic JSX-backed component widgets managed elsewhere.
+- `agent` reuses [`TerminalWidget.jsx`](./TerminalWidget.jsx.md)
+- `component-set` maps to [`StorySetWidget.jsx`](./StorySetWidget.jsx.md)
+- paste-only widgets like images and embeds still live here once created
 
 ## Dependencies
 
-- Individual widget implementations in the sibling `widgets/` directory, including `StickyNote.jsx`, `MarkdownBlock.jsx`, `PrototypeEmbed.jsx`, `ImageWidget.jsx`, `TerminalWidget.jsx`, `PromptWidget.jsx`, and related embeds.
+- Every primary widget component in this directory.
+- [`CanvasPage.jsx`](../CanvasPage.jsx.md) is the main consumer.
+- [`WidgetChrome.jsx`](./WidgetChrome.jsx.md), [`widgetConfig.js`](./widgetConfig.js.md), and [`widgetProps.js`](./widgetProps.js.md) form the rest of the widget runtime around it.
 
 ## Dependents
 
-- [`packages/storyboard/src/internals/canvas/CanvasPage.jsx`](../CanvasPage.jsx.md) calls `getWidgetComponent()` in `WidgetRenderer`.
-- Widget config/props modules in the same directory are designed to stay aligned with this registry even though they are not direct import dependents.
+- `CanvasPage.jsx` uses it to render canvas widgets.
+- Storyboard internals, runtime code, devtools, tests, and CLI/runtime surfaces import it as a broader package entrypoint.
+- Several widget helpers also reference this module in docs as the canonical registry cross-link.
 
 ## Notes
 
-- Returning `null` for unknown widget types gives the page a safe failure mode: it can warn and skip unknown persisted content instead of crashing the entire canvas.
+- Unknown widget types resolve to `null`, letting callers fail gracefully.
+- The registry is intentionally explicit rather than auto-discovered so bundle shape and import boundaries stay predictable.

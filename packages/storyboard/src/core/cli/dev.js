@@ -54,6 +54,21 @@ function readDevDomain(targetCwd) {
   }
 }
 
+// Returns true when the storyboard.config.json explicitly contains a
+// `devDomain` key (even if the value happens to be the literal "storyboard").
+// The runtime's FORBIDDEN_DEFAULT_DOMAIN guard exists to catch users who
+// forgot to set one — it must not punish projects that legitimately picked
+// "storyboard" (e.g. the storyboard repo itself).
+function devDomainIsExplicit(targetCwd) {
+  try {
+    const root = repoRoot(targetCwd)
+    const cfg = JSON.parse(readFileSync(resolve(root, 'storyboard.config.json'), 'utf8'))
+    return Object.prototype.hasOwnProperty.call(cfg, 'devDomain')
+  } catch {
+    return false
+  }
+}
+
 function remoteBranchExists(name, cwd) {
   try {
     const result = execFileSync('git', ['ls-remote', '--exit-code', '--heads', 'origin', name], { cwd, encoding: 'utf8' })
@@ -187,7 +202,10 @@ async function main() {
       slot: { devDomain, worktree: worktreeName },
       targetCwd: resolve(targetCwd),
       ttlSeconds: flags.ttl ?? 3600,
-      allowDefaultDomain: false,
+      // Allow the literal "storyboard" devDomain when the user set it
+      // explicitly. The guard only catches the case where it was inherited
+      // from the runtime default because the field was missing.
+      allowDefaultDomain: devDomainIsExplicit(targetCwd),
     })
     s.stop(`Ready: ${result.lease.url}`)
   } catch (err) {
