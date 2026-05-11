@@ -768,8 +768,8 @@ export default function CoreUIBar({ basePath = '/', toolbarConfig, customHandler
       {/* Collab bar (top-right, canvas only) */}
       {canvasActive && visible && !completelyHidden && collabBarMenus.length > 0 && (
         <div
-          className="fixed top-6 right-6 z-[9999] font-sans flex items-center gap-3"
-          data-collab-bar=""
+          className="fixed z-[9999] font-sans flex items-center gap-3"
+          data-collab-bar
           role="toolbar"
           aria-label="Collab bar"
         >

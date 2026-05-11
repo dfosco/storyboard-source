@@ -1,12 +1,13 @@
 /**
- * CreateDialog — modal wrapper around the unified ArtifactForm.
+ * CreateDialog — Primer Dialog wrapper around the unified ArtifactForm.
  *
  * The form, fields, and validation are entirely schema-driven via
- * ARTIFACT_SCHEMAS. This component supplies modal chrome, fetches dynamic
- * select options (e.g. prototype list), POSTs to the artifact API, and
- * navigates to the resulting route on success.
+ * ARTIFACT_SCHEMAS. This component supplies modal chrome (Primer Dialog),
+ * fetches dynamic select options (e.g. prototype list), POSTs to the
+ * artifact API, and navigates to the resulting route on success.
  */
 import { useState, useEffect, useMemo } from 'react'
+import { Dialog } from '@primer/react/experimental'
 import ArtifactForm, { ARTIFACT_SCHEMAS } from '../ArtifactForm/ArtifactForm.jsx'
 
 // Map UI command-palette type ids (PascalCase) to schema keys (lowercase)
@@ -81,48 +82,23 @@ export default function CreateDialog({ type, basePath, onClose }) {
   }
 
   return (
-    <div style={overlayStyle} onClick={onClose}>
-      <div style={dialogStyle} onClick={e => e.stopPropagation()}>
-        <button style={closeBtnStyle} onClick={onClose} aria-label="Close">✕</button>
-        <div style={scrollAreaStyle}>
-          <ArtifactForm
-            type={schemaKey}
-            onSubmit={handleSubmit}
-            onCancel={onClose}
-            dynamicOptions={{ prototypes }}
-          />
-        </div>
-      </div>
-    </div>
+    <Dialog
+      title={`New ${schema.label}`}
+      subtitle={schema.description}
+      onClose={onClose}
+      width="medium"
+      height="auto"
+    >
+      <ArtifactForm
+        type={schemaKey}
+        onSubmit={handleSubmit}
+        onCancel={onClose}
+        dynamicOptions={{ prototypes }}
+        hideHeader
+      />
+    </Dialog>
   )
 }
 
 // Re-export for canvas/workspace integrations
 export { ARTIFACT_SCHEMAS as CREATE_SCHEMAS }
-
-const overlayStyle = {
-  position: 'fixed', inset: 0, zIndex: 10001,
-  background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(2px)',
-  display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
-  paddingTop: '12vh',
-}
-
-const dialogStyle = {
-  position: 'relative',
-  background: 'transparent',
-  width: '100%', maxWidth: 520,
-  maxHeight: '80vh',
-  display: 'flex', flexDirection: 'column',
-}
-
-const scrollAreaStyle = {
-  flex: 1,
-  minHeight: 0,
-  overflowY: 'auto',
-}
-
-const closeBtnStyle = {
-  position: 'absolute', top: 12, right: 12, zIndex: 1,
-  background: 'none', border: 'none', cursor: 'pointer',
-  fontSize: 16, color: 'var(--fgColor-muted, #999)', padding: 4,
-}

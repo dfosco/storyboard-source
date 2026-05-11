@@ -42,6 +42,7 @@
 .leaderCrown {
   display: inline-flex;
   align-items: center;
+  margin-left: var(--base-size-4, 4px);
   line-height: 1;
 }
 

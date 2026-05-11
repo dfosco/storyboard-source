@@ -122,6 +122,7 @@ export default function ArtifactForm({
   compact = false,
   dynamicOptions = {},
   initialValues: initialOverride,
+  hideHeader = false,
 }) {
   const [selectedType, setSelectedType] = useState(fixedType || 'prototype')
   const activeType = fixedType || selectedType
@@ -197,14 +198,16 @@ export default function ArtifactForm({
 
   return (
     <form className={styles.form} onSubmit={handleSubmit} data-compact={compact || undefined}>
-      <header className={styles.header}>
-        <h3 className={styles.title}>
-          {operation === 'create' ? 'New' : 'Edit'} {schema.label}
-        </h3>
-        {!compact && (
-          <Text as="p" className={styles.description}>{schema.description}</Text>
-        )}
-      </header>
+      {!hideHeader && (
+        <header className={styles.header}>
+          <h3 className={styles.title}>
+            {operation === 'create' ? 'New' : 'Edit'} {schema.label}
+          </h3>
+          {!compact && (
+            <Text as="p" className={styles.description}>{schema.description}</Text>
+          )}
+        </header>
+      )}
 
       {!fixedType && (
         <nav className={styles.typePicker}>

@@ -47,6 +47,12 @@
 }
 
 /* ── Collab bar / Agents Ready trigger ───────────────────────────── */
+
+[data-collab-bar] {
+  top: calc(12px + var(--sb-branch-bar-height, 0px));
+  right: var(--base-size-16);
+}
+
 .agents-ready-trigger-content {
   display: inline-flex;
   align-items: center;
@@ -62,5 +68,5 @@
   color: currentColor;
 }
 [data-collab-bar-item="agents-ready"][data-count="0"] .agents-ready-trigger-count {
-  opacity: 0.5;
+  /* opacity: 0.5; */
 }
