@@ -1,5 +1,11 @@
 # @dfosco/storyboard
 
+## 0.5.0-beta.33
+
+### Patch Changes
+
+-   Exclude tilde-prefixed (`~name.canvas.jsonl`) canvas files from generated routes and workspace listings, matching the existing private-file convention used for directory walking.
+
 ## 0.5.0-beta.32
 
 ### Patch Changes
