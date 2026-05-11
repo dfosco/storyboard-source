@@ -1137,6 +1137,14 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
         const wx = w.position?.x ?? 0
         const wy = w.position?.y ?? 0
 
+        // If the cursor is inside the widget's bounds (but not in any specific
+        // edge anchor zone), treat all available anchors as candidates and pick
+        // the nearest one. This way, dropping anywhere inside a widget always
+        // produces a connection.
+        const insideBounds =
+          canvasPt.x >= wx && canvasPt.x <= wx + ww &&
+          canvasPt.y >= wy && canvasPt.y <= wy + wh
+
         for (const anch of ['top', 'bottom', 'left', 'right']) {
           const anchorState = getAnchorState(w.type, anch)
           if (anchorState !== 'available') continue
@@ -1156,7 +1164,7 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
             inZone = canvasPt.x >= wx + ww - SNAP_EXTEND && canvasPt.x <= wx + ww + SNAP_DEPTH &&
                      canvasPt.y >= wy - SNAP_CROSS && canvasPt.y <= wy + wh + SNAP_CROSS
           }
-          if (!inZone) continue
+          if (!inZone && !insideBounds) continue
 
           const pt = computeAnchorPt(w, anch)
           const dist = Math.hypot(pt.x - canvasPt.x, pt.y - canvasPt.y)
