@@ -10,22 +10,22 @@
  */
 
 import * as p from '@clack/prompts'
-import { generateCaddyfile, isCaddyInstalled, isCaddyRunning, startCaddy } from './proxy.js'
+import { isCaddyInstalled, isCaddyRunning, startCaddy } from './proxy.js'
 
 p.intro('storyboard run')
 
-// 1. Ensure proxy is running
+// 1. Ensure proxy is running. The runtime daemon owns Caddy's route table
+// and will push routes via the admin API when each dev server boots, so
+// here we only need an empty Caddy instance to be reachable.
 if (isCaddyInstalled()) {
-  const caddyfilePath = generateCaddyfile()
-  
   if (isCaddyRunning()) {
     p.log.success('Proxy already running')
   } else {
     const spin = p.spinner()
     spin.start('Starting proxy...')
     try {
-      startCaddy(caddyfilePath)
-      spin.stop('Proxy started')
+      if (startCaddy()) spin.stop('Proxy started')
+      else { spin.stop('Proxy failed to start'); p.log.warning('Continuing without proxy') }
     } catch (err) {
       spin.stop('Proxy failed to start')
       p.log.warning(`Continuing without proxy: ${err.message}`)
