@@ -70,7 +70,8 @@ function buildStoryList() {
   return names
     .map((name) => {
       const data = getStoryData(name) || {}
-      return { name, route: data._route || '', module: data._storyModule || '' }
+      const exportNames = Array.isArray(data._exportNames) ? data._exportNames : []
+      return { name, route: data._route || '', module: data._storyModule || '', exportNames }
     })
     .sort((a, b) => a.name.localeCompare(b.name))
 }
@@ -172,12 +173,18 @@ function StoryPicker({ type, onPick, onClose }) {
     return stories.filter((s) => s.name.toLowerCase().includes(q) || s.route.toLowerCase().includes(q))
   }, [stories, filter])
 
-  function pick(storyId) {
+  function pick(story) {
     if (type === 'component-set') {
-      onPick({ storyId, layout: 'horizontal', selected: '' })
+      onPick({ type: 'component-set', storyId: story.name, layout: 'auto', selected: '' })
+      return
+    }
+    // For "story" picker (Add component to canvas), default to a component-set
+    // when the story exposes multiple named exports; fall back to a single
+    // component widget for stories with a single export.
+    if (story.exportNames && story.exportNames.length > 1) {
+      onPick({ type: 'component-set', storyId: story.name, layout: 'auto', selected: '' })
     } else {
-      // story (Component): pick storyId, leave exportName empty (renders default)
-      onPick({ storyId, exportName: '' })
+      onPick({ type: 'story', storyId: story.name, exportName: '' })
     }
   }
 
@@ -193,12 +200,16 @@ function StoryPicker({ type, onPick, onClose }) {
         onKeyDown={(e) => { if (e.key === 'Escape') onClose() }}
       />
       <div className="sb-wad-list" role="listbox">
-        {filtered.map((s) => (
-          <button key={s.name} type="button" className="sb-wad-item" role="option" onClick={() => pick(s.name)}>
-            <span className="sb-wad-item-title">{s.name}</span>
-            {s.route && <span className="sb-wad-item-hint">{s.route}</span>}
-          </button>
-        ))}
+        {filtered.map((s) => {
+          const count = s.exportNames?.length || 0
+          const typeLabel = count > 1 ? `Component set · ${count} variants` : 'Component'
+          return (
+            <button key={s.name} type="button" className="sb-wad-item" role="option" onClick={() => pick(s)}>
+              <span className="sb-wad-item-title">{s.name}</span>
+              <span className="sb-wad-item-hint">{typeLabel}</span>
+            </button>
+          )
+        })}
         {filtered.length === 0 && <div className="sb-wad-empty">No matches</div>}
       </div>
     </div>
@@ -208,11 +219,14 @@ function StoryPicker({ type, onPick, onClose }) {
 export default function WidgetArtifactDialog({ type, onClose }) {
   if (!type) return null
   const isPrototype = type === 'prototype'
-  const title = TYPE_LABELS[type] || 'Pick an artifact'
+  const title = type === 'story' ? 'Add component to canvas' : (TYPE_LABELS[type] || 'Pick an artifact')
   const subtitle = TYPE_SUBTITLES[type] || ''
 
-  function handlePick(props) {
-    dispatchAddWidget(type, props)
+  function handlePick(payload) {
+    // StoryPicker may upgrade a `story` selection to a `component-set` when the
+    // story has multiple exports. Honor the type returned in the payload.
+    const { type: chosenType, ...props } = payload || {}
+    dispatchAddWidget(chosenType || type, props)
     onClose?.()
   }
 
@@ -225,7 +239,7 @@ export default function WidgetArtifactDialog({ type, onClose }) {
       height="large"
     >
       {isPrototype
-        ? <PrototypePicker onPick={handlePick} onClose={onClose} />
+        ? <PrototypePicker onPick={(props) => handlePick({ type: 'prototype', ...props })} onClose={onClose} />
         : <StoryPicker type={type} onPick={handlePick} onClose={onClose} />}
     </Dialog>
   )

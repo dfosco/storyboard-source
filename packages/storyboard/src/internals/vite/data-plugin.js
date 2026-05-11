@@ -28,6 +28,24 @@ const STORY_GLOB_PATTERN = '**/*.story.{jsx,tsx}'
  *      "src/prototypes/Dashboard/helpers.object.json"→ { name: "Dashboard/helpers", suffix: "object" }
  *      "src/prototypes/X.folder/Dashboard/default.flow.json" → { name: "Dashboard/default", suffix: "flow", folder: "X" }
  */
+/**
+ * Parse top-level named exports (Capitalized identifiers) from a story
+ * source file. Mirrors the regex used by canvas/server.js:parseExportNames
+ * so that downstream UI (CanvasCreateMenu, WidgetArtifactDialog) can decide
+ * between rendering a single component vs a component-set without a runtime
+ * import of the story module.
+ */
+function parseStoryExportNames(filePath) {
+  try {
+    const src = fs.readFileSync(filePath, 'utf-8')
+    const names = []
+    const re = /export\s+(?:function|const|class)\s+([A-Z]\w*)/g
+    let m
+    while ((m = re.exec(src)) !== null) names.push(m[1])
+    return names
+  } catch { return [] }
+}
+
 function parseDataFile(filePath) {
   const base = path.basename(filePath)
 
@@ -834,7 +852,7 @@ function generateModule({ index, protoFolders, flowRoutes, canvasRoutes, canvasA
   for (const [name, absPath] of Object.entries(index.story || {})) {
     const varName = `_d${i++}`
     const relModule = '/' + path.relative(root, absPath).replace(/\\/g, '/')
-    const storyMeta = { _storyModule: relModule }
+    const storyMeta = { _storyModule: relModule, _exportNames: parseStoryExportNames(absPath) }
     if (storyRoutes[name]) {
       storyMeta._route = storyRoutes[name]
     }

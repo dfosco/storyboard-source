@@ -140,9 +140,14 @@ export default function CanvasCreateMenu({ config = {}, data: _data, canvasName 
     setMenuOpen(false)
   }
 
-  function addStoryWidget(storyId) {
+  function addStoryWidget(story) {
+    const exports = Array.isArray(story?.exports) ? story.exports : []
+    if (exports.length > 1) {
+      addWidget('component-set', { storyId: story.name, layout: 'auto', selected: '' })
+      return
+    }
     document.dispatchEvent(new CustomEvent('storyboard:canvas:add-story-widget', {
-      detail: { storyId, canvasName }
+      detail: { storyId: story.name, canvasName }
     }))
     setMenuOpen(false)
   }
@@ -322,14 +327,18 @@ export default function CanvasCreateMenu({ config = {}, data: _data, canvasName 
                     story.name.toLowerCase().includes(q) ||
                     story.path.toLowerCase().includes(q)
                   }
-                  renderItem={(story) => (
-                    <DropdownMenu.Item key={story.name} onClick={() => addStoryWidget(story.name)}>
-                      <span className="flex flex-col">
-                        <span>{story.name}</span>
-                        <span className="text-xs text-muted-foreground">{story.path}</span>
-                      </span>
-                    </DropdownMenu.Item>
-                  )}
+                  renderItem={(story) => {
+                    const exportCount = Array.isArray(story.exports) ? story.exports.length : 0
+                    const typeLabel = exportCount > 1 ? `Component set · ${exportCount} variants` : 'Component'
+                    return (
+                      <DropdownMenu.Item key={story.name} onClick={() => addStoryWidget(story)}>
+                        <span className="flex flex-col">
+                          <span>{story.name}</span>
+                          <span className="text-xs text-muted-foreground">{typeLabel}</span>
+                        </span>
+                      </DropdownMenu.Item>
+                    )
+                  }}
                   placeholder="Filter components…"
                   emptyMessage="No components found"
                   loadingMessage="Loading components…"
@@ -337,6 +346,7 @@ export default function CanvasCreateMenu({ config = {}, data: _data, canvasName 
                   inputRef={componentSearchRef}
                   header={
                     <>
+                      <DropdownMenu.Label>Add component to canvas</DropdownMenu.Label>
                       <button
                         className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground w-full text-left bg-transparent border-none"
                         onClick={(e) => { e.preventDefault(); e.stopPropagation(); showCreateForm() }}
