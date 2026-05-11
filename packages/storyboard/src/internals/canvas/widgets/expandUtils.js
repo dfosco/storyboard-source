@@ -31,23 +31,39 @@ function MarkdownSecondaryPane({ widget, editingRef, onUpdate }) {
     document.dispatchEvent(new CustomEvent('storyboard:expanded-pane:refresh'))
   }
 
-  // Subscribe to canvas bridge updates so edits to this widget reflect here.
-  // The `widget` prop is captured at split-open time and never updates, so we
-  // re-read the current content from the live bridge state on every render.
-  const [, forceTick] = useState(0)
+  // Local content state — drives the controlled textarea synchronously so the
+  // user's caret position is preserved during typing. The dispatched canvas
+  // update is async (event → CanvasPage → setState → bridge → re-render),
+  // and a controlled textarea with an async value source resets the caret to
+  // the end on every keystroke.
+  const [content, setContent] = useState(widget.props?.content || '')
+
+  // Re-sync from the canvas bridge when the widget changes externally
+  // (e.g. an agent edits it, or the user edits it elsewhere). We compare
+  // against the local value to avoid clobbering in-flight keystrokes.
   useEffect(() => {
-    const handler = () => forceTick((n) => n + 1)
+    const handler = () => {
+      const liveWidget = window.__storyboardCanvasBridgeState?.widgets?.find((w) => w.id === widget.id)
+      const liveContent = liveWidget?.props?.content
+      if (typeof liveContent === 'string') {
+        setContent((prev) => (prev === liveContent ? prev : liveContent))
+      }
+    }
     document.addEventListener('storyboard:canvas:bridge-updated', handler)
     return () => document.removeEventListener('storyboard:canvas:bridge-updated', handler)
-  }, [])
+  }, [widget.id])
 
-  const liveWidget = window.__storyboardCanvasBridgeState?.widgets?.find((w) => w.id === widget.id)
-  const content = (liveWidget?.props?.content ?? widget.props?.content) || ''
+  const handleUpdate = useCallback((updates) => {
+    if (typeof updates?.content === 'string') {
+      setContent(updates.content)
+    }
+    onUpdate(updates)
+  }, [onUpdate])
 
   // eslint-disable-next-line react-hooks/refs
   return createElement(ExpandedMarkdownEditor, {
     content,
-    onUpdate,
+    onUpdate: handleUpdate,
     editing,
     onToggleEdit: () => editingRef.setter(!editing),
   })
