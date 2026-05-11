@@ -5,6 +5,7 @@ import { schemas } from './widgetConfig.js'
 import { toFigmaEmbedUrl, getFigmaTitle, getFigmaType, isFigmaUrl } from './figmaUrl.js'
 import { useIframeDevLogs } from './iframeDevLogs.js'
 import { findAllConnectedSplitTargets, getSplitPaneLabel, buildPaneForWidget, buildSplitLayout } from './expandUtils.js'
+import { useExpandOverride } from './useExpandOverride.js'
 import ExpandedPane from './ExpandedPane.jsx'
 import styles from './FigmaEmbed.module.css'
 import overlayStyles from './embedOverlay.module.css'
@@ -57,7 +58,7 @@ export default forwardRef(function FigmaEmbed({ id: widgetId, props, onUpdate, r
 
   const [interactive, setInteractive] = useState(false)
   const [showIframe, setShowIframe] = useState(true)
-  const [expandMode, setExpandMode] = useState(null)
+  const [expandMode, setExpandMode] = useExpandOverride('figma', widgetId)
   const expanded = expandMode !== null
 
   const iframeRef = useRef(null)

@@ -17,6 +17,7 @@ import WidgetWrapper from './WidgetWrapper.jsx'
 import ResizeHandle from './ResizeHandle.jsx'
 import { useIframeDevLogs } from './iframeDevLogs.js'
 import { findAllConnectedSplitTargets, getSplitPaneLabel, buildPaneForWidget, buildSplitLayout, buildSecondaryIframeUrl } from './expandUtils.js'
+import { useExpandOverride } from './useExpandOverride.js'
 import ExpandedPane from './ExpandedPane.jsx'
 import InlineStoryRenderer from './InlineStoryRenderer.jsx'
 import styles from './StoryWidget.module.css'
@@ -71,7 +72,7 @@ export default forwardRef(function StoryWidget({ id: widgetId, props, onUpdate, 
   const height = props?.height
 
   const containerRef = useRef(null)
-  const [expandMode, setExpandMode] = useState(null)
+  const [expandMode, setExpandMode] = useExpandOverride('story', widgetId)
   const expanded = expandMode !== null
   const iframeRef = useRef(null)
   const [interactive, setInteractive] = useState(false)

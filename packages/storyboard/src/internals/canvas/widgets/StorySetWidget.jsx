@@ -17,6 +17,7 @@ import WidgetWrapper from './WidgetWrapper.jsx'
 import ResizeHandle from './ResizeHandle.jsx'
 import ExpandedPane from './ExpandedPane.jsx'
 import { buildSecondaryIframeUrl, getSplitPaneLabel } from './expandUtils.js'
+import { useExpandOverride } from './useExpandOverride.js'
 import { useIframeDevLogs } from './iframeDevLogs.js'
 import styles from './StorySetWidget.module.css'
 import overlayStyles from './embedOverlay.module.css'
@@ -49,7 +50,9 @@ export default forwardRef(function StorySetWidget({ id: widgetId, props, onUpdat
   const iframeRef = useRef(null)
   const [interactive, setInteractive] = useState(false)
   const [storyIndexKey, setStoryIndexKey] = useState(0)
-  const [expanded, setExpanded] = useState(false)
+  const [expandedMode, setExpandedMode] = useExpandOverride('storyset', widgetId)
+  const expanded = expandedMode === '1'
+  const setExpanded = useCallback((open) => setExpandedMode(open ? '1' : null), [setExpandedMode])
 
   // Re-resolve when story index is live-patched
   useEffect(() => {

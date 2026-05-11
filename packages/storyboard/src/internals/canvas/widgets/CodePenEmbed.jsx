@@ -14,6 +14,7 @@ import { isCodePenUrl, toCodePenEmbedUrl, getCodePenTitle, fetchCodePenMeta } fr
 import { useIframeDevLogs } from './iframeDevLogs.js'
 import styles from './CodePenEmbed.module.css'
 import overlayStyles from './embedOverlay.module.css'
+import { useExpandOverride } from './useExpandOverride.js'
 
 const codepenEmbedSchema = schemas['codepen-embed']
 
@@ -51,14 +52,16 @@ function CodeIcon({ size = 32, className }) {
   )
 }
 
-export default forwardRef(function CodePenEmbed({ props, onUpdate, resizable }, ref) {
+export default forwardRef(function CodePenEmbed({ id, props, onUpdate, resizable }, ref) {
   const url = readProp(props, 'url', codepenEmbedSchema)
   const width = readProp(props, 'width', codepenEmbedSchema)
   const height = readProp(props, 'height', codepenEmbedSchema)
 
   const [interactive, setInteractive] = useState(false)
   const [showIframe, setShowIframe] = useState(true)
-  const [expanded, setExpanded] = useState(false)
+  const [expandedMode, setExpandedMode] = useExpandOverride('codepen', id)
+  const expanded = expandedMode === '1'
+  const setExpanded = useCallback((open) => setExpandedMode(open ? '1' : null), [setExpandedMode])
 
   const iframeRef = useRef(null)
   const embedRef = useRef(null)

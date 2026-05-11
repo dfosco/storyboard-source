@@ -7,6 +7,7 @@ import { readProp } from './widgetProps.js'
 import { schemas } from './widgetConfig.js'
 import { toggleImagePrivacy, cropAndUpload } from '../canvasApi.js'
 import { findAllConnectedSplitTargets, getSplitPaneLabel, buildPaneForWidget, buildSplitLayout } from './expandUtils.js'
+import { useExpandOverride } from './useExpandOverride.js'
 import styles from './ImageWidget.module.css'
 
 const imageSchema = schemas['image']
@@ -26,7 +27,7 @@ const ImageWidget = forwardRef(function ImageWidget({ id, props, onUpdate, resiz
   const imgRef = useRef(null)
   const [naturalRatio, setNaturalRatio] = useState(null)
   const [naturalSize, setNaturalSize] = useState(null)
-  const [expandMode, setExpandMode] = useState(null)
+  const [expandMode, setExpandMode] = useExpandOverride('image', id)
   const expanded = expandMode !== null
   const [cropping, setCropping] = useState(false)
   const [cropRect, setCropRect] = useState(null)

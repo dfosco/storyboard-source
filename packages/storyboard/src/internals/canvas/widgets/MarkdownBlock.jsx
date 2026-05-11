@@ -8,6 +8,7 @@ import { readProp } from './widgetProps.js'
 import { schemas, getFeaturesForSurface } from './widgetConfig.js'
 import ExpandedPane from './ExpandedPane.jsx'
 import { findAllConnectedSplitTargets, getSplitPaneLabel, buildPaneForWidget, buildSplitLayout } from './expandUtils.js'
+import { useExpandOverride } from './useExpandOverride.js'
 import styles from './MarkdownBlock.module.css'
 
 const markdownSchema = schemas['markdown']
@@ -73,7 +74,7 @@ export default forwardRef(function MarkdownBlock({ id, props, onUpdate, resizabl
   const collapsed = !!props?.collapsed
   const canEdit = typeof onUpdate === 'function'
   const [editing, setEditing] = useState(false)
-  const [expandMode, setExpandMode] = useState(null)
+  const [expandMode, setExpandMode] = useExpandOverride('markdown', id)
   const expanded = expandMode !== null
   const editingActive = canEdit && editing
   const textareaRef = useRef(null)

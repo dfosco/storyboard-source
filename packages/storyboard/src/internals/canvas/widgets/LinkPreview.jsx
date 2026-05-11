@@ -8,6 +8,7 @@ import ResizeHandle from './ResizeHandle.jsx'
 import { readProp, linkPreviewSchema } from './widgetProps.js'
 import ExpandedPane from './ExpandedPane.jsx'
 import { findAllConnectedSplitTargets, buildPaneForWidget, buildSplitLayout } from './expandUtils.js'
+import { useExpandOverride } from './useExpandOverride.js'
 import styles from './LinkPreview.module.css'
 
 const VIDEO_URL_LINE_RE = /^<p>\s*(https?:\/\/[^\s<]+\.(mp4|mov|webm|ogg)(?:\?[^\s<]*)?)\s*<\/p>$/gim
@@ -266,7 +267,7 @@ export default forwardRef(function LinkPreview({ id, props, onUpdate, resizable 
   const cardRef = useRef(null)
   const inputRef = useRef(null)
   const [editing, setEditing] = useState(false)
-  const [expandMode, setExpandMode] = useState(null)
+  const [expandMode, setExpandMode] = useExpandOverride('link', id)
   const expanded = expandMode !== null
 
   useImperativeHandle(ref, () => ({
