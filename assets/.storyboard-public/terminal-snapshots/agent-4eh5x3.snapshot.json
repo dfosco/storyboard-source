@@ -1,0 +1,10 @@
+{
+  "widgetId": "agent-4eh5x3",
+  "canvasId": "storyboarding/form-schema",
+  "prettyName": "dusk-avocet",
+  "timestamp": "2026-05-11T09:09:02.446Z",
+  "cols": 89,
+  "rows": 32,
+  "paneContent": "storyboard terminal-welcome --branch \"0.5.0\" --canvas \"storyboarding/form-schema\" --name\n\n0.5.0 on  0.5.0 [$!?] via  v22.22.0 \n❯ storyboard terminal-welcome --branch \"0.5.0\" --canvas \"storyboarding/form-schema\" --nam\ne \"dusk-avocet\" --startup \"copilot --agent terminal-agent\"\nzsh: command not found: storyboard\n\n0.5.0 on  0.5.0 [$!?] via  v22.22.0 \n❯\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+  "scrollback": ""
+}

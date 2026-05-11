@@ -24,7 +24,8 @@
 
 import { execSync } from 'node:child_process'
 import { readFileSync, mkdirSync, writeFileSync, renameSync, existsSync, unlinkSync } from 'node:fs'
-import { resolve, join } from 'node:path'
+import { resolve, join, dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { tmpdir } from 'node:os'
 import { devLog } from '../logger/devLogger.js'
 
@@ -73,6 +74,24 @@ try {
 
 const TERMINAL_PATH_PREFIX = '/_storyboard/terminal/'
 
+// Resolve the absolute path to the storyboard CLI executable. Used when
+// generating commands that we send into shells via tmux send-keys — we
+// can't rely on `storyboard` being on the user's PATH (their .zshrc may
+// reset it after the tmux env override applies).
+function resolveStoryboardCli() {
+  try {
+    const here = dirname(fileURLToPath(import.meta.url))
+    // terminal-server.js lives at packages/storyboard/src/core/canvas/
+    // CLI entry is at packages/storyboard/src/core/cli/index.js
+    const cliPath = resolve(here, '..', 'cli', 'index.js')
+    if (existsSync(cliPath)) return cliPath
+  } catch { /* fall through */ }
+  return 'storyboard'
+}
+const STORYBOARD_CLI = resolveStoryboardCli()
+const STORYBOARD_CLI_CMD = STORYBOARD_CLI === 'storyboard'
+  ? 'storyboard'
+  : `${process.execPath} ${JSON.stringify(STORYBOARD_CLI)}`
 /**
  * Env var prefixes/names from external terminal emulators and shell configs
  * that must be stripped before spawning tmux or shell processes — they leak
@@ -973,7 +992,7 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
         // is always available and up-to-date for manual sourcing.
         const canvasArg = canvasId !== 'unknown' ? canvasId : ''
         const nameArgVal = prettyName ? ` --name "${prettyName}"` : ''
-        const welcomeBase = `storyboard terminal-welcome --branch "${branch}" --canvas "${canvasArg}"${nameArgVal}`
+        const welcomeBase = `${STORYBOARD_CLI_CMD} terminal-welcome --branch "${branch}" --canvas "${canvasArg}"${nameArgVal}`
 
         // Write real executable scripts to .storyboard/terminals/bin/ and
         // prepend that dir to PATH via tmux set-environment. This makes
@@ -1055,7 +1074,7 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
       // Build the welcome command base — used by all paths below
       const canvasArg = canvasId !== 'unknown' ? canvasId : ''
       const nameArg = prettyName ? ` --name "${prettyName}"` : ''
-      const welcomeBase = `storyboard terminal-welcome --branch "${branch}" --canvas "${canvasArg}"${nameArg}`
+      const welcomeBase = `${STORYBOARD_CLI_CMD} terminal-welcome --branch "${branch}" --canvas "${canvasArg}"${nameArg}`
 
       if (usedWarmAgent) {
         // ── Hot pool path: session came from a pre-warmed agent pool ──

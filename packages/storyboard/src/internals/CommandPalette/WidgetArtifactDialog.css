@@ -1,0 +1,132 @@
+.sb-wad-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 16px 16px;
+  height: 100%;
+  min-height: 0;
+}
+
+.sb-wad-filter,
+.sb-wad-custom-input {
+  width: 100%;
+  padding: 8px 10px;
+  font: inherit;
+  color: var(--fgColor-default);
+  background: var(--bgColor-inset, var(--color-canvas-inset));
+  border: 1px solid var(--borderColor-default, var(--color-border-default));
+  border-radius: 6px;
+  outline: none;
+}
+
+.sb-wad-filter:focus,
+.sb-wad-custom-input:focus {
+  border-color: var(--borderColor-accent-emphasis, var(--color-accent-emphasis));
+  box-shadow: 0 0 0 3px var(--bgColor-accent-muted, rgba(9, 105, 218, 0.2));
+}
+
+.sb-wad-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  border: 1px solid var(--borderColor-muted, var(--color-border-muted));
+  border-radius: 6px;
+  padding: 4px;
+}
+
+.sb-wad-group {
+  padding: 4px 0;
+}
+
+.sb-wad-group-label {
+  padding: 6px 8px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--fgColor-muted);
+}
+
+.sb-wad-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 10px;
+  text-align: left;
+  font: inherit;
+  color: var(--fgColor-default);
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.sb-wad-item-nested {
+  padding-left: 18px;
+}
+
+.sb-wad-item:hover,
+.sb-wad-item:focus-visible {
+  background: var(--bgColor-neutral-muted, var(--color-neutral-subtle));
+  outline: none;
+}
+
+.sb-wad-item-title {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sb-wad-item-hint {
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: var(--fgColor-muted);
+  font-family: var(--fontStack-monospace, ui-monospace, monospace);
+}
+
+.sb-wad-empty {
+  padding: 16px;
+  color: var(--fgColor-muted);
+  text-align: center;
+  font-size: 13px;
+}
+
+.sb-wad-custom {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 1px solid var(--borderColor-muted, var(--color-border-muted));
+  padding-top: 12px;
+}
+
+.sb-wad-custom-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--fgColor-muted);
+}
+
+.sb-wad-custom-row {
+  display: flex;
+  gap: 8px;
+}
+
+.sb-wad-submit {
+  padding: 8px 14px;
+  font: inherit;
+  color: var(--fgColor-onEmphasis, white);
+  background: var(--bgColor-accent-emphasis, var(--color-accent-emphasis));
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.sb-wad-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -22,6 +22,10 @@ import {
 } from '../../core/index.js'
 import { widgetTypes } from '../canvas/widgets/widgetConfig.js'
 import CreateDialog from './CreateDialog.jsx'
+import WidgetArtifactDialog from './WidgetArtifactDialog.jsx'
+
+// Widget types that need artifact selection BEFORE creation (via dialog).
+const WIDGET_TYPES_WITH_PICKER = new Set(['prototype', 'story', 'component-set'])
 import BranchBar from '../BranchBar/BranchBar.jsx'
 import AuthModal from '../AuthModal/AuthModal.jsx'
 import './command-palette.css'
@@ -427,14 +431,22 @@ function buildDynamicSection(section, prefix, onNavigateToPage, onCreateAction) 
     if (!isLocalDev) return null
     const isCanvasRoute = typeof window !== 'undefined' && window.location.pathname.includes('/canvas/')
     if (!isCanvasRoute) return null
-    const hiddenTypes = new Set(['link-preview', 'image', 'figma-embed', 'codepen-embed', 'story', 'terminal-read', 'agent'])
+    // Note: 'story' is intentionally NOT hidden here — it now has a proper
+    // artifact picker dialog (see WIDGET_TYPES_WITH_PICKER below). The
+    // deprecated 'component' widget type is hidden in favor of 'story'.
+    const hiddenTypes = new Set(['link-preview', 'image', 'figma-embed', 'codepen-embed', 'component', 'terminal-read', 'agent'])
     const items = Object.entries(widgetTypes).filter(([type]) => !hiddenTypes.has(type)).map(([type, def]) => ({
       id: `create-widget:${type}`,
       children: def.label,
       keywords: ['add', 'widget', 'create', type, def.label.toLowerCase()],
       itemType: type,
       onClick: () => {
-        document.dispatchEvent(new CustomEvent('storyboard:canvas:add-widget', { detail: { type } }))
+        if (WIDGET_TYPES_WITH_PICKER.has(type)) {
+          // Open the artifact picker dialog instead of creating an empty widget.
+          document.dispatchEvent(new CustomEvent('storyboard:open-widget-artifact-dialog', { detail: { type } }))
+        } else {
+          document.dispatchEvent(new CustomEvent('storyboard:canvas:add-widget', { detail: { type } }))
+        }
       },
     }))
 
@@ -1000,6 +1012,7 @@ export default function StoryboardCommandPalette({ basePath }) {
   const [hiddenFromSearchIds, setHiddenFromSearchIds] = useState(new Set())
   const [activePage, setActivePage] = useState('root')
   const [createType, setCreateType] = useState(null)
+  const [widgetArtifactType, setWidgetArtifactType] = useState(null)
   const [currentTheme, setCurrentTheme] = useState(() => getTheme())
   const [refreshKey, setRefreshKey] = useState(0)
 
@@ -1432,6 +1445,10 @@ export default function StoryboardCommandPalette({ basePath }) {
       type={createType}
       basePath={basePath}
       onClose={() => setCreateType(null)}
+    />
+    <WidgetArtifactDialog
+      type={widgetArtifactType}
+      onClose={() => setWidgetArtifactType(null)}
     />
     <BranchBar basePath={basePath} />
     <AuthModal />

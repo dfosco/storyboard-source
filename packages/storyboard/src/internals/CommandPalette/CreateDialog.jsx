@@ -86,8 +86,8 @@ export default function CreateDialog({ type, basePath, onClose }) {
       title={`New ${schema.label}`}
       subtitle={schema.description}
       onClose={onClose}
-      width="medium"
-      height="auto"
+      width="xlarge"
+      height="large"
     >
       <ArtifactForm
         type={schemaKey}

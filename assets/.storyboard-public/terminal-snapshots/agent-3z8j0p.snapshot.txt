@@ -1,236 +1,221 @@
 SESSION: agent-3z8j0p | ruby-heron
 CANVAS:  storyboarding/form-schema
 BRANCH:  0.5.0
-TIME:    2026-05-11T08:56:40.669Z
+TIME:    2026-05-11T09:00:09.472Z
 
 ================================================================================
 SCREEN
 ================================================================================
 
-  │ grep -n "Dialog" node_modules/@primer/react/dist/experimental.d.ts 2>/dev/null |
-  │ head; cat node_modules/@primer/react/package.json | jq '.exports."./experimental"'
-  │ 2>/dev/null
-  └ 5 lines...
-
-● Check experimental Dialog (shell)
-  │ grep -n "Dialog" node_modules/@primer/react/dist/experimental/index.d.ts | head; echo
-  │ ---; grep -rn "@primer/react/experimental" packages/storyboard/src --include="*.jsx"
-  │ | head
-  └ 4 lines...
-
-● Good — Dialog is in @primer/react/experimental. Now let me check ArtifactForm uses
-  hideHeader prop — I need to add it:
-
-● Read ArtifactForm.jsx
-  │ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
-  └ L100:135 (36 lines read)
-
-● Edit ArtifactForm.jsx +1
   └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
 
 ● Edit ArtifactForm.jsx +10 -8
   └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
 
-◎ Thinking (Esc to cancel · 12.7 KiB)
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]       @TerminalWidget.module.css
+● Commit Primer Dialog refactor (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git add -A && git
+  │ commit -m "fix(CreateDialog): use Primer Dialog from @primer/react/experimental
+  │
+  │ Replaces hand-rolled overlay/dialog markup with Primer's Dialog
+  │ component, which provides a properly scrollable body region while…
+  └ 12 lines...
+
+● Add summary widget + signal done (shell)
+  │ SERVER="http://localhost:1240/branch--0.5.0"
+  │ RESP=$(curl -s -X POST "$SERVER/_storyboard/canvas/widget" -H "Content-Type:
+  │ application/json" -d '{"name":"storyboarding/form-schema","type":"markdown","positi
+  │ on":{"x":9912,"y":3300},"props":{"content":"# CreateDialog: Primer
+  │ Dialog\n\nReplaced hand-rolled overlay with `Dialog` from …
+  └ 18 lines...
+
+● Done. Refactored CreateDialog.jsx to use Primer's Dialog from
+  @primer/react/experimental — its built-in body region scrolls while the title and
+  close button stay fixed. Also added a hideHeader prop to ArtifactForm to avoid
+  duplicating the title shown by the Dialog.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                   @CoreUIBar.jsx
 ─────────────────────────────────────────────────────────────────────────────────────────
 ❯  
 ─────────────────────────────────────────────────────────────────────────────────────────
- / commands · ? help · ctrl+q enqueue
- terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+ / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
 
 ================================================================================
 SCROLLBACK (last 60s)
 ================================================================================
 
-◎ Thinking (Esc to cancel · 9.9 KiB)[lost tty]
-[?996n[>c[>q  │ "experimental\|drafts" 2>/dev/null | head -3
-  └ 33 lines...
+[lost tty]
+[?996n[>c[>q  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
 
-◐ I need to verify where the Primer Dialog component is exported from—it could be under 
-  the experimental or drafts path in the Primer React package.
+● Edit ArtifactForm.jsx +10 -8
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
 
-● Check Dialog export (shell)
-  │ node -e "const x = require('@primer/react/experimental');
-  │ console.log(Object.keys(x).filter(k => k.includes('Dialog')))" 2>&1 | head; node -e
-  │ "const x = require('@primer/react'); console.log(Object.keys(x).filter(k =>
-  │ k.includes('Dialog')))" 2>&1 | head
-  └ 21 lines...
+● Commit Primer Dialog refactor (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git add -A && git
+  │ commit -m "fix(CreateDialog): use Primer Dialog from @primer/react/experimental
+  │
+  │ Replaces hand-rolled overlay/dialog markup with Primer's Dialog
+  │ component, which provides a properly scrollable body region while…
+  └ 12 lines...
 
-● Check exports map (shell)
-  │ grep -n "Dialog" node_modules/@primer/react/dist/experimental.d.ts 2>/dev/null |
-  │ head; cat node_modules/@primer/react/package.json | jq '.exports."./experimental"'
-  │ 2>/dev/null
-  └ 5 lines...
+● Add summary widget + signal done (shell)
+  │ SERVER="http://localhost:1240/branch--0.5.0"
+  │ RESP=$(curl -s -X POST "$SERVER/_storyboard/canvas/widget" -H "Content-Type:
+  │ application/json" -d '{"name":"storyboarding/form-schema","type":"markdown","positi
+  │ on":{"x":9912,"y":3300},"props":{"content":"# CreateDialog: Primer
+  │ Dialog\n\nReplaced hand-rolled overlay with `Dialog` from …
+  └ 18 lines...
 
-● Check experimental Dialog (shell)
-  └ grep -n "Dialog" node_modules/@primer/react/dist/experimental/index.d.ts | head; echo    ---; grep -rn "@primer/react/experimental" packages/storyboard/src --include="*.jsx"
-    | head
+● Done. Refactored CreateDialog.jsx to use Primer's Dialog from
+  @primer/react/experimental — its built-in body region scrolls while the title and
+  close button stay fixed. Also added a hideHeader prop to ArtifactForm to avoid
+  duplicating the title shown by the Dialog.
 
-○ Thinking (Esc to cancel · 11.1 KiB)
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]       @TerminalWidget.module.css
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                @CreateDialog.jsx
 ─────────────────────────────────────────────────────────────────────────────────────────❯
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue
- terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-  │ "experimental\|drafts" 2>/dev/null | head -3
-  └ 33 lines...
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
 
-◐ I need to verify where the Primer Dialog component is exported from—it could be under 
-  the experimental or drafts path in the Primer React package.
+● Edit ArtifactForm.jsx +10 -8
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
 
-● Check Dialog export (shell)
-  │ node -e "const x = require('@primer/react/experimental');
-  │ console.log(Object.keys(x).filter(k => k.includes('Dialog')))" 2>&1 | head; node -e
-  │ "const x = require('@primer/react'); console.log(Object.keys(x).filter(k =>
-  │ k.includes('Dialog')))" 2>&1 | head
-  └ 21 lines...
+● Commit Primer Dialog refactor (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git add -A && git
+  │ commit -m "fix(CreateDialog): use Primer Dialog from @primer/react/experimental
+  │
+  │ Replaces hand-rolled overlay/dialog markup with Primer's Dialog
+  │ component, which provides a properly scrollable body region while…
+  └ 12 lines...
 
-● Check exports map (shell)
-  │ grep -n "Dialog" node_modules/@primer/react/dist/experimental.d.ts 2>/dev/null |
-  │ head; cat node_modules/@primer/react/package.json | jq '.exports."./experimental"'
-  │ 2>/dev/null
-  └ 5 lines...
+● Add summary widget + signal done (shell)
+  │ SERVER="http://localhost:1240/branch--0.5.0"
+  │ RESP=$(curl -s -X POST "$SERVER/_storyboard/canvas/widget" -H "Content-Type:
+  │ application/json" -d '{"name":"storyboarding/form-schema","type":"markdown","positi
+  │ on":{"x":9912,"y":3300},"props":{"content":"# CreateDialog: Primer
+  │ Dialog\n\nReplaced hand-rolled overlay with `Dialog` from …
+  └ 18 lines...
 
-● Check experimental Dialog (shell)
-  └ grep -n "Dialog" node_modules/@primer/react/dist/experimental/index.d.ts | head; echo    ---; grep -rn "@primer/react/experimental" packages/storyboard/src --include="*.jsx"
-    | head
+● Done. Refactored CreateDialog.jsx to use Primer's Dialog from
+  @primer/react/experimental — its built-in body region scrolls while the title and
+  close button stay fixed. Also added a hideHeader prop to ArtifactForm to avoid
+  duplicating the title shown by the Dialog.
 
-◎ Thinking (Esc to cancel · 11.1 KiB)
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]       @TerminalWidget.module.css
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                @CreateDialog.jsx
 ─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue
- terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-◉ Thinking (Esc to cancel · 11.1 KiB) / commands · ? help · ctrl+q enqueue · ctrl+x → b background task● Thinking (Esc to cancel · 11.1 KiB)  └ 33 lines...
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
 
-◐ I need to verify where the Primer Dialog component is exported from—it could be under 
-  the experimental or drafts path in the Primer React package.
+● Edit ArtifactForm.jsx +10 -8
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
 
-● Check Dialog export (shell)
-  │ node -e "const x = require('@primer/react/experimental');
-  │ console.log(Object.keys(x).filter(k => k.includes('Dialog')))" 2>&1 | head; node -e
-  │ "const x = require('@primer/react'); console.log(Object.keys(x).filter(k =>
-  │ k.includes('Dialog')))" 2>&1 | head
-  └ 21 lines...
+● Commit Primer Dialog refactor (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git add -A && git
+  │ commit -m "fix(CreateDialog): use Primer Dialog from @primer/react/experimental
+  │
+  │ Replaces hand-rolled overlay/dialog markup with Primer's Dialog
+  │ component, which provides a properly scrollable body region while…
+  └ 12 lines...
 
-● Check exports map (shell)
-  │ grep -n "Dialog" node_modules/@primer/react/dist/experimental.d.ts 2>/dev/null |
-  │ head; cat node_modules/@primer/react/package.json | jq '.exports."./experimental"'
-  │ 2>/dev/null
-  └ 5 lines...
+● Add summary widget + signal done (shell)
+  │ SERVER="http://localhost:1240/branch--0.5.0"
+  │ RESP=$(curl -s -X POST "$SERVER/_storyboard/canvas/widget" -H "Content-Type:
+  │ application/json" -d '{"name":"storyboarding/form-schema","type":"markdown","positi
+  │ on":{"x":9912,"y":3300},"props":{"content":"# CreateDialog: Primer
+  │ Dialog\n\nReplaced hand-rolled overlay with `Dialog` from …
+  └ 18 lines...
 
-● Check experimental Dialog (shell)
-  │ grep -n "Dialog" node_modules/@primer/react/dist/experimental/index.d.ts | head; echo  │ ---; grep -rn "@primer/react/experimental" packages/storyboard/src --include="*.jsx"
-  │ | head
-  └ 4 lines...
+● Done. Refactored CreateDialog.jsx to use Primer's Dialog from
+  @primer/react/experimental — its built-in body region scrolls while the title and
+  close button stay fixed. Also added a hideHeader prop to ArtifactForm to avoid
+  duplicating the title shown by the Dialog.
 
-● Thinking (Esc to cancel · 11.1 KiB)
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]       @TerminalWidget.module.css
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                @CreateDialog.jsx
 ─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue
- terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-◉ Thinking (Esc to cancel · 11.1 KiB)◎ Thinking (Esc to cancel · 11.1 KiB)○ Thinking (Esc to cancel · 11.1 KiB)◎ Thinking (Esc to cancel · 11.1 KiB)◉ Thinking (Esc to cancel · 11.1 KiB)● Thinking (Esc to cancel · 11.1 KiB)◉ Thinking (Esc to cancel · 11.1 KiB)◎ Thinking (Esc to cancel · 11.1 KiB)○ Thinking (Esc to cancel · 11.1 KiB)◎ Thinking (Esc to cancel · 11.1 KiB)◉ Thinking (Esc to cancel · 11.1 KiB)◉ Thinking (Esc to cancel · 11.2 KiB)◐ I need to verify where the Primer Dialog component is exported from—it could be under 
-  the experimental or drafts path in the Primer React package.
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
 
-● Check Dialog export (shell)
-  │ node -e "const x = require('@primer/react/experimental');
-  │ console.log(Object.keys(x).filter(k => k.includes('Dialog')))" 2>&1 | head; node -e
-  │ "const x = require('@primer/react'); console.log(Object.keys(x).filter(k =>
-  │ k.includes('Dialog')))" 2>&1 | head
-  └ 21 lines...
+● Edit ArtifactForm.jsx +10 -8
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
 
-● Check exports map (shell)
-  │ grep -n "Dialog" node_modules/@primer/react/dist/experimental.d.ts 2>/dev/null |
-  │ head; cat node_modules/@primer/react/package.json | jq '.exports."./experimental"'
-  │ 2>/dev/null
-  └ 5 lines...
+● Commit Primer Dialog refactor (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git add -A && git
+  │ commit -m "fix(CreateDialog): use Primer Dialog from @primer/react/experimental
+  │
+  │ Replaces hand-rolled overlay/dialog markup with Primer's Dialog
+  │ component, which provides a properly scrollable body region while…
+  └ 12 lines...
 
-● Check experimental Dialog (shell)
-  │ grep -n "Dialog" node_modules/@primer/react/dist/experimental/index.d.ts | head; echo  │ ---; grep -rn "@primer/react/experimental" packages/storyboard/src --include="*.jsx"
-  │ | head
-  └ 4 lines...
+● Add summary widget + signal done (shell)
+  │ SERVER="http://localhost:1240/branch--0.5.0"
+  │ RESP=$(curl -s -X POST "$SERVER/_storyboard/canvas/widget" -H "Content-Type:
+  │ application/json" -d '{"name":"storyboarding/form-schema","type":"markdown","positi
+  │ on":{"x":9912,"y":3300},"props":{"content":"# CreateDialog: Primer
+  │ Dialog\n\nReplaced hand-rolled overlay with `Dialog` from …
+  └ 18 lines...
 
-● Good — Dialog● Thinking (Esc to cancel · 11.4 KiB)  │ console.log(Object.keys(x).filter(k => k.includes('Dialog')))" 2>&1 | head; node -e
-  │ "const x = require('@primer/react'); console.log(Object.keys(x).filter(k =>
-  │ k.includes('Dialog')))" 2>&1 | head
-  └ 21 lines...
+● Done. Refactored CreateDialog.jsx to use Primer's Dialog from
+  @primer/react/experimental — its built-in body region scrolls while the title and
+  close button stay fixed. Also added a hideHeader prop to ArtifactForm to avoid
+  duplicating the title shown by the Dialog.
 
-● Check exports map (shell)
-  │ grep -n "Dialog" node_modules/@primer/react/dist/experimental.d.ts 2>/dev/null |
-  │ head; cat node_modules/@primer/react/package.json | jq '.exports."./experimental"'
-  │ 2>/dev/null
-  └ 5 lines...
-
-● Check experimental Dialog (shell)
-  │ grep -n "Dialog" node_modules/@primer/react/dist/experimental/index.d.ts | head; echo  │ ---; grep -rn "@primer/react/experimental" packages/storyboard/src --include="*.jsx"
-  │ | head
-  └ 4 lines...
-
-● Good — Dialog is in @primer/react/experimental. Now let me check ArtifactForm uses
-  hideHeader prop — I need to add it:
-
-● Read ArtifactForm.jsx
-  │ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
-  └ L100:135 (36 lines read)◉ Thinking (Esc to cancel · 11.4 KiB)◎ Thinking (Esc to cancel · 11.4 KiB)○ Thinking (Esc to cancel · 11.4 KiB)◎ Thinking (Esc to cancel · 11.4 KiB)◉ Thinking (Esc to cancel · 11.4 KiB)● Thinking (Esc to cancel · 11.4 KiB)◉ Thinking (Esc to cancel · 11.4 KiB)◎ Thinking (Esc to cancel · 11.4 KiB)○ Thinking (Esc to cancel · 11.4 KiB)◎ Thinking (Esc to cancel · 11.4 KiB)◉ Thinking (Esc to cancel · 11.4 KiB)● Thinking (Esc to cancel · 11.4 KiB)◉ Thinking (Esc to cancel · 11.4 KiB)◎ Thinking (Esc to cancel · 11.4 KiB)◉ Thinking (Esc to cancel · 11.4 KiB)  │ console.log(Object.keys(x).filter(k => k.includes('Dialog')))" 2>&1 | head; node -e
-  │ "const x = require('@primer/react'); console.log(Object.keys(x).filter(k =>
-  │ k.includes('Dialog')))" 2>&1 | head
-  └ 21 lines...
-
-● Check exports map (shell)
-  │ grep -n "Dialog" node_modules/@primer/react/dist/experimental.d.ts 2>/dev/null |
-  │ head; cat node_modules/@primer/react/package.json | jq '.exports."./experimental"'
-  │ 2>/dev/null
-  └ 5 lines...
-
-● Check experimental Dialog (shell)
-  │ grep -n "Dialog" node_modules/@primer/react/dist/experimental/index.d.ts | head; echo  │ ---; grep -rn "@primer/react/experimental" packages/storyboard/src --include="*.jsx"
-  │ | head
-  └ 4 lines...
-
-● Good — Dialog is in @primer/react/experimental. Now let me check ArtifactForm uses
-  hideHeader prop — I need to add it:
-
-● Read ArtifactForm.jsx
-  │ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
-  └ L100:135 (36 lines read)
-
-◉ Thinking (Esc to cancel · 11.4 KiB)
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]       @TerminalWidget.module.css
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                @CreateDialog.jsx
 ─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue
- terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-● Thinking (Esc to cancel · 11.4 KiB)◉ Thinking (Esc to cancel · 11.4 KiB)◎ Thinking (Esc to cancel · 11.4 KiB)○ Thinking (Esc to cancel · 11.4 KiB)◎ Thinking (Esc to cancel · 11.4 KiB)◉ Thinking (Esc to cancel · 11.4 KiB)● Thinking (Esc to cancel · 11.4 KiB)◉ Thinking (Esc to cancel · 11.4 KiB)◎ Thinking (Esc to cancel · 11.4 KiB)○ Thinking (Esc to cancel · 11.4 KiB)◎ Thinking (Esc to cancel · 11.4 KiB)◉ Thinking (Esc to cancel · 11.4 KiB)● Thinking (Esc to cancel · 11.4 KiB)◉ Thinking (Esc to cancel · 11.4 KiB)◎ Thinking (Esc to cancel · 11.4 KiB)○ Thinking (Esc to cancel · 11.4 KiB)◎ Thinking (Esc to cancel · 11.4 KiB)◉ Thinking (Esc to cancel · 11.4 KiB)● Thinking (Esc to cancel · 11.4 KiB)◉ Thinking (Esc to cancel · 11.4 KiB)◎ Thinking (Esc to cancel · 11.4 KiB)○ Thinking (Esc to cancel · 11.4 KiB)◎ Thinking (Esc to cancel · 11.4 KiB)◉ Thinking (Esc to cancel · 11.4 KiB)● Thinking (Esc to cancel · 11.4 KiB)◉ Thinking (Esc to cancel · 11.4 KiB)◎ Thinking (Esc to cancel · 11.4 KiB)◎ Thinking (Esc to cancel · 11.5 KiB)○ Thinking (Esc to cancel · 11.5 KiB)◎ Thinking (Esc to cancel · 11.5 KiB)◉ Thinking (Esc to cancel · 11.5 KiB)● Thinking (Esc to cancel · 11.5 KiB)◉ Thinking (Esc to cancel · 11.5 KiB)◎ Thinking (Esc to cancel · 11.5 KiB)○ Thinking (Esc to cancel · 11.5 KiB)◎ Thinking (Esc to cancel · 11.5 KiB)◉ Thinking (Esc to cancel · 11.5 KiB)◉ Thinking (Esc to cancel · 11.7 KiB)● Thinking (Esc to cancel · 11.7 KiB)◉ Thinking (Esc to cancel · 11.7 KiB)◎ Thinking (Esc to cancel · 11.7 KiB)○ Thinking (Esc to cancel · 11.7 KiB)○ Thinking (Esc to cancel · 11.8 KiB)◎ Thinking (Esc to cancel · 11.8 KiB)◎ Thinking (Esc to cancel · 11.9 KiB)◉ Thinking (Esc to cancel · 11.9 KiB)  └ 21 lines...
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
 
-● Check exports map (shell)
-  │ grep -n "Dialog" node_modules/@primer/react/dist/experimental.d.ts 2>/dev/null |
-  │ head; cat node_modules/@primer/react/package.json | jq '.exports."./experimental"'
-  │ 2>/dev/null
-  └ 5 lines...
+● Edit ArtifactForm.jsx +10 -8
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
 
-● Check experimental Dialog (shell)
-  │ grep -n "Dialog" node_modules/@primer/react/dist/experimental/index.d.ts | head; echo  │ ---; grep -rn "@primer/react/experimental" packages/storyboard/src --include="*.jsx"
-  │ | head
-  └ 4 lines...
+● Commit Primer Dialog refactor (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git add -A && git
+  │ commit -m "fix(CreateDialog): use Primer Dialog from @primer/react/experimental
+  │
+  │ Replaces hand-rolled overlay/dialog markup with Primer's Dialog
+  │ component, which provides a properly scrollable body region while…
+  └ 12 lines...
 
-● Good — Dialog is in @primer/react/experimental. Now let me check ArtifactForm uses
-  hideHeader prop — I need to add it:● Read ArtifactForm.jsx
-  │ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
-  └ L100:135 (36 lines read)
+● Add summary widget + signal done (shell)
+  │ SERVER="http://localhost:1240/branch--0.5.0"
+  │ RESP=$(curl -s -X POST "$SERVER/_storyboard/canvas/widget" -H "Content-Type:
+  │ application/json" -d '{"name":"storyboarding/form-schema","type":"markdown","positi
+  │ on":{"x":9912,"y":3300},"props":{"content":"# CreateDialog: Primer
+  │ Dialog\n\nReplaced hand-rolled overlay with `Dialog` from …
+  └ 18 lines...
 
-● Edit ArtifactForm.jsx +1
-  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx● Thinking (Esc to cancel · 11.9 KiB)◉ Thinking (Esc to cancel · 11.9 KiB)◎ Thinking (Esc to cancel · 11.9 KiB)◉ Thinking (Esc to cancel · 11.9 KiB)● Thinking (Esc to cancel · 11.9 KiB)◉ Thinking (Esc to cancel · 11.9 KiB)◎ Thinking (Esc to cancel · 11.9 KiB)○ Thinking (Esc to cancel · 11.9 KiB)◎ Thinking (Esc to cancel · 11.9 KiB)◉ Thinking (Esc to cancel · 11.9 KiB)● Thinking (Esc to cancel · 11.9 KiB)◉ Thinking (Esc to cancel · 11.9 KiB)◎ Thinking (Esc to cancel · 11.9 KiB)○ Thinking (Esc to cancel · 11.9 KiB)◎ Thinking (Esc to cancel · 11.9 KiB)◉ Thinking (Esc to cancel · 11.9 KiB)● Thinking (Esc to cancel · 11.9 KiB)◉ Thinking (Esc to cancel · 11.9 KiB)◎ Thinking (Esc to cancel · 11.9 KiB)○ Thinking (Esc to cancel · 11.9 KiB)◎ Thinking (Esc to cancel · 11.9 KiB)◉ Thinking (Esc to cancel · 11.9 KiB)● Thinking (Esc to cancel · 11.9 KiB)◉ Thinking (Esc to cancel · 11.9 KiB)◎ Thinking (Esc to cancel · 11.9 KiB)○ Thinking (Esc to cancel · 11.9 KiB)◎ Thinking (Esc to cancel · 11.9 KiB)◉ Thinking (Esc to cancel · 11.9 KiB)● Thinking (Esc to cancel · 11.9 KiB)◉ Thinking (Esc to cancel · 11.9 KiB)◎ Thinking (Esc to cancel · 11.9 KiB)○ Thinking (Esc to cancel · 11.9 KiB)◎ Thinking (Esc to cancel · 11.9 KiB)◉ Thinking (Esc to cancel · 11.9 KiB)● Thinking (Esc to cancel · 11.9 KiB)◉ Thinking (Esc to cancel · 11.9 KiB)◎ Thinking (Esc to cancel · 11.9 KiB)○ Thinking (Esc to cancel · 11.9 KiB)◎ Thinking (Esc to cancel · 11.9 KiB)◉ Thinking (Esc to cancel · 11.9 KiB)● Thinking (Esc to cancel · 11.9 KiB)◉ Thinking (Esc to cancel · 11.9 KiB)◎ Thinking (Esc to cancel · 11.9 KiB)◎ Thinking (Esc to cancel · 12.1 KiB)○ Thinking (Esc to cancel · 12.1 KiB)◎ Thinking (Esc to cancel · 12.1 KiB)◎ Thinking (Esc to cancel · 12.3 KiB)◉ Thinking (Esc to cancel · 12.3 KiB)● Thinking (Esc to cancel · 12.3 KiB)● Thinking (Esc to cancel · 12.5 KiB)◉ Thinking (Esc to cancel · 12.5 KiB)◉ Thinking (Esc to cancel · 12.7 KiB)○ Thinking (Esc to cancel · 12.7 KiB)  │ grep -n "Dialog" node_modules/@primer/react/dist/experimental.d.ts 2>/dev/null |
-  │ head; cat node_modules/@primer/react/package.json | jq '.exports."./experimental"'
-  │ 2>/dev/null
-  └ 5 lines...
+● Done. Refactored CreateDialog.jsx to use Primer's Dialog from
+  @primer/react/experimental — its built-in body region scrolls while the title and
+  close button stay fixed. Also added a hideHeader prop to ArtifactForm to avoid
+  duplicating the title shown by the Dialog.
 
-● Check experimental Dialog (shell)
-  │ grep -n "Dialog" node_modules/@primer/react/dist/experimental/index.d.ts | head; echo  │ ---; grep -rn "@primer/react/experimental" packages/storyboard/src --include="*.jsx"
-  │ | head
-  └ 4 lines...
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                @CreateDialog.jsx
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
 
-● Good — Dialog is in @primer/react/experimental. Now let me check ArtifactForm uses
-  hideHeader prop — I need to add it:● Read ArtifactForm.jsx
-  │ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
-  └ L100:135 (36 lines read)
+● Edit ArtifactForm.jsx +10 -8
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
 
-● Edit ArtifactForm.jsx +1
-  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx● Edit ArtifactForm.jsx +10 -8◎ Thinking (Esc to cancel · 12.7 KiB)◉ Thinking (Esc to cancel · 12.7 KiB)● Thinking (Esc to cancel · 12.7 KiB)◉ Thinking (Esc to cancel · 12.7 KiB)◎ Thinking (Esc to cancel · 12.7 KiB)○ Thinking (Esc to cancel · 12.7 KiB)◎ Thinking (Esc to cancel · 12.7 KiB)◉ Thinking (Esc to cancel · 12.7 KiB)● Thinking (Esc to cancel · 12.7 KiB)◉ Thinking (Esc to cancel · 12.7 KiB)◎ Thinking (Esc to cancel · 12.7 KiB)○ Thinking (Esc to cancel · 12.7 KiB)◎ Thinking (Esc to cancel · 12.7 KiB)◉ Thinking (Esc to cancel · 12.7 KiB)● Thinking (Esc to cancel · 12.7 KiB)◉ Thinking (Esc to cancel · 12.7 KiB)
+● Commit Primer Dialog refactor (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git add -A && git
+  │ commit -m "fix(CreateDialog): use Primer Dialog from @primer/react/experimental
+  │
+  │ Replaces hand-rolled overlay/dialog markup with Primer's Dialog
+  │ component, which provides a properly scrollable body region while…
+  └ 12 lines...
+
+● Add summary widget + signal done (shell)
+  │ SERVER="http://localhost:1240/branch--0.5.0"
+  │ RESP=$(curl -s -X POST "$SERVER/_storyboard/canvas/widget" -H "Content-Type:
+  │ application/json" -d '{"name":"storyboarding/form-schema","type":"markdown","positi
+  │ on":{"x":9912,"y":3300},"props":{"content":"# CreateDialog: Primer
+  │ Dialog\n\nReplaced hand-rolled overlay with `Dialog` from …
+  └ 18 lines...
+
+● Done. Refactored CreateDialog.jsx to use Primer's Dialog from
+  @primer/react/experimental — its built-in body region scrolls while the title and
+  close button stay fixed. Also added a hideHeader prop to ArtifactForm to avoid
+  duplicating the title shown by the Dialog.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                @CreateDialog.jsx
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                @ArtifactForm.jsx ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                   @CoreUIBar.jsx

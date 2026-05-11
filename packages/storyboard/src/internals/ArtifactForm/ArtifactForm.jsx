@@ -197,7 +197,7 @@ export default function ArtifactForm({
   }
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit} data-compact={compact || undefined}>
+    <form className={styles.form} onSubmit={handleSubmit} data-compact={compact || undefined} data-bare={hideHeader || undefined}>
       {!hideHeader && (
         <header className={styles.header}>
           <h3 className={styles.title}>
