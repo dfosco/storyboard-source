@@ -59,6 +59,7 @@ export default [
       'packages/storyboard/src/core/vite/**/*.js',
       'packages/storyboard/src/core/tools/**/*.js',
       'packages/storyboard/src/internals/vite/**/*.js',
+      'packages/storyboard/bin/**/*.js',
     ],
     languageOptions: {
       globals: globals.node,
