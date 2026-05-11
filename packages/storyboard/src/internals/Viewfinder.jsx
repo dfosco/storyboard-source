@@ -1069,6 +1069,20 @@ export default function Workspace({
     setSettingsOpen(false)
   }, [])
 
+  // Re-render when the canvas/story HMR index changes (add/remove on disk).
+  // The data-plugin dispatches these events after live-patching the virtual
+  // module so the Viewfinder list stays in sync without a full page reload.
+  const [canvasIndexTick, setCanvasIndexTick] = useState(0)
+  useEffect(() => {
+    const bump = () => setCanvasIndexTick(t => t + 1)
+    document.addEventListener('storyboard:canvas-index-changed', bump)
+    document.addEventListener('storyboard:story-index-changed', bump)
+    return () => {
+      document.removeEventListener('storyboard:canvas-index-changed', bump)
+      document.removeEventListener('storyboard:story-index-changed', bump)
+    }
+  }, [])
+
   // Build data index from real prototype/canvas/story data
   const knownRoutes = useMemo(() =>
     Object.keys(pageModules)
@@ -1077,7 +1091,9 @@ export default function Workspace({
     [pageModules],
   )
 
-  const prototypeIndex = useMemo(() => buildPrototypeIndex(knownRoutes), [knownRoutes])
+  // canvasIndexTick is an intentional re-render trigger from HMR events
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const prototypeIndex = useMemo(() => buildPrototypeIndex(knownRoutes), [knownRoutes, canvasIndexTick])
 
   // Build unified items list from all sources
   const allItems = useMemo(() => {

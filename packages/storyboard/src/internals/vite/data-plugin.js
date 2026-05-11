@@ -987,6 +987,7 @@ function generateModule({ index, protoFolders, flowRoutes, canvasRoutes, canvasA
     '        : data.metadata',
     '    }',
     '    init({ flows, objects, records, prototypes, folders, canvases, stories })',
+    '    document.dispatchEvent(new CustomEvent("storyboard:canvas-index-changed"))',
     '  })',
     '  import.meta.hot.on("storyboard:story-file-changed", (data) => {',
     '    if (!data) return',
