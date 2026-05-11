@@ -1,0 +1,762 @@
+SESSION: agent-jyw97x | blue-falcon
+CANVAS:  storyboarding/form-schema
+BRANCH:  0.5.0
+TIME:    2026-05-11T09:34:54.464Z
+
+================================================================================
+SCREEN
+================================================================================
+
+
+  Looking at how the widget object is passed in, it's a stable reference with stale 
+  props, so local state changes won't help. The real fix is probably to have 
+  MarkdownSecondaryPane subscribe to bridge state updates and read fresh content from 
+  there instead of relying on the widget prop.
+
+● Let me trace the data-flow problem in secondary markdown panes:
+
+● Bridge state updates (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -n
+  │ "__storyboardCanvasBridgeState\|bridgeUpdated\|bridge:updated\|canvas:bridge"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -20
+  └ 3 lines...
+
+● Bridge state writes (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -n
+  │ "CANVAS_BRIDGE_STATE_KEY\|bridge"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -30
+  └ 30 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2437:2460 (24 lines read)
+
+● Thinking (Esc to cancel · 9.8 KiB)
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]            @CreateDialog.jsx:90
+─────────────────────────────────────────────────────────────────────────────────────────
+❯  
+─────────────────────────────────────────────────────────────────────────────────────────
+ / commands · ? help · ctrl+q enqueue
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)
+  Actually, tracing through the flow: clicking "Edit" in the topbar calls onAction, which   calls handleAction and toggles the editing state — that part is wired correctly. The 
+  problem might be that when markdown is the primary widget with split mode active, the 
+  pane has surfaceFeatures but the rendered content is ExpandedMarkdownEditor, which only   shows the textarea when editing is true. The pane's getState returns the local editing   state, so this should work.
+
+  Let me check if the issue is actually coming from a different angle — maybe the split 
+  is being triggered from a connected markdown widget instead of the primary. Looking at   the secondary markdown pane logic, it uses an editingRef pattern and dispatches a 
+  storyboard:canvas:update-widget event on changes. I need to verify if CanvasPage is 
+  actually listening for that event.
+
+● Check if update-widget event is handled (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -rn
+  │ "storyboard:canvas:update-widget" packages/storyboard/src --include="*.jsx"
+  │ --include="*.js" | head
+  └ 4 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2215:2245 (31 lines read)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)● Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)○ Thinking (Esc to cancel · 6.8 KiB)◎ Thinking (Esc to cancel · 6.8 KiB)◉ Thinking (Esc to cancel · 7.1 KiB)   calls handleAction and toggles the editing state — that part is wired correctly. The 
+  problem might be that when markdown is the primary widget with split mode active, the 
+  pane has surfaceFeatures but the rendered content is ExpandedMarkdownEditor, which only   shows the textarea when editing is true. The pane's getState returns the local editing   state, so this should work.
+
+  Let me check if the issue is actually coming from a different angle — maybe the split 
+  is being triggered from a connected markdown widget instead of the primary. Looking at   the secondary markdown pane logic, it uses an editingRef pattern and dispatches a 
+  storyboard:canvas:update-widget event on changes. I need to verify if CanvasPage is 
+  actually listening for that event.
+
+● Check if update-widget event is handled (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -rn
+  │ "storyboard:canvas:update-widget" packages/storyboard/src --include="*.jsx"
+  │ --include="*.js" | head
+  └ 4 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2215:2245 (31 lines read)
+
+◐ I'm looking at the `MarkdownExpa◐ I'm looking at the `MarkdownExpandPane` component to understa◐ I'm looking at the `MarkdownExpandPane` component to understand what might be broken w● Thinking (Esc to cancel · 7.1 KiB)  problem might be that when markdown is the primary widget with split mode active, the 
+  pane has surfaceFeatures but the rendered content is ExpandedMarkdownEditor, which only   shows the textarea when editing is true. The pane's getState returns the local editing   state, so this should work.
+
+  Let me check if the issue is actually coming from a different angle — maybe the split 
+  is being triggered from a connected markdown widget instead of the primary. Looking at   the secondary markdown pane logic, it uses an editingRef pattern and dispatches a 
+  storyboard:canvas:update-widget event on changes. I need to verify if CanvasPage is 
+  actually listening for that event.
+
+● Check if update-widget event is handled (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -rn
+  │ "storyboard:canvas:update-widget" packages/storyboard/src --include="*.jsx"
+  │ --include="*.js" | head
+  └ 4 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2215:2245 (31 lines read)
+
+◐ I'm looking at the `MarkdownExpandPane` component to understand what might be broken 
+  when markdown is the pr  when markdown is the primary widget being  when markdown is the primary widget being expanded into spl  when markdown is the primary widget being expanded into split mode, specif◉ Thinking (Esc to cancel · 7.1 KiB)  when markdown is the primary widget being expanded into split mode, specifically examin  pane has surfaceFeatures but the rendered content is ExpandedMarkdownEditor, which only   shows the textarea when editing is true. The pane's getState returns the local editing   state, so this should work.
+
+  Let me check if the issue is actually coming from a different angle — maybe the split 
+  is being triggered from a connected markdown widget instead of the primary. Looking at   the secondary markdown pane logic, it uses an editingRef pattern and dispatches a 
+  storyboard:canvas:update-widget event on changes. I need to verify if CanvasPage is 
+  actually listening for that event.
+
+● Check if update-widget event is handled (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -rn
+  │ "storyboard:canvas:update-widget" packages/storyboard/src --include="*.jsx"
+  │ --include="*.js" | head
+  └ 4 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2215:2245 (31 lines read)
+
+◐ I'm looking at the `MarkdownExpandPane` component to understand what might be broken 
+  when markdown is the primary widget being expanded into split mode, specifically 
+  examining how the  examining how the pane buil  examining how the pane builder funct◎ Thinking (Esc to cancel · 7.1 KiB)  examining how the pane builder function han  examining how the pane builder function handles th  examining how the pane builder function handles the widg○ Thinking (Esc to cancel · 7.1 KiB)  examining how the pane builder function handles the widget re  examining how the pane builder function handles the widget render  examining how the pane builder function handles the widget rendering.   state, so this should work.
+
+  Let me check if the issue is actually coming from a different angle — maybe the split 
+  is being triggered from a connected markdown widget instead of the primary. Looking at   the secondary markdown pane logic, it uses an editingRef pattern and dispatches a 
+  storyboard:canvas:update-widget event on changes. I need to verify if CanvasPage is 
+  actually listening for that event.
+
+● Check if update-widget event is handled (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -rn
+  │ "storyboard:canvas:update-widget" packages/storyboard/src --include="*.jsx"
+  │ --include="*.js" | head
+  └ 4 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2215:2245 (31 lines read)
+
+◐ I'm looking at the `MarkdownExpandPane` component to understand what might be broken 
+  when markdown is the primary widget being expanded into split mode, specifically 
+  examining how the pane builder function handles the widget rendering.
+
+  Th◎ Thinking (Esc to cancel · 7.1 KiB)  The is  The issue  The issue is b  The issue is beco◉ Thinking (Esc to cancel · 7.1 KiB)  The issue is becomi  The issue is becomin  The issue is becoming● Thinking (Esc to cancel · 7.1 KiB)◉ Thinking (Esc to cancel · 7.1 KiB)◎ Thinking (Esc to cancel · 7.1 KiB)○ Thinking (Esc to cancel · 7.1 KiB)◎ Thinking (Esc to cancel · 7.1 KiB)◉ Thinking (Esc to cancel · 7.1 KiB)● Thinking (Esc to cancel · 7.1 KiB)◉ Thinking (Esc to cancel · 7.1 KiB)◎ Thinking (Esc to cancel · 7.1 KiB)○ Thinking (Esc to cancel · 7.1 KiB)◎ Thinking (Esc to cancel · 7.1 KiB)◉ Thinking (Esc to cancel · 7.1 KiB)● Thinking (Esc to cancel · 7.1 KiB)◉ Thinking (Esc to cancel · 7.1 KiB)◎ Thinking (Esc to cancel · 7.1 KiB)○ Thinking (Esc to cancel · 7.1 KiB)◎ Thinking (Esc to cancel · 7.1 KiB)◉ Thinking (Esc to cancel · 7.1 KiB)● Thinking (Esc to cancel · 7.1 KiB)◉ Thinking (Esc to cancel · 7.1 KiB)◎ Thinking (Esc to cancel · 7.1 KiB)○ Thinking (Esc to cancel · 7.1 KiB)◎ Thinking (Esc to cancel · 7.1 KiB)◉ Thinking (Esc to cancel · 7.1 KiB)● Thinking (Esc to cancel · 7.1 KiB)◉ Thinking (Esc to cancel · 7.1 KiB)◎ Thinking (Esc to cancel · 7.1 KiB)○ Thinking (Esc to cancel · 7.1 KiB)◎ Thinking (Esc to cancel · 7.1 KiB)◉ Thinking (Esc to cancel · 7.1 KiB)● Thinking (Esc to cancel · 7.1 KiB)◉ Thinking (Esc to cancel · 7.1 KiB)◎ Thinking (Esc to cancel · 7.1 KiB)○ Thinking (Esc to cancel · 7.1 KiB)◎ Thinking (Esc to cancel · 7.1 KiB)◉ Thinking (Esc to cancel · 7.1 KiB)● Thinking (Esc to cancel · 7.1 KiB)◉ Thinking (Esc to cancel · 7.1 KiB)◎ Thinking (Esc to cancel · 7.1 KiB)○ Thinking (Esc to cancel · 7.1 KiB)◎ Thinking (Esc to cancel · 7.1 KiB)● Thinking (Esc to cancel · 7.1 KiB)◉ Thinking (Esc to cancel · 7.1 KiB)◎ Thinking (Esc to cancel · 7.1 KiB)○ Thinking (Esc to cancel · 7.1 KiB)◎ Thinking (Esc to cancel · 7.1 KiB)◉ Thinking (Esc to cancel · 7.1 KiB)● Thinking (Esc to cancel · 7.1 KiB)◉ Thinking (Esc to cancel · 7.1 KiB)◎ Thinking (Esc to cancel · 7.1 KiB)○ Thinking (Esc to cancel · 7.1 KiB)◎ Thinking (Esc to cancel · 7.1 KiB)◉ Thinking (Esc to cancel · 7.1 KiB)● Thinking (Esc to cancel · 7.1 KiB)◉ Thinking (Esc to cancel · 7.1 KiB)◎ Thinking (Esc to cancel · 7.1 KiB)○ Thinking (Esc to cancel · 7.1 KiB)◎ Thinking (Esc to cancel · 7.1 KiB)◉ Thinking (Esc to cancel · 7.1 KiB)● Thinking (Esc to cancel · 7.1 KiB)● Thinking (Esc to cancel · 7.5 KiB)  The issue is becoming clearer: when the user edits content in the primary m◉ Thinking (Esc to cancel · 7.5 KiB)
+  Let me check if the issue is actually coming from a different angle — maybe the split 
+  is being triggered from a connected markdown widget instead of the primary. Looking at   the secondary markdown pane logic, it uses an editingRef pattern and dispatches a 
+  storyboard:canvas:update-widget event on changes. I need to verify if CanvasPage is 
+  actually listening for that event.
+
+● Check if update-widget event is handled (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -rn
+  │ "storyboard:canvas:update-widget" packages/storyboard/src --include="*.jsx"
+  │ --include="*.js" | head
+  └ 4 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2215:2245 (31 lines read)
+
+◐ I'm looking at the `MarkdownExpandPane` component to understand what might be broken 
+  when markdown is the primary widget being expanded into split mode, specifically 
+  examining how the pane builder function handles the widget rendering.
+
+  The issue is becoming clearer: when the user edits content in the primary markdown 
+  pane, the `buildPaneFn` callback recrea  pane, the `buildPaneFn` callback recreates with the new content and the layout r  Let me check if the issue is actually coming from a different angle — maybe the split 
+  is being triggered from a connected markdown widget instead of the primary. Looking at   the secondary markdown pane logic, it uses an editingRef pattern and dispatches a 
+  storyboard:canvas:update-widget event on changes. I need to verify if CanvasPage is 
+  actually listening for that event.
+
+● Check if update-widget event is handled (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -rn
+  │ "storyboard:canvas:update-widget" packages/storyboard/src --include="*.jsx"
+  │ --include="*.js" | head
+  └ 4 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2215:2245 (31 lines read)
+
+◐ I'm looking at the `MarkdownExpandPane` component to understand what might be broken 
+  when markdown is the primary widget being expanded into split mode, specifically 
+  examining how the pane builder function handles the widget rendering.
+
+  The issue is becoming clearer: when the user edits content in the primary markdown 
+  pane, the `buildPaneFn` callback recreates with the new content and the layout rebuilds   correctly. However, for seco   correctly. However, for secondary markdown panes, the `widg◎ Thinking (Esc to cancel · 7.5 KiB)   correctly. However, for secondary markdown panes, the `widget` object comes from `conn  is being triggered from a connected markdown widget instead of the primary. Looking at   the secondary markdown pane logic, it uses an editingRef pattern and dispatches a 
+  storyboard:canvas:update-widget event on changes. I need to verify if CanvasPage is 
+  actually listening for that event.
+
+● Check if update-widget event is handled (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -rn
+  │ "storyboard:canvas:update-widget" packages/storyboard/src --include="*.jsx"
+  │ --include="*.js" | head
+  └ 4 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2215:2245 (31 lines read)
+
+◐ I'm looking at the `MarkdownExpandPane` component to understand what might be broken 
+  when markdown is the primary widget being expanded into split mode, specifically 
+  examining how the pane builder function handles the widget rendering.
+
+  The issue is becoming clearer: when the user edits content in the primary markdown 
+  pane, the `buildPaneFn` callback recreates with the new content and the layout rebuilds   correctly. However, for secondary markdown panes, the `widget` object comes from 
+  `connectedWidgets` which only  `connectedWidgets` which only recomputes when `wid○ Thinking (Esc to cancel · 7.5 KiB)  `connectedWidgets` which only recomputes when `widgetId` or `splitMo  `connectedWidgets` which only recomputes when `widgetId` or `splitMode` changes—not  the secondary markdown pane logic, it uses an editingRef pattern and dispatches a 
+  storyboard:canvas:update-widget event on changes. I need to verify if CanvasPage is 
+  actually listening for that event.
+
+● Check if update-widget event is handled (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -rn
+  │ "storyboard:canvas:update-widget" packages/storyboard/src --include="*.jsx"
+  │ --include="*.js" | head
+  └ 4 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2215:2245 (31 lines read)
+
+◐ I'm looking at the `MarkdownExpandPane` component to understand what might be broken 
+  when markdown is the primary widget being expanded into split mode, specifically 
+  examining how the pane builder function handles the widget rendering.
+
+  The issue is becoming clearer: when the user edits content in the primary markdown 
+  pane, the `buildPaneFn` callback recreates with the new content and the layout rebuilds   correctly. However, for secondary markdown panes, the `widget` object comes from 
+  `connectedWidgets` which only recomputes when `widgetId` or `splitMode` changes—not 
+  when content u  when content updates. This◎ Thinking (Esc to cancel · 7.5 KiB)  when content updates. This means seco  when content updates. This means secondary mark  when content updates. This means secondary markdown pan◉ Thinking (Esc to cancel · 7.5 KiB)  when content updates. This means secondary markdown panes are  when content updates. This means secondary markdown panes are readin  when content updates. This means secondary markdown panes are reading stal  when content updates. This means secondary markdown panes are reading stale `wi● Thinking (Esc to cancel · 7.5 KiB)  when content updates. This means secondary markdown panes are reading stale `widget  when content updates. This means secondary markdown panes are reading stale `widget.pro  storyboard:canvas:update-widget event on changes. I need to verify if CanvasPage is 
+  actually listening for that event.
+
+● Check if update-widget event is handled (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -rn
+  │ "storyboard:canvas:update-widget" packages/storyboard/src --include="*.jsx"
+  │ --include="*.js" | head
+  └ 4 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2215:2245 (31 lines read)
+
+◐ I'm looking at the `MarkdownExpandPane` component to understand what might be broken 
+  when markdown is the primary widget being expanded into split mode, specifically 
+  examining how the pane builder function handles the widget rendering.
+
+  The issue is becoming clearer: when the user edits content in the primary markdown 
+  pane, the `buildPaneFn` callback recreates with the new content and the layout rebuilds   correctly. However, for secondary markdown panes, the `widget` object comes from 
+  `connectedWidgets` which only recomputes when `widgetId` or `splitMode` changes—not 
+  when content updates. This means secondary markdown panes are reading stale 
+  `widget.props.c◉ Thinking (Esc to cancel · 7.5 KiB)  `widget.props.conte  `widget.props.content`  `widget.props.content` valu  `widget.props.content` values◎ Thinking (Esc to cancel · 7.5 KiB)  `widget.props.content` values th  `widget.props.content` values tha  `widget.props.content` values that○ Thinking (Esc to cancel · 7.5 KiB)◎ Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)● Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)◎ Thinking (Esc to cancel · 7.5 KiB)○ Thinking (Esc to cancel · 7.5 KiB)◎ Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)● Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)◎ Thinking (Esc to cancel · 7.5 KiB)○ Thinking (Esc to cancel · 7.5 KiB)◎ Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)● Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)◎ Thinking (Esc to cancel · 7.5 KiB)○ Thinking (Esc to cancel · 7.5 KiB)◎ Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)● Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)◎ Thinking (Esc to cancel · 7.5 KiB)○ Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)● Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)◎ Thinking (Esc to cancel · 7.5 KiB)○ Thinking (Esc to cancel · 7.5 KiB)◎ Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)● Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)◎ Thinking (Esc to cancel · 7.5 KiB)○ Thinking (Esc to cancel · 7.5 KiB)◎ Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)● Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)◎ Thinking (Esc to cancel · 7.5 KiB)○ Thinking (Esc to cancel · 7.5 KiB)◎ Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)● Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)◎ Thinking (Esc to cancel · 7.5 KiB)○ Thinking (Esc to cancel · 7.5 KiB)◎ Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)● Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)◎ Thinking (Esc to cancel · 7.5 KiB)○ Thinking (Esc to cancel · 7.5 KiB)◎ Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)● Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)◎ Thinking (Esc to cancel · 7.5 KiB)○ Thinking (Esc to cancel · 7.5 KiB)◎ Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)● Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)◎ Thinking (Esc to cancel · 7.5 KiB)○ Thinking (Esc to cancel · 7.5 KiB)◎ Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)● Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.5 KiB)◉ Thinking (Esc to cancel · 7.7 KiB)◎ Thinking (Esc to cancel · 7.9 KiB)  `widget.props.content` values that were captured when split mode was first open
+● Check if update-widget event is handled (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -rn
+  │ "storyboard:canvas:update-widget" packages/storyboard/src --include="*.jsx"
+  │ --include="*.js" | head
+  └ 4 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2215:2245 (31 lines read)
+
+◐ I'm looking at the `MarkdownExpandPane` component to understand what might be broken 
+  when markdown is the primary widget being expanded into split mode, specifically 
+  examining how the pane builder function handles the widget rendering.
+
+  The issue is becoming clearer: when the user edits content in the primary markdown 
+  pane, the `buildPaneFn` callback recreates with the new content and the layout rebuilds   correctly. However, for secondary markdown panes, the `widget` object comes from 
+  `connectedWidgets` which only recomputes when `widgetId` or `splitMode` changes—not 
+  when content updates. This means secondary markdown panes are reading stale 
+  `widget.props.content` values that were captured when split mode was first opened.
+
+  I'm also noticing that the primary  I'm also noticing that the primary markdown pane in split mode might○ Thinking (Esc to cancel · 7.9 KiB)● Check if update-widget event is handled (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -rn
+  │ "storyboard:canvas:update-widget" packages/storyboard/src --include="*.jsx"
+  │ --include="*.js" | head
+  └ 4 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2215:2245 (31 lines read)
+
+◐ I'm looking at the `MarkdownExpandPane` component to understand what might be broken 
+  when markdown is the primary widget being expanded into split mode, specifically 
+  examining how the pane builder function handles the widget rendering.
+
+  The issue is becoming clearer: when the user edits content in the primary markdown 
+  pane, the `buildPaneFn` callback recreates with the new content and the layout rebuilds   correctly. However, for secondary markdown panes, the `widget` object comes from 
+  `connectedWidgets` which only recomputes when `widgetId` or `splitMode` changes—not 
+  when content updates. This means secondary markdown panes are reading stale 
+  `widget.props.content` values that were captured when split mode was first opened.
+
+  I'm also noticing that the primary markdown pane in split mode might be missing the 
+  `widgetProps`  `widgetProps` field in its pane configur  `widgetProps` field in its pane configuration, which could affe  `widgetProps` field in its pane configuration, which could affect how the editor ha◎ Thinking (Esc to cancel · 7.9 KiB)  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -rn
+  │ "storyboard:canvas:update-widget" packages/storyboard/src --include="*.jsx"
+  │ --include="*.js" | head
+  └ 4 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2215:2245 (31 lines read)
+
+◐ I'm looking at the `MarkdownExpandPane` component to understand what might be broken 
+  when markdown is the primary widget being expanded into split mode, specifically 
+  examining how the pane builder function handles the widget rendering.
+
+  The issue is becoming clearer: when the user edits content in the primary markdown 
+  pane, the `buildPaneFn` callback recreates with the new content and the layout rebuilds   correctly. However, for secondary markdown panes, the `widget` object comes from 
+  `connectedWidgets` which only recomputes when `widgetId` or `splitMode` changes—not 
+  when content updates. This means secondary markdown panes are reading stale 
+  `widget.props.content` values that were captured when split mode was first opened.
+
+  I'm also noticing that the primary markdown pane in split mode might be missing the 
+  `widgetProps` field in its pane configuration, which could affect how the editor 
+  handles updates. Le  handles updates. Let me trace thro  handles updates. Let me trace through what happ  handles updates. Let me trace through what happens when the● Thinking (Esc to cancel · 7.9 KiB)  handles updates. Let me trace through what happens when the user trie  handles updates. Let me trace through what happens when the user tries to edit  handles updates. Let me trace through what happens when the user tries to edit—specifi  │ "storyboard:canvas:update-widget" packages/storyboard/src --include="*.jsx"
+  │ --include="*.js" | head
+  └ 4 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2215:2245 (31 lines read)
+
+◐ I'm looking at the `MarkdownExpandPane` component to understand what might be broken 
+  when markdown is the primary widget being expanded into split mode, specifically 
+  examining how the pane builder function handles the widget rendering.
+
+  The issue is becoming clearer: when the user edits content in the primary markdown 
+  pane, the `buildPaneFn` callback recreates with the new content and the layout rebuilds   correctly. However, for secondary markdown panes, the `widget` object comes from 
+  `connectedWidgets` which only recomputes when `widgetId` or `splitMode` changes—not 
+  when content updates. This means secondary markdown panes are reading stale 
+  `widget.props.content` values that were captured when split mode was first opened.
+
+  I'm also noticing that the primary markdown pane in split mode might be missing the 
+  `widgetProps` field in its pane configuration, which could affect how the editor 
+  handles updates. Let me trace through what happens when the user tries to 
+  edit—specifically w◉ Thinking (Esc to cancel · 7.9 KiB)  edit—specifically whether  edit—specifically whether the  edit—specifically whether the edit◎ Thinking (Esc to cancel · 7.9 KiB)  edit—specifically whether the edit butt  edit—specifically whether the edit button a  edit—specifically whether the edit button appea  edit—specifically whether the edit button appears a○ Thinking (Esc to cancel · 7.9 KiB)  edit—specifically whether the edit button appears and w  edit—specifically whether the edit button appears and what  edit—specifically whether the edit button appears and what t◎ Thinking (Esc to cancel · 7.9 KiB)  edit—specifically whether the edit button appears and what the  edit—specifically whether the edit button appears and what the `◉ Thinking (Esc to cancel · 7.9 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)  │ --include="*.js" | head
+  └ 4 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2215:2245 (31 lines read)
+
+◐ I'm looking at the `MarkdownExpandPane` component to understand what might be broken 
+  when markdown is the primary widget being expanded into split mode, specifically 
+  examining how the pane builder function handles the widget rendering.
+
+  The issue is becoming clearer: when the user edits content in the primary markdown 
+  pane, the `buildPaneFn` callback recreates with the new content and the layout rebuilds   correctly. However, for secondary markdown panes, the `widget` object comes from 
+  `connectedWidgets` which only recomputes when `widgetId` or `splitMode` changes—not 
+  when content updates. This means secondary markdown panes are reading stale 
+  `widget.props.content` values that were captured when split mode was first opened.
+
+  I'm also noticing that the primary markdown pane in split mode might be missing the 
+  `widgetProps` field in its pane configuration, which could affect how the editor 
+  handles updates. Let me trace through what happens when the user tries to 
+  edit—specifically whether the edit button appears and what the `onChange` handler does   when typing.● Thinking (Esc to cancel · 8.1 KiB)
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2215:2245 (31 lines read)
+
+◐ I'm looking at the `MarkdownExpandPane` component to understand what might be broken 
+  when markdown is the primary widget being expanded into split mode, specifically 
+  examining how the pane builder function handles the widget rendering.
+
+  The issue is becoming clearer: when the user edits content in the primary markdown 
+  pane, the `buildPaneFn` callback recreates with the new content and the layout rebuilds   correctly. However, for secondary markdown panes, the `widget` object comes from 
+  `connectedWidgets` which only recomputes when `widgetId` or `splitMode` changes—not 
+  when content updates. This means secondary markdown panes are reading stale 
+  `widget.props.content` values that were captured when split mode was first opened.
+
+  I'm also noticing that the primary markdown pane in split mode might be missing the 
+  `widgetProps` field in its pane configuration, which could affect how the editor 
+  handles updates. Let me trace through what happens when the user tries to 
+  edit—specifically whether the edit button appears and what the `onChange` handler does   when typing.
+
+  The core issue is that `conne  The core issue is that `connectedWidgets` and `primaryWi  The core issue is that `connectedWidgets` and `primaryWidget` are memoized witho● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2215:2245 (31 lines read)
+
+◐ I'm looking at the `MarkdownExpandPane` component to understand what might be broken 
+  when markdown is the primary widget being expanded into split mode, specifically 
+  examining how the pane builder function handles the widget rendering.
+
+  The issue is becoming clearer: when the user edits content in the primary markdown 
+  pane, the `buildPaneFn` callback recreates with the new content and the layout rebuilds   correctly. However, for secondary markdown panes, the `widget` object comes from 
+  `connectedWidgets` which only recomputes when `widgetId` or `splitMode` changes—not 
+  when content updates. This means secondary markdown panes are reading stale 
+  `widget.props.content` values that were captured when split mode was first opened.
+
+  I'm also noticing that the primary markdown pane in split mode might be missing the 
+  `widgetProps` field in its pane configuration, which could affect how the editor 
+  handles updates. Let me trace through what happens when the user tries to 
+  edit—specifically whether the edit button appears and what the `onChange` handler does   when typing.
+
+  The core issue is that `connectedWidgets` and `primaryWidget` are memoized without 
+  dependencies that◉ Thinking (Esc to cancel · 8.1 KiB)  dependencies that would refresh when  dependencies that would refresh when content changes  dependencies that would refresh when content changes, so secondary◎ Thinking (Esc to cancel · 8.1 KiB)  dependencies that would refresh when content changes, so secondary pane conten  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2215:2245 (31 lines read)
+
+◐ I'm looking at the `MarkdownExpandPane` component to understand what might be broken 
+  when markdown is the primary widget being expanded into split mode, specifically 
+  examining how the pane builder function handles the widget rendering.
+
+  The issue is becoming clearer: when the user edits content in the primary markdown 
+  pane, the `buildPaneFn` callback recreates with the new content and the layout rebuilds   correctly. However, for secondary markdown panes, the `widget` object comes from 
+  `connectedWidgets` which only recomputes when `widgetId` or `splitMode` changes—not 
+  when content updates. This means secondary markdown panes are reading stale 
+  `widget.props.content` values that were captured when split mode was first opened.
+
+  I'm also noticing that the primary markdown pane in split mode might be missing the 
+  `widgetProps` field in its pane configuration, which could affect how the editor 
+  handles updates. Let me trace through what happens when the user tries to 
+  edit—specifically whether the edit button appears and what the `onChange` handler does   when typing.
+
+  The core issue is that `connectedWidgets` and `primaryWidget` are memoized without 
+  dependencies that would refresh when content changes, so secondary pane content gets 
+  fro  frozen at th  frozen at the moment○ Thinking (Esc to cancel · 8.1 KiB)  frozen at the moment the sp  frozen at the moment the split vi  frozen at the moment the split view op  frozen at the moment the split view opens.◎ Thinking (Esc to cancel · 8.1 KiB)  frozen at the moment the split view opens. The  frozen at the moment the split view opens. The prim  frozen at the moment the split view opens. The primary◉ Thinking (Esc to cancel · 8.1 KiB)  frozen at the moment the split view opens. The primary pane  frozen at the moment the split view opens. The primary pane wor  frozen at the moment the split view opens. The primary pane works b  frozen at the moment the split view opens. The primary pane works bec● Thinking (Esc to cancel · 8.1 KiB)  frozen at the moment the split view opens. The primary pane works becau  frozen at the moment the split view opens. The primary pane works becaus  frozen at the moment the split view opens. The primary pane works because◉ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)● Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)● Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)● Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)● Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)● Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)● Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)● Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)● Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)● Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)● Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)● Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)● Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)● Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)● Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)● Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)● Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)● Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)● Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)● Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)● Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)● Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)● Thinking (Esc to cancel · 8.1 KiB)◉ Thinking (Esc to cancel · 8.1 KiB)◎ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.1 KiB)○ Thinking (Esc to cancel · 8.5 KiB)  └ L2215:2245 (31 lines read)
+
+◐ I'm looking at the `MarkdownExpandPane` component to understand what might be broken 
+  when markdown is the primary widget being expanded into split mode, specifically 
+  examining how the pane builder function handles the widget rendering.
+
+  The issue is becoming clearer: when the user edits content in the primary markdown 
+  pane, the `buildPaneFn` callback recreates with the new content and the layout rebuilds   correctly. However, for secondary markdown panes, the `widget` object comes from 
+  `connectedWidgets` which only recomputes when `widgetId` or `splitMode` changes—not 
+  when content updates. This means secondary markdown panes are reading stale 
+  `widget.props.content` values that were captured when split mode was first opened.
+
+  I'm also noticing that the primary markdown pane in split mode might be missing the 
+  `widgetProps` field in its pane configuration, which could affect how the editor 
+  handles updates. Let me trace through what happens when the user tries to 
+  edit—specifically whether the edit button appears and what the `onChange` handler does   when typing.
+
+  The core issue is that `connectedWidgets` and `primaryWidget` are memoized without 
+  dependencies that would refresh when content changes, so secondary pane content gets 
+  frozen at the moment the split view opens. The primary pane works because it pulls 
+  content directly from MarkdownBlock◎ Thinking (Esc to cancel · 8.5 KiB)  content directly from MarkdownBlock's props, which do update on re-render,
+◐ I'm looking at the `MarkdownExpandPane` component to understand what might be broken 
+  when markdown is the primary widget being expanded into split mode, specifically 
+  examining how the pane builder function handles the widget rendering.
+
+  The issue is becoming clearer: when the user edits content in the primary markdown 
+  pane, the `buildPaneFn` callback recreates with the new content and the layout rebuilds   correctly. However, for secondary markdown panes, the `widget` object comes from 
+  `connectedWidgets` which only recomputes when `widgetId` or `splitMode` changes—not 
+  when content updates. This means secondary markdown panes are reading stale 
+  `widget.props.content` values that were captured when split mode was first opened.
+
+  I'm also noticing that the primary markdown pane in split mode might be missing the 
+  `widgetProps` field in its pane configuration, which could affect how the editor 
+  handles updates. Let me trace through what happens when the user tries to 
+  edit—specifically whether the edit button appears and what the `onChange` handler does   when typing.
+
+  The core issue is that `connectedWidgets` and `primaryWidget` are memoized without 
+  dependencies that would refresh when content changes, so secondary pane content gets 
+  frozen at the moment the split view opens. The primary pane works because it pulls 
+  content directly from MarkdownBlock's props, which do update on re-render, but the 
+  secondary pane captures the  secondary pane captures the widget object at build time a  secondary pane captures the widget object at build time and never refreshes it. So w◉ Thinking (Esc to cancel · 8.5 KiB)◐ I'm looking at the `MarkdownExpandPane` component to understand what might be broken 
+  when markdown is the primary widget being expanded into split mode, specifically 
+  examining how the pane builder function handles the widget rendering.
+
+  The issue is becoming clearer: when the user edits content in the primary markdown 
+  pane, the `buildPaneFn` callback recreates with the new content and the layout rebuilds   correctly. However, for secondary markdown panes, the `widget` object comes from 
+  `connectedWidgets` which only recomputes when `widgetId` or `splitMode` changes—not 
+  when content updates. This means secondary markdown panes are reading stale 
+  `widget.props.content` values that were captured when split mode was first opened.
+
+  I'm also noticing that the primary markdown pane in split mode might be missing the 
+  `widgetProps` field in its pane configuration, which could affect how the editor 
+  handles updates. Let me trace through what happens when the user tries to 
+  edit—specifically whether the edit button appears and what the `onChange` handler does   when typing.
+
+  The core issue is that `connectedWidgets` and `primaryWidget` are memoized without 
+  dependencies that would refresh when content changes, so secondary pane content gets 
+  frozen at the moment the split view opens. The primary pane works because it pulls 
+  content directly from MarkdownBlock's props, which do update on re-render, but the 
+  secondary pane captures the widget object at build time and never refreshes it. So when   the user edits seco   the user edits secondary markdown, the   the user edits secondary markdown, the update event fires● Thinking (Esc to cancel · 8.5 KiB)   the user edits secondary markdown, the update event fires but the display  when markdown is the primary widget being expanded into split mode, specifically 
+  examining how the pane builder function handles the widget rendering.
+
+  The issue is becoming clearer: when the user edits content in the primary markdown 
+  pane, the `buildPaneFn` callback recreates with the new content and the layout rebuilds   correctly. However, for secondary markdown panes, the `widget` object comes from 
+  `connectedWidgets` which only recomputes when `widgetId` or `splitMode` changes—not 
+  when content updates. This means secondary markdown panes are reading stale 
+  `widget.props.content` values that were captured when split mode was first opened.
+
+  I'm also noticing that the primary markdown pane in split mode might be missing the 
+  `widgetProps` field in its pane configuration, which could affect how the editor 
+  handles updates. Let me trace through what happens when the user tries to 
+  edit—specifically whether the edit button appears and what the `onChange` handler does   when typing.
+
+  The core issue is that `connectedWidgets` and `primaryWidget` are memoized without 
+  dependencies that would refresh when content changes, so secondary pane content gets 
+  frozen at the moment the split view opens. The primary pane works because it pulls 
+  content directly from MarkdownBlock's props, which do update on re-render, but the 
+  secondary pane captures the widget object at build time and never refreshes it. So when   the user edits secondary markdown, the update event fires but the displayed content 
+  sta  stays stale. Th  stays stale. The primary◉ Thinking (Esc to cancel · 8.5 KiB)  stays stale. The primary markdown  stays stale. The primary markdown editor w  stays stale. The primary markdown editor works be◎ Thinking (Esc to cancel · 8.5 KiB)  stays stale. The primary markdown editor works because  stays stale. The primary markdown editor works because its p  stays stale. The primary markdown editor works because its props  stays stale. The primary markdown editor works because its props upda○ Thinking (Esc to cancel · 8.5 KiB)  stays stale. The primary markdown editor works because its props update o  stays stale. The primary markdown editor works because its props update on ca  stays stale. The primary markdown editor works because its props update on canvas  stays stale. The primary markdown editor works because its props update on canvas cha◎ Thinking (Esc to cancel · 8.5 KiB)  examining how the pane builder function handles the widget rendering.
+
+  The issue is becoming clearer: when the user edits content in the primary markdown 
+  pane, the `buildPaneFn` callback recreates with the new content and the layout rebuilds   correctly. However, for secondary markdown panes, the `widget` object comes from 
+  `connectedWidgets` which only recomputes when `widgetId` or `splitMode` changes—not 
+  when content updates. This means secondary markdown panes are reading stale 
+  `widget.props.content` values that were captured when split mode was first opened.
+
+  I'm also noticing that the primary markdown pane in split mode might be missing the 
+  `widgetProps` field in its pane configuration, which could affect how the editor 
+  handles updates. Let me trace through what happens when the user tries to 
+  edit—specifically whether the edit button appears and what the `onChange` handler does   when typing.
+
+  The core issue is that `connectedWidgets` and `primaryWidget` are memoized without 
+  dependencies that would refresh when content changes, so secondary pane content gets 
+  frozen at the moment the split view opens. The primary pane works because it pulls 
+  content directly from MarkdownBlock's props, which do update on re-render, but the 
+  secondary pane captures the widget object at build time and never refreshes it. So when   the user edits secondary markdown, the update event fires but the displayed content 
+  stays stale. The primary markdown editor works because its props update on canvas 
+  change  changes,  changes, b◉ Thinking (Esc to cancel · 8.5 KiB)  changes, bu  changes, but● Thinking (Esc to cancel · 8.5 KiB)◉ Thinking (Esc to cancel · 8.5 KiB)◎ Thinking (Esc to cancel · 8.5 KiB)○ Thinking (Esc to cancel · 8.5 KiB)◎ Thinking (Esc to cancel · 8.5 KiB)◉ Thinking (Esc to cancel · 8.5 KiB)● Thinking (Esc to cancel · 8.5 KiB)◉ Thinking (Esc to cancel · 8.5 KiB)◎ Thinking (Esc to cancel · 8.5 KiB)○ Thinking (Esc to cancel · 8.5 KiB)◎ Thinking (Esc to cancel · 8.5 KiB)◉ Thinking (Esc to cancel · 8.5 KiB)● Thinking (Esc to cancel · 8.5 KiB)◉ Thinking (Esc to cancel · 8.5 KiB)◎ Thinking (Esc to cancel · 8.5 KiB)○ Thinking (Esc to cancel · 8.5 KiB)◎ Thinking (Esc to cancel · 8.5 KiB)◎ Thinking (Esc to cancel · 8.8 KiB)  changes, but secondary panes don't re-render when their w◉ Thinking (Esc to cancel · 8.8 KiB)
+  The issue is becoming clearer: when the user edits content in the primary markdown 
+  pane, the `buildPaneFn` callback recreates with the new content and the layout rebuilds   correctly. However, for secondary markdown panes, the `widget` object comes from 
+  `connectedWidgets` which only recomputes when `widgetId` or `splitMode` changes—not 
+  when content updates. This means secondary markdown panes are reading stale 
+  `widget.props.content` values that were captured when split mode was first opened.
+
+  I'm also noticing that the primary markdown pane in split mode might be missing the 
+  `widgetProps` field in its pane configuration, which could affect how the editor 
+  handles updates. Let me trace through what happens when the user tries to 
+  edit—specifically whether the edit button appears and what the `onChange` handler does   when typing.
+
+  The core issue is that `connectedWidgets` and `primaryWidget` are memoized without 
+  dependencies that would refresh when content changes, so secondary pane content gets 
+  frozen at the moment the split view opens. The primary pane works because it pulls 
+  content directly from MarkdownBlock's props, which do update on re-render, but the 
+  secondary pane captures the widget object at build time and never refreshes it. So when   the user edits secondary markdown, the update event fires but the displayed content 
+  stays stale. The primary markdown editor works because its props update on canvas 
+  changes, but secondary panes don't re-render when their widgets change — they only 
+  update their  update their local editing state while reading  update their local editing state while reading stale content from the widget● Thinking (Esc to cancel · 8.8 KiB)  The issue is becoming clearer: when the user edits content in the primary markdown 
+  pane, the `buildPaneFn` callback recreates with the new content and the layout rebuilds   correctly. However, for secondary markdown panes, the `widget` object comes from 
+  `connectedWidgets` which only recomputes when `widgetId` or `splitMode` changes—not 
+  when content updates. This means secondary markdown panes are reading stale 
+  `widget.props.content` values that were captured when split mode was first opened.
+
+  I'm also noticing that the primary markdown pane in split mode might be missing the 
+  `widgetProps` field in its pane configuration, which could affect how the editor 
+  handles updates. Let me trace through what happens when the user tries to 
+  edit—specifically whether the edit button appears and what the `onChange` handler does   when typing.
+
+  The core issue is that `connectedWidgets` and `primaryWidget` are memoized without 
+  dependencies that would refresh when content changes, so secondary pane content gets 
+  frozen at the moment the split view opens. The primary pane works because it pulls 
+  content directly from MarkdownBlock's props, which do update on re-render, but the 
+  secondary pane captures the widget object at build time and never refreshes it. So when   the user edits secondary markdown, the update event fires but the displayed content 
+  stays stale. The primary markdown editor works because its props update on canvas 
+  changes, but secondary panes don't re-render when their widgets change — they only 
+  update their local editing state while reading stale content from the widget prop. I 
+  should ask the use  should ask the user which specific behavi  should ask the user which specific behavior is broken rather  should ask the user which specific behavior is broken rather than guessing at◉ Thinking (Esc to cancel · 8.8 KiB)  pane, the `buildPaneFn` callback recreates with the new content and the layout rebuilds   correctly. However, for secondary markdown panes, the `widget` object comes from 
+  `connectedWidgets` which only recomputes when `widgetId` or `splitMode` changes—not 
+  when content updates. This means secondary markdown panes are reading stale 
+  `widget.props.content` values that were captured when split mode was first opened.
+
+  I'm also noticing that the primary markdown pane in split mode might be missing the 
+  `widgetProps` field in its pane configuration, which could affect how the editor 
+  handles updates. Let me trace through what happens when the user tries to 
+  edit—specifically whether the edit button appears and what the `onChange` handler does   when typing.
+
+  The core issue is that `connectedWidgets` and `primaryWidget` are memoized without 
+  dependencies that would refresh when content changes, so secondary pane content gets 
+  frozen at the moment the split view opens. The primary pane works because it pulls 
+  content directly from MarkdownBlock's props, which do update on re-render, but the 
+  secondary pane captures the widget object at build time and never refreshes it. So when   the user edits secondary markdown, the update event fires but the displayed content 
+  stays stale. The primary markdown editor works because its props update on canvas 
+  changes, but secondary panes don't re-render when their widgets change — they only 
+  update their local editing state while reading stale content from the widget prop. I 
+  should ask the user which specific behavior is broken rather than guessing at the fix,   or tra  or trace through th  or trace through the content ca○ Thinking (Esc to cancel · 8.8 KiB)  or trace through the content capture logi  or trace through the content capture logic in Mark  or trace through the content capture logic in MarkdownSeco  or trace through the content capture logic in MarkdownSecondaryPa◎ Thinking (Esc to cancel · 8.8 KiB)  or trace through the content capture logic in MarkdownSecondaryPane mor  or trace through the content capture logic in MarkdownSecondaryPane more car  or trace through the content capture logic in MarkdownSecondaryPane more carefull◉ Thinking (Esc to cancel · 9.1 KiB)  `connectedWidgets` which only recomputes when `widgetId` or `splitMode` changes—not 
+  when content updates. This means secondary markdown panes are reading stale 
+  `widget.props.content` values that were captured when split mode was first opened.
+
+  I'm also noticing that the primary markdown pane in split mode might be missing the 
+  `widgetProps` field in its pane configuration, which could affect how the editor 
+  handles updates. Let me trace through what happens when the user tries to 
+  edit—specifically whether the edit button appears and what the `onChange` handler does   when typing.
+
+  The core issue is that `connectedWidgets` and `primaryWidget` are memoized without 
+  dependencies that would refresh when content changes, so secondary pane content gets 
+  frozen at the moment the split view opens. The primary pane works because it pulls 
+  content directly from MarkdownBlock's props, which do update on re-render, but the 
+  secondary pane captures the widget object at build time and never refreshes it. So when   the user edits secondary markdown, the update event fires but the displayed content 
+  stays stale. The primary markdown editor works because its props update on canvas 
+  changes, but secondary panes don't re-render when their widgets change — they only 
+  update their local editing state while reading stale content from the widget prop. I 
+  should ask the user which specific behavior is broken rather than guessing at the fix,   or trace through the content capture logic in MarkdownSecondaryPane more carefully.
+
+  Looking at how the widget object  when content updates. This means secondary markdown panes are reading stale 
+  `widget.props.content` values that were captured when split mode was first opened.
+
+  I'm also noticing that the primary markdown pane in split mode might be missing the 
+  `widgetProps` field in its pane configuration, which could affect how the editor 
+  handles updates. Let me trace through what happens when the user tries to 
+  edit—specifically whether the edit button appears and what the `onChange` handler does   when typing.
+
+  The core issue is that `connectedWidgets` and `primaryWidget` are memoized without 
+  dependencies that would refresh when content changes, so secondary pane content gets 
+  frozen at the moment the split view opens. The primary pane works because it pulls 
+  content directly from MarkdownBlock's props, which do update on re-render, but the 
+  secondary pane captures the widget object at build time and never refreshes it. So when   the user edits secondary markdown, the update event fires but the displayed content 
+  stays stale. The primary markdown editor works because its props update on canvas 
+  changes, but secondary panes don't re-render when their widgets change — they only 
+  update their local editing state while reading stale content from the widget prop. I 
+  should ask the user which specific behavior is broken rather than guessing at the fix,   or trace through the content capture logic in MarkdownSecondaryPane more carefully.
+
+  Looking at how the widget object is passed in, it's a stable reference with stale 
+  props, so l  props, so local state changes won't● Thinking (Esc to cancel · 9.1 KiB)  props, so local state changes won't help. The real fix i  props, so local state changes won't help. The real fix is probably to have  `widget.props.content` values that were captured when split mode was first opened.
+
+  I'm also noticing that the primary markdown pane in split mode might be missing the 
+  `widgetProps` field in its pane configuration, which could affect how the editor 
+  handles updates. Let me trace through what happens when the user tries to 
+  edit—specifically whether the edit button appears and what the `onChange` handler does   when typing.
+
+  The core issue is that `connectedWidgets` and `primaryWidget` are memoized without 
+  dependencies that would refresh when content changes, so secondary pane content gets 
+  frozen at the moment the split view opens. The primary pane works because it pulls 
+  content directly from MarkdownBlock's props, which do update on re-render, but the 
+  secondary pane captures the widget object at build time and never refreshes it. So when   the user edits secondary markdown, the update event fires but the displayed content 
+  stays stale. The primary markdown editor works because its props update on canvas 
+  changes, but secondary panes don't re-render when their widgets change — they only 
+  update their local editing state while reading stale content from the widget prop. I 
+  should ask the user which specific behavior is broken rather than guessing at the fix,   or trace through the content capture logic in MarkdownSecondaryPane more carefully.
+
+  Looking at how the widget object is passed in, it's a stable reference with stale 
+  props, so local state changes won't help. The real fix is probably to have 
+  MarkdownSecondar  MarkdownSecondaryPane subscrib◉ Thinking (Esc to cancel · 9.1 KiB)  MarkdownSecondaryPane subscribe to bridge s  MarkdownSecondaryPane subscribe to bridge state update  MarkdownSecondaryPane subscribe to bridge state updates and read◎ Thinking (Esc to cancel · 9.1 KiB)  MarkdownSecondaryPane subscribe to bridge state updates and read fresh c  MarkdownSecondaryPane subscribe to bridge state updates and read fresh content  MarkdownSecondaryPane subscribe to bridge state updates and read fresh content from th○ Thinking (Esc to cancel · 9.1 KiB)
+  I'm also noticing that the primary markdown pane in split mode might be missing the 
+  `widgetProps` field in its pane configuration, which could affect how the editor 
+  handles updates. Let me trace through what happens when the user tries to 
+  edit—specifically whether the edit button appears and what the `onChange` handler does   when typing.
+
+  The core issue is that `connectedWidgets` and `primaryWidget` are memoized without 
+  dependencies that would refresh when content changes, so secondary pane content gets 
+  frozen at the moment the split view opens. The primary pane works because it pulls 
+  content directly from MarkdownBlock's props, which do update on re-render, but the 
+  secondary pane captures the widget object at build time and never refreshes it. So when   the user edits secondary markdown, the update event fires but the displayed content 
+  stays stale. The primary markdown editor works because its props update on canvas 
+  changes, but secondary panes don't re-render when their widgets change — they only 
+  update their local editing state while reading stale content from the widget prop. I 
+  should ask the user which specific behavior is broken rather than guessing at the fix,   or trace through the content capture logic in MarkdownSecondaryPane more carefully.
+
+  Looking at how the widget object is passed in, it's a stable reference with stale 
+  props, so local state changes won't help. The real fix is probably to have 
+  MarkdownSecondaryPane subscribe to bridge state updates and read fresh content from 
+  there in  there instead  there instead of  there instead of rely◎ Thinking (Esc to cancel · 9.1 KiB)  there instead of relying  there instead of relying on t  there instead of relying on the w◉ Thinking (Esc to cancel · 9.1 KiB)  there instead of relying on the widge  there instead of relying on the widget p  there instead of relying on the widget pro  there instead of relying on the widget prop● Thinking (Esc to cancel · 9.1 KiB)  there instead of relying on the widget prop.◉ Thinking (Esc to cancel · 9.1 KiB)◎ Thinking (Esc to cancel · 9.1 KiB)◎ Thinking (Esc to cancel · 9.3 KiB)  `widgetProps` field in its pane configuration, which could affect how the editor 
+  handles updates. Let me trace through what happens when the user tries to 
+  edit—specifically whether the edit button appears and what the `onChange` handler does   when typing.
+
+  The core issue is that `connectedWidgets` and `primaryWidget` are memoized without 
+  dependencies that would refresh when content changes, so secondary pane content gets 
+  frozen at the moment the split view opens. The primary pane works because it pulls 
+  content directly from MarkdownBlock's props, which do update on re-render, but the 
+  secondary pane captures the widget object at build time and never refreshes it. So when   the user edits secondary markdown, the update event fires but the displayed content 
+  stays stale. The primary markdown editor works because its props update on canvas 
+  changes, but secondary panes don't re-render when their widgets change — they only 
+  update their local editing state while reading stale content from the widget prop. I 
+  should ask the user which specific behavior is broken rather than guessing at the fix,   or trace through the content capture logic in MarkdownSecondaryPane more carefully.
+
+  Looking at how the widget object is passed in, it's a stable reference with stale 
+  props, so local state changes won't help. The real fix is probably to have 
+  MarkdownSecondaryPane subscribe to bridge state updates and read fresh content from 
+  there instead of relying on the widget prop.
+
+● Let me t○ Thinking (Esc to cancel · 9.4 KiB)  The core issue is that `connectedWidgets` and `primaryWidget` are memoized without 
+  dependencies that would refresh when content changes, so secondary pane content gets 
+  frozen at the moment the split view opens. The primary pane works because it pulls 
+  content directly from MarkdownBlock's props, which do update on re-render, but the 
+  secondary pane captures the widget object at build time and never refreshes it. So when   the user edits secondary markdown, the update event fires but the displayed content 
+  stays stale. The primary markdown editor works because its props update on canvas 
+  changes, but secondary panes don't re-render when their widgets change — they only 
+  update their local editing state while reading stale content from the widget prop. I 
+  should ask the user which specific behavior is broken rather than guessing at the fix,   or trace through the content capture logic in MarkdownSecondaryPane more carefully.
+
+  Looking at how the widget object is passed in, it's a stable reference with stale 
+  props, so local state changes won't help. The real fix is probably to have 
+  MarkdownSecondaryPane subscribe to bridge state updates and read fresh content from 
+  there instead of relying on the widget prop.● Let me trace the data-flow problem in secondary markdown panes:
+
+● Bridge state updates (shell)
+  └ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -n
+    "__storyboardCanvasBridgeState\|bridgeUpdated\|bridge:updated\|canvas:bridge"
+    packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -20◎ Thinking (Esc to cancel · 9.4 KiB)◉ Thinking (Esc to cancel · 9.4 KiB) / commands · ? help · ctrl+q enqueue · ctrl+x → b background task● Thinking (Esc to cancel · 9.4 KiB)◉ Thinking (Esc to cancel · 9.4 KiB)◎ Thinking (Esc to cancel · 9.4 KiB)○ Thinking (Esc to cancel · 9.4 KiB) / commands · ? help · ctrl+q enqueue◎ Thinking (Esc to cancel · 9.4 KiB)  dependencies that would refresh when content changes, so secondary pane content gets 
+  frozen at the moment the split view opens. The primary pane works because it pulls 
+  content directly from MarkdownBlock's props, which do update on re-render, but the 
+  secondary pane captures the widget object at build time and never refreshes it. So when   the user edits secondary markdown, the update event fires but the displayed content 
+  stays stale. The primary markdown editor works because its props update on canvas 
+  changes, but secondary panes don't re-render when their widgets change — they only 
+  update their local editing state while reading stale content from the widget prop. I 
+  should ask the user which specific behavior is broken rather than guessing at the fix,   or trace through the content capture logic in MarkdownSecondaryPane more carefully.
+
+  Looking at how the widget object is passed in, it's a stable reference with stale 
+  props, so local state changes won't help. The real fix is probably to have 
+  MarkdownSecondaryPane subscribe to bridge state updates and read fresh content from 
+  there instead of relying on the widget prop.
+
+● Let me trace the data-flow problem in secondary markdown panes:
+
+● Bridge state updates (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -n
+  │ "__storyboardCanvasBridgeState\|bridgeUpdated\|bridge:updated\|canvas:bridge"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -20
+  └ 3 lines...◉ Thinking (Esc to cancel · 9.4 KiB)● Thinking (Esc to cancel · 9.4 KiB)◉ Thinking (Esc to cancel · 9.4 KiB)○ Thinking (Esc to cancel · 9.4 KiB)◎ Thinking (Esc to cancel · 9.4 KiB)◉ Thinking (Esc to cancel · 9.4 KiB)● Thinking (Esc to cancel · 9.4 KiB)◉ Thinking (Esc to cancel · 9.4 KiB)◎ Thinking (Esc to cancel · 9.4 KiB)○ Thinking (Esc to cancel · 9.4 KiB)◎ Thinking (Esc to cancel · 9.4 KiB)◉ Thinking (Esc to cancel · 9.4 KiB)● Thinking (Esc to cancel · 9.4 KiB)◉ Thinking (Esc to cancel · 9.4 KiB)◎ Thinking (Esc to cancel · 9.4 KiB)○ Thinking (Esc to cancel · 9.4 KiB)◎ Thinking (Esc to cancel · 9.4 KiB)◉ Thinking (Esc to cancel · 9.4 KiB)● Thinking (Esc to cancel · 9.4 KiB)◉ Thinking (Esc to cancel · 9.4 KiB)◎ Thinking (Esc to cancel · 9.4 KiB)○ Thinking (Esc to cancel · 9.4 KiB)◎ Thinking (Esc to cancel · 9.4 KiB)◉ Thinking (Esc to cancel · 9.4 KiB)● Thinking (Esc to cancel · 9.4 KiB)◉ Thinking (Esc to cancel · 9.4 KiB)◉ Thinking (Esc to cancel · 9.6 KiB)◎ Thinking (Esc to cancel · 9.6 KiB)  stays stale. The primary markdown editor works because its props update on canvas 
+  changes, but secondary panes don't re-render when their widgets change — they only 
+  update their local editing state while reading stale content from the widget prop. I 
+  should ask the user which specific behavior is broken rather than guessing at the fix,   or trace through the content capture logic in MarkdownSecondaryPane more carefully.
+
+  Looking at how the widget object is passed in, it's a stable reference with stale 
+  props, so local state changes won't help. The real fix is probably to have 
+  MarkdownSecondaryPane subscribe to bridge state updates and read fresh content from 
+  there instead of relying on the widget prop.● Let me trace the data-flow problem in secondary markdown panes:
+
+● Bridge state updates (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -n
+  │ "__storyboardCanvasBridgeState\|bridgeUpdated\|bridge:updated\|canvas:bridge"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -20
+  └ 3 lines...
+
+● Bridge state writes (shell)
+  └ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -n
+    "CANVAS_BRIDGE_STATE_KEY\|bridge"
+    packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -30○ Thinking (Esc to cancel · 9.6 KiB) / commands · ? help · ctrl+q enqueue · ctrl+x → b background task◎ Thinking (Esc to cancel · 9.6 KiB)◉ Thinking (Esc to cancel · 9.6 KiB)● Thinking (Esc to cancel · 9.6 KiB)◉ Thinking (Esc to cancel · 9.6 KiB) / commands · ? help · ctrl+q enqueue◎ Thinking (Esc to cancel · 9.6 KiB)  changes, but secondary panes don't re-render when their widgets change — they only 
+  update their local editing state while reading stale content from the widget prop. I 
+  should ask the user which specific behavior is broken rather than guessing at the fix,   or trace through the content capture logic in MarkdownSecondaryPane more carefully.
+
+  Looking at how the widget object is passed in, it's a stable reference with stale 
+  props, so local state changes won't help. The real fix is probably to have 
+  MarkdownSecondaryPane subscribe to bridge state updates and read fresh content from 
+  there instead of relying on the widget prop.
+
+● Let me trace the data-flow problem in secondary markdown panes:
+
+● Bridge state updates (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -n
+  │ "__storyboardCanvasBridgeState\|bridgeUpdated\|bridge:updated\|canvas:bridge"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -20
+  └ 3 lines...
+
+● Bridge state writes (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -n
+  │ "CANVAS_BRIDGE_STATE_KEY\|bridge"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -30
+  └ 30 lines...○ Thinking (Esc to cancel · 9.6 KiB)◎ Thinking (Esc to cancel · 9.6 KiB)◉ Thinking (Esc to cancel · 9.6 KiB)● Thinking (Esc to cancel · 9.6 KiB)◉ Thinking (Esc to cancel · 9.6 KiB)◎ Thinking (Esc to cancel · 9.6 KiB)○ Thinking (Esc to cancel · 9.6 KiB)◎ Thinking (Esc to cancel · 9.6 KiB)◉ Thinking (Esc to cancel · 9.6 KiB)● Thinking (Esc to cancel · 9.6 KiB)◉ Thinking (Esc to cancel · 9.6 KiB)◎ Thinking (Esc to cancel · 9.6 KiB)○ Thinking (Esc to cancel · 9.6 KiB)◎ Thinking (Esc to cancel · 9.6 KiB)◉ Thinking (Esc to cancel · 9.6 KiB)● Thinking (Esc to cancel · 9.6 KiB)◉ Thinking (Esc to cancel · 9.6 KiB)◎ Thinking (Esc to cancel · 9.6 KiB)○ Thinking (Esc to cancel · 9.6 KiB)◎ Thinking (Esc to cancel · 9.6 KiB)◉ Thinking (Esc to cancel · 9.6 KiB)● Thinking (Esc to cancel · 9.6 KiB)◉ Thinking (Esc to cancel · 9.6 KiB)◎ Thinking (Esc to cancel · 9.6 KiB)○ Thinking (Esc to cancel · 9.6 KiB)◎ Thinking (Esc to cancel · 9.6 KiB)◉ Thinking (Esc to cancel · 9.6 KiB)● Thinking (Esc to cancel · 9.6 KiB)◉ Thinking (Esc to cancel · 9.6 KiB)◎ Thinking (Esc to cancel · 9.6 KiB)○ Thinking (Esc to cancel · 9.6 KiB)◎ Thinking (Esc to cancel · 9.6 KiB)◉ Thinking (Esc to cancel · 9.6 KiB)● Thinking (Esc to cancel · 9.6 KiB)◉ Thinking (Esc to cancel · 9.6 KiB)◎ Thinking (Esc to cancel · 9.6 KiB)○ Thinking (Esc to cancel · 9.6 KiB)◎ Thinking (Esc to cancel · 9.6 KiB)◎ Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)
+  Looking at how the widget object is passed in, it's a stable reference with stale 
+  props, so local state changes won't help. The real fix is probably to have 
+  MarkdownSecondaryPane subscribe to bridge state updates and read fresh content from 
+  there instead of relying on the widget prop.
+
+● Let me trace the data-flow problem in secondary markdown panes:
+
+● Bridge state updates (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -n
+  │ "__storyboardCanvasBridgeState\|bridgeUpdated\|bridge:updated\|canvas:bridge"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -20
+  └ 3 lines...
+
+● Bridge state writes (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -n
+  │ "CANVAS_BRIDGE_STATE_KEY\|bridge"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -30
+  └ 30 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2437:2460 (24 lines read)◎ Thinking (Esc to cancel · 9.8 KiB)○ Thinking (Esc to cancel · 9.8 KiB)◎ Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)● Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)◎ Thinking (Esc to cancel · 9.8 KiB)○ Thinking (Esc to cancel · 9.8 KiB)◎ Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)● Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)◎ Thinking (Esc to cancel · 9.8 KiB)○ Thinking (Esc to cancel · 9.8 KiB)◎ Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)● Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)◎ Thinking (Esc to cancel · 9.8 KiB)○ Thinking (Esc to cancel · 9.8 KiB)◎ Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)● Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)◎ Thinking (Esc to cancel · 9.8 KiB)○ Thinking (Esc to cancel · 9.8 KiB)◎ Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)● Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)◎ Thinking (Esc to cancel · 9.8 KiB)○ Thinking (Esc to cancel · 9.8 KiB)◎ Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)● Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)◎ Thinking (Esc to cancel · 9.8 KiB)○ Thinking (Esc to cancel · 9.8 KiB)◎ Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)● Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)◎ Thinking (Esc to cancel · 9.8 KiB)○ Thinking (Esc to cancel · 9.8 KiB)
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]            @CreateDialog.jsx:90◎ Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)● Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)◎ Thinking (Esc to cancel · 9.8 KiB)○ Thinking (Esc to cancel · 9.8 KiB)◎ Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]               @CreateDialog.jsx● Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)◎ Thinking (Esc to cancel · 9.8 KiB)○ Thinking (Esc to cancel · 9.8 KiB)
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]            @CreateDialog.jsx:90◎ Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)● Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)◎ Thinking (Esc to cancel · 9.8 KiB)○ Thinking (Esc to cancel · 9.8 KiB)
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]               @CreateDialog.jsx◎ Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)● Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)◎ Thinking (Esc to cancel · 9.8 KiB)○ Thinking (Esc to cancel · 9.8 KiB)◎ Thinking (Esc to cancel · 9.8 KiB)◉ Thinking (Esc to cancel · 9.8 KiB)● Thinking (Esc to cancel · 9.8 KiB)◎ Thinking (Esc to cancel · 9.8 KiB)○ Thinking (Esc to cancel · 9.8 KiB)◎ Thinking (Esc to cancel · 9.8 KiB)
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]            @CreateDialog.jsx:90◉ Thinking (Esc to cancel · 9.8 KiB)

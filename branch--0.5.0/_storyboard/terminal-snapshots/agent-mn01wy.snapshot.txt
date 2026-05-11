@@ -1,17 +1,12 @@
 SESSION: agent-mn01wy | silver-condor
 CANVAS:  storyboarding/form-schema
 BRANCH:  0.5.0
-TIME:    2026-05-11T09:09:02.279Z
+TIME:    2026-05-11T09:34:54.188Z
 
 ================================================================================
 SCREEN
 ================================================================================
 
-● Signal done with env (shell)
-  │ export STORYBOARD_WIDGET_ID=agent-mn01wy
-  │ STORYBOARD_CANVAS_ID=storyboarding/form-schema
-  │ npx storyboard agent signal --status done --message "Fixed doubled ArtifactForm
-  │ chrome inside Dialog"
   └ 3 lines...
 
 ● Done. The doubled framing came from ArtifactForm's .form always rendering as a card
@@ -33,7 +28,12 @@ SCREEN
 
 ● Acknowledged — that was the earlier repo-wide grep, no longer needed.
 
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]               @ArtifactForm.jsx
+❯ 📡 [Broadcast two-way ACTIVE with maple-sparrow, blue-falcon]
+
+● Acknowledged — broadcast two-way active with maple-sparrow and blue-falcon. Standing
+  by.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]               @CreateDialog.jsx
 ─────────────────────────────────────────────────────────────────────────────────────────
 ❯  
 ─────────────────────────────────────────────────────────────────────────────────────────
@@ -43,4 +43,4 @@ SCREEN
 SCROLLBACK (last 60s)
 ================================================================================
 
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]               @ArtifactForm.jsx
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]            @CreateDialog.jsx:90 ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]               @CreateDialog.jsx ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]            @CreateDialog.jsx:90 ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]               @CreateDialog.jsx
