@@ -24,11 +24,13 @@ FILES_JSON="$SKILL_DIR/files.json"
 # Globs are evaluated relative to REPO_ROOT.
 # Order matters: first match wins for a given file.
 DISCOVERY_RULES=(
-  # Config files at root
+  # Root-level configs
   "config|high|vite.config.js"
   "config|low|eslint.config.js"
   "config|high|package.json"
   "config|high|packages/*/package.json"
+  "config|medium|packages/storyboard/vite.ui.config.js"
+  "config|medium|storyboard.config.json"
 
   # Entry points
   "entry|high|src/index.jsx"
@@ -40,35 +42,105 @@ DISCOVERY_RULES=(
   # Templates (capitalized JSX in templates/)
   "template|low|src/templates/*/[A-Z]*.jsx"
 
-  # Storyboard core package
-  "storyboard|high|packages/core/src/index.js"
-  "storyboard|high|packages/core/src/loader.js"
-  "storyboard|high|packages/core/src/*.js"
+  # ── Storyboard package: top-level + internals ──
+  "storyboard|high|packages/storyboard/src/index.js"
+  "storyboard|high|packages/storyboard/src/internals/index.js"
+  "storyboard|high|packages/storyboard/src/internals/context.jsx"
+  "storyboard|high|packages/storyboard/src/internals/StoryboardContext.js"
+  "storyboard|high|packages/storyboard/src/internals/hashPreserver.js"
+  "storyboard|high|packages/storyboard/src/internals/Viewfinder.jsx"
+  "storyboard|medium|packages/storyboard/src/internals/Workspace.jsx"
+  "storyboard|medium|packages/storyboard/src/internals/Icon.jsx"
+  "storyboard|medium|packages/storyboard/src/internals/PrototypeErrorBoundary.jsx"
+  "storyboard|high|packages/storyboard/src/internals/hooks/*.js"
+  "storyboard|high|packages/storyboard/src/internals/vite/data-plugin.js"
 
-  # Storyboard react package
-  "storyboard|high|packages/react/src/index.js"
-  "storyboard|high|packages/react/src/context.jsx"
-  "storyboard|high|packages/react/src/StoryboardContext.js"
-  "storyboard|high|packages/react/src/hashPreserver.js"
-  "storyboard|high|packages/react/src/hooks/*.js"
-  "storyboard|medium|packages/react/src/context/FormContext.js"
-  "storyboard|high|packages/react/src/vite/data-plugin.js"
+  # ── Storyboard package: core (server-side + framework-agnostic) ──
+  "storyboard|high|packages/storyboard/src/core/index.js"
+  "storyboard|high|packages/storyboard/src/core/data/loader.js"
+  "storyboard|medium|packages/storyboard/src/core/data/*.js"
 
-  # Storyboard primer package
-  "storyboard|high|packages/react-primer/src/index.js"
-  "storyboard|medium|packages/react-primer/src/[A-Z]*.jsx"
-  "storyboard|high|packages/react-primer/src/DevTools/DevTools.jsx"
+  # core/canvas — server, materializer, terminal/agent runtime
+  "storyboard|high|packages/storyboard/src/core/canvas/server.js"
+  "storyboard|high|packages/storyboard/src/core/canvas/materializer.js"
+  "storyboard|high|packages/storyboard/src/core/canvas/terminal-config.js"
+  "storyboard|high|packages/storyboard/src/core/canvas/terminal-server.js"
+  "storyboard|high|packages/storyboard/src/core/canvas/hot-pool.js"
+  "storyboard|medium|packages/storyboard/src/core/canvas/selectedWidgets.js"
+  "storyboard|medium|packages/storyboard/src/core/canvas/identity.js"
+  "storyboard|medium|packages/storyboard/src/core/canvas/hub-roles.js"
+  "storyboard|medium|packages/storyboard/src/core/canvas/collision.js"
+  "storyboard|medium|packages/storyboard/src/core/canvas/compact.js"
+  "storyboard|medium|packages/storyboard/src/core/canvas/githubEmbeds.js"
+  "storyboard|medium|packages/storyboard/src/core/canvas/terminal-registry.js"
 
-  # Storyboard reshaped package
-  "storyboard|medium|packages/react-reshaped/src/index.js"
-  "storyboard|low|packages/react-reshaped/src/[A-Z]*.jsx"
+  # core/messaging — bus + transport
+  "storyboard|high|packages/storyboard/src/core/messaging/bus.js"
+  "storyboard|medium|packages/storyboard/src/core/messaging/*.js"
 
-  # Tiny canvas package
-  "storyboard|high|packages/tiny-canvas/src/index.js"
-  "storyboard|medium|packages/tiny-canvas/src/*.jsx"
-  "storyboard|medium|packages/tiny-canvas/src/*.js"
+  # core/tools — declarative toolbar tools
+  "storyboard|high|packages/storyboard/src/core/tools/registry.js"
+  "storyboard|medium|packages/storyboard/src/core/tools/surfaces/*.js"
+  "storyboard|medium|packages/storyboard/src/core/tools/handlers/*.js"
 
-  # Shared components (each in its own directory)
+  # core/stores — state singletons
+  "storyboard|high|packages/storyboard/src/core/stores/configStore.js"
+  "storyboard|medium|packages/storyboard/src/core/stores/*.js"
+
+  # core/ui — runtime UI shell
+  "storyboard|high|packages/storyboard/src/core/ui/CoreUIBar.jsx"
+  "storyboard|medium|packages/storyboard/src/core/ui/[A-Z]*.jsx"
+
+  # core/vite — server plugin
+  "storyboard|high|packages/storyboard/src/core/vite/server-plugin.js"
+  "storyboard|medium|packages/storyboard/src/core/vite/*.js"
+
+  # core/cli — storyboard binary subcommands
+  "storyboard|high|packages/storyboard/src/core/cli/index.js"
+  "storyboard|medium|packages/storyboard/src/core/cli/*.js"
+
+  # core/runtime — proxy + dev server
+  "storyboard|high|packages/storyboard/src/core/runtime/proxy/caddy.js"
+  "storyboard|medium|packages/storyboard/src/core/runtime/*.js"
+  "storyboard|medium|packages/storyboard/src/core/runtime/proxy/*.js"
+
+  # core/comments + autosync + worktree (operational subsystems)
+  "storyboard|medium|packages/storyboard/src/core/comments/*.js"
+  "storyboard|medium|packages/storyboard/src/core/autosync/*.js"
+  "storyboard|medium|packages/storyboard/src/core/worktree/*.js"
+  "storyboard|medium|packages/storyboard/src/core/session/*.js"
+  "storyboard|medium|packages/storyboard/src/core/scaffold.js"
+
+  # ── Storyboard package: canvas surface (heavy widget UI) ──
+  "storyboard|high|packages/storyboard/src/internals/canvas/CanvasPage.jsx"
+  "storyboard|high|packages/storyboard/src/internals/canvas/widgets/index.js"
+  "storyboard|medium|packages/storyboard/src/internals/canvas/widgets/[A-Z]*.jsx"
+  "storyboard|medium|packages/storyboard/src/internals/canvas/widgets/widgetConfig.js"
+  "storyboard|medium|packages/storyboard/src/internals/canvas/widgets/widgetProps.js"
+  "storyboard|medium|packages/storyboard/src/internals/canvas/widgets/pasteRules.js"
+  "storyboard|medium|packages/storyboard/src/internals/canvas/CanvasToolbar.jsx"
+  "storyboard|medium|packages/storyboard/src/internals/canvas/ConnectorLayer.jsx"
+  "storyboard|medium|packages/storyboard/src/internals/canvas/PageSelector.jsx"
+  "storyboard|medium|packages/storyboard/src/internals/canvas/CanvasControls.jsx"
+  "storyboard|medium|packages/storyboard/src/internals/canvas/MarqueeOverlay.jsx"
+  "storyboard|medium|packages/storyboard/src/internals/canvas/canvasApi.js"
+  "storyboard|medium|packages/storyboard/src/internals/canvas/canvasTheme.js"
+  "storyboard|medium|packages/storyboard/src/internals/canvas/connectorRouting.js"
+  "storyboard|medium|packages/storyboard/src/internals/canvas/connectorGeometry.js"
+  "storyboard|medium|packages/storyboard/src/internals/canvas/useCanvas.js"
+  "storyboard|medium|packages/storyboard/src/internals/canvas/useUndoRedo.js"
+  "storyboard|medium|packages/storyboard/src/internals/canvas/useMarqueeSelect.js"
+  "storyboard|medium|packages/storyboard/src/internals/canvas/WebGLContextPool.jsx"
+
+  # ── Storyboard package: command palette + side panels + branch bar ──
+  "storyboard|medium|packages/storyboard/src/internals/CommandPalette/CommandPalette.jsx"
+  "storyboard|medium|packages/storyboard/src/internals/BranchBar/BranchBar.jsx"
+  "storyboard|medium|packages/storyboard/src/internals/AuthModal/AuthModal.jsx"
+
+  # ── Storyboard package: primer integrations ──
+  "storyboard|medium|packages/storyboard/src/primer/*.jsx"
+
+  # Shared client components (low — implementation detail of the demo app)
   "component|low|src/components/*/[A-Z]*.jsx"
 
   # Page routes

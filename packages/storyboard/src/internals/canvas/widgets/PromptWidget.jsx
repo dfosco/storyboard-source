@@ -133,7 +133,11 @@ const PromptWidget = forwardRef(function PromptWidget({ id, props, onUpdate, res
     }
 
     import.meta.hot.on('storyboard:agent-status', handler)
-    return () => import.meta.hot.off('storyboard:agent-status', handler)
+    return () => {
+      if (typeof import.meta.hot.off === 'function') {
+        import.meta.hot.off('storyboard:agent-status', handler)
+      }
+    }
   }, [id])
 
   useImperativeHandle(ref, () => ({

@@ -118,7 +118,9 @@ export function useCanvas(canvasId) {
 
     import.meta.hot.on('storyboard:canvas-file-changed', handleCanvasFileChanged)
     return () => {
-      import.meta.hot.off('storyboard:canvas-file-changed', handleCanvasFileChanged)
+      if (typeof import.meta.hot.off === 'function') {
+        import.meta.hot.off('storyboard:canvas-file-changed', handleCanvasFileChanged)
+      }
     }
   }, [canvasId, buildTimeCanvas])
 

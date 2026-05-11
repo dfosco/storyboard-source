@@ -1,0 +1,10 @@
+{
+  "widgetId": "agent-afqftv",
+  "canvasId": "storyboarding/form-schema",
+  "prettyName": "blue-osprey",
+  "timestamp": "2026-05-11T10:09:33.613Z",
+  "cols": 89,
+  "rows": 32,
+  "paneContent": "│                                         ╭─╮╭─╮                                        │\n│                                         ╰─╯╰─╯                                        │\n│                                         █ ▘▝ █                                        │\n│                                          ▔▔▔▔                                         │\n│                                 GitHub Copilot v1.0.44                                │\n│                          Copilot uses AI. Check for mistakes.                         │\n│                                                                                       │\n╰───────────────────────────────────────────────────────────────────────────────────────╯\n\n! Failed to load 1 skill. Run /skills for more details.\n\n● Selected custom agent: terminal-agent\n\n● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents, Visual\n  Studio Code - Insiders connected\n\n● All permissions are now enabled. Tool, path, and URL requests will be automatically\n  approved.\n\n❯ [System] Your terminal identity has been set. widgetId=agent-afqftv\n  displayName=blue-osprey canvasId=storyboarding/form-schema\n  configFile=.storyboard/terminals/agent-afqftv.json serverUrl=http://localhost:1234 —\n  this is a configuration step, no response needed.\n\n● Configuration acknowledged.\n\n ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]\n─────────────────────────────────────────────────────────────────────────────────────────\n❯  \n─────────────────────────────────────────────────────────────────────────────────────────\n / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)\n\n",
+  "scrollback": ""
+}

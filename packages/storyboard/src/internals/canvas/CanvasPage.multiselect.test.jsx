@@ -223,15 +223,14 @@ describe('CanvasPage multi-select', () => {
     fireEvent.keyDown(document, { key: 'Delete' })
     await act(async () => { await new Promise((r) => setTimeout(r, 0)) })
 
-    // Should call updateCanvas with only w3 remaining
-    expect(updateCanvas).toHaveBeenCalledWith(
-      'test-canvas',
-      expect.objectContaining({
-        widgets: [expect.objectContaining({ id: 'w3' })],
-      })
-    )
-    // Should NOT use individual removeWidget API for multi-delete
-    expect(removeWidget).not.toHaveBeenCalled()
+    // Multi-delete now uses individual removeWidget calls (one per selected
+    // widget) instead of widgets_replaced — keeps server's wipe guard happy
+    // and orphans terminal sessions per widget.
+    expect(removeWidget).toHaveBeenCalledWith('test-canvas', 'w1')
+    expect(removeWidget).toHaveBeenCalledWith('test-canvas', 'w2')
+    expect(removeWidget).toHaveBeenCalledTimes(2)
+    // updateCanvas (widgets_replaced) is NOT used for multi-delete
+    expect(updateCanvas).not.toHaveBeenCalled()
     // Should snapshot for undo
     expect(MOCK_UNDO_REDO.snapshot).toHaveBeenCalled()
   })

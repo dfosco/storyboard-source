@@ -259,7 +259,11 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
       }
     }
     import.meta.hot.on('storyboard:agent-status', handler)
-    return () => import.meta.hot.off('storyboard:agent-status', handler)
+    return () => {
+      if (typeof import.meta.hot.off === 'function') {
+        import.meta.hot.off('storyboard:agent-status', handler)
+      }
+    }
   }, [id, isAgent])
 
   // Connect terminal + WebSocket (only when pool grants a live slot)
