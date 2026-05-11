@@ -115,6 +115,16 @@
 .agents-ready-btn[data-ready] .agents-ready-btn-working {
   background: rgba(255, 255, 255, 0.22);
 }
+.agents-ready-btn-icon-spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  animation: sb-agents-spinner 0.85s linear infinite;
+  display: inline-block;
+  flex: 0 0 auto;
+}
 .agents-ready-btn-spinner {
   width: 11px;
   height: 11px;

@@ -283,7 +283,7 @@
     "agents-ready": {
       "label": "Agents ready",
       "ariaLabel": "Jump to next ready agent",
-      "icon": "primer/sparkle-fill",
+      "icon": "agents",
       "render": "button",
       "surface": "collab-bar",
       "handler": "core:agents-ready",

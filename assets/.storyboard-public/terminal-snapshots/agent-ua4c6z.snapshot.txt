@@ -1,417 +1,187 @@
 SESSION: agent-ua4c6z | teal-dove
 CANVAS:  storyboarding/terminal-widget-prompts
 BRANCH:  0.5.0
-TIME:    2026-05-11T13:52:46.975Z
+TIME:    2026-05-11T13:53:50.509Z
 
 ================================================================================
 SCREEN
 ================================================================================
 
+● inspect commit (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager show
+  │ --stat 5341a2ce4
+  └ 21 lines...
 
-● Edit StorySetWidget.jsx +3
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
+◐ A parallel agent already committed my staged changes in commit 5341a2ce4, so I need to
+  push those updates now.
 
-● Now wrap the return in a fragment and add the ExpandedPane:
+● My changes were swept up in a parallel agent's commit. Pushing now:
 
-● Edit StorySetWidget.jsx +40
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
+● push (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager push
+  │ origin 0.5.0 2>&1 | tail -3
+  └ 4 lines...
 
-● Let me verify the ExpandedPane API matches (initialPanes vs initialLayout):
+● signal done (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && source $(ls -t
+  │ .storyboard/terminals/*.env | head -1) && npx storyboard agent signal --status done
+  │ --message "Component-set is now fullscreen-able via expand action"
+  └ 4 lines...
 
-● verify ExpandedPane API (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -n
-  │ "initialPanes\|initialLayout\|^export\|function ExpandedPane"
-  │ packages/storyboard/src/internals/canvas/widgets/ExpandedPane.jsx | head -20
-  └ 9 lines...
+● Done. Component-set widgets now have an Expand button in their toolbar (↗ icon) that
+  opens the grid in a fullscreen modal — same pattern as story/prototype widgets. HMR
+  will reload the canvas; you should see the new action appear on the widget chrome.
+  Pushed as 5341a2ce4.
 
-● Good — initialPanes works. Let me run the build/lint to verify:
-
-● lint changes (shell)
-  └ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && npx eslint
-    packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-    packages/storyboard/src/internals/canvas/widgets/expandUtils.js 2>&1 | tail -30
-
-◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]        @WidgetChrome.module.css
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]         @WidgetChrome.module.css
 ─────────────────────────────────────────────────────────────────────────────────────────
-❯  
+❯ Remove the ct 
 ─────────────────────────────────────────────────────────────────────────────────────────
- / commands · ? help · ctrl+q enqueue · ctrl+x → b background task
- terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+ @ files · # issues         terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
 
 ================================================================================
 SCROLLBACK (last 60s)
 ================================================================================
 
-◉ Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)● Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)○ Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)● Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)○ Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)● Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)○ Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)● Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)○ Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)● Adding fullscreen to component-set (Esc to cancel · 5.6 KiB)● Adding fullscreen to component-set (Esc to cancel · 5.8 KiB)● Adding fullscreen to component-set (Esc to cancel · 6.2 KiB)● Adding fullscreen to component-set (Esc to cancel · 6.4 KiB)  │ packages/storyboard/src/internals/canvas/widgets/expandUtils.js | head -30
-  └ 3 lines...
+[lost tty]
+[?996n[>c[>q● inspect commit (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager show
+  │ --stat 5341a2ce4
+  └ 21 lines...
 
-● Read expandUtils.js
-  │ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
-  └ L480:610 (109 lines read)
+◐ A parallel agent already committed my staged changes in commit 5341a2ce4, so I need to   push those updates now.
 
-◐ I'm going to follow StoryWidget's approach by adding local expandMode state to 
-  StorySetWidget and rendering an ExpandedPane modal with an iframe pointing to the 
-  isolate-set URL, plus updating the widget config with expandable and expand action 
-  properties. For now I'll keep it simple and just make the widget fullscreen in modal 
-  form, skipping the split-screen implementation.
+● My changes were swept up in a parallel agent's commit. Pushing now:
 
-● I'll mirror the StoryWidget fullscreen pattern. Three edits: config, StorySetWidget,
-  expandUtils.
+● push (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager push
+  │ origin 0.5.0 2>&1 | tail -3
+  └ 4 lines...
 
-● Edit widgets.config.json +8
-  └ packages/storyboard/widgets.config.json
+● signal done (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && source $(ls -t
+  │ .storyboard/terminals/*.env | head -1) && npx storyboard agent signal --status done
+  │ --message "Component-set is now fullscreen-able via expand action"
+  └ 4 lines...
 
-● Edit widgets.config.json +2 -1
-  └ packages/storyboard/widgets.config.json
+● Done. Component-set widgets now have an Expand button in their toolbar (↗ icon) that
+  opens the grid in a fullscreen modal — same pattern as story/prototype widgets. HMR
+  will reload the canvas; you should see the new action appear on the widget chrome.
+  Pushed as 5341a2ce4.
 
-● Now wire StorySetWidget's◉ Adding fullscreen to component-set (Esc to cancel · 6.4 KiB)● Now wire StorySetWidget's handleAction for `exp● Now wire StorySetWidget's handleAction for expand and render an `◉ Adding fullscreen to component-set (Esc to cancel · 6.6 KiB)● Now wire StorySetWidget's handleAction for expand and render an ExpandedPane mod◎ Adding fullscreen to component-set (Esc to cancel · 6.6 KiB)  └ 3 lines...
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]         @WidgetChrome.module.css
+─────────────────────────────────────────────────────────────────────────────────────────❯
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+● inspect commit (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager show
+  │ --stat 5341a2ce4
+  └ 21 lines...
 
-● Read expandUtils.js
-  │ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
-  └ L480:610 (109 lines read)
+◐ A parallel agent already committed my staged changes in commit 5341a2ce4, so I need to   push those updates now.
 
-◐ I'm going to follow StoryWidget's approach by adding local expandMode state to 
-  StorySetWidget and rendering an ExpandedPane modal with an iframe pointing to the 
-  isolate-set URL, plus updating the widget config with expandable and expand action 
-  properties. For now I'll keep it simple and just make the widget fullscreen in modal 
-  form, skipping the split-screen implementation.
+● My changes were swept up in a parallel agent's commit. Pushing now:
 
-● I'll mirror the StoryWidget fullscreen pattern. Three edits: config, StorySetWidget,
-  expandUtils.
+● push (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager push
+  │ origin 0.5.0 2>&1 | tail -3
+  └ 4 lines...
 
-● Edit widgets.config.json +8
-  └ packages/storyboard/widgets.config.json
+● signal done (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && source $(ls -t
+  │ .storyboard/terminals/*.env | head -1) && npx storyboard agent signal --status done
+  │ --message "Component-set is now fullscreen-able via expand action"
+  └ 4 lines...
 
-● Edit widgets.config.json +2 -1
-  └ packages/storyboard/widgets.config.json
+● Done. Component-set widgets now have an Expand button in their toolbar (↗ icon) that
+  opens the grid in a fullscreen modal — same pattern as story/prototype widgets. HMR
+  will reload the canvas; you should see the new action appear on the widget chrome.
+  Pushed as 5341a2ce4.
 
-● Now wire StorySetWidget's handleAction for expand and render an ExpandedPane modal
-  with an ifra  with an iframe pointing t  with an iframe pointing to the isolat  with an iframe pointing to the isolate-set URL.○ Adding fullscreen to component-set (Esc to cancel · 6.6 KiB)  with an iframe pointing to the isolate-set URL. Also add  with an iframe pointing to the isolate-set URL. Also add `compon  with an iframe pointing to the isolate-set URL. Also add `component-set◎ Adding fullscreen to component-set (Esc to cancel · 6.6 KiB)  with an iframe pointing to the isolate-set URL. Also add component-set to e  with an iframe pointing to the isolate-set URL. Also add component-set to expand  with an iframe pointing to the isolate-set URL. Also add component-set to expandUtil
-● Read expandUtils.js
-  │ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
-  └ L480:610 (109 lines read)
-
-◐ I'm going to follow StoryWidget's approach by adding local expandMode state to 
-  StorySetWidget and rendering an ExpandedPane modal with an iframe pointing to the 
-  isolate-set URL, plus updating the widget config with expandable and expand action 
-  properties. For now I'll keep it simple and just make the widget fullscreen in modal 
-  form, skipping the split-screen implementation.
-
-● I'll mirror the StoryWidget fullscreen pattern. Three edits: config, StorySetWidget,
-  expandUtils.
-
-● Edit widgets.config.json +8
-  └ packages/storyboard/widgets.config.json
-
-● Edit widgets.config.json +2 -1
-  └ packages/storyboard/widgets.config.json
-
-● Now wire StorySetWidget's handleAction for expand and render an ExpandedPane modal
-  with an iframe pointing to the isolate-set URL. Also add component-set to expandUtils
-  fo◉ Adding fullscreen to component-set (Esc to cancel · 6.6 KiB)  for la  for label  for label + se● Adding fullscreen to component-set (Esc to cancel · 6.6 KiB)  for label + secondary  for label + secondary UR  for label + secondary URL  for label + secondary URL.◉ Adding fullscreen to component-set (Esc to cancel · 6.6 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 6.6 KiB)○ Adding fullscreen to component-set (Esc to cancel · 6.6 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 6.6 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 6.6 KiB)● Adding fullscreen to component-set (Esc to cancel · 6.6 KiB)● Adding fullscreen to component-set (Esc to cancel · 6.8 KiB)● Adding fullscreen to component-set (Esc to cancel · 7.1 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.2 KiB)○ Adding fullscreen to component-set (Esc to cancel · 7.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.2 KiB)● Adding fullscreen to component-set (Esc to cancel · 7.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)  └ L480:610 (109 lines read)
-
-◐ I'm going to follow StoryWidget's approach by adding local expandMode state to 
-  StorySetWidget and rendering an ExpandedPane modal with an iframe pointing to the 
-  isolate-set URL, plus updating the widget config with expandable and expand action 
-  properties. For now I'll keep it simple and just make the widget fullscreen in modal 
-  form, skipping the split-screen implementation.
-
-● I'll mirror the StoryWidget fullscreen pattern. Three edits: config, StorySetWidget,
-  expandUtils.● Edit widgets.config.json +8
-  └ packages/storyboard/widgets.config.json● Edit widgets.config.json +2 -1● Now wire StorySetWidget's handleAction for expand and render an ExpandedPane modal
-  with an iframe pointing to the isolate-set URL. Also add component-set to expandUtils
-  for label + secondary URL.
-
-● Edit expandUtils.js +16
-  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js○ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)● Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)○ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)● Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)○ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)● Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)○ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)● Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)○ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)● Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)○ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)● Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)○ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)● Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)○ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)● Adding fullscreen to component-set (Esc to cancel · 7.4 KiB)● Adding fullscreen to component-set (Esc to cancel · 7.6 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.6 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.6 KiB)○ Adding fullscreen to component-set (Esc to cancel · 7.6 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.6 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.6 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.8 KiB)● Adding fullscreen to component-set (Esc to cancel · 7.8 KiB)● Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)  StorySetWidget and rendering an ExpandedPane modal with an iframe pointing to the 
-  isolate-set URL, plus updating the widget config with expandable and expand action 
-  properties. For now I'll keep it simple and just make the widget fullscreen in modal 
-  form, skipping the split-screen implementation.
-
-● I'll mirror the StoryWidget fullscreen pattern. Three edits: config, StorySetWidget,
-  expandUtils.● Edit widgets.config.json +8
-  └ packages/storyboard/widgets.config.json● Edit widgets.config.json +2 -1● Now wire StorySetWidget's handleAction for expand and render an ExpandedPane modal
-  with an iframe pointing to the isolate-set URL. Also add component-set to expandUtils
-  for label + secondary URL.
-
-● Edit expandUtils.js +16
-  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js● Edit expandUtils.js +3◉ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)● Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)● Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)● Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)● Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)● Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)● Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)● Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)● Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)● Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)● Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 7.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 8.4 KiB)  properties. For now I'll keep it simple and just make the widget fullscreen in modal 
-  form, skipping the split-screen implementation.
-
-● I'll mirror the StoryWidget fullscreen pattern. Three edits: config, StorySetWidget,
-  expandUtils.
-
-● Edit widgets.config.json +8
-  └ packages/storyboard/widgets.config.json
-
-● Edit widgets.config.json +2 -1
-  └ packages/storyboard/widgets.config.json
-
-● Now wire StorySetWidget's handleAction for expand and render an ExpandedPane modal
-  with an iframe pointing to the isolate-set URL. Also add component-set to expandUtils
-  for label + secondary URL.
-
-● Edit expandUtils.js +16
-  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
-
-● Edit expandUtils.js +3
-  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
-
-● Now w● Now wire u○ Adding fullscreen to component-set (Esc to cancel · 8.4 KiB)● Now wire up th● Now wire up the St● Now wire up the StoryS● Now wire up the StorySetWi◎ Adding fullscreen to component-set (Esc to cancel · 8.4 KiB)● Now wire up the StorySetWidget● Now wire up the StorySetWidget it● Now wire up the StorySetWidget itse● Now wire up the StorySetWidget itsel◉ Adding fullscreen to component-set (Esc to cancel · 8.4 KiB)● Now wire up the StorySetWidget itself● Now wire up the StorySetWidget itself:● Adding fullscreen to component-set (Esc to cancel · 8.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 8.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 8.4 KiB)○ Adding fullscreen to component-set (Esc to cancel · 8.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 8.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 8.4 KiB)● Adding fullscreen to component-set (Esc to cancel · 8.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 8.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 8.8 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 8.8 KiB)○ Adding fullscreen to component-set (Esc to cancel · 8.8 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 8.8 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 8.8 KiB)● Adding fullscreen to component-set (Esc to cancel · 8.8 KiB)● Adding fullscreen to component-set (Esc to cancel · 9.0 KiB)● Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)● I'll mirror the StoryWidget fullscreen pattern. Three edits: config, StorySetWidget,
-  expandUtils.● Edit widgets.config.json +8
-  └ packages/storyboard/widgets.config.json● Edit widgets.config.json +2 -1● Now wire StorySetWidget's handleAction for expand and render an ExpandedPane modal
-  with an iframe pointing to the isolate-set URL. Also add component-set to expandUtils
-  for label + secondary URL.
-
-● Edit expandUtils.js +16
-  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js● Edit expandUtils.js +3● Now wire up the StorySetWidget itself:
-
-● Edit StorySetWidget.jsx +2
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx○ Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)● Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)○ Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)● Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)○ Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)● Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)○ Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)● Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.1 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.2 KiB)○ Adding fullscreen to component-set (Esc to cancel · 9.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.2 KiB)● Adding fullscreen to component-set (Esc to cancel · 9.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.2 KiB)○ Adding fullscreen to component-set (Esc to cancel · 9.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.4 KiB)● Adding fullscreen to component-set (Esc to cancel · 9.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.6 KiB)○ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)● Edit widgets.config.json +8
-  └ packages/storyboard/widgets.config.json● Edit widgets.config.json +2 -1● Now wire StorySetWidget's handleAction for expand and render an ExpandedPane modal
-  with an iframe pointing to the isolate-set URL. Also add component-set to expandUtils
-  for label + secondary URL.
-
-● Edit expandUtils.js +16
-  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js● Edit expandUtils.js +3● Now wire up the StorySetWidget itself:
-
-● Edit StorySetWidget.jsx +2
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx● Edit StorySetWidget.jsx +1◉ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)● Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)○ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)● Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)○ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)● Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)○ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)● Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)● Edit widgets.config.json +8
-  └ packages/storyboard/widgets.config.json
-
-● Edit widgets.config.json +2 -1
-  └ packages/storyboard/widgets.config.json
-
-● Now wire StorySetWidget's handleAction for expand and render an ExpandedPane modal
-  with an iframe pointing to the isolate-set URL. Also add component-set to expandUtils
-  for label + secondary URL.
-
-● Edit expandUtils.js +16
-  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
-
-● Edit expandUtils.js +3
-  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
-
-● Now wire up the StorySetWidget itself:
-
-● Edit StorySetWidget.jsx +2
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Edit StorySetWidget.jsx +1
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]        @WidgetChrome.module.css
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]         @WidgetChrome.module.css
 ─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue
- terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-● Edit widgets.config.json +8
-  └ packages/storyboard/widgets.config.json
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+● inspect commit (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager show
+  │ --stat 5341a2ce4
+  └ 21 lines...
 
-● Edit widgets.config.json +2 -1
-  └ packages/storyboard/widgets.config.json
+◐ A parallel agent already committed my staged changes in commit 5341a2ce4, so I need to   push those updates now.
 
-● Now wire StorySetWidget's handleAction for expand and render an ExpandedPane modal
-  with an iframe pointing to the isolate-set URL. Also add component-set to expandUtils
-  for label + secondary URL.
+● My changes were swept up in a parallel agent's commit. Pushing now:
 
-● Edit expandUtils.js +16
-  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
+● push (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager push
+  │ origin 0.5.0 2>&1 | tail -3
+  └ 4 lines...
 
-● Edit expandUtils.js +3
-  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
+● signal done (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && source $(ls -t
+  │ .storyboard/terminals/*.env | head -1) && npx storyboard agent signal --status done
+  │ --message "Component-set is now fullscreen-able via expand action"
+  └ 4 lines...
 
-● Now wire up the StorySetWidget itself:
+● Done. Component-set widgets now have an Expand button in their toolbar (↗ icon) that
+  opens the grid in a fullscreen modal — same pattern as story/prototype widgets. HMR
+  will reload the canvas; you should see the new action appear on the widget chrome.
+  Pushed as 5341a2ce4.
 
-● Edit StorySetWidget.jsx +2
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Edit StorySetWidget.jsx +1
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]        @WidgetChrome.module.css
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]         @WidgetChrome.module.css
 ─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue
- terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-◉ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)○ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)● Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)○ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)● Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)○ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)● Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)● Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)○ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)● Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)○ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)● Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.7 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 9.8 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 10.4 KiB)○ Adding fullscreen to component-set (Esc to cancel · 10.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 10.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 10.4 KiB)● Adding fullscreen to component-set (Esc to cancel · 10.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 10.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 10.4 KiB)○ Adding fullscreen to component-set (Esc to cancel · 10.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 10.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 10.4 KiB)● Adding fullscreen to component-set (Esc to cancel · 10.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 10.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 10.4 KiB)○ Adding fullscreen to component-set (Esc to cancel · 10.4 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 10.4 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 10.4 KiB)● Adding fullscreen to component-set (Esc to cancel · 10.4 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.0 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.0 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.0 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.0 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.0 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.0 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.0 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.2 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Edit widgets.config.json +2 -1● Now wire StorySetWidget's handleAction for expand and render an ExpandedPane modal
-  with an iframe pointing to the isolate-set URL. Also add component-set to expandUtils
-  for label + secondary URL.
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+● inspect commit (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager show
+  │ --stat 5341a2ce4
+  └ 21 lines...
 
-● Edit expandUtils.js +16
-  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js● Edit expandUtils.js +3● Now wire up the StorySetWidget itself:
+◐ A parallel agent already committed my staged changes in commit 5341a2ce4, so I need to   push those updates now.
 
-● Edit StorySetWidget.jsx +2
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx● Edit StorySetWidget.jsx +1○ Edit StorySetWidget.jsx◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Edit StorySetWidget.jsx +3○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)● Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 11.5 KiB)
-● Now wire StorySetWidget's handleAction for expand and render an ExpandedPane modal
-  with an iframe pointing to the isolate-set URL. Also add component-set to expandUtils
-  for label + secondary URL.
+● My changes were swept up in a parallel agent's commit. Pushing now:
 
-● Edit expandUtils.js +16
-  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
+● push (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager push
+  │ origin 0.5.0 2>&1 | tail -3
+  └ 4 lines...
 
-● Edit expandUtils.js +3
-  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
+● signal done (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && source $(ls -t
+  │ .storyboard/terminals/*.env | head -1) && npx storyboard agent signal --status done
+  │ --message "Component-set is now fullscreen-able via expand action"
+  └ 4 lines...
 
-● Now wire up the StorySetWidget itself:● Edit StorySetWidget.jsx +2
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
+● Done. Component-set widgets now have an Expand button in their toolbar (↗ icon) that
+  opens the grid in a fullscreen modal — same pattern as story/prototype widgets. HMR
+  will reload the canvas; you should see the new action appear on the widget chrome.
+  Pushed as 5341a2ce4.
 
-● Edit StorySetWidget.jsx +1
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Edit StorySetWidget.jsx +3
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Now wrap● Now wrap the re◎ Adding fullscreen to component-set (Esc to cancel · 11.5 KiB)● Now wrap the return i● Now wrap the return in a f◉ Adding fullscreen to component-set (Esc to cancel · 11.5 KiB)● Now wrap the return in a fragment an◉ Adding fullscreen to component-set (Esc to cancel · 11.7 KiB)● Now wrap the return in a fragment and ad● Now wrap the return in a fragment and add th● Now wrap the return in a fragment and add the Ex● Adding fullscreen to component-set (Esc to cancel · 11.7 KiB)● Now wrap the return in a fragment and add the Expand● Now wrap the return in a fragment and add the ExpandedP● Now wrap the return in a fragment and add the ExpandedPan◎ Adding fullscreen to component-set (Esc to cancel · 11.9 KiB)● Now wrap the return in a fragment and add the ExpandedPane● Now wrap the return in a fragment and add the ExpandedPane:○ Adding fullscreen to component-set (Esc to cancel · 11.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 12.1 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 12.1 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 12.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 12.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 12.5 KiB)● Adding fullscreen to component-set (Esc to cancel · 12.5 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 12.5 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 12.7 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 12.7 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 12.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 12.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 12.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 13.1 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 13.1 KiB)● Adding fullscreen to component-set (Esc to cancel · 13.1 KiB)● Adding fullscreen to component-set (Esc to cancel · 13.3 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 13.5 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 14.0 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 14.0 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 14.2 KiB)○ Adding fullscreen to component-set (Esc to cancel · 14.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 14.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 14.2 KiB)● Adding fullscreen to component-set (Esc to cancel · 14.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 14.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 14.2 KiB)○ Adding fullscreen to component-set (Esc to cancel · 14.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 14.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 14.2 KiB)● Adding fullscreen to component-set (Esc to cancel · 14.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 14.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 14.2 KiB)○ Adding fullscreen to component-set (Esc to cancel · 14.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 14.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 14.2 KiB)● Adding fullscreen to component-set (Esc to cancel · 14.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 14.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 14.2 KiB)○ Adding fullscreen to component-set (Esc to cancel · 14.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 14.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 14.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 14.6 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 15.1 KiB)● Adding fullscreen to component-set (Esc to cancel · 15.1 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 15.8 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 15.8 KiB)○ Adding fullscreen to component-set (Esc to cancel · 15.8 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.0 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.0 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)  for label + secondary URL.
-
-● Edit expandUtils.js +16
-  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js● Edit expandUtils.js +3● Now wire up the StorySetWidget itself:
-
-● Edit StorySetWidget.jsx +2
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx● Edit StorySetWidget.jsx +1● Edit StorySetWidget.jsx +3● Now wrap the return in a fragment and add the ExpandedPane:
-
-● Edit StorySetWidget.jsx +40
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx◉ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.2 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.3 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.3 KiB)● Edit expandUtils.js +16
-  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
-
-● Edit expandUtils.js +3
-  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
-
-● Now wire up the StorySetWidget itself:● Edit StorySetWidget.jsx +2
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Edit StorySetWidget.jsx +1
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Edit StorySetWidget.jsx +3
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Now wrap the return in a fragment and add the ExpandedPane:● Edit StorySetWidget.jsx +40
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Let me ver● Let me verify the E○ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)
-● Now wire up the StorySetWidget itself:● Edit StorySetWidget.jsx +2
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx● Edit StorySetWidget.jsx +1
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Edit StorySetWidget.jsx +3
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Now wrap the return in a fragment and add the ExpandedPane:● Edit StorySetWidget.jsx +40● Let me verify the ExpandedPane API matches (initialPanes vs initialLayout):● verify ExpandedPane API (shell)
-  └ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -n
-    "initialPanes\|initialLayout\|^export\|function ExpandedPane"
-    packages/storyboard/src/internals/canvas/widgets/ExpandedPane.jsx | head -20◉ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.5 KiB) / commands · ? help · ctrl+q enqueue · ctrl+x → b background task◉ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB) / commands · ? help · ctrl+q enqueue◉ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)● Now wire up the StorySetWidget itself:
-
-● Edit StorySetWidget.jsx +2
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Edit StorySetWidget.jsx +1
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Edit StorySetWidget.jsx +3
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Now wrap the return in a fragment and add the ExpandedPane:
-
-● Edit StorySetWidget.jsx +40
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Let me verify the ExpandedPane API matches (initialPanes vs initialLayout):
-
-● verify ExpandedPane API (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -n
-  │ "initialPanes\|initialLayout\|^export\|function ExpandedPane"
-  │ packages/storyboard/src/internals/canvas/widgets/ExpandedPane.jsx | head -20
-  └ 9 lines...● Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)● Now wire up the StorySetWidget itself:
-
-● Edit StorySetWidget.jsx +2
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Edit StorySetWidget.jsx +1
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Edit StorySetWidget.jsx +3
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Now wrap the return in a fragment and add the ExpandedPane:
-
-● Edit StorySetWidget.jsx +40
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Let me verify the ExpandedPane API matches (initialPanes vs initialLayout):
-
-● verify ExpandedPane API (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -n
-  │ "initialPanes\|initialLayout\|^export\|function ExpandedPane"
-  │ packages/storyboard/src/internals/canvas/widgets/ExpandedPane.jsx | head -20
-  └ 9 lines...
-
-◎ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]        @WidgetChrome.module.css
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]         @WidgetChrome.module.css
 ─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue
- terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-● Now wire up the StorySetWidget itself:
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+● inspect commit (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager show
+  │ --stat 5341a2ce4
+  └ 21 lines...
 
-● Edit StorySetWidget.jsx +2
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
+◐ A parallel agent already committed my staged changes in commit 5341a2ce4, so I need to   push those updates now.
 
-● Edit StorySetWidget.jsx +1
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
+● My changes were swept up in a parallel agent's commit. Pushing now:
 
-● Edit StorySetWidget.jsx +3
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
+● push (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git --no-pager push
+  │ origin 0.5.0 2>&1 | tail -3
+  └ 4 lines...
 
-● Now wrap the return in a fragment and add the ExpandedPane:
+● signal done (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && source $(ls -t
+  │ .storyboard/terminals/*.env | head -1) && npx storyboard agent signal --status done
+  │ --message "Component-set is now fullscreen-able via expand action"
+  └ 4 lines...
 
-● Edit StorySetWidget.jsx +40
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
+● Done. Component-set widgets now have an Expand button in their toolbar (↗ icon) that
+  opens the grid in a fullscreen modal — same pattern as story/prototype widgets. HMR
+  will reload the canvas; you should see the new action appear on the widget chrome.
+  Pushed as 5341a2ce4.
 
-● Let me verify the ExpandedPane API matches (initialPanes vs initialLayout):
-
-● verify ExpandedPane API (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -n
-  │ "initialPanes\|initialLayout\|^export\|function ExpandedPane"
-  │ packages/storyboard/src/internals/canvas/widgets/ExpandedPane.jsx | head -20
-  └ 9 lines...
-
-◎ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]        @WidgetChrome.module.css
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]         @WidgetChrome.module.css
 ─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue
- terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-◉ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.5 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.7 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.7 KiB)● Edit StorySetWidget.jsx +2
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Edit StorySetWidget.jsx +1
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Edit StorySetWidget.jsx +3
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Now wrap the return in a fragment and add the ExpandedPane:● Edit StorySetWidget.jsx +40
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Let me verify the ExpandedPane API matches (initialPanes vs initialLayout):● verify ExpandedPane API (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -n
-  │ "initialPanes\|initialLayout\|^export\|function ExpandedPane"
-  │ packages/storyboard/src/internals/canvas/widgets/ExpandedPane.jsx | head -20
-  └ 9 lines...
-
-● Good — `i● Good — `initialP● Good — initialPanes w◉ Adding fullscreen to component-set (Esc to cancel · 16.7 KiB)● Good — initialPanes works.● Good — initialPanes works. Let me ru◎ Adding fullscreen to component-set (Esc to cancel · 16.7 KiB)● Good — initialPanes works. Let me run th● Good — initialPanes works. Let me run the build/● Good — initialPanes works. Let me run the build/lint○ Adding fullscreen to component-set (Esc to cancel · 16.7 KiB)● Good — initialPanes works. Let me run the build/lint to● Good — initialPanes works. Let me run the build/lint to ver● Good — initialPanes works. Let me run the build/lint to verif● Good — initialPanes works. Let me run the build/lint to verify◎ Adding fullscreen to component-set (Esc to cancel · 16.7 KiB)● Good — initialPanes works. Let me run the build/lint to verify:◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)
-● Edit StorySetWidget.jsx +3
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-
-● Now wrap the return in a fragment and add the ExpandedPane:● Edit StorySetWidget.jsx +40● Let me verify the ExpandedPane API matches (initialPanes vs initialLayout):● verify ExpandedPane API (shell)
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && grep -n
-  │ "initialPanes\|initialLayout\|^export\|function ExpandedPane"
-  │ packages/storyboard/src/internals/canvas/widgets/ExpandedPane.jsx | head -20
-  └ 9 lines...
-
-● Good — initialPanes works. Let me run the build/lint to verify:
-
-● lint changes (shell)
-  └ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && npx eslint
-    packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
-    packages/storyboard/src/internals/canvas/widgets/expandUtils.js 2>&1 | tail -30● Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB) / commands · ? help · ctrl+q enqueue · ctrl+x → b background task◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)● Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)○ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◎ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)◉ Adding fullscreen to component-set (Esc to cancel · 16.9 KiB)
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+❯ R  @ files · # issues         terminal-agent · Claude Opus 4.7 (1M context)(Internal only)❯ Re ❯ Rem ❯ Remo ❯ Remov ❯ Remove ❯ Remove  ❯ Remove t ❯ Remove th ❯ Remove the ❯ Remove the  ❯ Remove the c ❯ Remove the ct ❯ Remove the cty ❯ Remove the ct 

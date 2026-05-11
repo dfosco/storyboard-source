@@ -62,12 +62,13 @@ export default function AgentsReadyTrigger({ config = {}, tabIndex }) {
       onClick={handleClick}
       disabled={idle}
     >
-      <Icon name={config.icon || 'primer/sparkle-fill'} size={14} {...(config.meta || {})} />
+      {workingCount > 0
+        ? <span className="agents-ready-btn-icon-spinner" aria-hidden="true" />
+        : <Icon name={config.icon || 'agents'} size={14} {...(config.meta || {})} />}
       <span className="agents-ready-btn-label">{label}</span>
       <span className="agents-ready-btn-count" aria-hidden="true">{doneCount}</span>
       {workingCount > 0 && (
         <span className="agents-ready-btn-working" aria-hidden="true" title={`${workingCount} working`}>
-          <span className="agents-ready-btn-spinner" />
           <span className="agents-ready-btn-working-count">{workingCount}</span>
         </span>
       )}
