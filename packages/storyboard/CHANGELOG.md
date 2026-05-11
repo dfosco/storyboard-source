@@ -1,5 +1,11 @@
 # @dfosco/storyboard
 
+## 0.5.0-beta.31
+
+### Patch Changes
+
+-   Fix workspace list staying stale after canvas removal — viewfinder now refreshes when the canvas index changes via HMR.
+
 ## 0.5.0-alpha.30
 
 ### Patch Changes
