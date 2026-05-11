@@ -105,28 +105,61 @@ function ComponentSetGrid({ exports, layout, initialSelected }) {
     }
   }, [selected])
 
-  // Measure cells and post grid size to parent — first mount only, so newly
-  // dropped widgets get a sensible initial size. After that the widget owns
-  // its dimensions (user can resize freely; cells just divide the available
-  // space).
+  // Measure each cell's intrinsic content size, take the max, set CSS vars
+  // so the grid (in any layout) uses that as its minimum cell size and grows
+  // with `1fr` to fill any extra space. Then post the resulting natural size
+  // to the parent so newly dropped widgets get a sensible initial size.
   useLayoutEffect(() => {
     const grid = gridRef.current
     if (!grid || !exports) return
-    if (window.parent === window) return
 
     let posted = false
-    function postInitial() {
+    function measureAndPost() {
       if (posted) return
+      // Find each cell's content element and measure its intrinsic size by
+      // temporarily removing layout constraints.
+      const cells = grid.querySelectorAll('[data-cell-content]')
+      let maxW = 0
+      let maxH = 0
+      cells.forEach((cellContent) => {
+        // Save & clear constraints
+        const prev = cellContent.style.cssText
+        cellContent.style.cssText = `${prev};width:auto;height:auto;max-width:none;max-height:none;overflow:visible;flex:none;`
+        const w = cellContent.scrollWidth
+        const h = cellContent.scrollHeight
+        cellContent.style.cssText = prev
+        if (w > maxW) maxW = w
+        if (h > maxH) maxH = h
+      })
+
+      // Add cell label height (~28px) so each cell has room for label + content
+      const labelH = 28
+      const cellMinW = Math.max(160, Math.ceil(maxW))
+      const cellMinH = Math.max(120, Math.ceil(maxH) + labelH)
+
+      grid.style.setProperty('--cell-min-w', `${cellMinW}px`)
+      grid.style.setProperty('--cell-min-h', `${cellMinH}px`)
+
+      if (window.parent === window) return
       posted = true
+
+      // Compute a sensible initial widget size: lay out cells in a roughly
+      // square grid using the per-cell minimums.
+      const count = cells.length || 1
+      const cols = Math.max(1, Math.ceil(Math.sqrt(count)))
+      const rows = Math.max(1, Math.ceil(count / cols))
+      const initialWidth = cellMinW * cols
+      const initialHeight = cellMinH * rows
+
       window.parent.postMessage({
         type: 'storyboard:component-set:initial-size',
-        width: grid.scrollWidth,
-        height: grid.scrollHeight,
+        width: initialWidth,
+        height: initialHeight,
       }, '*')
     }
 
-    requestAnimationFrame(postInitial)
-    document.fonts.ready.then(() => requestAnimationFrame(postInitial))
+    requestAnimationFrame(measureAndPost)
+    document.fonts.ready.then(() => requestAnimationFrame(measureAndPost))
   }, [exports, layout])
 
   // Signal snapshot-ready
