@@ -2524,7 +2524,12 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
       handleWidgetUpdateRef.current?.(widgetId, updates)
     }
     import.meta.hot.on('storyboard:agent-status', handler)
-    return () => import.meta.hot.off('storyboard:agent-status', handler)
+    return () => {
+      // hot.off was added in Vite 5; older versions / test mocks may not have it
+      if (typeof import.meta.hot.off === 'function') {
+        import.meta.hot.off('storyboard:agent-status', handler)
+      }
+    }
   }, [])
 
   // Pan/zoom the viewport to center a specific widget without selecting it.
