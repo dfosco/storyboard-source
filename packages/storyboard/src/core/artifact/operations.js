@@ -42,8 +42,20 @@ function flowJson(globals = []) {
 }
 
 function canvasJsonl(settings = {}) {
-  const header = { type: 'settings', props: { grid: settings.grid !== false, ...settings } }
-  return JSON.stringify(header) + '\n'
+  const { grid, gridSize, colorMode, title, description, author, ...rest } = settings
+  const event = {
+    event: 'canvas_created',
+    timestamp: new Date().toISOString(),
+    title: title || '',
+    grid: grid !== false,
+    gridSize: gridSize ?? 24,
+    colorMode: colorMode ?? 'auto',
+    widgets: [],
+    ...rest,
+  }
+  if (description) event.description = description
+  if (author) event.author = author
+  return JSON.stringify(event) + '\n'
 }
 
 function canvasJsx(name) {
@@ -150,7 +162,11 @@ function createCanvas(values, root) {
   const filePath = path.join(targetDir, fileName)
   const relPath = path.relative(root, filePath)
 
-  fs.writeFileSync(filePath, canvasJsonl({ grid: values.grid }), 'utf-8')
+  fs.writeFileSync(filePath, canvasJsonl({
+    grid: values.grid,
+    title: values.title || values.name,
+    description: values.description,
+  }), 'utf-8')
   files.push(relPath)
 
   if (values.jsx) {
