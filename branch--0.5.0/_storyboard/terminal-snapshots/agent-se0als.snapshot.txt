@@ -1,61 +1,84 @@
 SESSION: agent-se0als | opal-magpie
 CANVAS:  storyboarding/form-schema
 BRANCH:  0.5.0
-TIME:    2026-05-05T09:09:17.988Z
+TIME:    2026-05-11T08:56:40.932Z
 
 ================================================================================
 SCREEN
 ================================================================================
 
-  │ export STORYBOARD_SERVER_URL="http://localhost:1235"
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && npx storyboard canvas
-  │ batch --canvas "storyboarding/form-schema" --ops '[…
-  └ 19 lines...
+storyboard terminal-welcome --branch "0.5.0" --canvas "storyboarding/form-schema" --name
+"opal-magpie" --startup "copilot --agent terminal-agent"
 
-● Now signal done and save output for the leader:
+0.5.0 on  0.5.0 [$] via  v22.22.0 
+❯ storyboard terminal-welcome --branch "0.5.0" --canvas "storyboarding/form-schema" --nam
+e "opal-magpie" --startup "copilot --agent terminal-agent"
+zsh: command not found: storyboard
 
-● Signal done (shell)
-  │ export STORYBOARD_CANVAS_ID="storyboarding/form-schema"
-  │ export STORYBOARD_WIDGET_ID="agent-se0als"
-  │ export STORYBOARD_SERVER_URL="http://localhost:1235"
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && npx storyboard
-  │ terminal output --summary "Built storyboard artifact CLI command" --content …
-  └ 10 lines...
-
-● Done. Created packages/storyboard/src/core/cli/artifact.js with 5 subcommands:
-
-   - create — POST /_storyboard/artifact/
-   - edit — PATCH /_storyboard/artifact/
-   - delete — DELETE /_storyboard/artifact/ (with --force or interactive confirm)
-   - list — GET /_storyboard/artifact/list
-   - schema — GET /_storyboard/artifact/schema
-
-  Registered in the CLI router (index.js) and added to the help screen. All flags map
-  1:1 to schema fields, supports interactive and non-interactive modes.
-
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%] @agent-3z8j0p.snapshot.txt:1-72
-─────────────────────────────────────────────────────────────────────────────────────────
-❯  
-─────────────────────────────────────────────────────────────────────────────────────────
- / commands · ? help                                    terminal-agent · Claude Opus 4.6
+0.5.0 on  0.5.0 [$!⇡] via  v22.22.0 
+❯
 
 ================================================================================
 SCROLLBACK (last 60s)
 ================================================================================
 
- @agent-3z8j0p.snapshot.txt:1-199 @agent-3z8j0p.snapshot.txt:1-184  │ export STORYBOARD_SERVER_URL="http://localhost:1235"
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && npx storyboard canvas
-  │ batch --canvas "storyboarding/form-schema" --ops '[…
-  └ 19 lines...
+[lost tty]
+[?996n[>c[>q" --name "opal-magpie" --startup "copilot --agent terminal-agent"
 
-● Now signal done and save output for the leader:
+0.5.0 on  0.5.0 [$] via  v22.22.0 
+❯ storyboard terminal-welcome --branch "0.5.0" --canvas "storyboarding/form-schema" --nam
+e "opal-magpie" --startup "copilot --agent terminal-agent"
+zsh: command not found: storyboard
 
-● Signal done (shell)
-  │ export STORYBOARD_CANVAS_ID="storyboarding/form-schema"
-  │ export STORYBOARD_WIDGET_ID="agent-se0als"
-  │ export STORYBOARD_SERVER_URL="http://localhost:1235"
-  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && npx storyboard
-  │ terminal output --summary "Built storyboard artifact CLI command" --content …
-  └ 10 lines...
+0.5.0 on  0.5.0 [$!⇡] via  v22.22.0 
+❯ 
 
-● Done. Created packages/storyboard/src/core/cli/artifact.js with 5 subcommands:
+
+
+
+
+
+
+
+
+
+
+
+
+storyboard terminal-welcome --branch "0.5.0" --canvas "storyboarding/form-schema" --name "opal-magpie" --startup "copilot --agent terminal-agent"
+
+0.5.0 on  0.5.0 [$] via  v22.22.0 
+❯ storyboard terminal-welcome --branch "0.5.0" --canvas "storyboarding/form-schema" --name "opal-magpie" --startup "copilot --agent terminal-agent"
+zsh: command not found: storyboard
+
+0.5.0 on  0.5.0 [$!⇡] via  v22.22.0 
+❯ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+storyboard terminal-welcome --branch "0.5.0" --canvas "storyboarding/form-schema" --name "opal-magpie" --startup "copilot --agent terminal-agent"
+
+0.5.0 on  0.5.0 [$] via  v22.22.0 
+❯ storyboard terminal-welcome --branch "0.5.0" --canvas "storyboarding/form-schema" --name "opal-magpie" --startup "copilot --agent terminal-agent"
+zsh: command not found: storyboard
+
+0.5.0 on  0.5.0 [$!⇡] via  v22.22.0 
+❯ 

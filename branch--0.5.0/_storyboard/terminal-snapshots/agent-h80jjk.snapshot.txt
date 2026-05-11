@@ -1,63 +1,120 @@
 SESSION: agent-h80jjk | storm-wren
 CANVAS:  storyboarding/form-schema
 BRANCH:  0.5.0
-TIME:    2026-05-05T09:09:18.014Z
+TIME:    2026-05-11T08:56:40.812Z
 
 ================================================================================
 SCREEN
 ================================================================================
 
-  │ export STORYBOARD_WIDGET_ID="agent-h80jjk"
-  │ export STORYBOARD_SERVER_URL="http://localhost:1235"
-  │
-  │ npx storyboard canvas update markdown-umdbac --canvas ${STORYBOARD_CANVAS_ID} …
-  └ 66 lines...
 
-● Respond to hub and save output (shell)
-  │ export STORYBOARD_WIDGET_ID="agent-h80jjk"
-  │ npx storyboard hub respond --hub hub_4b0762c485 --sender ${STORYBOARD_WIDGET_ID}
-  │ --body "Phase 1 DONE. Built packages/storyboard/src/core/artifact/ with:
-  │
-  │ - 7 JSON Schema files (prototype, canvas, component, flow, object, record, page)…
-  └ 15 lines...
+0.5.0 on  0.5.0 [$] via  v22.22.0 
+❯ storyboard terminal-welcome --branch "0.5.0" --canvas "storyboarding/form-schema" --nam
+e "storm-wren" --startup "copilot --agent terminal-agent"
+zsh: command not found: storyboard
 
-● Done. Built the full packages/storyboard/src/core/artifact/ module:
-
-   - 7 JSON Schema files for all artifact types
-   - validate.js — 3-stage pipeline (normalize → schema → semantic)
-   - operations.js — FS create/edit/delete/list for all types
-   - routes.js — REST handler at /_storyboard/artifact/
-   - index.js — barrel export
-   - Registered in server-plugin.js
-
-  All validation tests passing. Canvas widget updated. Awaiting Leader's next
-  delegation.
-
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%] @agent-3z8j0p.snapshot.txt:1-72
-─────────────────────────────────────────────────────────────────────────────────────────
-❯  
-─────────────────────────────────────────────────────────────────────────────────────────
- / commands · ? help                                    terminal-agent · Claude Opus 4.6
+0.5.0 on  0.5.0 [$] via  v22.22.0 
+❯
 
 ================================================================================
 SCROLLBACK (last 60s)
 ================================================================================
 
- @agent-3z8j0p.snapshot.txt:1-199 @agent-3z8j0p.snapshot.txt:1-184  │ export STORYBOARD_WIDGET_ID="agent-h80jjk"
-  │ export STORYBOARD_SERVER_URL="http://localhost:1235"
-  │
-  │ npx storyboard canvas update markdown-umdbac --canvas ${STORYBOARD_CANVAS_ID} …
-  └ 66 lines...
+[lost tty]
+[?996n[>c[>q
+0.5.0 on  0.5.0 [$] via  v22.22.0 
+❯ storyboard terminal-welcome --branch "0.5.0" --canvas "storyboarding/form-schema" --name "storm-wren" --startup "copilot --agent terminal-agent"
+zsh: command not found: storyboard
 
-● Respond to hub and save output (shell)
-  │ export STORYBOARD_WIDGET_ID="agent-h80jjk"
-  │ npx storyboard hub respond --hub hub_4b0762c485 --sender ${STORYBOARD_WIDGET_ID}
-  │ --body "Phase 1 DONE. Built packages/storyboard/src/core/artifact/ with:
-  │
-  │ - 7 JSON Schema files (prototype, canvas, component, flow, object, record, page)…
-  └ 15 lines...
+0.5.0 on  0.5.0 [$] via  v22.22.0 
+❯ 
 
-● Done. Built the full packages/storyboard/src/core/artifact/ module:
 
-   - 7 JSON Schema files for all artifact types
-   - validate.js — 3-stage pi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+0.5.0 on  0.5.0 [$] via  v22.22.0 
+❯ storyboard terminal-welcome --branch "0.5.0" --canvas "storyboarding/form-schema" --name "storm-wren" --startup "copilot --agent terminal-agent"
+zsh: command not found: storyboard
+
+0.5.0 on  0.5.0 [$] via  v22.22.0 
+❯ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+0.5.0 on  0.5.0 [$] via  v22.22.0 
+❯ storyboard terminal-welcome --branch "0.5.0" --canvas "storyboarding/form-schema" --name "storm-wren" --startup "copilot --agent terminal-agent"
+zsh: command not found: storyboard
+
+0.5.0 on  0.5.0 [$] via  v22.22.0 
+❯ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+0.5.0 on  0.5.0 [$] via  v22.22.0 
+❯ storyboard terminal-welcome --branch "0.5.0" --canvas "storyboarding/form-schema" --name "storm-wren" --startup "copilot --agent terminal-agent"
+zsh: command not found: storyboard
+
+0.5.0 on  0.5.0 [$] via  v22.22.0 
+❯ 
