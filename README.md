@@ -39,19 +39,22 @@ That's it! You can now start creating and pushing prototypes.
 
 ### Local setup
 
-Clone your fork of Storyboard, then:
+If you're not using the Launcher app, you can setup via terminal.
+
+Clone [storyboard-example](https://github.com/dfosco/storyboard-example), then:
 
 ```bash
-npm run setup
+npm install
+npx storyboard setup
 ```
 
-This will install dependencies, set up the [Caddy](https://caddyserver.com/) reverse proxy, and check for the GitHub CLI. After setup, start the dev server:
+This will install all dependencies and get everything ready. After setup, start the server:
 
 ```bash
-npx storyboard dev
+npx storyboard run
 ```
 
-Your storyboard instance will be available at `http://storyboard.localhost/storyboard/`.
+Your storyboard instance will be available at the link provided, by default `http://storyboard.localhost`.
 
 When working in a [git worktree](https://git-scm.com/docs/git-worktree), each worktree gets its own URL:
 
