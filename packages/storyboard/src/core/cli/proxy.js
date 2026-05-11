@@ -78,6 +78,37 @@ async function main() {
     return
   }
 
+  if (subcommand === 'restart') {
+    p.intro('storyboard proxy restart')
+    // Stop the daemon (Caddy keeps running; only the runtime is restarted).
+    if (existsSync(PIDFILE)) {
+      try {
+        const pid = Number(readFileSync(PIDFILE, 'utf8').trim())
+        if (Number.isFinite(pid) && pid > 0) {
+          try { process.kill(pid, 'SIGTERM') } catch { /* dead */ }
+        }
+      } catch { /* */ }
+      p.log.success('Stopped runtime daemon.')
+    } else {
+      p.log.info('Runtime daemon was not running.')
+    }
+    // Spawn a fresh daemon by hitting the runtime client (auto-spawns on first request).
+    const { RuntimeClient } = await import('../../../dist/runtime/client/index.js')
+    const runtime = new RuntimeClient()
+    const s = p.spinner()
+    s.start('Starting fresh runtime…')
+    try {
+      const health = await runtime.health()
+      s.stop(`Runtime ready (v${health.version}, port ${health.port})`)
+    } catch (err) {
+      s.stop('Failed')
+      p.log.error(err.message || String(err))
+      process.exit(1)
+    }
+    p.outro('')
+    return
+  }
+
   if (subcommand === 'state') {
     p.intro('storyboard proxy state')
     const { RuntimeClient } = await import('../../../dist/runtime/client/index.js')

@@ -137,6 +137,7 @@ function helpScreen(version) {
     cmd('publish', 'Push local commits to remote (pulls first)'),
     cmd('proxy start', 'Start or reload Caddy proxy'),
     cmd('proxy close', 'Stop Caddy proxy'),
+    cmd('proxy restart', 'Restart the runtime daemon (use after upgrading)'),
     '',
     `  ${bold(cyan('Updates'))}`,
     cmd('update', 'Update storyboard packages to latest'),
