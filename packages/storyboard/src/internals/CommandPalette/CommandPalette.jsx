@@ -1127,6 +1127,20 @@ export default function StoryboardCommandPalette({ basePath }) {
     }
   }, [basePath])
 
+  // Listen for requests to open the widget artifact picker dialog. Items in
+  // the create-widget palette section dispatch this when the chosen widget
+  // type needs an artifact selected up front (prototype, story, story-set).
+  useEffect(() => {
+    function handleOpenArtifactDialog(e) {
+      const t = e?.detail?.type
+      if (!t) return
+      setOpen(false)
+      setWidgetArtifactType(t)
+    }
+    document.addEventListener('storyboard:open-widget-artifact-dialog', handleOpenArtifactDialog)
+    return () => document.removeEventListener('storyboard:open-widget-artifact-dialog', handleOpenArtifactDialog)
+  }, [])
+
   // Rebuild palette items when a toggle is clicked (refreshKey changes)
   useEffect(() => {
     if (refreshKey === 0) return

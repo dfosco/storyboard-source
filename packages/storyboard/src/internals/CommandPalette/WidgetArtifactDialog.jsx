@@ -34,6 +34,47 @@ function dispatchAddWidget(type, props) {
   }))
 }
 
+function buildPrototypeGroups() {
+  let idx
+  try { idx = buildPrototypeIndex() }
+  catch { return [] }
+  const out = []
+  const allProtos = []
+  for (const folder of (idx.sorted?.title?.folders || idx.folders || [])) {
+    for (const proto of folder.prototypes || []) {
+      if (!proto.isExternal) allProtos.push(proto)
+    }
+  }
+  for (const proto of (idx.sorted?.title?.prototypes || idx.prototypes || [])) {
+    if (!proto.isExternal) allProtos.push(proto)
+  }
+  for (const proto of allProtos) {
+    if (proto.hideFlows && proto.flows.length === 1) {
+      out.push({ label: proto.name, items: [{ name: proto.name, route: proto.flows[0].route }] })
+    } else if (proto.flows.length > 0) {
+      out.push({ label: proto.name, items: proto.flows.map((f) => ({ name: f.meta?.title || formatName(f.name), route: f.route })) })
+    } else {
+      out.push({ label: proto.name, items: [{ name: proto.name, route: `/${proto.dirName}` }] })
+    }
+  }
+  const gf = idx.globalFlows || []
+  if (gf.length > 0) {
+    out.push({ label: 'Other flows', items: gf.map((f) => ({ name: f.meta?.title || formatName(f.name), route: f.route })) })
+  }
+  return out
+}
+
+function buildStoryList() {
+  let names = []
+  try { names = listStories() } catch { return [] }
+  return names
+    .map((name) => {
+      const data = getStoryData(name) || {}
+      return { name, route: data._route || '', module: data._storyModule || '' }
+    })
+    .sort((a, b) => a.name.localeCompare(b.name))
+}
+
 function PrototypePicker({ onPick, onClose }) {
   const [filter, setFilter] = useState('')
   const [customUrl, setCustomUrl] = useState('')
@@ -43,35 +84,7 @@ function PrototypePicker({ onPick, onClose }) {
     filterRef.current?.focus()
   }, [])
 
-  const groups = useMemo(() => {
-    let idx
-    try { idx = buildPrototypeIndex() }
-    catch { return [] }
-    const out = []
-    const allProtos = []
-    for (const folder of (idx.sorted?.title?.folders || idx.folders || [])) {
-      for (const proto of folder.prototypes || []) {
-        if (!proto.isExternal) allProtos.push(proto)
-      }
-    }
-    for (const proto of (idx.sorted?.title?.prototypes || idx.prototypes || [])) {
-      if (!proto.isExternal) allProtos.push(proto)
-    }
-    for (const proto of allProtos) {
-      if (proto.hideFlows && proto.flows.length === 1) {
-        out.push({ label: proto.name, items: [{ name: proto.name, route: proto.flows[0].route }] })
-      } else if (proto.flows.length > 0) {
-        out.push({ label: proto.name, items: proto.flows.map((f) => ({ name: f.meta?.title || formatName(f.name), route: f.route })) })
-      } else {
-        out.push({ label: proto.name, items: [{ name: proto.name, route: `/${proto.dirName}` }] })
-      }
-    }
-    const gf = idx.globalFlows || []
-    if (gf.length > 0) {
-      out.push({ label: 'Other flows', items: gf.map((f) => ({ name: f.meta?.title || formatName(f.name), route: f.route })) })
-    }
-    return out
-  }, [])
+  const groups = useMemo(() => buildPrototypeGroups(), [])
 
   const filteredGroups = useMemo(() => {
     if (!filter) return groups
@@ -151,16 +164,7 @@ function StoryPicker({ type, onPick, onClose }) {
 
   useEffect(() => { filterRef.current?.focus() }, [])
 
-  const stories = useMemo(() => {
-    let names = []
-    try { names = listStories() } catch { return [] }
-    return names
-      .map((name) => {
-        const data = getStoryData(name) || {}
-        return { name, route: data._route || '', module: data._storyModule || '' }
-      })
-      .sort((a, b) => a.name.localeCompare(b.name))
-  }, [])
+  const stories = useMemo(() => buildStoryList(), [])
 
   const filtered = useMemo(() => {
     if (!filter) return stories
