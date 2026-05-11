@@ -88,8 +88,9 @@ async function request<S extends z.ZodTypeAny>(
  */
 async function spawnDaemon(baseUrl: string): Promise<void> {
   const here = dirname(fileURLToPath(import.meta.url))
-  // bin/runtime.js lives next to dist/, two levels up from dist/client/index.js
-  const binPath = resolve(here, '..', '..', 'bin', 'runtime.js')
+  // bin/storyboard-runtime.js lives next to dist/, two levels up from
+  // dist/runtime/client/index.js (the published path).
+  const binPath = resolve(here, '..', '..', '..', 'bin', 'storyboard-runtime.js')
   const child = spawn(process.execPath, [binPath], {
     detached: true,
     stdio: 'ignore',
@@ -106,7 +107,10 @@ async function spawnDaemon(baseUrl: string): Promise<void> {
     } catch { /* not up yet */ }
     await new Promise(r => setTimeout(r, 100))
   }
-  throw new Error('Storyboard Runtime did not become ready within 5s')
+  throw new Error(
+    `Storyboard Runtime did not become ready within 5s ` +
+    `(tried to spawn ${binPath})`,
+  )
 }
 
 export class RuntimeClient {

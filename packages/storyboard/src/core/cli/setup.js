@@ -13,7 +13,7 @@ import * as p from '@clack/prompts'
 import { existsSync, writeFileSync, readFileSync, mkdirSync, readdirSync, symlinkSync } from 'fs'
 import path from 'path'
 import { execSync } from 'child_process'
-import { generateCaddyfile, isCaddyInstalled, isCaddyRunning, startCaddy, reloadCaddy } from './proxy.js'
+import { isCaddyInstalled, isCaddyRunning, startCaddy } from './proxy.js'
 import { gettingStartedLines, dim, magenta, bold, yellow, green } from './intro.js'
 import { parseFlags } from './flags.js'
 
@@ -357,18 +357,17 @@ if (isInstalled('copilot')) {
   } catch { /* ignore */ }
 }
 
-// 10. Proxy
+// 10. Proxy — runtime daemon owns Caddy's route table; here we only need
+// to ensure an empty Caddy instance is reachable. Routes are pushed
+// per-devserver via the runtime's admin API on dev start.
 if (isCaddyInstalled()) {
   const proxySpin = p.spinner()
-  const caddyfilePath = generateCaddyfile()
   if (isCaddyRunning()) {
-    proxySpin.start('Reloading proxy...')
-    reloadCaddy(caddyfilePath)
-    proxySpin.stop('Proxy reloaded')
+    p.log.success('Proxy already running')
   } else {
     proxySpin.start('Starting proxy...')
-    startCaddy(caddyfilePath)
-    proxySpin.stop('Proxy started')
+    if (startCaddy()) proxySpin.stop('Proxy started')
+    else proxySpin.stop('Proxy failed to start (continuing)')
   }
 }
 
