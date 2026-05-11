@@ -112,9 +112,9 @@
 /* Agent done — paint outline green whether or not the widget is selected.
    Targets the inner widget slot via the chromeContainer's data attribute. */
 .chromeContainer[data-agent-status="done"] .widgetSlot {
-  outline: 4px solid var(--bgColor-success-emphasis, #1a7f37);
-  outline-offset: 2px;
-  border-radius: 4px;
+  outline: 8px solid var(--bgColor-success-emphasis, #1a7f37);
+  outline-offset: 4px;
+  border-radius: var(--base-size-12, 12px);
 }
 .chromeContainer[data-agent-status="done"] .widgetSlotSelected {
   outline-color: var(--bgColor-success-emphasis, #1a7f37);

@@ -15,6 +15,8 @@ import { getStoryData } from '../../../core/index.js'
 import Icon from '../../Icon.jsx'
 import WidgetWrapper from './WidgetWrapper.jsx'
 import ResizeHandle from './ResizeHandle.jsx'
+import ExpandedPane from './ExpandedPane.jsx'
+import { buildSecondaryIframeUrl, getSplitPaneLabel } from './expandUtils.js'
 import { useIframeDevLogs } from './iframeDevLogs.js'
 import styles from './StorySetWidget.module.css'
 import overlayStyles from './embedOverlay.module.css'
@@ -47,6 +49,7 @@ export default forwardRef(function StorySetWidget({ id: widgetId, props, onUpdat
   const iframeRef = useRef(null)
   const [interactive, setInteractive] = useState(false)
   const [storyIndexKey, setStoryIndexKey] = useState(0)
+  const [expanded, setExpanded] = useState(false)
 
   // Re-resolve when story index is live-patched
   useEffect(() => {
@@ -106,6 +109,9 @@ export default forwardRef(function StorySetWidget({ id: widgetId, props, onUpdat
         const next = order[(idx + 1) % order.length] || 'auto'
         onUpdate?.({ layout: next })
         return true
+      } else if (actionId === 'expand' || actionId === 'expand-single') {
+        setExpanded(true)
+        return true
       } else if (actionId === 'open-external') {
         const story = getStoryData(storyId)
         if (story?._route) {
@@ -163,6 +169,7 @@ export default forwardRef(function StorySetWidget({ id: widgetId, props, onUpdat
   if (typeof height === 'number') sizeStyle.height = `${height}px`
 
   return (
+    <>
     <WidgetWrapper>
       <div ref={containerRef} className={styles.container} style={sizeStyle}>
         <div className={styles.header}>
@@ -208,5 +215,44 @@ export default forwardRef(function StorySetWidget({ id: widgetId, props, onUpdat
       </div>
       {resizable && <ResizeHandle targetRef={containerRef} width={width} height={height} onResize={handleResize} />}
     </WidgetWrapper>
+    {expanded && (
+      <ComponentSetExpandPane
+        widgetId={widgetId}
+        storyId={storyId}
+        layout={layout}
+        selected={selected}
+        onClose={() => setExpanded(false)}
+      />
+    )}
+    </>
   )
 })
+
+function ComponentSetExpandPane({ widgetId, storyId, layout, selected, onClose }) {
+  const url = useMemo(
+    () => buildSecondaryIframeUrl({ type: 'component-set', props: { storyId, layout, selected } }),
+    [storyId, layout, selected],
+  )
+  const label = useMemo(
+    () => getSplitPaneLabel({ type: 'component-set', props: { storyId } }),
+    [storyId],
+  )
+
+  const pane = useMemo(() => ({
+    id: widgetId,
+    label,
+    widgetType: 'component-set',
+    kind: 'react',
+    render: () => url
+      ? <iframe src={url} style={{ border: 'none', width: '100%', height: '100%', display: 'block' }} title={storyId} onLoad={(e) => e.target.blur()} />
+      : <div style={{ padding: 32, color: 'var(--fgColor-muted)' }}>Story &quot;{storyId}&quot; not found</div>,
+  }), [widgetId, label, url, storyId])
+
+  return (
+    <ExpandedPane
+      initialPanes={[pane]}
+      variant="modal"
+      onClose={onClose}
+    />
+  )
+}

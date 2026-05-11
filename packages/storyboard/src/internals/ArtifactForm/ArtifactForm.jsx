@@ -166,7 +166,7 @@ export default function ArtifactForm({
 
   if (!schema) {
     return (
-      <Flash variant="danger">
+      <Flash variant="warning">
         Unknown artifact type: <code>{activeType}</code>
       </Flash>
     )

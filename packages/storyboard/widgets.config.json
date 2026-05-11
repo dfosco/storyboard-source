@@ -889,6 +889,14 @@
       },
       "features": [
         {
+          "id": "expand",
+          "type": "action",
+          "action": "expand",
+          "label": "$label:expand",
+          "icon": "expand",
+          "prod": true
+        },
+        {
           "id": "cycle-layout",
           "type": "action",
           "action": "cycle-layout",
@@ -943,7 +951,8 @@
           "*"
         ],
         "exclude": []
-      }
+      },
+      "expandable": true
     },
     "prompt": {
       "label": "Prompt",

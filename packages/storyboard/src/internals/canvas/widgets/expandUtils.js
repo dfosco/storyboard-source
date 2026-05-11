@@ -507,6 +507,22 @@ export function buildSecondaryIframeUrl(widget) {
     return null
   }
 
+  if (widget.type === 'component-set') {
+    const storyId = widget.props?.storyId
+    if (!storyId) return null
+    const storyData = getStoryData(storyId)
+    if (storyData?._storyModule) {
+      const params = new URLSearchParams()
+      params.set('module', storyData._storyModule)
+      const layout = widget.props?.layout
+      if (layout) params.set('layout', layout)
+      const selected = widget.props?.selected
+      if (selected) params.set('selected', selected)
+      return `${baseClean}/_storyboard/canvas/isolate-set?${params}`
+    }
+    return null
+  }
+
   return null
 }
 
@@ -569,6 +585,9 @@ export function getSplitPaneLabel(widget) {
   }
   if (widget.type === 'story') {
     return `Story · ${widget.props?.storyId || '…'}`
+  }
+  if (widget.type === 'component-set') {
+    return `Component Set · ${widget.props?.storyId || '…'}`
   }
   if (widget.type === 'markdown') {
     const content = widget.props?.content || ''
