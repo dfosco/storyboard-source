@@ -1,5 +1,11 @@
 # @dfosco/storyboard
 
+## 0.5.0-beta.32
+
+### Patch Changes
+
+-   Fix lint config to include packages/storyboard/bin under Node globals (unblocks publish CI).
+
 ## 0.5.0-beta.31
 
 ### Patch Changes
