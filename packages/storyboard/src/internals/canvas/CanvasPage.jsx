@@ -246,6 +246,7 @@ function centerPositionForWidget(pos, type, props) {
 function isAgentWidget(widget) {
   if (!widget) return false
   if (widget.type === 'prompt') return true
+  if (widget.type === 'agent') return true
   if (widget.type === 'terminal' && typeof widget.id === 'string' && widget.id.startsWith('agent-')) return true
   return false
 }
@@ -2476,6 +2477,34 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
     }
     return () => { document.title = original }
   }, [doneAgents.length])
+
+  // Persist agent status updates from the server's HMR channel directly
+  // on the matching widget. PromptWidget/TerminalWidget also subscribe
+  // for their internal state, but routing through handleWidgetUpdate here
+  // guarantees `props.status` lands in localWidgets — driving the
+  // ✳️ title, the collab-bar count, and the green chrome outline.
+  useEffect(() => {
+    if (!import.meta.hot) return
+    function handler(data) {
+      const widgetId = data?.widgetId
+      if (!widgetId) return
+      const widgets = stateRef.current.widgets ?? []
+      const widget = widgets.find((w) => w?.id === widgetId)
+      if (!widget) return
+      let nextStatus = null
+      if (data.status === 'done' || data.status === 'completed') nextStatus = 'done'
+      else if (data.status === 'error') nextStatus = 'error'
+      else if (data.status === 'cancelled') nextStatus = 'idle'
+      else if (data.status === 'running' || data.status === 'pending') nextStatus = 'running'
+      if (!nextStatus) return
+      if (widget.props?.status === nextStatus) return
+      const updates = { status: nextStatus }
+      if (nextStatus === 'error' && data.message) updates.errorMessage = data.message
+      handleWidgetUpdateRef.current?.(widgetId, updates)
+    }
+    import.meta.hot.on('storyboard:agent-status', handler)
+    return () => import.meta.hot.off('storyboard:agent-status', handler)
+  }, [])
 
   // Pan/zoom the viewport to center a specific widget without selecting it.
   // Mirrors the `?widget=<id>` URL handling. Used by AgentsReadyTrigger.
