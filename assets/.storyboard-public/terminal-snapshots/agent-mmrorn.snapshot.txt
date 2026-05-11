@@ -1,38 +1,38 @@
 SESSION: agent-mmrorn | scarlet-osprey
 CANVAS:  storyboarding/form-schema
 BRANCH:  0.5.0
-TIME:    2026-05-11T10:10:05.883Z
+TIME:    2026-05-11T10:10:10.895Z
 
 ================================================================================
 SCREEN
 ================================================================================
 
 
-◐ The dev server is actually running on port 1240, not the 1234 that's configured in the
-  terminal settings, which explains the mismatch. I need to figure out why 
-  setupTerminalServer didn't pick up the correct port—it's likely the runtime is starting
-   vite through a different code path than what's being captured.
-
-  The issue is that setupTerminalServer tries to grab the port from 
-  `httpServer.address()` during vite's configureServer hook, but in Vite 5+ the HTTP 
-  server hasn't actually bound to a port yet at that point, so it returns null and falls
-  back to the hardcoded 1234. Let me test if direct requests to port 1240 actually work 
-  for the canvas API.
-
-● test canvas API on real port (shell)
-  │ curl -s -m 2
-  │ "http://localhost:1240/_storyboard/canvas/read?name=$STORYBOARD_CANVAS_ID" | head
-  │ -c 100; echo
-  │ echo "---with base---"
-  │ curl -s -m 2 "http://localhost:1240/branch--0.5.0/_storyboard/canvas/read?name=$STO…
-  └ 4 lines...
-
 ◐ I'm seeing the dev server is running on port 1240 with the base path `/branch--0.5.0`,
   so the correct URL should be `http://localhost:1240/branch--0.5.0/_storyboard/canvas/`
-  or through the Caddy proxy at `http://storyboard-core
+  or through the Caddy proxy at 
+  `http://storyboard-core.localhost/branch--0.5.0/_storyboard/canvas/`. The terminal 
+  config is pointing to the wrong port at 1234, which is why things aren't connecting 
+  properly.
 
-● Checking peer agent buffer (Esc to cancel · 8.9 KiB)
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]
+  The real issue is that `actualServerPort` is null when `configureServer` runs, so it 
+  defaults to 1234, and even if the port were right, the `serverUrl` is missing the base
+  path entirely. The runtime refactor added base paths for all worktrees but 
+  terminal-server.js never got updated to include the `base` parameter it's already 
+  receiving into the URL construction.
+
+  I need to capture the port after the HTTP server is actually listening, include the 
+  base path in the serverUrl, and potentially defer or recompute if the port isn't 
+  available yet when a session starts. Let me check if the base parameter is being stored
+   at the module level so I can access it during session creation.
+
+● check base usage (shell)
+  │ grep -n "currentBase\|base[ ,)]\|let base\|const base"
+  │ packages/storyboard/src/core/canvas/terminal-server.js | head -20
+  └ 5 lines...
+
+◉ Checking peer agent buffer (Esc to cancel · 9.9 KiB)
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0]
 ─────────────────────────────────────────────────────────────────────────────────────────
 ❯  
 ─────────────────────────────────────────────────────────────────────────────────────────
@@ -43,7 +43,7 @@ SCREEN
 SCROLLBACK (last 60s)
 ================================================================================
 
-● Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)○ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)● Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)○ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)● Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)○ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)● Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)○ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)● Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)○ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)● Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)○ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)○ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)● Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)○ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)● Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)○ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)● Checking peer agent buffer (Esc to cancel · 4.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.1 KiB)  can't determine the real serverUrl, I should fall back to constructing a proxy URL 
+◉ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 4.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 5.1 KiB)  can't determine the real serverUrl, I should fall back to constructing a proxy URL 
   using the devDomain and branch path, since 
   `http://storyboard-core.localhost/branch--0.5.0` already works. The branch prefix is 
   conditional though — the main worktree doesn't use one. I need to find what the runtime   exposes to get the canonical URL — the `/api` endpoint returned a 404, so there might   be an undocumented way to query it. Looking at the terminal-server code, there's a 
@@ -863,4 +863,147 @@ SCROLLBACK (last 60s)
   │ curl -s -m 2 "http://localhost:1240/branch--0.5.0/_storyboard/canvas/read?name=$STO…
   └ 4 lines...
 
-◐ I'm seeing the dev server is running on port 1240 with the base path `/branch--0.5.0`,   so the correct URL should be `http://localhost:1240/branch--0.5.0/_storyboard/canvas/`   or  or through  or through the C  or through the Caddy◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)  or through the Caddy prox  or through the Caddy proxy at  or through the Caddy proxy at `ht  or through the Caddy proxy at `http:/◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)  or through the Caddy proxy at `http://sto  or through the Caddy proxy at `http://storybo  or through the Caddy proxy at `http://storyboard○ Checking peer agent buffer (Esc to cancel · 8.9 KiB)  or through the Caddy proxy at `http://storyboard-c  or through the Caddy proxy at `http://storyboard-co  or through the Caddy proxy at `http://storyboard-cor◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)  or through the Caddy proxy at `http://storyboard-core◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)● Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)○ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)● Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)○ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)● Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)○ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)● Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)○ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)● Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)○ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)● Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)○ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)● Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)○ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)● Checking peer agent buffer (Esc to cancel · 8.9 KiB)
+◐ I'm seeing the dev server is running on port 1240 with the base path `/branch--0.5.0`,   so the correct URL should be `http://localhost:1240/branch--0.5.0/_storyboard/canvas/`   or  or through  or through the C  or through the Caddy◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)  or through the Caddy prox  or through the Caddy proxy at  or through the Caddy proxy at `ht  or through the Caddy proxy at `http:/◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)  or through the Caddy proxy at `http://sto  or through the Caddy proxy at `http://storybo  or through the Caddy proxy at `http://storyboard○ Checking peer agent buffer (Esc to cancel · 8.9 KiB)  or through the Caddy proxy at `http://storyboard-c  or through the Caddy proxy at `http://storyboard-co  or through the Caddy proxy at `http://storyboard-cor◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)  or through the Caddy proxy at `http://storyboard-core◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)● Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)○ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)● Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)○ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)● Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)○ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)● Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)○ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)● Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)○ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)● Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)○ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)● Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)○ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)● Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)○ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)● Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)○ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)● Checking peer agent buffer (Esc to cancel · 8.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 8.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 9.3 KiB)○ Checking peer agent buffer (Esc to cancel · 9.3 KiB)◐ The dev server is actually running on port 1240, not the 1234 that's configured in the   terminal settings, which explains the mismatch. I need to figure out why 
+  setupTerminalServer didn't pick up the correct port—it's likely the runtime is starting   vite through a different code path than what's being captured.
+
+  The issue is that setupTerminalServer tries to grab the port from 
+  `httpServer.address()` during vite's configureServer hook, but in Vite 5+ the HTTP 
+  server hasn't actually bound to a port yet at that point, so it returns null and falls   back to the hardcoded 1234. Let me test if direct requests to port 1240 actually work 
+  for the canvas API.
+
+● test canvas API on real port (shell)
+  │ curl -s -m 2
+  │ "http://localhost:1240/_storyboard/canvas/read?name=$STORYBOARD_CANVAS_ID" | head
+  │ -c 100; echo
+  │ echo "---with base---"
+  │ curl -s -m 2 "http://localhost:1240/branch--0.5.0/_storyboard/canvas/read?name=$STO…
+  └ 4 lines...
+
+◐ I'm seeing the dev server is running on port 1240 with the base path `/branch--0.5.0`,   so the correct URL should be `http://localhost:1240/branch--0.5.0/_storyboard/canvas/`   or through the Caddy proxy at 
+  `http://storyboard-core.localhost/branch--0.5.0/_storyboard/canvas/`  terminal settings, which explains the mismatch. I need to figure out why 
+  setupTerminalServer didn't pick up the correct port—it's likely the runtime is starting   vite through a different code path than what's being captured.
+
+  The issue is that setupTerminalServer tries to grab the port from 
+  `httpServer.address()` during vite's configureServer hook, but in Vite 5+ the HTTP 
+  server hasn't actually bound to a port yet at that point, so it returns null and falls   back to the hardcoded 1234. Let me test if direct requests to port 1240 actually work 
+  for the canvas API.
+
+● test canvas API on real port (shell)
+  │ curl -s -m 2
+  │ "http://localhost:1240/_storyboard/canvas/read?name=$STORYBOARD_CANVAS_ID" | head
+  │ -c 100; echo
+  │ echo "---with base---"
+  │ curl -s -m 2 "http://localhost:1240/branch--0.5.0/_storyboard/canvas/read?name=$STO…
+  └ 4 lines...
+
+◐ I'm seeing the dev server is running on port 1240 with the base path `/branch--0.5.0`,   so the correct URL should be `http://localhost:1240/branch--0.5.0/_storyboard/canvas/`   or through the Caddy proxy at 
+  `http://storyboard-core.localhost/branch--0.5.0/_storyboard/canvas/`. The terminal 
+  config is pointing to th  config is pointing to the wrong port at 1234, which is why  setupTerminalServer didn't pick up the correct port—it's likely the runtime is starting   vite through a different code path than what's being captured.
+
+  The issue is that setupTerminalServer tries to grab the port from 
+  `httpServer.address()` during vite's configureServer hook, but in Vite 5+ the HTTP 
+  server hasn't actually bound to a port yet at that point, so it returns null and falls   back to the hardcoded 1234. Let me test if direct requests to port 1240 actually work 
+  for the canvas API.
+
+● test canvas API on real port (shell)
+  │ curl -s -m 2
+  │ "http://localhost:1240/_storyboard/canvas/read?name=$STORYBOARD_CANVAS_ID" | head
+  │ -c 100; echo
+  │ echo "---with base---"
+  │ curl -s -m 2 "http://localhost:1240/branch--0.5.0/_storyboard/canvas/read?name=$STO…
+  └ 4 lines...
+
+◐ I'm seeing the dev server is running on port 1240 with the base path `/branch--0.5.0`,   so the correct URL should be `http://localhost:1240/branch--0.5.0/_storyboard/canvas/`   or through the Caddy proxy at 
+  `http://storyboard-core.localhost/branch--0.5.0/_storyboard/canvas/`. The terminal 
+  config is pointing to the wrong port at 1234, which is why things aren't connecting 
+  prop◎ Checking peer agent buffer (Esc to cancel · 9.3 KiB)
+  The issue is that setupTerminalServer tries to grab the port from 
+  `httpServer.address()` during vite's configureServer hook, but in Vite 5+ the HTTP 
+  server hasn't actually bound to a port yet at that point, so it returns null and falls   back to the hardcoded 1234. Let me test if direct requests to port 1240 actually work 
+  for the canvas API.
+
+● test canvas API on real port (shell)
+  │ curl -s -m 2
+  │ "http://localhost:1240/_storyboard/canvas/read?name=$STORYBOARD_CANVAS_ID" | head
+  │ -c 100; echo
+  │ echo "---with base---"
+  │ curl -s -m 2 "http://localhost:1240/branch--0.5.0/_storyboard/canvas/read?name=$STO…
+  └ 4 lines...
+
+◐ I'm seeing the dev server is running on port 1240 with the base path `/branch--0.5.0`,   so the correct URL should be `http://localhost:1240/branch--0.5.0/_storyboard/canvas/`   or through the Caddy proxy at 
+  `http://storyboard-core.localhost/branch--0.5.0/_storyboard/canvas/`. The terminal 
+  config is pointing to the wrong port at 1234, which is why things aren't connecting 
+  properly.
+
+  The real issue is t  The real issue is that `actualServerPort`  The real issue is that `actualServerPort` is null when `config  The real issue is that `actualServerPort` is null when `configureServer` runs,◉ Checking peer agent buffer (Esc to cancel · 9.3 KiB)  The issue is that setupTerminalServer tries to grab the port from 
+  `httpServer.address()` during vite's configureServer hook, but in Vite 5+ the HTTP 
+  server hasn't actually bound to a port yet at that point, so it returns null and falls   back to the hardcoded 1234. Let me test if direct requests to port 1240 actually work 
+  for the canvas API.
+
+● test canvas API on real port (shell)
+  │ curl -s -m 2
+  │ "http://localhost:1240/_storyboard/canvas/read?name=$STORYBOARD_CANVAS_ID" | head
+  │ -c 100; echo
+  │ echo "---with base---"
+  │ curl -s -m 2 "http://localhost:1240/branch--0.5.0/_storyboard/canvas/read?name=$STO…
+  └ 4 lines...
+
+◐ I'm seeing the dev server is running on port 1240 with the base path `/branch--0.5.0`,   so the correct URL should be `http://localhost:1240/branch--0.5.0/_storyboard/canvas/`   or through the Caddy proxy at 
+  `http://storyboard-core.localhost/branch--0.5.0/_storyboard/canvas/`. The terminal 
+  config is pointing to the wrong port at 1234, which is why things aren't connecting 
+  properly.
+
+  The real issue is that `actualServerPort` is null when `configureServer` runs, so it 
+  defaults  defaults to 1234, and  defaults to 1234, and even if the● Checking peer agent buffer (Esc to cancel · 9.3 KiB)  defaults to 1234, and even if the port were  defaults to 1234, and even if the port were right, th  defaults to 1234, and even if the port were right, the `serve  defaults to 1234, and even if the port were right, the `serverUrl` i◉ Checking peer agent buffer (Esc to cancel · 9.3 KiB)  defaults to 1234, and even if the port were right, the `serverUrl` is miss  defaults to 1234, and even if the port were right, the `serverUrl` is missing t  defaults to 1234, and even if the port were right, the `serverUrl` is missing the ba◎ Checking peer agent buffer (Esc to cancel · 9.3 KiB)  `httpServer.address()` during vite's configureServer hook, but in Vite 5+ the HTTP 
+  server hasn't actually bound to a port yet at that point, so it returns null and falls   back to the hardcoded 1234. Let me test if direct requests to port 1240 actually work 
+  for the canvas API.
+
+● test canvas API on real port (shell)
+  │ curl -s -m 2
+  │ "http://localhost:1240/_storyboard/canvas/read?name=$STORYBOARD_CANVAS_ID" | head
+  │ -c 100; echo
+  │ echo "---with base---"
+  │ curl -s -m 2 "http://localhost:1240/branch--0.5.0/_storyboard/canvas/read?name=$STO…
+  └ 4 lines...
+
+◐ I'm seeing the dev server is running on port 1240 with the base path `/branch--0.5.0`,   so the correct URL should be `http://localhost:1240/branch--0.5.0/_storyboard/canvas/`   or through the Caddy proxy at 
+  `http://storyboard-core.localhost/branch--0.5.0/_storyboard/canvas/`. The terminal 
+  config is pointing to the wrong port at 1234, which is why things aren't connecting 
+  properly.
+
+  The real issue is that `actualServerPort` is null when `configureServer` runs, so it 
+  defaults to 1234, and even if the port were right, the `serverUrl` is missing the base   p  path  path enti○ Checking peer agent buffer (Esc to cancel · 9.3 KiB)  path entirely  path entirely. Th  path entirely. The r  path entirely. The run◎ Checking peer agent buffer (Esc to cancel · 9.3 KiB)  path entirely. The runti  path entirely. The runtim  path entirely. The runtime◉ Checking peer agent buffer (Esc to cancel · 9.3 KiB)◉ Checking peer agent buffer (Esc to cancel · 9.7 KiB)  path entirely. The runtime refactor added base paths for all worktrees but term◉ Checking peer agent buffer (Esc to cancel · 9.9 KiB)● Checking peer agent buffer (Esc to cancel · 9.9 KiB)  └ 4 lines...
+
+◐ I'm seeing the dev server is running on port 1240 with the base path `/branch--0.5.0`,   so the correct URL should be `http://localhost:1240/branch--0.5.0/_storyboard/canvas/`   or through the Caddy proxy at 
+  `http://storyboard-core.localhost/branch--0.5.0/_storyboard/canvas/`. The terminal 
+  config is pointing to the wrong port at 1234, which is why things aren't connecting 
+  properly.
+
+  The real issue is that `actualServerPort` is null when `configureServer` runs, so it 
+  defaults to 1234, and even if the port were right, the `serverUrl` is missing the base   path entirely. The runtime refactor added base paths for all worktrees but 
+  terminal-server.js never got updated to include the `base` parameter it's already 
+  receiving into the URL construction.
+
+  I need to capture the port after the HTTP server is actually listening, include the 
+  base path in the serverUrl, and potentially defer or recompute if the port isn't 
+  available yet when a session starts. Let me check if the base parameter is being stored   at the module level so I can access it during session creation.● check base usage (shell)
+  └ grep -n "currentBase\|base[ ,)]\|let base\|const base"
+    packages/storyboard/src/core/canvas/terminal-server.js | head -20◉ Checking peer agent buffer (Esc to cancel · 9.9 KiB) 1 background /tasks · / commands · ? help · ctrl+q enqueue · ctrl+x → b background task◎ Checking peer agent buffer (Esc to cancel · 9.9 KiB)○ Checking peer agent buffer (Esc to cancel · 9.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 9.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 9.9 KiB) 1 background /tasks · / commands · ? help · ctrl+q enqueue● Checking peer agent buffer (Esc to cancel · 9.9 KiB)
+◐ I'm seeing the dev server is running on port 1240 with the base path `/branch--0.5.0`,   so the correct URL should be `http://localhost:1240/branch--0.5.0/_storyboard/canvas/`   or through the Caddy proxy at 
+  `http://storyboard-core.localhost/branch--0.5.0/_storyboard/canvas/`. The terminal 
+  config is pointing to the wrong port at 1234, which is why things aren't connecting 
+  properly.
+
+  The real issue is that `actualServerPort` is null when `configureServer` runs, so it 
+  defaults to 1234, and even if the port were right, the `serverUrl` is missing the base   path entirely. The runtime refactor added base paths for all worktrees but 
+  terminal-server.js never got updated to include the `base` parameter it's already 
+  receiving into the URL construction.
+
+  I need to capture the port after the HTTP server is actually listening, include the 
+  base path in the serverUrl, and potentially defer or recompute if the port isn't 
+  available yet when a session starts. Let me check if the base parameter is being stored   at the module level so I can access it during session creation.
+
+● check base usage (shell)
+  │ grep -n "currentBase\|base[ ,)]\|let base\|const base"
+  │ packages/storyboard/src/core/canvas/terminal-server.js | head -20
+  └ 5 lines... ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0]◉ Checking peer agent buffer (Esc to cancel · 9.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 9.9 KiB)○ Checking peer agent buffer (Esc to cancel · 9.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 9.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 9.9 KiB)● Checking peer agent buffer (Esc to cancel · 9.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 9.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 9.9 KiB)○ Checking peer agent buffer (Esc to cancel · 9.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 9.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 9.9 KiB)● Checking peer agent buffer (Esc to cancel · 9.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 9.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 9.9 KiB)○ Checking peer agent buffer (Esc to cancel · 9.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 9.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 9.9 KiB)● Checking peer agent buffer (Esc to cancel · 9.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 9.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 9.9 KiB)○ Checking peer agent buffer (Esc to cancel · 9.9 KiB)◎ Checking peer agent buffer (Esc to cancel · 9.9 KiB)◉ Checking peer agent buffer (Esc to cancel · 9.9 KiB)● Checking peer agent buffer (Esc to cancel · 9.9 KiB)
