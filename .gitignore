@@ -33,6 +33,8 @@ yarn-error.log*
 .github/skills/primer-url-builder
 .github/skills/playwright-cli
 .worktrees
+worktrees
+.storyboard
 .github/agents/_buddy-rails.md
 .github/agents/_buddy.md
 _*.md
