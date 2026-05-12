@@ -2612,7 +2612,7 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
       el.scrollTo({
         left: (x + w / 2) * newScale - el.clientWidth / 2,
         top: (y + h / 2) * newScale - el.clientHeight / 2,
-        behavior: 'smooth',
+        behavior: 'instant',
       })
     }
     document.addEventListener('storyboard:canvas:center-on-widget', handleCenterOnWidget)

@@ -134,4 +134,32 @@ export class ProxyController {
   async readLiveCaddyRoutes(): Promise<CaddyRoute[]> {
     return this.caddy.listRoutes()
   }
+
+  /**
+   * Reconcile Caddy with this controller's in-memory desired state.
+   *
+   * Called once on daemon startup. The runtime is the sole writer to Caddy,
+   * so any `@id`-tagged route the controller doesn't know about is a leftover
+   * from a previous daemon process. Leaving them in place causes the bug
+   * where a recycled port hits a stale host (e.g. `storyboard.localhost` →
+   * port 1240, which now belongs to a different repo). We delete them.
+   *
+   * Does NOT touch routes without `@id` — those may be hand-installed Caddy
+   * rules outside our ownership; legacy duplicate cleanup happens per-upsert.
+   */
+  async reconcileFromCaddy(): Promise<void> {
+    return this.withLock(async () => {
+      if (!(await this.caddy.ping())) return
+      const all = await this.caddy.listRoutes()
+      const owned = new Set<string>(this.routes.keys())
+      const stale: number[] = []
+      for (let i = 0; i < all.length; i++) {
+        const id = all[i]!['@id']
+        if (id && !owned.has(id)) stale.push(i)
+      }
+      for (const i of stale.sort((a, b) => b - a)) {
+        try { await this.caddy.deleteRouteAt(i) } catch { /* best-effort */ }
+      }
+    })
+  }
 }

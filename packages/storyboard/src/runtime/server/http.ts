@@ -279,6 +279,10 @@ export function createRuntimeServer(opts: {
 } = {}): http.Server {
   if (opts.proxyController) proxyController = opts.proxyController
   if (opts.orchestrator) orchestrator = opts.orchestrator
+  // Reconcile Caddy on startup: delete any @id-tagged routes left over from
+  // a previous daemon process. Without this, a recycled port can be hit by
+  // a stale host route and serve the wrong repo (see "Wrong domain 421").
+  void proxyController.reconcileFromCaddy().catch(() => undefined)
   // Expose orchestrator shutdown for the daemon's signal handler.
   ;(globalThis as { __storyboardOrchestratorShutdown?: () => void }).__storyboardOrchestratorShutdown = () => orchestrator.shutdown()
   const server = http.createServer(async (req, res) => {
