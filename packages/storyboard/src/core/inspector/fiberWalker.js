@@ -138,17 +138,27 @@ export function getFiberFromElement(el) {
  * Walks up the fiber tree to find the nearest user component
  * (skipping host elements like div, span, etc.).
  *
- * Returns: { name, props, source, owner } or null
+ * Returns: { name, props, source, hostSource, owner } or null
  * - name: component display name or function name
  * - props: current memoized props object
- * - source: { fileName, lineNumber, columnNumber } from _debugSource, or null
+ * - source: { fileName, lineNumber, columnNumber } from _debugSource of the
+ *           component definition, or null
+ * - hostSource: _debugSource of the originally clicked fiber — points to the
+ *               JSX line in the parent file where this element was written
+ *               (preferred for "jump to source"), or null
  * - owner: name of the owning/parent component, or null
  *
  * @param {object} fiber - A React fiber node
- * @returns {{ name: string, props: object, source: object|null, owner: string|null }|null}
+ * @returns {{ name: string, props: object, source: object|null, hostSource: object|null, owner: string|null }|null}
  */
 export function getComponentInfo(fiber) {
   if (!fiber) return null
+
+  // Capture the clicked element's own debug source BEFORE walking up.
+  // For host elements (div/button) and inner components, this points to
+  // the exact JSX line in the parent file — that's what users want when
+  // they click "deep" into the DOM.
+  const hostSource = getDebugSource(fiber)
 
   // Walk up to the nearest user component
   let current = fiber
@@ -182,6 +192,7 @@ export function getComponentInfo(fiber) {
     name,
     props: current.memoizedProps ?? {},
     source: getDebugSource(current),
+    hostSource,
     owner: ownerFiber ? getComponentName(ownerFiber) : null,
   }
 }

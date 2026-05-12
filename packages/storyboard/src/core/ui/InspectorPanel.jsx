@@ -165,8 +165,11 @@ function findComponentLine(code, info) {
 }
 
 function resolveSourceFile(info, knownFiles) {
-  if (info?.source?.fileName) {
-    const cleanName = info.source.fileName.split('?')[0]
+  // Prefer the clicked element's own debug source — that's the exact JSX line
+  // in the parent file, not the wrapping component definition.
+  const src = info?.hostSource?.fileName ? info.hostSource : info?.source
+  if (src?.fileName) {
+    const cleanName = src.fileName.split('?')[0]
     const srcIndex = cleanName.indexOf('/src/')
     if (srcIndex !== -1) return cleanName.slice(srcIndex + 1)
     if (cleanName.startsWith('src/')) return cleanName
@@ -405,7 +408,17 @@ export default function InspectorPanel() {
       .then(async (content) => {
         if (cancelled) return
         setSourceCode(content)
-        let line = findComponentLine(content, componentInfo)
+        // Prefer the exact line from the clicked fiber's _debugSource.
+        // Fall back to heuristic matching only if unavailable.
+        let line = -1
+        const hostLine = componentInfo.hostSource?.lineNumber
+        const hostFile = componentInfo.hostSource?.fileName?.split('?')[0]
+        if (hostLine && hostFile && hostFile.endsWith(path.split('/').pop())) {
+          line = hostLine
+        }
+        if (line < 0) {
+          line = findComponentLine(content, componentInfo)
+        }
         if (line < 0 && componentChain.length > 0) {
           for (const ancestor of componentChain) {
             line = findComponentLine(content, { name: ancestor.name, props: {} })
@@ -449,12 +462,18 @@ export default function InspectorPanel() {
   useEffect(() => {
     if (sourceContainerRef.current && highlightedHtml) {
       requestAnimationFrame(() => {
-        const el = sourceContainerRef.current?.querySelector('.highlighted-line')
+        const container = sourceContainerRef.current
+        if (!container) return
+        const el = container.querySelector('.highlighted-line')
         if (el) {
-          const targetTop = Math.max(el.offsetTop - 24, 0)
-          sourceContainerRef.current.scrollTo({ top: targetTop, behavior: 'smooth' })
-        } else if (sourceContainerRef.current) {
-          sourceContainerRef.current.scrollTop = 0
+          // offsetTop is unreliable here — none of the wrappers are positioned,
+          // so offsetParent resolves to <body>. Use bounding rects instead.
+          const elRect = el.getBoundingClientRect()
+          const containerRect = container.getBoundingClientRect()
+          const targetTop = container.scrollTop + (elRect.top - containerRect.top) - 24
+          container.scrollTo({ top: Math.max(targetTop, 0), behavior: 'smooth' })
+        } else {
+          container.scrollTop = 0
         }
       })
     }

@@ -170,7 +170,7 @@ export default forwardRef(function StoryWidget({ id: widgetId, props, onUpdate, 
       if (key === 'showCode') return showCode
       return undefined
     },
-    handleAction(actionId) {
+    handleAction(actionId, opts) {
       if (actionId === 'show-code') toggleShowCode()
       else if (actionId === 'copy-code') copyCode()
       else if (actionId === 'refresh-frame') {
@@ -180,7 +180,9 @@ export default forwardRef(function StoryWidget({ id: widgetId, props, onUpdate, 
           iframe.src = iframe.src
         }
       }
-      else if (actionId === 'expand' || actionId === 'expand-single') setExpandMode('single')
+      else if (actionId === 'expand' || actionId === 'expand-single') {
+        setExpandMode(opts?.altKey ? 'immersive' : 'single')
+      }
       else if (actionId === 'split-screen') setExpandMode('split')
       else if (actionId === 'open-external') {
         const story = getStoryData(storyId)
@@ -190,7 +192,7 @@ export default forwardRef(function StoryWidget({ id: widgetId, props, onUpdate, 
         }
       }
     },
-  }), [storyId, showCode, toggleShowCode, copyCode])
+  }), [storyId, showCode, toggleShowCode, copyCode, setExpandMode])
 
   const iframeSrc = useMemo(
     () => resolveStoryUrl(storyId, exportName),
@@ -316,6 +318,7 @@ export default forwardRef(function StoryWidget({ id: widgetId, props, onUpdate, 
         storyId={storyId}
         exportName={exportName}
         splitMode={expandMode === 'split'}
+        immersive={expandMode === 'immersive'}
         onClose={() => setExpandMode(null)}
       />
     )}
@@ -323,7 +326,7 @@ export default forwardRef(function StoryWidget({ id: widgetId, props, onUpdate, 
   )
 })
 
-function StoryExpandPane({ widgetId, storyId, exportName, splitMode, onClose }) {
+function StoryExpandPane({ widgetId, storyId, exportName, splitMode, immersive, onClose }) {
   const connectedWidgets = useMemo(
     () => splitMode ? findAllConnectedSplitTargets(widgetId) : [],
     [widgetId, splitMode],
@@ -355,10 +358,13 @@ function StoryExpandPane({ widgetId, storyId, exportName, splitMode, onClose }) 
     [primaryWidget, connectedWidgets, buildPaneFn],
   )
 
+  const isSinglePane = layout.flat().length <= 1
+  const variant = isSinglePane ? (immersive ? 'immersive' : 'modal') : 'full'
+
   return (
     <ExpandedPane
       initialLayout={layout}
-      variant={layout.flat().length <= 1 ? 'modal' : 'full'}
+      variant={variant}
       onClose={onClose}
     />
   )

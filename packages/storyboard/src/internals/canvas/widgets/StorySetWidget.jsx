@@ -51,8 +51,13 @@ export default forwardRef(function StorySetWidget({ id: widgetId, props, onUpdat
   const [interactive, setInteractive] = useState(false)
   const [storyIndexKey, setStoryIndexKey] = useState(0)
   const [expandedMode, setExpandedMode] = useExpandOverride('storyset', widgetId)
-  const expanded = expandedMode === '1'
-  const setExpanded = useCallback((open) => setExpandedMode(open ? '1' : null), [setExpandedMode])
+  const expanded = expandedMode === '1' || expandedMode === 'immersive'
+  const immersive = expandedMode === 'immersive'
+  const setExpanded = useCallback((mode) => {
+    if (!mode) setExpandedMode(null)
+    else if (mode === 'immersive') setExpandedMode('immersive')
+    else setExpandedMode('1')
+  }, [setExpandedMode])
 
   // Re-resolve when story index is live-patched
   useEffect(() => {
@@ -105,9 +110,9 @@ export default forwardRef(function StorySetWidget({ id: widgetId, props, onUpdat
   }, [onUpdate])
 
   useImperativeHandle(ref, () => ({
-    handleAction(actionId) {
+    handleAction(actionId, opts) {
       if (actionId === 'expand' || actionId === 'expand-single') {
-        setExpanded(true)
+        setExpanded(opts?.altKey ? 'immersive' : 'open')
         return true
       } else if (actionId === 'refresh-frame') {
         const iframe = iframeRef.current
@@ -226,14 +231,15 @@ export default forwardRef(function StorySetWidget({ id: widgetId, props, onUpdat
         storyId={storyId}
         layout={layout}
         selected={selected}
-        onClose={() => setExpanded(false)}
+        immersive={immersive}
+        onClose={() => setExpanded(null)}
       />
     )}
     </>
   )
 })
 
-function ComponentSetExpandPane({ widgetId, storyId, layout, selected, onClose }) {
+function ComponentSetExpandPane({ widgetId, storyId, layout, selected, immersive, onClose }) {
   const url = useMemo(
     () => buildSecondaryIframeUrl({ type: 'component-set', props: { storyId, layout, selected } }),
     [storyId, layout, selected],
@@ -256,7 +262,7 @@ function ComponentSetExpandPane({ widgetId, storyId, layout, selected, onClose }
   return (
     <ExpandedPane
       initialPanes={[pane]}
-      variant="modal"
+      variant={immersive ? 'immersive' : 'modal'}
       onClose={onClose}
     />
   )
