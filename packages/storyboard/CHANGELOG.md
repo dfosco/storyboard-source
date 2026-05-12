@@ -1,5 +1,11 @@
 # @dfosco/storyboard
 
+## 0.5.0-beta.41
+
+### Patch Changes
+
+-   Jumping to a ready agent (via the "Agents ready" toolbar button) now pans instantly instead of smooth-scrolling. The smooth animation combined with a mid-scroll zoom change felt sluggish and dizzying.
+
 ## 0.5.0-beta.40
 
 ### Patch Changes
