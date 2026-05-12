@@ -191,6 +191,13 @@ export class RuntimeClient {
   }
 
   async acquire(input: z.input<typeof AcquireRequest>): Promise<AcquireResponse> {
+    // Force a health check first — this is the sole codepath that detects
+    // a stale daemon (different version, crashed mid-restart, etc.) and
+    // respawns it. Without this, `sb run` would happily POST against an
+    // outdated daemon and inherit all of its bugs.
+    if (this.autoStart) {
+      try { await this.health() } catch { /* health() will throw on hard failure; let acquire surface it */ }
+    }
     const body = AcquireRequest.parse(input)
     return request(this.baseUrl, 'POST', '/devserver/acquire', body, AcquireResponse)
   }

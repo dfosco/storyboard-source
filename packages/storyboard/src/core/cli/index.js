@@ -55,6 +55,7 @@ function helpScreen(version) {
     cmd('run', 'Start proxy + dev server in one command'),
     cmd('run [branch]', 'Start proxy + dev for a specific branch'),
     cmd('dev', 'Alias for `run`'),
+    cmd('reset', 'Nuke daemon + Caddy routes + orphan vites; respawn fresh'),
     cmd('server list', 'List running dev servers'),
     cmd('server start [wt]', 'Start dev server for a worktree'),
     cmd('server stop <wt|ID>', 'Stop a dev server'),
@@ -158,6 +159,9 @@ switch (command) {
   case 'dev':
   case 'run':
     import('./run.js')
+    break
+  case 'reset':
+    import('./reset.js')
     break
   case 'setup':
     import('./setup.js')
