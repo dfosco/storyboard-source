@@ -1,5 +1,13 @@
 # @dfosco/storyboard
 
+## 0.5.0-beta.35
+
+### Patch Changes
+
+-   Fix deletion rollbacks on canvas
+
+    -   fix(canvas): don't re-add locally deleted widgets via HMR merge — pending deletions are tracked and skipped during reconcile, eliminating the visible rollback when deleting multiple widgets in quick succession
+
 ## 0.5.0-beta.34
 
 ### Patch Changes
