@@ -237,7 +237,10 @@ async function launchAgent(agent, { isInitialStartup = false } = {}) {
 
   try {
     const shell = process.env.SHELL || '/bin/zsh'
-    const child = spawn(shell, ['-lc', agent.startupCommand], {
+    // -ilc: interactive + login so both .zprofile and .zshrc are sourced.
+    // Many users install agent CLIs (claude, copilot, etc.) via nvm/volta/asdf
+    // shims that only register PATH in .zshrc. Without -i the binary is not found.
+    const child = spawn(shell, ['-ilc', agent.startupCommand], {
       stdio: 'inherit',
       env: agentEnv(),
     })
@@ -498,7 +501,7 @@ async function welcomeLoop() {
           setMouse(true)
           try {
             const shell = process.env.SHELL || '/bin/zsh'
-            const child = spawn(shell, ['-lc', agent.resumeCommand], {
+            const child = spawn(shell, ['-ilc', agent.resumeCommand], {
               stdio: 'inherit',
               env: agentEnv(),
             })
