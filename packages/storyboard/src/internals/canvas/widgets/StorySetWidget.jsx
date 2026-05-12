@@ -131,7 +131,7 @@ export default forwardRef(function StorySetWidget({ id: widgetId, props, onUpdat
         return true
       }
     },
-  }), [storyId, layout, onUpdate])
+  }), [storyId, layout, onUpdate, setExpanded])
 
   const iframeSrc = useMemo(
     () => resolveStorySetUrl(storyId, layout, selected),
