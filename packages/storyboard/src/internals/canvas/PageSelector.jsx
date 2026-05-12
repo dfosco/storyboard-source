@@ -194,19 +194,23 @@ export default function PageSelector({ currentName, pages: initialPages, isLocal
         return
       }
       const route = result?.route
+      const newName = result?.name || oldName
       if (route) {
+        // Optimistic UI: replace the renamed entry in our local list so the
+        // selector reflects the change immediately (don't wait for HMR).
+        setPages(prev => prev.map(p => p.name === oldName
+          ? { ...p, name: newName, route, title: trimmed }
+          : p
+        ))
+        try { sessionStorage.setItem('sb-open-page-selector', '1') } catch { /* ignore */ }
+
+        // Navigate to the new URL immediately. The user is currently on the
+        // OLD route, which no longer resolves on the server — refreshing
+        // there would 404. Do a hard navigate so the SPA reloads and picks
+        // up the renamed canvas from the fresh virtual module.
         const base = (import.meta.env?.BASE_URL || '/').replace(/\/$/, '')
         const targetUrl = base + route
-        try { sessionStorage.setItem('sb-open-page-selector', '1') } catch { /* ignore */ }
-        if (import.meta.hot) {
-          const timer = setTimeout(() => { window.location.href = targetUrl }, 3000)
-          import.meta.hot.on('vite:beforeFullReload', () => {
-            clearTimeout(timer)
-            sessionStorage.setItem('sb-pending-navigate', targetUrl)
-          })
-        } else {
-          setTimeout(() => { window.location.href = targetUrl }, 1000)
-        }
+        window.location.href = targetUrl
       }
     } catch (err) {
       console.error('Failed to rename page:', err)
@@ -259,15 +263,11 @@ export default function PageSelector({ currentName, pages: initialPages, isLocal
 
       try { sessionStorage.setItem('sb-open-page-selector', '1') } catch { /* ignore */ }
 
-      if (import.meta.hot) {
-        const timer = setTimeout(() => { window.location.href = targetUrl }, 3000)
-        import.meta.hot.on('vite:beforeFullReload', () => {
-          clearTimeout(timer)
-          sessionStorage.setItem('sb-pending-navigate', targetUrl)
-        })
-      } else {
-        setTimeout(() => { window.location.href = targetUrl }, 1000)
-      }
+      // Hard navigate immediately. With the route map now reading `canvases`
+      // live, an SPA navigation would also work for the new canvas — but
+      // some refs (e.g. `_jsxModule`) only get filled in by a fresh module
+      // build, so a hard reload is the safer default.
+      window.location.href = targetUrl
     } catch (err) {
       console.error('Failed to duplicate page:', err)
     }
@@ -363,18 +363,9 @@ export default function PageSelector({ currentName, pages: initialPages, isLocal
       // Stash a flag so the page selector opens automatically on the new page
       try { sessionStorage.setItem('sb-open-page-selector', '1') } catch { /* ignore */ }
 
-      // Navigate to the new page after Vite picks up the new file
-      if (import.meta.hot) {
-        const timer = setTimeout(() => {
-          window.location.href = targetUrl
-        }, 3000)
-        import.meta.hot.on('vite:beforeFullReload', () => {
-          clearTimeout(timer)
-          sessionStorage.setItem('sb-pending-navigate', targetUrl)
-        })
-      } else {
-        setTimeout(() => { window.location.href = targetUrl }, 1000)
-      }
+      // Navigate immediately. The server has already written the file; the
+      // route map will be rebuilt on hard reload.
+      window.location.href = targetUrl
     } catch (err) {
       console.error('Failed to create canvas page:', err)
       setCreating(false)

@@ -52,43 +52,53 @@ class SectionErrorBoundary extends Component {
   }
 }
 
-// Build a map from canvas route paths → canvas names at module load time
-const canvasRouteMap = new Map()
-// Build a map from group name → array of { name, route, title } for page selector
-const canvasGroupMap = new Map()
-for (const [name, data] of Object.entries(canvases || {})) {
-  const route = (data?._route || `/canvas/${name}`).replace(/\/+$/, '')
-  canvasRouteMap.set(route, name)
-  const group = data?._group
-  if (group) {
-    if (!canvasGroupMap.has(group)) canvasGroupMap.set(group, [])
-    canvasGroupMap.get(group).push({
+// Canvas route resolution and group lookup happen live below
+// (see matchCanvasRoute / getCanvasGroupMap) so that HMR rename/duplicate
+// take effect without a page reload.
+
+// Build a map from group name → array of { name, route, title } for page selector.
+// Read live from `canvases` (HMR mutates it in place) so rename/duplicate are
+// reflected immediately. Sorted by pageOrder from .meta.json when available.
+function getCanvasGroupMap() {
+  const map = new Map()
+  for (const [name, data] of Object.entries(canvases || {})) {
+    const route = (data?._route || `/canvas/${name}`).replace(/\/+$/, '')
+    const group = data?._group
+    if (!group) continue
+    if (!map.has(group)) map.set(group, [])
+    map.get(group).push({
       name,
       route,
       title: data?.title || name.split('/').pop(),
       _canvasMeta: data?._canvasMeta || null,
     })
   }
-}
-// Sort each group's pages by pageOrder from .meta.json (if available)
-for (const [, pages] of canvasGroupMap) {
-  const pageOrder = pages[0]?._canvasMeta?.pageOrder
-  if (Array.isArray(pageOrder)) {
-    const orderMap = new Map()
-    pageOrder.forEach((entry, idx) => {
-      if (typeof entry === 'string' && !entry.startsWith('sep-')) orderMap.set(entry, idx)
-    })
-    pages.sort((a, b) => {
-      const ai = orderMap.has(a.name) ? orderMap.get(a.name) : Infinity
-      const bi = orderMap.has(b.name) ? orderMap.get(b.name) : Infinity
-      return ai - bi
-    })
+  for (const [, pages] of map) {
+    const pageOrder = pages[0]?._canvasMeta?.pageOrder
+    if (Array.isArray(pageOrder)) {
+      const orderMap = new Map()
+      pageOrder.forEach((entry, idx) => {
+        if (typeof entry === 'string' && !entry.startsWith('sep-')) orderMap.set(entry, idx)
+      })
+      pages.sort((a, b) => {
+        const ai = orderMap.has(a.name) ? orderMap.get(a.name) : Infinity
+        const bi = orderMap.has(b.name) ? orderMap.get(b.name) : Infinity
+        return ai - bi
+      })
+    }
   }
+  return map
 }
 
 function matchCanvasRoute(pathname) {
   const normalized = stripBasePath(pathname)
-  return canvasRouteMap.get(normalized) || null
+  // Iterate `canvases` live so HMR rename/duplicate are reflected without
+  // a page reload (virtual-module HMR mutates the object in place).
+  for (const [name, data] of Object.entries(canvases || {})) {
+    const route = (data?._route || `/canvas/${name}`).replace(/\/+$/, '')
+    if (route === normalized) return name
+  }
+  return null
 }
 
 /**
@@ -219,6 +229,17 @@ function StoryboardProviderInner({ flowName, sceneName, recordName, recordParam,
     return () => document.removeEventListener('storyboard:story-index-changed', handler)
   }, [])
 
+  // Same pattern for canvases: HMR mutates the in-memory `canvases` object
+  // when files are added/renamed/removed. Re-run canvas route matching and
+  // sibling-page derivation when that happens so the SPA reflects the new
+  // state without requiring a hard reload (which would 404 on old URLs).
+  const [canvasIndexKey, setCanvasIndexKey] = useState(0)
+  useEffect(() => {
+    const handler = () => setCanvasIndexKey((k) => k + 1)
+    document.addEventListener('storyboard:canvas-index-changed', handler)
+    return () => document.removeEventListener('storyboard:canvas-index-changed', handler)
+  }, [])
+
   // Story route detection — matches current URL against registered story routes
   // storyIndexKey forces re-evaluation when HMR mutates the stories object in place
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -228,8 +249,10 @@ function StoryboardProviderInner({ flowName, sceneName, recordName, recordParam,
     [location.pathname, storyName],
   )
 
-  // Canvas route detection — matches current URL against registered canvas routes
-  const canvasId = useMemo(() => matchCanvasRoute(location.pathname), [location.pathname])
+  // Canvas route detection — matches current URL against registered canvas routes.
+  // canvasIndexKey forces re-evaluation when HMR mutates the canvases object in place
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const canvasId = useMemo(() => matchCanvasRoute(location.pathname), [location.pathname, canvasIndexKey])
   const isMissingCanvasRoute = useMemo(
     () => isCanvasPath(location.pathname) && !canvasId && !storyName,
     [location.pathname, canvasId, storyName],
@@ -400,8 +423,11 @@ function StoryboardProviderInner({ flowName, sceneName, recordName, recordParam,
     const group = canvasData?._group
     // Include the current canvas as a sibling even if it's the only page in its group,
     // so the PageSelector can render and allow adding new pages.
+    // canvasIndexKey ensures siblingPages are re-derived on HMR
+    // eslint-disable-next-line no-unused-vars
+    const _hmrTick = canvasIndexKey
     const siblingPages = group
-      ? canvasGroupMap.get(group) || []
+      ? getCanvasGroupMap().get(group) || []
       : [{ name: canvasId, route: canvasData?._route || `/canvas/${canvasId}`, title: canvasData?.title || canvasId.split('/').pop() }]
     const canvasMeta = canvasData?._canvasMeta || null
     const canvasValue = {
