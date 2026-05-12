@@ -25,13 +25,12 @@ import { resolve } from 'path'
 import { detectWorktreeName, getPort, releasePort, repoRoot, worktreeDir } from '../worktree/port.js'
 import { startRenameWatcher } from '../rename-watcher/watcher.js'
 import { parseFlags } from './flags.js'
-import { hasUncommittedChanges, localBranchExists, resolveDefaultBranch } from './dev-helpers.js'
+import { localBranchExists } from './dev-helpers.js'
 import { compactAll } from '../canvas/compact.js'
 
 const flagSchema = {
   port: { type: 'number', description: 'Override dev server port' },
   create: { type: 'boolean', default: true, description: 'Allow creating worktrees/branches (disable with --no-create)' },
-  ttl: { type: 'number', default: 3600, description: 'Lease TTL in seconds (default 1h)' },
 }
 
 /**
@@ -94,42 +93,7 @@ function createWorktree(name, root, { newBranch = false } = {}) {
 
 async function resolveDevTarget(branchArg, { allowCreate = true } = {}) {
   if (!branchArg) {
-    const detectedName = detectWorktreeName()
-    const root = repoRoot()
-    const realCwd = resolve(process.cwd())
-    const isAtRoot = realCwd === resolve(root)
-    if (detectedName === 'main' || !isAtRoot) {
-      return { worktreeName: detectedName, targetCwd: process.cwd(), created: false }
-    }
-    const branch = detectedName
-    const existingDir = worktreeDir(branch)
-    if (existsSync(resolve(existingDir, '.git'))) {
-      p.log.info(`Root is on branch "${branch}" — using existing worktree`)
-      return { worktreeName: branch, targetCwd: existingDir, created: false }
-    }
-    if (!process.stdin.isTTY) {
-      return { worktreeName: detectedName, targetCwd: process.cwd(), created: false }
-    }
-    p.log.warning(`Root is on branch "${branch}" instead of main.`)
-    const shouldConvert = await p.confirm({
-      message: `Convert "${branch}" to a worktree? (moves branch to worktrees/${branch}/)`,
-      initialValue: true,
-    })
-    if (p.isCancel(shouldConvert) || !shouldConvert) {
-      return { worktreeName: detectedName, targetCwd: process.cwd(), created: false }
-    }
-    if (!allowCreate) { p.log.error('Cannot convert — --no-create flag is set.'); process.exit(1) }
-    if (hasUncommittedChanges(root)) {
-      p.log.error('Cannot convert — uncommitted changes in working tree.')
-      p.log.info('Commit or stash your changes first, then run `sb dev` again.')
-      process.exit(1)
-    }
-    const defaultBranch = resolveDefaultBranch(root)
-    if (!defaultBranch) { p.log.error('Cannot determine default branch (main/master). Switch root manually.'); process.exit(1) }
-    p.log.step(`Switching root to "${defaultBranch}"`)
-    execFileSync('git', ['checkout', defaultBranch], { cwd: root, stdio: 'inherit' })
-    const targetDir = createWorktree(branch, root, { newBranch: false })
-    return { worktreeName: branch, targetCwd: targetDir, created: true }
+    return { worktreeName: detectWorktreeName(), targetCwd: process.cwd(), created: false }
   }
 
   const root = repoRoot()
@@ -201,7 +165,6 @@ async function main() {
     result = await runtime.acquire({
       slot: { devDomain, worktree: worktreeName },
       targetCwd: resolve(targetCwd),
-      ttlSeconds: flags.ttl ?? 3600,
       // Allow the literal "storyboard" devDomain when the user set it
       // explicitly. The guard only catches the case where it was inherited
       // from the runtime default because the field was missing.
@@ -217,7 +180,6 @@ async function main() {
   }
 
   p.log.info(`devserver port: ${result.devServer.port}`)
-  p.log.info(`lease: ${result.lease.id} (renew before ${result.lease.expiresAt})`)
   p.log.info('Stop with Ctrl+C')
 
   const renameWatcher = startRenameWatcher(targetCwd)
@@ -228,15 +190,8 @@ async function main() {
     } catch { /* non-critical */ }
   }, 15 * 60 * 1000)
 
-  // Periodic lease renewal at half-TTL intervals so long sessions don't drop.
-  const renewMs = Math.max(60_000, ((flags.ttl ?? 3600) * 1000) / 2)
-  const renewInterval = setInterval(() => {
-    runtime.renew({ leaseId: result.lease.id, ttlSeconds: flags.ttl ?? 3600 }).catch(() => undefined)
-  }, renewMs)
-
   function shutdown() {
     clearInterval(compactInterval)
-    clearInterval(renewInterval)
     renameWatcher.close()
     runtime.release({ leaseId: result.lease.id }).catch(() => undefined).finally(() => {
       releasePort(worktreeName)

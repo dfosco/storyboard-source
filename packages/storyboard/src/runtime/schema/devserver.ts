@@ -4,31 +4,22 @@ import { DevDomain, DevServerSlot, Port, WorktreeName } from './identity.js'
 /**
  * DevServer lifecycle FSM.
  *
- * Transitions are enforced in code; illegal transitions throw. This is the
- * structural fix for the per-repo server's "best-effort" state — a devserver
- * that thinks it's `ready` but whose port is dead cannot exist here.
- *
  * ```
- *   idle → spawning → ready → draining → stopped
- *            │           │        │
- *            └───────────┴────────┴──────→ stopped (on crash)
+ *   spawning → ready → stopped
+ *      └────────────────┘  (on crash)
  * ```
  */
 export const DevServerStatus = z.enum([
-  'idle',      // pre-warmed in the hot pool, no project bound yet
   'spawning',  // process started, waiting for `ready in …` from Vite stdout
   'ready',     // bound to a slot, accepting traffic via Caddy
-  'draining',  // releasing — finishing in-flight requests before kill
   'stopped',   // process exited, slot freed, port returned to the pool
 ])
 export type DevServerStatus = z.infer<typeof DevServerStatus>
 
 /** Allowed FSM transitions. Centralised so misuse is a one-line review catch. */
 export const ALLOWED_TRANSITIONS: Record<DevServerStatus, readonly DevServerStatus[]> = {
-  idle: ['spawning', 'stopped'],
   spawning: ['ready', 'stopped'],
-  ready: ['draining', 'stopped'],
-  draining: ['stopped'],
+  ready: ['stopped'],
   stopped: [],
 } as const
 
@@ -46,20 +37,17 @@ export function assertTransition(from: DevServerStatus, to: DevServerStatus): vo
 }
 
 /**
- * A devserver record as exposed by the runtime API.
- *
- * `slot` is `null` for hot-pool members that haven't been acquired yet.
- * Once bound, `slot.devDomain + slot.worktree` is unique across the whole
- * runtime; the orchestrator rejects duplicate binds.
+ * A devserver record as exposed by the runtime API. Always bound to a slot
+ * after acquire (no pre-spawned pool members), so `slot` and `cwd` are required.
  */
 export const DevServer = z.object({
   id: z.string().uuid(),
   pid: z.number().int().positive(),
   port: Port,
   status: DevServerStatus,
-  slot: DevServerSlot.nullable(),
-  /** Absolute path of the worktree directory once bound; null while in the pool. */
-  cwd: z.string().nullable(),
+  slot: DevServerSlot,
+  /** Absolute path of the worktree directory. */
+  cwd: z.string(),
   /** ISO timestamp; immutable after spawn. */
   spawnedAt: z.string().datetime(),
   /** ISO timestamp of last status change. */
@@ -68,11 +56,11 @@ export const DevServer = z.object({
 export type DevServer = z.infer<typeof DevServer>
 
 /**
- * A short-lived lease handed to a CLI client when it acquires a devserver.
+ * A lease handed to a CLI client when it acquires a devserver.
  *
  * Leases are the *only* way a client controls a devserver — the runtime
- * refuses commands without a valid leaseId. This means a stale `sb dev`
- * process can't kill a devserver belonging to a newer session.
+ * refuses commands without a valid leaseId. They live as long as the
+ * acquiring CLI process; expiry is a far-future sentinel.
  */
 export const Lease = z.object({
   id: z.string().uuid(),
@@ -80,7 +68,7 @@ export const Lease = z.object({
   slot: DevServerSlot,
   /** Public proxy URL the client should print to the user. Authoritative. */
   url: z.string().url(),
-  /** Renew before this timestamp or the lease expires and the devserver drains. */
+  /** Far-future sentinel — leases don't actually expire. */
   expiresAt: z.string().datetime(),
 })
 export type Lease = z.infer<typeof Lease>

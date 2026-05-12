@@ -11,7 +11,6 @@ import {
   ProxyState,
   ProxyUpsertRequest,
   ReleaseRequest,
-  RenewRequest,
   RuntimeError,
   WorktreeName,
 } from '../schema/index.js'
@@ -24,7 +23,6 @@ import {
   DevServerSpawnError,
   SlotCwdConflictError,
 } from '../devserver/index.js'
-import { HotPool } from '../pool/index.js'
 import { PortPool } from '../devserver/port-pool.js'
 import { RUNTIME_PORT, RUNTIME_HOST, RUNTIME_VERSION } from './constants.js'
 
@@ -34,41 +32,20 @@ import { RUNTIME_PORT, RUNTIME_HOST, RUNTIME_VERSION } from './constants.js'
  * Every request is parsed through a zod schema *before* any handler runs;
  * malformed input never reaches the orchestrator. Every response is also
  * shape-checked in development to prevent accidental contract drift.
- *
- * M1 scaffold: all mutating endpoints return `501 NOT_IMPLEMENTED`. The
- * shapes, status codes, and validation are real — only the orchestrator
- * wiring is deferred to M2/M3.
  */
 
 const startedAt = Date.now()
 
 /**
  * Process-wide singletons. The runtime is one-per-machine, so module-level
- * controllers are fine — there's never more than one instance per node process.
- * Tests inject their own via createRuntimeServer({ ... }).
- *
- * The default daemon ships with a 1-port hot pool so first-acquire latency
- * is dominated by Vite startup, not by the OS-level free-port probe loop.
- * Tunable via env: STORYBOARD_RUNTIME_WARM_PORTS, STORYBOARD_RUNTIME_POOL_CAP.
+ * controllers are fine. Tests inject their own via createRuntimeServer({ ... }).
  */
 let proxyController = new ProxyController()
 let _ports = new PortPool()
-let _hotPool = new HotPool({
-  ports: _ports,
-  warmTarget: parsePositiveInt(process.env.STORYBOARD_RUNTIME_WARM_PORTS, 1),
-  capacity: parsePositiveInt(process.env.STORYBOARD_RUNTIME_POOL_CAP, 4),
-})
 let orchestrator: DevServerOrchestrator = new DevServerOrchestrator({
   proxy: proxyController,
   ports: _ports,
-  hotPool: _hotPool,
 })
-
-function parsePositiveInt(raw: string | undefined, fallback: number): number {
-  if (!raw) return fallback
-  const n = Number(raw)
-  return Number.isFinite(n) && n >= 0 ? Math.floor(n) : fallback
-}
 
 function sendJson(
   res: http.ServerResponse,
@@ -172,21 +149,6 @@ routes.set('POST /devserver/release', async (req, res) => {
   try {
     orchestrator.release(body.leaseId)
     sendJson(res, 200, { ok: true })
-  } catch (err) {
-    if (err instanceof LeaseNotFoundError) {
-      sendError(res, 404, 'NOT_FOUND', err.message)
-      return
-    }
-    sendError(res, 500, 'INTERNAL', (err as Error).message)
-  }
-})
-
-routes.set('POST /devserver/renew', async (req, res) => {
-  const body = await parseBody(req, res, RenewRequest)
-  if (!body) return
-  try {
-    const lease = orchestrator.renew(body.leaseId, body.ttlSeconds)
-    sendJson(res, 200, lease)
   } catch (err) {
     if (err instanceof LeaseNotFoundError) {
       sendError(res, 404, 'NOT_FOUND', err.message)

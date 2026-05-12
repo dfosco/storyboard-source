@@ -51,14 +51,13 @@ describe('slotKey', () => {
 describe('FSM transitions', () => {
   it('lists exhaustive transitions per status', () => {
     expect(Object.keys(ALLOWED_TRANSITIONS).sort()).toEqual(
-      ['draining', 'idle', 'ready', 'spawning', 'stopped'],
+      ['ready', 'spawning', 'stopped'],
     )
   })
-  it('allows idle → spawning → ready → draining → stopped', () => {
-    expect(() => assertTransition('idle', 'spawning')).not.toThrow()
+  it('allows spawning → ready → stopped', () => {
     expect(() => assertTransition('spawning', 'ready')).not.toThrow()
-    expect(() => assertTransition('ready', 'draining')).not.toThrow()
-    expect(() => assertTransition('draining', 'stopped')).not.toThrow()
+    expect(() => assertTransition('ready', 'stopped')).not.toThrow()
+    expect(() => assertTransition('spawning', 'stopped')).not.toThrow()
   })
   it('throws IllegalTransitionError on bad transition', () => {
     expect(() => assertTransition('stopped', 'ready')).toThrowError(IllegalTransitionError)

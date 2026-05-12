@@ -66,20 +66,20 @@ describe('M5: SlotCwdConflictError', () => {
     const slot = { devDomain: DevDomain.parse('shared'), worktree: WorktreeName.parse('main') }
 
     // First repo claims the slot.
-    const first = await orch.acquire({ slot, targetCwd: tmpA, ttlSeconds: 60, allowDefaultDomain: false })
+    const first = await orch.acquire({ slot, targetCwd: tmpA, allowDefaultDomain: false })
     expect(first.devServer.cwd).toBe(tmpA)
 
     // Second repo tries to claim the SAME slot from a different cwd → CONFLICT.
     await expect(orch.acquire({
-      slot, targetCwd: tmpB, ttlSeconds: 60, allowDefaultDomain: false,
+      slot, targetCwd: tmpB, allowDefaultDomain: false,
     })).rejects.toBeInstanceOf(SlotCwdConflictError)
   })
 
   it('allows reacquiring with the SAME targetCwd', async () => {
     const orch = new DevServerOrchestrator({ proxy: makeProxy(), spawnVite: () => fakeViteChild() })
     const slot = { devDomain: DevDomain.parse('repo-a'), worktree: WorktreeName.parse('main') }
-    const a = await orch.acquire({ slot, targetCwd: tmpA, ttlSeconds: 60, allowDefaultDomain: false })
-    const b = await orch.acquire({ slot, targetCwd: tmpA, ttlSeconds: 60, allowDefaultDomain: false })
+    const a = await orch.acquire({ slot, targetCwd: tmpA, allowDefaultDomain: false })
+    const b = await orch.acquire({ slot, targetCwd: tmpA, allowDefaultDomain: false })
     expect(b.devServer.id).toBe(a.devServer.id)
   })
 })

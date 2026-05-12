@@ -10,12 +10,10 @@ import {
   DevServerSlot,
   DevServerStatus,
   DEFAULT_DEV_DOMAIN,
-  Lease,
   Port,
   slotKey,
 } from '../schema/index.js'
 import { ProxyController } from '../proxy/index.js'
-import { HotPool } from '../pool/index.js'
 import { PortPool } from './port-pool.js'
 
 /**
@@ -101,9 +99,6 @@ export class DevServerSpawnError extends Error {
 export interface DevServerOrchestratorOptions {
   proxy: ProxyController
   ports?: PortPool
-  /** Optional HotPool wrapping `ports` — when provided, acquire goes
-   *  through the warm ring first to avoid the OS-level probe loop. */
-  hotPool?: HotPool
   /** Override Vite spawn for tests — return a child you've prepared. */
   spawnVite?: (cwd: string, port: Port, basePath: string, devDomain: string) => ChildProcess
   readyTimeoutMs?: number
@@ -115,7 +110,6 @@ const STDERR_TAIL_MAX = 50
 export class DevServerOrchestrator {
   private readonly proxy: ProxyController
   private readonly ports: PortPool
-  private readonly hotPool: HotPool | null
   private readonly readyTimeoutMs: number
   private readonly spawnViteFn: NonNullable<DevServerOrchestratorOptions['spawnVite']>
 
@@ -127,11 +121,8 @@ export class DevServerOrchestrator {
   constructor(opts: DevServerOrchestratorOptions) {
     this.proxy = opts.proxy
     this.ports = opts.ports ?? new PortPool()
-    this.hotPool = opts.hotPool ?? null
     this.readyTimeoutMs = opts.readyTimeoutMs ?? DEFAULT_READY_TIMEOUT_MS
     this.spawnViteFn = opts.spawnVite ?? defaultSpawnVite
-    // Kick the warm ring as soon as the orchestrator is constructed.
-    this.hotPool?.warmInBackground()
   }
 
   async acquire(input: AcquireRequest): Promise<AcquireResponse> {
@@ -162,7 +153,7 @@ export class DevServerOrchestrator {
       if (existing.cwd !== input.targetCwd) {
         throw new SlotCwdConflictError(input.slot, existing.cwd, input.targetCwd)
       }
-      return this.toResponse(existing, this.mintLease(existing, input.ttlSeconds))
+      return this.toResponse(existing, this.mintLease(existing))
     }
     if (existing && existing.status !== 'stopped') {
       try { await existing.readyPromise } catch { /* fall through */ }
@@ -171,11 +162,11 @@ export class DevServerOrchestrator {
         if (refreshed.cwd !== input.targetCwd) {
           throw new SlotCwdConflictError(input.slot, refreshed.cwd, input.targetCwd)
         }
-        return this.toResponse(refreshed, this.mintLease(refreshed, input.ttlSeconds))
+        return this.toResponse(refreshed, this.mintLease(refreshed))
       }
     }
 
-    const port = await (this.hotPool ? this.hotPool.acquirePort() : this.ports.acquire())
+    const port = await this.ports.acquire()
     const id = randomUUID()
     const basePath = input.slot.worktree === 'main' ? '/' : `/branch--${input.slot.worktree}/`
     const child = this.spawnViteFn(input.targetCwd, port, basePath, input.slot.devDomain)
@@ -224,10 +215,8 @@ export class DevServerOrchestrator {
       this.transition(internal, 'stopped')
       this.bySlot.delete(key)
       this.byId.delete(id)
-      // Return the port via hotPool when configured (decrements bound count
-      // AND triggers a refill); otherwise straight to the underlying pool.
-      if (this.hotPool) this.hotPool.release(internal.port)
-      else this.ports.release(internal.port)
+      // Return the port to the pool.
+      this.ports.release(internal.port)
       this.proxy.removeWorktree(internal.slot.devDomain, internal.slot.worktree).catch(() => undefined)
       if (!wasReady) {
         rejectReady(new DevServerSpawnError(internal.slot, code, stderrTail.join('')))
@@ -244,7 +233,7 @@ export class DevServerOrchestrator {
       throw err
     }
 
-    return this.toResponse(internal, this.mintLease(internal, input.ttlSeconds))
+    return this.toResponse(internal, this.mintLease(internal))
   }
 
   release(leaseId: string): void {
@@ -258,44 +247,31 @@ export class DevServerOrchestrator {
     if (stillReferenced) return
 
     if (ds.status === 'ready') {
-      this.transition(ds, 'draining')
-      // Tear down on next tick — synchronous SIGTERM → exit cycles can race the FSM transition.
+      // SIGTERM on next tick to avoid racing the FSM transition.
       setImmediate(() => {
         try { ds.child.kill('SIGTERM') } catch { /* already dead */ }
       })
     }
   }
 
-  renew(leaseId: string, ttlSeconds: number): Lease {
-    const lease = this.leases.get(leaseId)
-    if (!lease) throw new LeaseNotFoundError(leaseId)
-    lease.expiresAt = Date.now() + ttlSeconds * 1000
-    return Lease.parse({
-      id: lease.id,
-      devServerId: lease.devServerId,
-      slot: lease.slot,
-      url: lease.url,
-      expiresAt: new Date(lease.expiresAt).toISOString(),
-    })
-  }
-
   list(): DevServer[] {
     return Array.from(this.byId.values()).map(toDevServer)
-  }
-
-  /** Pool-status snapshot for the API endpoint. Null when no hot pool configured. */
-  poolStatus(): { warm: number; bound: number; capacity: number } | null {
-    return this.hotPool?.status() ?? null
   }
 
   shutdown(): void {
     for (const ds of this.byId.values()) {
       try { ds.child.kill('SIGTERM') } catch { /* already dead */ }
     }
-    this.hotPool?.drain()
   }
 
-  private mintLease(ds: DevServerInternal, ttlSeconds: number): LeaseInternal {
+  /** Returns null — kept for the /pool/status endpoint backward-compat. */
+  poolStatus(): null { return null }
+
+  // Sentinel used as Lease.expiresAt — leases never expire; they live as long
+  // as the devserver they reference, which lives as long as the owning CLI.
+  private static readonly NEVER_EXPIRES = '9999-12-31T23:59:59.999Z'
+
+  private mintLease(ds: DevServerInternal): LeaseInternal {
     const id = randomUUID()
     const url = `http://${ds.slot.devDomain}.localhost${ds.slot.worktree === 'main' ? '/' : `/branch--${ds.slot.worktree}/`}`
     const lease: LeaseInternal = {
@@ -303,7 +279,7 @@ export class DevServerOrchestrator {
       devServerId: ds.id,
       slot: ds.slot,
       url,
-      expiresAt: Date.now() + ttlSeconds * 1000,
+      expiresAt: Number.MAX_SAFE_INTEGER,
     }
     this.leases.set(id, lease)
     return lease
@@ -316,7 +292,7 @@ export class DevServerOrchestrator {
         devServerId: lease.devServerId,
         slot: lease.slot,
         url: lease.url,
-        expiresAt: new Date(lease.expiresAt).toISOString(),
+        expiresAt: DevServerOrchestrator.NEVER_EXPIRES,
       },
       devServer: toDevServer(ds),
     })

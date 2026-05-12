@@ -75,7 +75,7 @@ describe('DevServerOrchestrator', () => {
     await expect(orch.acquire({
       slot: { devDomain: DevDomain.parse('storyboard'), worktree: WorktreeName.parse('main') },
       targetCwd: tmp,
-      ttlSeconds: 60,
+      
       allowDefaultDomain: false,
     })).rejects.toBeInstanceOf(ForbiddenDefaultDomainError)
   })
@@ -86,7 +86,7 @@ describe('DevServerOrchestrator', () => {
     const r = await orch.acquire({
       slot: { devDomain: DevDomain.parse('storyboard'), worktree: WorktreeName.parse('main') },
       targetCwd: tmp,
-      ttlSeconds: 60,
+      
       allowDefaultDomain: true,
     })
     expect(r.devServer.status).toBe('ready')
@@ -98,7 +98,7 @@ describe('DevServerOrchestrator', () => {
     const r = await orch.acquire({
       slot: { devDomain: DevDomain.parse('storyboard-core'), worktree: WorktreeName.parse('main') },
       targetCwd: tmp,
-      ttlSeconds: 60,
+      
       allowDefaultDomain: false,
     })
     expect(r.devServer.status).toBe('ready')
@@ -112,8 +112,8 @@ describe('DevServerOrchestrator', () => {
     const spawn = vi.fn(() => fakeViteChild())
     const orch = new DevServerOrchestrator({ proxy, spawnVite: spawn })
     const slot = { devDomain: DevDomain.parse('storyboard-core'), worktree: WorktreeName.parse('main') }
-    const a = await orch.acquire({ slot, targetCwd: tmp, ttlSeconds: 60, allowDefaultDomain: false })
-    const b = await orch.acquire({ slot, targetCwd: tmp, ttlSeconds: 60, allowDefaultDomain: false })
+    const a = await orch.acquire({ slot, targetCwd: tmp, allowDefaultDomain: false })
+    const b = await orch.acquire({ slot, targetCwd: tmp, allowDefaultDomain: false })
     expect(spawn).toHaveBeenCalledTimes(1)
     expect(b.devServer.id).toBe(a.devServer.id)
     expect(b.lease.id).not.toBe(a.lease.id) // fresh lease
@@ -125,9 +125,9 @@ describe('DevServerOrchestrator', () => {
     const orch = new DevServerOrchestrator({ proxy, spawnVite: spawn })
     const slot = { devDomain: DevDomain.parse('storyboard-core'), worktree: WorktreeName.parse('main') }
     const [a, b, c] = await Promise.all([
-      orch.acquire({ slot, targetCwd: tmp, ttlSeconds: 60, allowDefaultDomain: false }),
-      orch.acquire({ slot, targetCwd: tmp, ttlSeconds: 60, allowDefaultDomain: false }),
-      orch.acquire({ slot, targetCwd: tmp, ttlSeconds: 60, allowDefaultDomain: false }),
+      orch.acquire({ slot, targetCwd: tmp, allowDefaultDomain: false }),
+      orch.acquire({ slot, targetCwd: tmp, allowDefaultDomain: false }),
+      orch.acquire({ slot, targetCwd: tmp, allowDefaultDomain: false }),
     ])
     expect(spawn).toHaveBeenCalledTimes(1)
     expect(a.devServer.id).toBe(b.devServer.id)
@@ -140,7 +140,7 @@ describe('DevServerOrchestrator', () => {
     const r = await orch.acquire({
       slot: { devDomain: DevDomain.parse('storyboard-core'), worktree: WorktreeName.parse('0.5.0') },
       targetCwd: tmp,
-      ttlSeconds: 60,
+      
       allowDefaultDomain: false,
     })
     expect(r.lease.url).toBe('http://storyboard-core.localhost/branch--0.5.0/')
@@ -152,21 +152,6 @@ describe('DevServerOrchestrator', () => {
     expect(() => orch.release('00000000-0000-0000-0000-000000000000')).toThrow(LeaseNotFoundError)
   })
 
-  it('renew extends lease expiry', async () => {
-    const { proxy } = makeProxy()
-    const orch = new DevServerOrchestrator({ proxy, spawnVite: () => fakeViteChild() })
-    const r = await orch.acquire({
-      slot: { devDomain: DevDomain.parse('storyboard-core'), worktree: WorktreeName.parse('main') },
-      targetCwd: tmp,
-      ttlSeconds: 60,
-      allowDefaultDomain: false,
-    })
-    const before = new Date(r.lease.expiresAt).getTime()
-    await new Promise(res => setTimeout(res, 5))
-    const renewed = orch.renew(r.lease.id, 600)
-    expect(new Date(renewed.expiresAt).getTime()).toBeGreaterThan(before)
-  })
-
   it('surfaces DevServerSpawnError when child exits before ready', async () => {
     const { proxy } = makeProxy()
     const orch = new DevServerOrchestrator({
@@ -176,7 +161,6 @@ describe('DevServerOrchestrator', () => {
     await expect(orch.acquire({
       slot: { devDomain: DevDomain.parse('storyboard-core'), worktree: WorktreeName.parse('main') },
       targetCwd: tmp,
-      ttlSeconds: 60,
       allowDefaultDomain: false,
     })).rejects.toThrow(/exited.*before becoming ready/)
   })
@@ -185,7 +169,7 @@ describe('DevServerOrchestrator', () => {
     const { proxy, removes } = makeProxy()
     const orch = new DevServerOrchestrator({ proxy, spawnVite: () => fakeViteChild() })
     const slot = { devDomain: DevDomain.parse('storyboard-core'), worktree: WorktreeName.parse('main') }
-    const r = await orch.acquire({ slot, targetCwd: tmp, ttlSeconds: 60, allowDefaultDomain: false })
+    const r = await orch.acquire({ slot, targetCwd: tmp, allowDefaultDomain: false })
     orch.release(r.lease.id)
     // Allow the SIGTERM → exit handler to fire.
     await new Promise(res => setTimeout(res, 20))

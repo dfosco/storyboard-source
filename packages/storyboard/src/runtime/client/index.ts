@@ -11,7 +11,6 @@ import {
   ProxyState,
   ProxyUpsertRequest,
   ReleaseRequest,
-  RenewRequest,
   RuntimeError,
 } from '../schema/index.js'
 import type { z } from 'zod'
@@ -199,11 +198,6 @@ export class RuntimeClient {
   async release(input: z.input<typeof ReleaseRequest>): Promise<void> {
     const body = ReleaseRequest.parse(input)
     await request(this.baseUrl, 'POST', '/devserver/release', body, null)
-  }
-
-  async renew(input: z.input<typeof RenewRequest>): Promise<void> {
-    const body = RenewRequest.parse(input)
-    await request(this.baseUrl, 'POST', '/devserver/renew', body, null)
   }
 
   async proxyState(): Promise<ProxyState> {

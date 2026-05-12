@@ -6,15 +6,13 @@ import { DevServer, Lease, ProxyRoute } from './devserver.js'
  * `POST /devserver/acquire` — request a devserver for a `(devDomain, worktree)` slot.
  *
  * If a devserver already exists for the slot, the runtime returns its existing
- * lease (renewed). Otherwise it either rents a hot-pool member or spawns a new
- * Vite process. The slot is locked for the duration of the call.
+ * lease. Otherwise it spawns a new Vite process. The slot is locked for the
+ * duration of the call.
  */
 export const AcquireRequest = z.object({
   slot: DevServerSlot,
   /** Absolute path of the worktree directory; the runtime spawns Vite with `cwd: targetCwd`. */
   targetCwd: z.string().min(1),
-  /** Lease TTL in seconds. Defaults to 5 min; CLI clients renew on each command. */
-  ttlSeconds: z.number().int().min(30).max(60 * 60).default(300),
   /**
    * Escape hatch for the deprecated default devDomain `"storyboard"`. CI and
    * one-off scripts may pass true; the CLI never does.
@@ -29,18 +27,11 @@ export const AcquireResponse = z.object({
 })
 export type AcquireResponse = z.infer<typeof AcquireResponse>
 
-/** `POST /devserver/release` — relinquish the lease and trigger draining. */
+/** `POST /devserver/release` — relinquish the lease and stop the devserver. */
 export const ReleaseRequest = z.object({
   leaseId: z.string().uuid(),
 })
 export type ReleaseRequest = z.infer<typeof ReleaseRequest>
-
-/** `POST /devserver/renew` — extend the lease without changing devserver state. */
-export const RenewRequest = z.object({
-  leaseId: z.string().uuid(),
-  ttlSeconds: z.number().int().min(30).max(60 * 60).default(300),
-})
-export type RenewRequest = z.infer<typeof RenewRequest>
 
 /** `GET /proxy/state` — current routing table the runtime believes Caddy holds. */
 export const ProxyState = z.object({
@@ -49,7 +40,7 @@ export const ProxyState = z.object({
 })
 export type ProxyState = z.infer<typeof ProxyState>
 
-/** `GET /pool/status` — hot-pool inventory. */
+/** `GET /pool/status` — kept for backward compat; always reports zeros. */
 export const PoolStatus = z.object({
   warm: z.number().int().nonnegative(),
   bound: z.number().int().nonnegative(),
