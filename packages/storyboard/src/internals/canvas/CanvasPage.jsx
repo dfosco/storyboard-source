@@ -564,71 +564,6 @@ const ChromeWrappedWidget = memo(function ChromeWrappedWidget({
 /**
  * Editable canvas/folder title — always visible, double-click to edit in dev mode.
  */
-function ComponentWidgetSlot({
-  widgetId,
-  exportName,
-  Component,
-  sourcePosition,
-  sourceData,
-  canvasTheme,
-  canvasPrimerAttrs,
-  canvasThemeVars,
-  isLocalDev,
-  componentFeatures,
-  jsxModule,
-  selectedWidgetIds,
-  isMultiSelected,
-  handleWidgetSelect,
-  handleDeselectAll,
-  handleSourceUpdate,
-}) {
-  const widgetRef = useRef(null)
-  const selected = selectedWidgetIds.has(widgetId)
-  return (
-    <div
-      id={widgetId}
-      data-tc-x={sourcePosition.x}
-      data-tc-y={sourcePosition.y}
-      data-widget-raised={selected || undefined}
-      {...(isLocalDev ? { 'data-tc-handle': '.tc-drag-handle, .tc-drag-surface' } : {})}
-      {...canvasPrimerAttrs}
-      style={canvasThemeVars}
-      onClick={isLocalDev ? (e) => {
-        e.stopPropagation()
-        if (!e.target.closest('.tc-drag-handle')) {
-          handleWidgetSelect(widgetId, e.shiftKey)
-        }
-      } : undefined}
-    >
-      <WidgetChrome
-        widgetId={widgetId}
-        widgetType="component"
-        widgetRef={widgetRef}
-        features={componentFeatures}
-        selected={selected}
-        multiSelected={isMultiSelected && selected}
-        onSelect={(shiftKey) => handleWidgetSelect(widgetId, shiftKey)}
-        onDeselect={handleDeselectAll}
-        readOnly={!isLocalDev}
-      >
-        <ComponentWidget
-          ref={widgetRef}
-          widgetId={widgetId}
-          component={Component}
-          jsxModule={jsxModule}
-          exportName={exportName}
-          canvasTheme={canvasTheme}
-          isLocalDev={isLocalDev}
-          width={sourceData.width}
-          height={sourceData.height}
-          onUpdate={isLocalDev ? (updates) => handleSourceUpdate(exportName, updates) : undefined}
-          resizable={isResizable('component') && isLocalDev}
-        />
-      </WidgetChrome>
-    </div>
-  )
-}
-
 function CanvasTitleEditable({ canvasId, canvasMeta, canvas, isLocalDev }) {
   const [editing, setEditing] = useState(false)
   const [titleValue, setTitleValue] = useState('')
@@ -3417,27 +3352,45 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
   for (const entry of componentEntries) {
     const { exportName, Component, sourceData } = entry
     const sourcePosition = sourceData.position || { x: 0, y: 0 }
-    const componentWidgetId = `jsx-${exportName}`
     allChildren.push(
-      <ComponentWidgetSlot
-        key={componentWidgetId}
-        widgetId={componentWidgetId}
-        exportName={exportName}
-        Component={Component}
-        sourcePosition={sourcePosition}
-        sourceData={sourceData}
-        canvasTheme={canvasTheme}
-        canvasPrimerAttrs={canvasPrimerAttrs}
-        canvasThemeVars={canvasThemeVars}
-        isLocalDev={isLocalDev}
-        componentFeatures={componentFeatures}
-        jsxModule={canvas?._jsxModule}
-        selectedWidgetIds={selectedWidgetIds}
-        isMultiSelected={isMultiSelected}
-        handleWidgetSelect={handleWidgetSelect}
-        handleDeselectAll={handleDeselectAll}
-        handleSourceUpdate={handleSourceUpdate}
-      />
+      <div
+        key={`jsx-${exportName}`}
+        id={`jsx-${exportName}`}
+        data-tc-x={sourcePosition.x}
+        data-tc-y={sourcePosition.y}
+        data-widget-raised={selectedWidgetIds.has(`jsx-${exportName}`) || undefined}
+        {...(isLocalDev ? { 'data-tc-handle': '.tc-drag-handle, .tc-drag-surface' } : {})}
+        {...canvasPrimerAttrs}
+        style={canvasThemeVars}
+        onClick={isLocalDev ? (e) => {
+          e.stopPropagation()
+          if (!e.target.closest('.tc-drag-handle')) {
+            handleWidgetSelect(`jsx-${exportName}`, e.shiftKey)
+          }
+        } : undefined}
+      >
+        <WidgetChrome
+          widgetId={`jsx-${exportName}`}
+          features={componentFeatures}
+          selected={selectedWidgetIds.has(`jsx-${exportName}`)}
+          multiSelected={isMultiSelected && selectedWidgetIds.has(`jsx-${exportName}`)}
+          onSelect={(shiftKey) => handleWidgetSelect(`jsx-${exportName}`, shiftKey)}
+          onDeselect={handleDeselectAll}
+          readOnly={!isLocalDev}
+        >
+          <ComponentWidget
+            component={Component}
+            jsxModule={canvas?._jsxModule}
+            exportName={exportName}
+            canvasTheme={canvasTheme}
+            isLocalDev={isLocalDev}
+            width={sourceData.width}
+            height={sourceData.height}
+            onUpdate={isLocalDev ? (updates) => handleSourceUpdate(exportName, updates) : undefined}
+            resizable={isResizable('component') && isLocalDev}
+          />
+        </WidgetChrome>
+      </div>
     )
   }
 

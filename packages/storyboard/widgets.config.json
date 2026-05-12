@@ -691,7 +691,6 @@
     "component": {
       "label": "Component",
       "icon": "iconoir/keyframe",
-      "expandable": true,
       "resize": {
         "enabled": true,
         "prod": false
@@ -711,14 +710,6 @@
         }
       },
       "features": [
-        {
-          "id": "expand",
-          "type": "action",
-          "action": "expand",
-          "label": "$label:expand",
-          "icon": "expand",
-          "prod": true
-        },
         {
           "id": "copy-link",
           "type": "action",
