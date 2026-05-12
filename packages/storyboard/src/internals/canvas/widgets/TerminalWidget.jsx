@@ -284,8 +284,20 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
           return
         }
 
-        const dims = calcDimensions(width, height, fontSize)
         const cfg = getTerminalConfig()
+
+        // Wait for web fonts to load before initializing ghostty's glyph atlas.
+        // Without this, ghostty rasterizes glyphs against fallback font metrics,
+        // then when the real font swaps in, glyphs render misaligned against the
+        // cell grid (visible as broken box-drawing characters and overstrike on
+        // letters). Especially visible on consumer installs where fonts come
+        // over the network instead of from cache.
+        if (typeof document !== 'undefined' && document.fonts?.ready) {
+          try { await document.fonts.ready } catch {}
+          if (disposed) return
+        }
+
+        const dims = calcDimensions(width, height, fontSize)
 
         term = new ghostty.Terminal({
           fontSize: cfg.fontSize ?? 13,
