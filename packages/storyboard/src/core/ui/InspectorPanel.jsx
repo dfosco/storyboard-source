@@ -355,6 +355,9 @@ export default function InspectorPanel() {
               const chain = inspectElementChain(el)
               setComponentInfo(info)
               setComponentChain(chain)
+              try { el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' }) } catch { /* ignore */ }
+              // Wait for smooth scroll to settle before pinning highlight to final rect
+              await new Promise(r => setTimeout(r, 350))
               mouseMode.showHighlight(el)
               restored = true
             }
