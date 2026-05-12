@@ -1,5 +1,13 @@
 # @dfosco/storyboard
 
+## 0.5.0-beta.36
+
+### Patch Changes
+
+-   Terminal font-loading fix
+
+    -   fix(terminal): await `document.fonts.ready` before initializing the ghostty atlas, so glyphs render with correct metrics instead of falling back when web fonts swap in
+
 ## 0.5.0-beta.35
 
 ### Patch Changes
