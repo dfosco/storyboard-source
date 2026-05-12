@@ -379,6 +379,27 @@ const ChromeWrappedWidget = memo(function ChromeWrappedWidget({
   // Dynamically adjust features based on widget state
   const features = useMemo(() => {
     const isGitHub = !!widget.props?.github
+    const isTerminalOrAgent = widget.type === 'terminal' || widget.type === 'agent'
+
+    // Detect connected terminal/agent peers — used to gate hub-related features.
+    // Hub role and broadcast are meaningless without a peer to coordinate with.
+    let hasHubPeers = false
+    let allBroadcastActive = true
+    const broadcastConnectorIds = []
+    if (isTerminalOrAgent) {
+      const widgetConnectors = connectorCount || []
+      const widgetList = allWidgets || []
+      for (const conn of widgetConnectors) {
+        const peerId = conn.start?.widgetId === widget.id ? conn.end?.widgetId : conn.start?.widgetId
+        const peer = widgetList.find((w) => w.id === peerId)
+        if (peer && (peer.type === 'terminal' || peer.type === 'agent')) {
+          hasHubPeers = true
+          broadcastConnectorIds.push(conn.id)
+          if (conn.meta?.messagingMode !== 'two-way') allBroadcastActive = false
+        }
+      }
+    }
+
     const adjusted = rawFeatures.map((f) => {
       // Toggle collapse label and hide when content is short (no github = no collapse)
       if (f.action === 'toggle-collapse') {
@@ -391,6 +412,9 @@ const ChromeWrappedWidget = memo(function ChromeWrappedWidget({
       }
       // Hide refresh-github for non-GitHub link previews
       if (f.action === 'refresh-github' && !isGitHub) return null
+      // Hide hub-role selector when terminal/agent has no connected peers —
+      // a hub of one is not a hub.
+      if (f.type === 'role-selector' && isTerminalOrAgent && !hasHubPeers) return null
       return f
     }).filter(Boolean)
 
@@ -420,37 +444,19 @@ const ChromeWrappedWidget = memo(function ChromeWrappedWidget({
     }
 
     // Add dynamic "Broadcast" toggle for terminal/agent widgets with connected peers
-    if (widget.type === 'terminal' || widget.type === 'agent') {
-      const widgetConnectors = connectorCount || []
-      const widgetList = allWidgets || []
-      let hasBroadcastPeers = false
-      let allBroadcastActive = true
-      const broadcastConnectorIds = []
-
-      for (const conn of widgetConnectors) {
-        const peerId = conn.start?.widgetId === widget.id ? conn.end?.widgetId : conn.start?.widgetId
-        const peer = widgetList.find((w) => w.id === peerId)
-        if (peer && (peer.type === 'terminal' || peer.type === 'agent')) {
-          hasBroadcastPeers = true
-          broadcastConnectorIds.push(conn.id)
-          if (conn.meta?.messagingMode !== 'two-way') allBroadcastActive = false
-        }
+    if (isTerminalOrAgent && hasHubPeers) {
+      const isActive = allBroadcastActive
+      const insertIdx = adjusted.findIndex((f) => f.menu)
+      const broadcastFeature = {
+        id: 'broadcast',
+        type: 'action',
+        action: `broadcast-toggle:${broadcastConnectorIds.join(',')}:${isActive ? 'off' : 'on'}`,
+        label: isActive ? 'Broadcast On' : 'Broadcast',
+        icon: 'broadcast',
+        active: isActive,
       }
-
-      if (hasBroadcastPeers) {
-        const isActive = allBroadcastActive
-        const insertIdx = adjusted.findIndex((f) => f.menu)
-        const broadcastFeature = {
-          id: 'broadcast',
-          type: 'action',
-          action: `broadcast-toggle:${broadcastConnectorIds.join(',')}:${isActive ? 'off' : 'on'}`,
-          label: isActive ? 'Broadcast On' : 'Broadcast',
-          icon: 'broadcast',
-          active: isActive,
-        }
-        if (insertIdx >= 0) adjusted.splice(insertIdx, 0, broadcastFeature)
-        else adjusted.push(broadcastFeature)
-      }
+      if (insertIdx >= 0) adjusted.splice(insertIdx, 0, broadcastFeature)
+      else adjusted.push(broadcastFeature)
     }
 
     return adjusted
