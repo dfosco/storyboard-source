@@ -1,5 +1,11 @@
 # @dfosco/storyboard
 
+## 0.5.0-beta.40
+
+### Patch Changes
+
+-   Fix lint errors blocking the beta.39 publish (no functional change).
+
 ## 0.5.0-beta.39
 
 ### Patch Changes
