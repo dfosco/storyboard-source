@@ -659,6 +659,21 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
   // Local mutable copy of widgets for instant UI updates
   const [localWidgets, setLocalWidgets] = useState(canvas?.widgets ?? null)
   const [localConnectors, setLocalConnectors] = useState(canvas?.connectors ?? [])
+  // Track widget/connector IDs the user has just deleted locally so the HMR
+  // reconcile in the canvas-changed handler doesn't re-add them. Each ID is
+  // pruned once a server push confirms it's gone OR after a 5s safety timeout.
+  const pendingWidgetDeletionsRef = useRef(new Set())
+  const pendingConnectorDeletionsRef = useRef(new Set())
+  const markWidgetDeleted = useCallback((widgetId) => {
+    if (!widgetId) return
+    pendingWidgetDeletionsRef.current.add(widgetId)
+    setTimeout(() => pendingWidgetDeletionsRef.current.delete(widgetId), 5000)
+  }, [])
+  const markConnectorDeleted = useCallback((connectorId) => {
+    if (!connectorId) return
+    pendingConnectorDeletionsRef.current.add(connectorId)
+    setTimeout(() => pendingConnectorDeletionsRef.current.delete(connectorId), 5000)
+  }, [])
   const [trackedCanvas, setTrackedCanvas] = useState(canvas)
   const [selectedWidgetIds, setSelectedWidgetIds] = useState(() => new Set())
   const initialViewport = loadViewportState(canvasId)
@@ -899,13 +914,15 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
       setLocalWidgets((prev) => {
         if (!prev) return serverWidgets
         const localIds = new Set(prev.map((w) => w.id))
-        const additions = serverWidgets.filter((w) => !localIds.has(w.id))
+        const pending = pendingWidgetDeletionsRef.current
+        const additions = serverWidgets.filter((w) => !localIds.has(w.id) && !pending.has(w.id))
         return additions.length > 0 ? [...prev, ...additions] : prev
       })
       setLocalConnectors((prev) => {
-        if (!prev || prev.length === 0) return serverConnectors
+        if (!prev || prev.length === 0) return serverConnectors.filter((c) => !pendingConnectorDeletionsRef.current.has(c.id))
         const localIds = new Set(prev.map((c) => c.id))
-        const additions = serverConnectors.filter((c) => !localIds.has(c.id))
+        const pending = pendingConnectorDeletionsRef.current
+        const additions = serverConnectors.filter((c) => !localIds.has(c.id) && !pending.has(c.id))
         return additions.length > 0 ? [...prev, ...additions] : prev
       })
     }
@@ -1008,12 +1025,14 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
     debouncedSave.cancel()
 
     undoRedo.snapshot(stateRef.current, 'remove', widgetId)
+    markWidgetDeleted(widgetId)
     setLocalWidgets((prev) => prev ? prev.filter((w) => w.id !== widgetId) : prev)
     // Cascade: remove connectors referencing this widget
     setLocalConnectors((prev) => {
       const orphaned = prev.filter((c) => c.start.widgetId === widgetId || c.end.widgetId === widgetId)
       if (orphaned.length === 0) return prev
       for (const c of orphaned) {
+        markConnectorDeleted(c.id)
         queueWrite(() =>
           removeConnectorApi(canvasId, c.id).catch((err) =>
             console.error('[canvas] Failed to remove orphaned connector:', err)
@@ -1027,7 +1046,7 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
       removeWidgetApi(canvasId, widgetId)
         .catch((err) => console.error('[canvas] Failed to remove widget:', err))
     )
-  }, [canvasId, undoRedo, debouncedSave])
+  }, [canvasId, undoRedo, debouncedSave, markWidgetDeleted, markConnectorDeleted])
 
   const handleConnectorAdd = useCallback(async ({ startWidgetId, startAnchor, endWidgetId, endAnchor }) => {
     try {
@@ -1075,6 +1094,7 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
 
   const handleConnectorRemove = useCallback((connectorId) => {
     undoRedo.snapshot(stateRef.current, 'connector-remove')
+    markConnectorDeleted(connectorId)
     setLocalConnectors((prev) => prev.filter((c) => c.id !== connectorId))
     dirtyRef.current = true
     queueWrite(() =>
@@ -1082,7 +1102,7 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
         console.error('[canvas] Failed to remove connector:', err)
       )
     )
-  }, [canvasId, undoRedo])
+  }, [canvasId, undoRedo, markConnectorDeleted])
 
   // Connector drag state
   const [connectorDrag, setConnectorDrag] = useState(null)
@@ -2677,11 +2697,15 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
           undoRedo.snapshot(stateRef.current, 'multi-remove')
           debouncedSave.cancel()
           const idsToRemove = new Set(selectedWidgetIds)
+          // Mark deletions before mutating local state so the HMR merge
+          // doesn't re-add them mid-flight.
+          for (const id of idsToRemove) markWidgetDeleted(id)
           // Remove from local state immediately
           setLocalWidgets((prev) => prev ? prev.filter(w => !idsToRemove.has(w.id)) : prev)
           setLocalConnectors((prev) => {
             const orphaned = prev.filter((c) => idsToRemove.has(c.start.widgetId) || idsToRemove.has(c.end.widgetId))
             for (const c of orphaned) {
+              markConnectorDeleted(c.id)
               queueWrite(() =>
                 removeConnectorApi(canvasId, c.id).catch((err) =>
                   console.error('[canvas] Failed to remove orphaned connector:', err)
@@ -2708,7 +2732,7 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
     }
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [selectedWidgetIds, localWidgets, handleWidgetRemove, undoRedo, canvasId, debouncedSave])
+  }, [selectedWidgetIds, localWidgets, handleWidgetRemove, undoRedo, canvasId, debouncedSave, markWidgetDeleted, markConnectorDeleted])
 
   // Ref to store processImageFile for use by drop effect
   const processImageFileRef = useRef(null)
