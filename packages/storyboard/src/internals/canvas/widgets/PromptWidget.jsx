@@ -63,6 +63,14 @@ const DEFAULT_THEME = {
   selectionBackground: '#264f78',
 }
 
+function normalizeStatus(s) {
+  if (s === 'completed') return 'done'
+  if (s === 'running' || s === 'working' || s === 'pending') return 'pending'
+  if (s === 'error') return 'error'
+  if (s === 'done') return 'done'
+  return 'idle'
+}
+
 function calcMiniDimensions(widthPx, heightPx) {
   const scale = MINI_FONT_SIZE / 13
   const cellWidth = 7.8 * scale
@@ -81,7 +89,7 @@ const PromptWidget = forwardRef(function PromptWidget({ id, props, onUpdate, res
   const width = readProp(props, 'width', promptSchema)
   const height = readProp(props, 'height', promptSchema)
   const [draftText, setDraftText] = useState('')
-  const [execStatus, setExecStatus] = useState(persistedStatus || 'idle')
+  const [execStatus, setExecStatus] = useState(normalizeStatus(persistedStatus))
   const [execError, setExecError] = useState(errorMessage || '')
   const [showOutput, setShowOutput] = useState(false)
   const canEdit = typeof onUpdate === 'function'
@@ -125,10 +133,10 @@ const PromptWidget = forwardRef(function PromptWidget({ id, props, onUpdate, res
         onUpdateRef.current?.({ status: 'idle', sessionId: '', errorMessage: '' })
       } else if (data.status === 'working') {
         setExecStatus('pending')
-        onUpdateRef.current?.({ status: 'working' })
+        onUpdateRef.current?.({ status: 'pending' })
       } else if (data.status === 'running' || data.status === 'pending') {
         setExecStatus('pending')
-        onUpdateRef.current?.({ status: 'running' })
+        onUpdateRef.current?.({ status: 'pending' })
       }
     }
 

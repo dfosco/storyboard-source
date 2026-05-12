@@ -1,7 +1,7 @@
 SESSION: agent-ua4c6z | teal-dove
 CANVAS:  storyboarding/terminal-widget-prompts
 BRANCH:  0.5.0
-TIME:    2026-05-12T11:41:02.238Z
+TIME:    2026-05-12T11:58:26.291Z
 
 ================================================================================
 SCREEN
@@ -33,7 +33,7 @@ SCREEN
 
 ● Configuration acknowledged.
 
- ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]          @storyboard.config.json
 ─────────────────────────────────────────────────────────────────────────────────────────
 ❯  
 ─────────────────────────────────────────────────────────────────────────────────────────
