@@ -2567,10 +2567,25 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
       const y = widget.position?.y ?? 0
       const w = widget.props?.width ?? fallback.width
       const h = widget.props?.height ?? fallback.height
-      const scale = (zoomRef.current || 100) / 100
+
+      // Zoom in (to at least 100%) so the agent is comfortably visible.
+      const { ZOOM_MIN, ZOOM_MAX } = zoomLimits()
+      const targetZoom = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, Math.max(zoomRef.current || 100, 100)))
+      const newScale = targetZoom / 100
+      if (targetZoom !== zoomRef.current) {
+        zoomRef.current = targetZoom
+        const zoomEl = zoomElRef.current
+        if (zoomEl) {
+          zoomEl.style.transform = `scale(${newScale})`
+          zoomEl.style.width = `${Math.max(10000, 100 / newScale)}vw`
+          zoomEl.style.height = `${Math.max(10000, 100 / newScale)}vh`
+        }
+        setZoom(targetZoom)
+      }
+
       el.scrollTo({
-        left: (x + w / 2) * scale - el.clientWidth / 2,
-        top: (y + h / 2) * scale - el.clientHeight / 2,
+        left: (x + w / 2) * newScale - el.clientWidth / 2,
+        top: (y + h / 2) * newScale - el.clientHeight / 2,
         behavior: 'smooth',
       })
     }
