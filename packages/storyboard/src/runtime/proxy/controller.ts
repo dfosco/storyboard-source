@@ -52,6 +52,34 @@ export class ProxyController {
 
   async upsert(devDomain: DevDomain, worktree: WorktreeName, port: Port): Promise<ProxyRoute> {
     return this.withLock(async () => {
+      // Evict this port from every other devDomain. A port can be reassigned
+      // when its previous owner exits, but the previous devDomain's Caddy
+      // route still references the port number — so requests to host A would
+      // silently land on host B's Vite (which then 421s with "Wrong domain").
+      // Strip the port from sibling routes before binding it here.
+      for (const [otherDomain, otherRoute] of this.routes) {
+        if (otherDomain === devDomain) continue
+        let mutated = false
+        const nextUpstreams: Record<string, Port> = {}
+        for (const [w, p] of Object.entries(otherRoute.upstreams)) {
+          if (Number(p) === Number(port)) { mutated = true; continue }
+          nextUpstreams[w] = p
+        }
+        if (!mutated) continue
+        if (Object.keys(nextUpstreams).length === 0) {
+          this.routes.delete(otherDomain)
+          await this.removeFromCaddy(otherDomain)
+        } else {
+          const cleaned = ProxyRoute.parse({
+            devDomain: otherDomain,
+            host: `${otherDomain}.localhost`,
+            upstreams: nextUpstreams,
+          })
+          this.routes.set(otherDomain, cleaned)
+          await this.syncOne(cleaned)
+        }
+      }
+
       const existing = this.routes.get(devDomain)
       const upstreams: Record<string, Port> = { ...(existing?.upstreams ?? {}) }
       upstreams[worktree] = port
