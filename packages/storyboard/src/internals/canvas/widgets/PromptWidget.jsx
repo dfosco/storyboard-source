@@ -216,6 +216,7 @@ const PromptWidget = forwardRef(function PromptWidget({ id, props, onUpdate, res
     e.stopPropagation()
   }, [handleSubmit])
 
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const handleReset = useCallback(() => {
     setExecStatus('idle')
     setExecError('')

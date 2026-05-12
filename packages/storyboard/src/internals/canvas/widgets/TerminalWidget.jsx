@@ -293,7 +293,7 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
         // letters). Especially visible on consumer installs where fonts come
         // over the network instead of from cache.
         if (typeof document !== 'undefined' && document.fonts?.ready) {
-          try { await document.fonts.ready } catch {}
+          try { await document.fonts.ready } catch { /* font load failures are non-fatal */ }
           if (disposed) return
         }
 
