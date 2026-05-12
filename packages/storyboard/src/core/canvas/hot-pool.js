@@ -167,12 +167,25 @@ export class HotPool {
     this.#log('■ STOPPED — all sessions killed')
   }
 
+  /**
+   * Non-mutating probe: would the next acquire() return a session, and would it
+   * be webgl-ready? Used by callers that want to render in webgl-ready mode
+   * without claiming a slot (the actual claim happens later when the WS
+   * connects). Returns { ready, webglReady }.
+   */
+  peek() {
+    if (!this.#enabled || this.#queue.length === 0) return { ready: false, webglReady: false }
+    const idx = this.#queue.findIndex(s => s.state === 'ready')
+    if (idx === -1) return { ready: false, webglReady: false }
+    const webglReady = this.#webglReadySlots > 0 && idx < this.#webglReadySlots
+    return { ready: true, webglReady }
+  }
+
   acquire() {
     if (!this.#enabled || this.#queue.length === 0) {
       this.#log(`→ ACQUIRE — pool ${!this.#enabled ? 'disabled' : 'empty'}, returning null`)
       return null
     }
-
     const idx = this.#queue.findIndex(s => s.state === 'ready')
     if (idx === -1) {
       this.#log(`→ ACQUIRE — ${this.#queue.length} in queue but none ready, returning null`)
@@ -729,6 +742,13 @@ export class HotPoolManager {
     const pool = this.#pools.get(poolId)
     if (!pool) return null
     return pool.acquire()
+  }
+
+  /** Non-mutating probe: { ready, webglReady } for the specified pool. */
+  peek(poolId) {
+    const pool = this.#pools.get(poolId)
+    if (!pool) return { ready: false, webglReady: false }
+    return pool.peek()
   }
 
   /** Consume a session (transfer ownership out of pool permanently). */

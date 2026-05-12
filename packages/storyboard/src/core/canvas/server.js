@@ -776,18 +776,19 @@ export function createCanvasHandler(ctx) {
   }
 
   /**
-   * Try to acquire a warm session from the hot pool.
+   * Non-mutating probe of a hot pool — returns webgl-readiness without
+   * claiming a slot. Use this when the canvas API just needs to tell the
+   * client whether to render in webgl-ready mode; the actual session claim
+   * happens later in terminal-server when the WebSocket connects.
    * @param {Object|null} hotPool — HotPoolManager instance
-   * @param {string} poolId — pool to acquire from
+   * @param {string} poolId — pool to peek at
    * @param {string} [mode] — 'auto' (default), 'hot', or 'cold'
-   * @returns {Object|null} acquired session or null
+   * @returns {{ ready: boolean, webglReady: boolean }}
    */
-  function acquireFromPool(hotPool, poolId, mode) {
-    if (!hotPool || mode === 'cold') return null
-    const effectiveMode = mode || 'auto'
-    if (effectiveMode === 'cold') return null
-    if (!hotPool.has(poolId)) return null
-    return hotPool.acquire(poolId) || null
+  function peekPool(hotPool, poolId, mode) {
+    if (!hotPool || mode === 'cold') return { ready: false, webglReady: false }
+    if (!hotPool.has(poolId)) return { ready: false, webglReady: false }
+    return hotPool.peek(poolId)
   }
 
   /**
@@ -1118,12 +1119,17 @@ export function createCanvasHandler(ctx) {
 
         await prepareTerminalWidget({ type, props, widgetId, canvasName: name, req })
 
-        // Hot pool acquisition for terminal/agent widgets
-        let hotSession = null
+        // Hot pool readiness probe for terminal/agent widgets — non-mutating.
+        // The actual session claim happens later in terminal-server when the
+        // WS connects. Probing here only tells the client whether to render
+        // in webgl-ready mode immediately. (Previously this called
+        // acquireFromPool, which leaked a #acquired slot per widget creation
+        // because no consume/release ever fired against this acquisition.)
+        let hotProbe = { ready: false, webglReady: false }
         if ((type === 'terminal' || type === 'agent') && pool !== 'cold') {
           const poolId = resolvePoolId(type, props)
-          hotSession = acquireFromPool(hotPool, poolId, pool)
-          if (!hotSession && pool === 'hot') {
+          hotProbe = peekPool(hotPool, poolId, pool)
+          if (!hotProbe.ready && pool === 'hot') {
             sendJson(res, 409, { error: `No warm sessions available in pool "${poolId}"` })
             return
           }
@@ -1138,7 +1144,7 @@ export function createCanvasHandler(ctx) {
         })
 
         const response = { success: true, widget }
-        if (hotSession) response.hotSession = { id: hotSession.id, tmuxName: hotSession.tmuxName || null, webglReady: !!hotSession.webglReady }
+        if (hotProbe.ready) response.hotSession = { id: null, tmuxName: null, webglReady: hotProbe.webglReady }
         sendJson(res, 201, response)
         pushCanvasUpdate(name, filePath, __viteWs)
       } catch (err) {
@@ -1870,11 +1876,11 @@ export function createCanvasHandler(ctx) {
                 const widgetId = generateWidgetId(type)
                 await prepareTerminalWidget({ type, props, widgetId, canvasName: name, req })
 
-                let hotSession = null
+                let hotProbe = { ready: false, webglReady: false }
                 if ((type === 'terminal' || type === 'agent') && pool !== 'cold') {
                   const poolId = resolvePoolId(type, props)
-                  hotSession = acquireFromPool(hotPool, poolId, pool)
-                  if (!hotSession && pool === 'hot') throw new Error(`No warm sessions available in pool "${poolId}"`)
+                  hotProbe = peekPool(hotPool, poolId, pool)
+                  if (!hotProbe.ready && pool === 'hot') throw new Error(`No warm sessions available in pool "${poolId}"`)
                 }
 
                 const widget = stampBounds({ id: widgetId, type, position, props })
@@ -1887,7 +1893,7 @@ export function createCanvasHandler(ctx) {
                 if (ref) refs[ref] = widgetId
 
                 const result = { index: i, op: 'create-widget', ref: ref || undefined, widgetId, widget }
-                if (hotSession) result.hotSession = { id: hotSession.id, tmuxName: hotSession.tmuxName || null, webglReady: !!hotSession.webglReady }
+                if (hotProbe.ready) result.hotSession = { id: null, tmuxName: null, webglReady: hotProbe.webglReady }
                 results.push(result)
                 break
               }
