@@ -61,13 +61,27 @@ npx storyboard dev
 # → http://storyboard.localhost/branch--my-feature/storyboard/
 ```
 
+#### Upgrading from a pre-0.5.0 version
+
+0.5.0 introduces a single per-machine **Storyboard Runtime** daemon that owns Vite child processes, port allocation, and the Caddy proxy's route table. If you're coming from `main` or any pre-0.5.0 release, run `reset` once to clear out the old per-repo Vite processes and Caddyfile-reload routes that the runtime can't see:
+
+```bash
+npx storyboard reset      # only needed when upgrading
+npm install
+npx storyboard setup
+npx storyboard dev
+```
+
+`reset` SIGTERMs the old daemon (if any), stops orphan `vite` processes, clears Caddy's route table, and respawns a fresh runtime. It does not touch `node_modules`, `storyboard.config.json`, or any of your canvas state.
+
 #### Storyboard CLI
 
 The `storyboard` CLI (alias: `sb`) wraps all dev tooling. Run via `npx`:
 
 | Command | Description |
 |---------|-------------|
-| `npx storyboard dev` | Start Vite dev server + update proxy |
+| `npx storyboard dev` | Start runtime daemon + Caddy proxy + Vite dev server (alias for `run`) |
+| `npx storyboard reset` | Nuke daemon + Caddy routes + orphan vites; respawn fresh (use after upgrades) |
 | `npx storyboard setup` | Install deps, Caddy, start proxy |
 | `npx storyboard proxy` | Regenerate proxy config + reload |
 | `npx storyboard update:version [version]` | Update storyboard packages to latest (or specific version) |
