@@ -290,6 +290,12 @@ if (isInstalled('copilot')) {
     'assets/canvas/images/~*',
     'assets/canvas/snapshots/~*',
     'assets/.storyboard-public/terminal-snapshots/~*',
+    // Local-only canvases & prototypes (loaded by `npx storyboard dev`,
+    // excluded from `npm run build`)
+    'src/canvas/**/~*.canvas.jsonl',
+    'src/canvas/~*/',
+    'src/prototypes/~*/',
+    'src/prototypes/**/~*.{flow,object,record,prototype,folder}.json',
   ]
   if (existsSync(gitignorePath)) {
     try {

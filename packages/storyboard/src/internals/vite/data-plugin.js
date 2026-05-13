@@ -46,15 +46,18 @@ function parseStoryExportNames(filePath) {
   } catch { return [] }
 }
 
-function parseDataFile(filePath) {
+function parseDataFile(filePath, opts = {}) {
+  const { includeTilde = false } = opts
   const base = path.basename(filePath)
 
   // Handle .canvas.jsonl files
   const canvasJsonlMatch = base.match(/^(.+)\.canvas\.jsonl$/)
   if (canvasJsonlMatch) {
-    if (canvasJsonlMatch[1].startsWith('_') || canvasJsonlMatch[1].startsWith('~')) return null
+    if (canvasJsonlMatch[1].startsWith('_')) return null
+    if (!includeTilde && canvasJsonlMatch[1].startsWith('~')) return null
     const normalized = filePath.replace(/\\/g, '/')
-    if (normalized.split('/').some(seg => seg.startsWith('_') || seg.startsWith('~'))) return null
+    if (normalized.split('/').some(seg => seg.startsWith('_'))) return null
+    if (!includeTilde && normalized.split('/').some(seg => seg.startsWith('~'))) return null
 
     const baseName = canvasJsonlMatch[1]
     let name = baseName
@@ -149,12 +152,16 @@ function parseDataFile(filePath) {
   const match = base.match(/^(.+)\.(flow|scene|object|record|prototype|folder)\.(jsonc?)$/)
   if (!match) return null
 
-  // Skip _-prefixed files (drafts/internal)
+  // Skip _-prefixed files (drafts/internal — never visible)
   if (match[1].startsWith('_')) return null
+  // Skip ~-prefixed files in prod (visible in dev only — local-only experiments)
+  if (!includeTilde && match[1].startsWith('~')) return null
 
   // Skip files inside _-prefixed directories
   const normalized = filePath.replace(/\\/g, '/')
   if (normalized.split('/').some(seg => seg.startsWith('_'))) return null
+  // Skip files inside ~-prefixed directories in prod
+  if (!includeTilde && normalized.split('/').some(seg => seg.startsWith('~'))) return null
   // Normalize .scene → .flow for backward compatibility
   const suffix = match[2] === 'scene' ? 'flow' : match[2]
   let name = match[1]
@@ -297,7 +304,8 @@ function batchGitMetadata(root, filePaths) {
 /**
  * Scan the repo for all data files, validate uniqueness, return the index.
  */
-function buildIndex(root) {
+function buildIndex(root, opts = {}) {
+  const { includeTilde = false } = opts
   const ignore = ['node_modules/**', 'dist/**', '.git/**', '.worktrees/**', 'public/**']
   const files = globSync(GLOB_PATTERN, { cwd: root, ignore, absolute: false })
   const canvasFiles = globSync(CANVAS_GLOB_PATTERN, { cwd: root, ignore, absolute: false })
@@ -330,7 +338,7 @@ function buildIndex(root) {
   const storyRoutes = {} // story name → inferred route
 
   for (const relPath of [...files, ...canvasFiles, ...canvasMetaFiles, ...storyFiles]) {
-    const parsed = parseDataFile(relPath)
+    const parsed = parseDataFile(relPath, { includeTilde })
     if (!parsed) continue
 
     // Canvas files use path-based IDs for dedup; others use basename
@@ -1015,6 +1023,8 @@ function generateModule({ index, protoFolders, flowRoutes, canvasRoutes, canvasA
 export default function storyboardDataPlugin() {
   let root = ''
   let buildResult = null
+  // Set by configResolved — true during `vite` (dev), false during `vite build`.
+  let includeTilde = true
 
   return {
     name: 'storyboard-data',
@@ -1040,6 +1050,10 @@ export default function storyboardDataPlugin() {
 
     configResolved(config) {
       root = config.root
+      // Tilde-prefixed canvases/prototypes are local-only: indexed during
+      // dev so users can hit their routes, excluded from production builds
+      // so private experiments don't ship.
+      includeTilde = config.command === 'serve'
     },
 
     resolveId(id) {
@@ -1048,7 +1062,7 @@ export default function storyboardDataPlugin() {
 
     load(id) {
       if (id !== RESOLVED_ID) return null
-      if (!buildResult) buildResult = buildIndex(root)
+      if (!buildResult) buildResult = buildIndex(root, { includeTilde })
       return generateModule(buildResult, root)
     },
 
@@ -1105,7 +1119,7 @@ export default function storyboardDataPlugin() {
         }
         if (!url.startsWith('/_storyboard/stories/list')) return next()
 
-        if (!buildResult) buildResult = buildIndex(root)
+        if (!buildResult) buildResult = buildIndex(root, { includeTilde })
         const storyEntries = Object.entries(buildResult.index.story || {})
         const storyRoutes = buildResult.storyRoutes || {}
         const stories = storyEntries.map(([name]) => ({
@@ -1119,7 +1133,7 @@ export default function storyboardDataPlugin() {
 
       // Watch for data file changes in dev mode
       const watcher = server.watcher
-      if (!buildResult) buildResult = buildIndex(root)
+      if (!buildResult) buildResult = buildIndex(root, { includeTilde })
       const knownCanvasIds = new Set(Object.keys(buildResult.index.canvas || {}))
       const pendingCanvasUnlinks = new Map()
 
@@ -1171,7 +1185,7 @@ export default function storyboardDataPlugin() {
           // duplicate watcher-triggered event to prevent stale-data rollbacks.
           const absPath = path.resolve(root, filePath)
           if (!isCanvasWriteInFlight(absPath)) {
-            const parsed = parseDataFile(filePath)
+            const parsed = parseDataFile(filePath, { includeTilde })
             if (parsed?.suffix === 'canvas' && parsed?.id) {
               const metadata = readCanvasMetadata(filePath, parsed)
               server.ws.send({
@@ -1209,7 +1223,7 @@ export default function storyboardDataPlugin() {
           return
         }
 
-        const parsed = parseDataFile(filePath)
+        const parsed = parseDataFile(filePath, { includeTilde })
         // Also invalidate when files are added/removed inside .folder/ directories
         const inFolder = normalized.includes('.folder/')
         if (!parsed && !inFolder) return
@@ -1237,7 +1251,7 @@ export default function storyboardDataPlugin() {
       }
 
       const invalidateOnAddRemove = (filePath, eventType) => {
-        const parsed = parseDataFile(filePath)
+        const parsed = parseDataFile(filePath, { includeTilde })
         const inFolder = filePath.replace(/\\/g, '/').includes('.folder/')
         if (!parsed && !inFolder) return
         // Source files (jsx, css, etc.) inside .folder/ dirs are handled by
@@ -1306,7 +1320,7 @@ export default function storyboardDataPlugin() {
         // handler live-patches `stories` and re-runs init().
         if (parsed?.suffix === 'story') {
           softInvalidate()
-          if (!buildResult) buildResult = buildIndex(root)
+          if (!buildResult) buildResult = buildIndex(root, { includeTilde })
           const storyRoutes = buildResult.storyRoutes || {}
           const storyIndex = buildResult.index.story || {}
           const name = parsed.name

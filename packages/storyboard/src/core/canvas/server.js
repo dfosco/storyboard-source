@@ -143,7 +143,6 @@ function findCanvasFiles(root) {
     try { entries = fs.readdirSync(dir, { withFileTypes: true }) } catch { return }
     for (const entry of entries) {
       if (ignore.has(entry.name)) continue
-      if (entry.name.startsWith('~')) continue
       const fullPath = path.join(dir, entry.name)
       const relPath = rel ? `${rel}/${entry.name}` : entry.name
       if (entry.isDirectory()) {

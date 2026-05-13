@@ -1205,6 +1205,21 @@ describe('parseDataFile — canvas path-based IDs', () => {
     expect(parseDataFile('src/canvas/_hidden/public.canvas.jsonl')).toBeNull()
   })
 
+  it('skips ~-prefixed canvas files in prod (default)', () => {
+    expect(parseDataFile('src/canvas/~scratch.canvas.jsonl')).toBeNull()
+    expect(parseDataFile('src/canvas/~private/notes.canvas.jsonl')).toBeNull()
+  })
+
+  it('includes ~-prefixed canvas files when includeTilde:true (dev)', () => {
+    const file = parseDataFile('src/canvas/~scratch.canvas.jsonl', { includeTilde: true })
+    expect(file).not.toBeNull()
+    expect(file.name).toBe('~scratch')
+    expect(file.inferredRoute).toBe('/canvas/~scratch')
+    const inDir = parseDataFile('src/canvas/~private/notes.canvas.jsonl', { includeTilde: true })
+    expect(inDir).not.toBeNull()
+    expect(inDir.name).toBe('~private/notes')
+  })
+
   it('canvas outside known directories gets basename-only ID', () => {
     const result = parseDataFile('random/path/notes.canvas.jsonl')
     expect(result.name).toBe('notes')
