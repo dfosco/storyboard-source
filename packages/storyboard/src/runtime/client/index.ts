@@ -174,6 +174,28 @@ export class RuntimeClient {
         result.version !== '0.0.0' &&
         result.version !== CLIENT_VERSION
       ) {
+        // Don't kill a daemon that's actively hosting other dev servers —
+        // doing so would SIGTERM every Vite child including ones owned by
+        // unrelated repos. Multi-repo coexistence is the entire point of
+        // running a shared daemon. Warn and reuse instead; the user can
+        // manually `sb reset` when they're ready to upgrade.
+        let activeCount = 0
+        try {
+          const listRes = await fetch(`${this.baseUrl}/devserver/list`)
+          if (listRes.ok) {
+            const data = await listRes.json() as { devServers?: unknown[] }
+            activeCount = Array.isArray(data.devServers) ? data.devServers.length : 0
+          }
+        } catch { /* fall through; treat as zero */ }
+        if (activeCount > 0) {
+          // eslint-disable-next-line no-console
+          console.warn(
+            `[storyboard] daemon version ${result.version} differs from client ${CLIENT_VERSION}, ` +
+            `but ${activeCount} dev server(s) are active. Reusing the existing daemon. ` +
+            `Run \`sb reset\` to restart it once those are stopped.`,
+          )
+          return result
+        }
         killExistingDaemon()
         // Give the OS a moment to release port 4321
         await new Promise(r => setTimeout(r, 250))
