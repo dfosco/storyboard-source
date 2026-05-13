@@ -963,6 +963,10 @@ function BranchNav({ basePath }) {
   const { branches, currentBranch, branchBasePath } = useBranches(basePath)
   const [switching, setSwitching] = useState(null)
 
+  // Branch switcher is meaningful only in deployed environments where users
+  // need to jump between branch deploys. In local dev each worktree is its own
+  // process; switching is handled via `sb dev` / `sb code`.
+  if (isLocalDev) return null
   if (!branches || branches.length === 0) return null
 
   const branchNames = branches.map(b => b.branch)
