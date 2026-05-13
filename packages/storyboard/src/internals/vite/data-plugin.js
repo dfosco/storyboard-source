@@ -1394,6 +1394,41 @@ export default function storyboardDataPlugin() {
       }
     },
 
+    // Guard against known invalid named imports from @primer/react.
+    // The most common offender is `Octicon`, which lives in
+    // `@primer/octicons-react`, not `@primer/react`. When a consumer
+    // writes `import { Octicon } from '@primer/react'`, Vite happily
+    // pre-bundles the dep and only fails at runtime with a cryptic
+    // "does not provide an export named 'Octicon'" error from inside
+    // `node_modules/.vite/deps/@primer_react.js`. Catch it here at
+    // transform time with a clear, actionable error pointing to the
+    // correct package.
+    transform(code, id) {
+      if (!/\.(jsx?|tsx?|mjs|cjs)(\?|$)/.test(id)) return null
+      if (id.includes('/node_modules/')) return null
+      if (!code.includes('@primer/react')) return null
+      const re = /import\s*(?:type\s*)?\{([^}]*)\}\s*from\s*['"]@primer\/react['"]/g
+      let match
+      while ((match = re.exec(code)) !== null) {
+        const names = match[1]
+          .split(',')
+          .map(s => s.replace(/\s+as\s+\w+/, '').trim())
+          .filter(Boolean)
+        if (names.includes('Octicon')) {
+          const before = code.slice(0, match.index)
+          const line = before.split('\n').length
+          const rel = id.replace(root + '/', '')
+          throw new Error(
+            `[storyboard] Invalid import in ${rel}:${line} — \`Octicon\` is not exported by \`@primer/react\`.\n` +
+            `  Import the icon you need directly from \`@primer/octicons-react\` instead, e.g.:\n` +
+            `    import { GearIcon } from '@primer/octicons-react'\n` +
+            `  See AGENTS.md: "Use Primer Octicons from @primer/octicons-react for icons".`
+          )
+        }
+      }
+      return null
+    },
+
     handleHotUpdate(ctx) {
       const normalized = ctx.file.replace(/\\/g, '/')
       if (!/\.canvas\.jsonl$/.test(normalized)) return
