@@ -164,6 +164,8 @@ export default function ArtifactForm({
     setErrors({})
   }
 
+  const [showAdvanced, setShowAdvanced] = useState(false)
+
   const visibleFields = useMemo(() => {
     if (!schema) return []
     if (compact) return schema.fields.filter(f => f.required)
@@ -181,6 +183,18 @@ export default function ArtifactForm({
     }
     return fields
   }, [schema, compact, values])
+
+  // Split into basic/advanced. A field with no `tier` defaults to 'basic'
+  // (matches the old behaviour for any schema not yet annotated).
+  const { basicFields, advancedFields } = useMemo(() => {
+    const basic = []
+    const advanced = []
+    for (const f of visibleFields) {
+      if (f.tier === 'advanced') advanced.push(f)
+      else basic.push(f)
+    }
+    return { basicFields: basic, advancedFields: advanced }
+  }, [visibleFields])
 
   if (!schema) {
     return (
@@ -234,7 +248,7 @@ export default function ArtifactForm({
       )}
 
       <div className={styles.fields}>
-        {visibleFields.map(field => {
+        {basicFields.map(field => {
           const options = field.dynamic ? dynamicOptions[field.dynamic] : field.options
           return (
             <FormControl key={field.name} required={field.required}>
@@ -257,6 +271,43 @@ export default function ArtifactForm({
             </FormControl>
           )
         })}
+
+        {advancedFields.length > 0 && (
+          <>
+            <Button
+              type="button"
+              variant="invisible"
+              size="small"
+              onClick={() => setShowAdvanced(s => !s)}
+              className={styles.advancedToggle}
+            >
+              {showAdvanced ? '− Hide advanced fields' : '+ Advanced fields'}
+            </Button>
+            {showAdvanced && advancedFields.map(field => {
+              const options = field.dynamic ? dynamicOptions[field.dynamic] : field.options
+              return (
+                <FormControl key={field.name} required={field.required}>
+                  <FormControl.Label>{field.label}</FormControl.Label>
+                  <FieldRenderer
+                    field={field}
+                    value={values[field.name]}
+                    error={errors[field.name]}
+                    onChange={val => handleChange(field.name, val)}
+                    options={options}
+                  />
+                  {errors[field.name] && (
+                    <FormControl.Validation variant="error">
+                      {errors[field.name]}
+                    </FormControl.Validation>
+                  )}
+                  {field.patternHint && !errors[field.name] && (
+                    <FormControl.Caption>{field.patternHint}</FormControl.Caption>
+                  )}
+                </FormControl>
+              )
+            })}
+          </>
+        )}
       </div>
 
       {errors._form && (

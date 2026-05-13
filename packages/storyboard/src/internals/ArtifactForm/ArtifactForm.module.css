@@ -108,3 +108,9 @@
   padding-top: 0.75rem;
   border-top: 1px solid var(--borderColor-muted, #d8dee4);
 }
+
+.advancedToggle {
+  align-self: flex-start;
+  margin-top: 4px;
+  color: var(--fgColor-muted);
+}
