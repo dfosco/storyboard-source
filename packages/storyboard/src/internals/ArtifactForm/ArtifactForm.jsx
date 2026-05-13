@@ -76,18 +76,36 @@ function FieldRenderer({ field, value, error, onChange, options }) {
         />
       )
     case 'select':
-      return (
-        <select
-          className={styles.select}
-          value={value || ''}
-          onChange={e => onChange(e.target.value)}
-        >
-          <option value="">Select…</option>
-          {(options || []).map(opt => (
-            <option key={opt} value={opt}>{opt}</option>
-          ))}
-        </select>
-      )
+      // options may be an array of strings or objects { value, label, group }.
+      // When grouped, we render <optgroup>s so templates and recipes appear
+      // under headings (mirrors the workshop form's grouping).
+      {
+        const norm = (options || []).map(o =>
+          typeof o === 'string' ? { value: o, label: o, group: null } : { group: null, ...o }
+        )
+        const grouped = norm.some(o => o.group)
+        return (
+          <select
+            className={styles.select}
+            value={value || ''}
+            onChange={e => onChange(e.target.value)}
+          >
+            <option value="">{field.placeholder || 'Select…'}</option>
+            {grouped
+              ? Object.entries(norm.reduce((acc, opt) => {
+                  const key = opt.group || 'Other'
+                  ;(acc[key] = acc[key] || []).push(opt)
+                  return acc
+                }, {})).map(([group, opts]) => (
+                  <optgroup key={group} label={group}>
+                    {opts.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                  </optgroup>
+                ))
+              : norm.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)
+            }
+          </select>
+        )
+      }
     case 'checkbox':
       return (
         <label className={styles.checkboxLabel}>

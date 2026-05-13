@@ -19,6 +19,7 @@ export const ARTIFACT_SCHEMAS = {
       { name: 'description', label: 'Description', type: 'textarea', placeholder: 'What this prototype demonstrates…' },
       { name: 'author', label: 'Author', type: 'text', placeholder: 'dfosco (or comma-separated)' },
       { name: 'folder', label: 'Folder', type: 'text', placeholder: 'main (optional .folder grouping)' },
+      { name: 'partial', label: 'Template / Recipe', type: 'select', placeholder: 'Blank prototype', dynamic: 'partials' },
       { name: 'icon', label: 'Icon', type: 'text', placeholder: 'rocket' },
       { name: 'tags', label: 'Tags', type: 'text', placeholder: 'design, exploration (comma-separated)' },
       { name: 'team', label: 'Team', type: 'text', placeholder: 'design-systems' },
@@ -26,7 +27,7 @@ export const ARTIFACT_SCHEMAS = {
       { name: 'flow', label: 'Create default flow', type: 'checkbox', checkboxLabel: 'Generate a default.flow.json' },
     ],
     operations: ['create', 'edit', 'delete', 'duplicate'],
-    mutuallyExclusive: [['url', 'flow']],
+    mutuallyExclusive: [['url', 'flow'], ['url', 'partial']],
   },
 
   canvas: {

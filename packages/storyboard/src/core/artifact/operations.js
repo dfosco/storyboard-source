@@ -7,6 +7,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { validateArtifact, resolvePrototypeDir, toPascalCase } from './validate.js'
+import { buildTemplateRecipeIndex, resolveTemplateRecipeEntry } from '../workshop/features/templateIndex.js'
+import { renderPartialIndexJsx, findComponentFile, readWorkshopPartials } from '../workshop/features/partialRender.js'
 
 // ---------------------------------------------------------------------------
 // Templates
@@ -131,14 +133,49 @@ function createPrototype(values, root) {
   const files = []
   const relDir = path.relative(root, targetDir)
 
-  // Write .prototype.json
+  // Resolve partial (template/recipe) — if set, we'll write a templated
+  // index.jsx and inject any $global objects into prototype.json.
+  let partialEntry = null
+  let partialError = null
+  if (values.partial && !values.url) {
+    const partials = buildTemplateRecipeIndex(root, readWorkshopPartials(root))
+    partialEntry = resolveTemplateRecipeEntry(partials, values.partial)
+    if (!partialEntry) {
+      partialError = `Unknown template/recipe "${values.partial}"`
+    }
+  }
+  if (partialError) {
+    return { success: false, errors: [{ message: partialError }] }
+  }
+
+  // Write .prototype.json (with $global from partial when applicable)
   const protoFile = `${values.name}.prototype.json`
-  fs.writeFileSync(path.join(targetDir, protoFile), prototypeJson(values), 'utf-8')
+  const protoBody = JSON.parse(prototypeJson(values))
+  if (partialEntry?.globals?.length) {
+    protoBody.$global = partialEntry.globals
+  }
+  fs.writeFileSync(path.join(targetDir, protoFile), JSON.stringify(protoBody, null, 2) + '\n', 'utf-8')
   files.push(`${relDir}/${protoFile}`)
 
   // Write index.jsx (only for non-external prototypes)
   if (!values.url) {
-    fs.writeFileSync(path.join(targetDir, 'index.jsx'), prototypeIndexJsx(values.name), 'utf-8')
+    let body
+    if (partialEntry) {
+      const partialDir = path.join(root, 'src', partialEntry.baseDir, partialEntry.name)
+      const componentFile = findComponentFile(partialDir)
+      if (!componentFile) {
+        return { success: false, errors: [{ message: `No .jsx or .tsx file found in src/${partialEntry.baseDir}/${partialEntry.name}/` }] }
+      }
+      body = renderPartialIndexJsx({
+        partialEntry,
+        componentFile,
+        componentName: toPascalCase(values.name),
+        title: values.title || values.name,
+      })
+    } else {
+      body = prototypeIndexJsx(values.name)
+    }
+    fs.writeFileSync(path.join(targetDir, 'index.jsx'), body, 'utf-8')
     files.push(`${relDir}/index.jsx`)
   }
 

@@ -56,7 +56,8 @@
         {
           "id": "devtools",
           "label": "Devtools",
-          "meta": { "strokeWeight": 1.6, "scale": 1.1 }
+          "meta": { "strokeWeight": 1.6, "scale": 1.1 },
+          "hideChildrenFromSearch": true
         },
         {
           "id": "see-deployed-branch",

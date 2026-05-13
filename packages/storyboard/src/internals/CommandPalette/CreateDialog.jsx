@@ -26,10 +26,16 @@ export default function CreateDialog({ type, basePath, onClose }) {
   const schemaKey = type ? (TYPE_KEY_MAP[type] || String(type).toLowerCase()) : null
   const schema = schemaKey ? ARTIFACT_SCHEMAS[schemaKey] : null
   const [prototypes, setPrototypes] = useState([])
+  const [partials, setPartials] = useState([])
 
   const needsPrototypes = useMemo(() => {
     if (!schema) return false
     return schema.fields.some(f => f.dynamic === 'prototypes')
+  }, [schema])
+
+  const needsPartials = useMemo(() => {
+    if (!schema) return false
+    return schema.fields.some(f => f.dynamic === 'partials')
   }, [schema])
 
   useEffect(() => {
@@ -40,6 +46,27 @@ export default function CreateDialog({ type, basePath, onClose }) {
       .then(data => { if (data?.items) setPrototypes(data.items.map(p => p.name)) })
       .catch(() => {})
   }, [needsPrototypes, schemaKey, basePath])
+
+  useEffect(() => {
+    if (!needsPartials || !schemaKey) return
+    const apiBase = (basePath || '/').replace(/\/+$/, '')
+    fetch(`${apiBase}/_storyboard/workshop/prototypes`)
+      .then(r => (r.ok ? r.json() : null))
+      .then(data => {
+        if (!data?.partials) return
+        // Map workshop format → grouped select options.
+        // Group by scope+kind: "Templates" / "Recipes" for global, "<proto> / Templates" etc. for local.
+        const opts = data.partials.map(p => {
+          const kindLabel = p.kind === 'recipe' ? 'Recipes' : 'Templates'
+          const group = p.scope === 'global'
+            ? kindLabel
+            : `${p.folder ? p.folder + ' / ' : ''}${p.prototype || 'local'} / ${kindLabel}`
+          return { value: p.id, label: p.name, group }
+        })
+        setPartials(opts)
+      })
+      .catch(() => {})
+  }, [needsPartials, schemaKey, basePath])
 
   if (!schemaKey || !schema) return null
 
@@ -92,7 +119,7 @@ export default function CreateDialog({ type, basePath, onClose }) {
         type={schemaKey}
         onSubmit={handleSubmit}
         onCancel={onClose}
-        dynamicOptions={{ prototypes }}
+        dynamicOptions={{ prototypes, partials }}
         hideHeader
       />
     </Dialog>

@@ -683,10 +683,13 @@ function CreateForm({ type, onClose, basePath }) {
   const [isExternal, setIsExternal] = useState(false)
   const [prototype, setPrototype] = useState('')
   const [prototypes, setPrototypes] = useState([])
+  const [partial, setPartial] = useState('')
+  const [partials, setPartials] = useState([])
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
   const needsPrototype = type === 'Flow' || type === 'Page'
+  const showPartials = type === 'Prototype' && !isExternal
 
   useEffect(() => {
     if (!needsPrototype) return
@@ -698,6 +701,15 @@ function CreateForm({ type, onClose, basePath }) {
       })
       .catch(() => {})
   }, [needsPrototype, basePath])
+
+  useEffect(() => {
+    if (type !== 'Prototype') return
+    const apiBase = (basePath || '/').replace(/\/+$/, '')
+    fetch(`${apiBase}/_storyboard/workshop/prototypes`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data?.partials) setPartials(data.partials) })
+      .catch(() => {})
+  }, [type, basePath])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -719,6 +731,7 @@ function CreateForm({ type, onClose, basePath }) {
     if (description.trim()) payload.description = description.trim()
     if (needsPrototype && prototype) payload.prototype = prototype
     if (type === 'Prototype' && isExternal && url.trim()) payload.url = url.trim()
+    if (type === 'Prototype' && !isExternal && partial) payload.partial = partial
     if (type === 'Page') payload.path = name.trim()
 
     try {
@@ -822,6 +835,30 @@ function CreateForm({ type, onClose, basePath }) {
                 onChange={e => setUrl(e.target.value)}
                 placeholder="https://example.com"
               />
+            </div>
+          )}
+          {showPartials && partials.length > 0 && (
+            <div className={css.createFormField}>
+              <label className={css.createFormLabel}>Template / Recipe</label>
+              <select
+                className={css.createFormInput}
+                value={partial}
+                onChange={e => setPartial(e.target.value)}
+              >
+                <option value="">Blank prototype</option>
+                {Object.entries(partials.reduce((acc, p) => {
+                  const kindLabel = p.kind === 'recipe' ? 'Recipes' : 'Templates'
+                  const group = p.scope === 'global'
+                    ? kindLabel
+                    : `${p.folder ? p.folder + ' / ' : ''}${p.prototype || 'local'} / ${kindLabel}`
+                  ;(acc[group] = acc[group] || []).push(p)
+                  return acc
+                }, {})).map(([group, opts]) => (
+                  <optgroup key={group} label={group}>
+                    {opts.map(o => <option key={o.id} value={o.id}>{o.name}</option>)}
+                  </optgroup>
+                ))}
+              </select>
             </div>
           )}
         </>

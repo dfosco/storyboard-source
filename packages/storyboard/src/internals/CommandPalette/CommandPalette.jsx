@@ -719,12 +719,13 @@ function buildToolsSection(section, prefix, onNavigateToPage) {
       const customLabel = typeof entry === 'object' ? entry.label : null
       const closeOnSelect = typeof entry === 'object' ? entry.closeOnSelect : undefined
       const iconMeta = typeof entry === 'object' ? entry.meta : undefined
+      const hideChildrenFromSearch = typeof entry === 'object' ? entry.hideChildrenFromSearch === true : false
       const tool = tools[toolId]
       if (!tool) continue
       const state = getToolbarToolState(toolId)
       if (state === 'disabled' || state === 'hidden') continue
       if (isHiddenInPalette(tool, basePath)) continue
-      entries.push({ toolId, tool, label: customLabel || tool.label || toolId, toolIcon: tool.icon, toolMeta: iconMeta, closeOnSelect: closeOnSelect ?? tool.closeOnSelect })
+      entries.push({ toolId, tool, label: customLabel || tool.label || toolId, toolIcon: tool.icon, toolMeta: iconMeta, closeOnSelect: closeOnSelect ?? tool.closeOnSelect, hideChildrenFromSearch })
     }
   } else {
     for (const [toolId, tool] of Object.entries(tools)) {
@@ -741,7 +742,7 @@ function buildToolsSection(section, prefix, onNavigateToPage) {
   const items = []
   const subPages = []
 
-  for (const { toolId, tool, label, closeOnSelect: entryCloseOnSelect } of entries) {
+  for (const { toolId, tool, label, closeOnSelect: entryCloseOnSelect, hideChildrenFromSearch } of entries) {
     // Inline actions
     if (tool.inlineAction === 'toggle-chrome') {
       const isHidden = document.documentElement.classList.contains('storyboard-chrome-hidden')
@@ -816,6 +817,7 @@ function buildToolsSection(section, prefix, onNavigateToPage) {
             label,
             title: label,
             keywords: [label, toolId].filter(Boolean),
+            hideChildrenFromSearch,
             options: children.map(child => ({
               label: child.label,
               execute: child.execute,
@@ -1161,7 +1163,7 @@ export default function StoryboardCommandPalette({ basePath }) {
 
   // Flatten sub-page options into searchable groups so they appear in root search
   const subPageGroups = useMemo(() => {
-    return toolMenus.map(menu => ({
+    return toolMenus.filter(menu => !menu.hideChildrenFromSearch).map(menu => ({
       heading: menu.label || menu.title || menu.id,
       id: `subpage:${menu.id}`,
       items: (menu.options || []).map((opt, i) => ({
