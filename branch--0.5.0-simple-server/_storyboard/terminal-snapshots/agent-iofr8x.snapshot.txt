@@ -1,0 +1,40 @@
+SESSION: agent-iofr8x | cobalt-sparrow
+CANVAS:  storyboarding/terminal-widget-prompts
+BRANCH:  0.5.0--simple-server
+TIME:    2026-05-14T21:44:05.001Z
+
+================================================================================
+SCREEN
+================================================================================
+
+● spawn refactorer (shell)
+  │ NEW=agent-yctlxr
+  │ PROMPT=$(cat <<'EOF'
+  │ You are the ComponentSet Refactorer. Your job: replace the current Storyboard
+  │ component-set widget grid implementation with one that mirrors the polished,
+  │ hand-built reference grid the previous Component Set Designer produced for …
+  └ 84 lines...
+
+❯ 📡 [Broadcast two-way ACTIVE with Starter, Conceptual Explorer, Technical Proposer,
+  Implementation & Styles Reviewer, ComponentSet Refactorer, ComponentSet Refactorer]
+
+● Broadcast acknowledged. New agent ComponentSet Refactorer (agent-yctlxr) is spawned
+  and wired:
+
+   - Connected to my terminal + all 10 of my attachments (peer agents, hub synthesis
+  markdown, anti-pattern screenshot, reference story widget story-a5xssn).
+   - Prompt seeded with: the reference grid's CSS recipe (auto-fill minmax(320px, 1fr),
+   per-cell flex frame, muted header, centered content stage), the file paths to edit
+  (ComponentSetPage.jsx + .module.css), the diagnosis of why the current snap-to-max
+  sizing fails, optional Component.cellMinHeight hint, optional density param, and a
+  verification step (drop a component-set widget for radial-menu to compare
+  side-by-side).
+
+  They'll work autonomously and signal when done.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0--simple-server [⎇ 0.5.0--simple-server*%]
+─────────────────────────────────────────────────────────────────────────────────────────
+❯  
+─────────────────────────────────────────────────────────────────────────────────────────
+ 1 background /tasks · / commands · ? help
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)

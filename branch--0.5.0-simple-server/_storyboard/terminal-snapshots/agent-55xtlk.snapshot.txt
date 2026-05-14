@@ -1,0 +1,40 @@
+SESSION: agent-55xtlk | coral-warbler
+CANVAS:  storyboarding/terminal-widget-prompts
+BRANCH:  0.5.0--simple-server
+TIME:    2026-05-14T21:44:04.522Z
+
+================================================================================
+SCREEN
+================================================================================
+
+  over list order), why they work (equidistance, direction-as-identity, cheap
+  reversibility), where they break (>8 items, labels vs. geometry, poor discovery,
+  touch reframes the model), where they earn their place (stable verb palettes,
+  summoned surfaces, expert workflows), and an honest framing for our system: radial as
+  a gesture accelerator layered on a canonical linear menu, never the only path.
+
+❯ 📡 [Broadcast two-way ACTIVE with Starter, Technical Proposer, Component Set
+  Designer, Implementation & Styles Reviewer]
+
+● Acknowledged — broadcast active with Starter, Technical Proposer, Component Set
+  Designer, and Implementation & Styles Reviewer. Standing by for the next prompt.
+
+❯ 📡 [Broadcast two-way ACTIVE with Starter, Technical Proposer, Component Set
+  Designer, Implementation & Styles Reviewer]
+
+❯ 📡 [Broadcast two-way ACTIVE with Starter, Technical Proposer, Component Set
+  Designer, Implementation & Styles Reviewer]
+
+● Acknowledged. Standing by.
+
+❯ 📡 [Broadcast two-way ACTIVE with Starter, Technical Proposer, Component Set
+  Designer, Implementation & Styles Reviewer, ComponentSet Refactorer, ComponentSet
+  Refactorer]
+
+● Acknowledged. Standing by.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0--simple-server [⎇ 0.5.0--simple-server*%]
+─────────────────────────────────────────────────────────────────────────────────────────
+❯  
+─────────────────────────────────────────────────────────────────────────────────────────
+ / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
