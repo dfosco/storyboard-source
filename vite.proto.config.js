@@ -21,16 +21,22 @@ const PROTO_PORT = Number(process.env.STORYBOARD_PROTO_PORT) || 1235
 export default defineConfig(async (env) => {
     const shell = await shellConfigFactory(env)
 
-    // Drop the storyboard server plugin — canvas, messaging bus, terminal
-    // server, autosync, hot-pool all live in the shell process. Running them
-    // twice would double-bind the messaging bus and fight for the same
-    // .storyboard/ files.
+    // Drop only the shell-exclusive plugins: storyboard-server (canvas,
+    // messaging bus, terminal server — would double-bind sockets and fight
+    // for .storyboard/ files), prototypes-watcher (fires full-reload on
+    // every prototype add/unlink — the data plugin already handles this
+    // softly), and base-redirect (proto serves at root so the redirect is
+    // misleading). Keep storyboard-data so prototypes can resolve
+    // useFlowData/useObject/useRecord.
     const plugins = (shell.plugins || []).filter((p) => {
         if (!p) return false
         const name = p && p.name
-        // server-plugin and the shell-only base-redirect/prototypes-watcher
-        // tweaks are irrelevant here.
-        return name !== 'storyboard-server' && name !== 'base-redirect'
+        return (
+            name !== 'storyboard-server' &&
+            name !== 'storyboard-terminal-snapshots' &&
+            name !== 'prototypes-watcher' &&
+            name !== 'base-redirect'
+        )
     })
 
     return {
@@ -42,10 +48,20 @@ export default defineConfig(async (env) => {
             ...(shell.server || {}),
             port: PROTO_PORT,
             strictPort: true,
-            // Inverse of shell: only watch prototypes. Everything else is
-            // owned by the shell process.
+            // Watch ONLY src/prototypes — chokidar semantics need an explicit
+            // ignore-everything + unignore-prototypes pair (a `!` pattern alone
+            // doesn't restrict the watch set). Without this, the proto sees
+            // shell writes to .storyboard/.selectedwidgets.json and *.canvas.jsonl
+            // and full-reloads on every keystroke in the canvas.
             watch: {
-                ignored: ['**/node_modules/**', '!**/src/prototypes/**'],
+                ignored: [
+                    '**/.git/**',
+                    '**/node_modules/**',
+                    '**/.storyboard/**',
+                    '**/*.canvas.jsonl',
+                    '**/dist/**',
+                    '**/build/**',
+                ],
             },
             // Allow the shell origin to embed prototype pages in iframes.
             cors: true,
