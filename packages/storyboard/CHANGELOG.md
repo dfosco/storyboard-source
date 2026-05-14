@@ -1,5 +1,13 @@
 # @dfosco/storyboard
 
+## 0.5.0-beta.50
+
+### Patch Changes
+
+-   Pre-bundle @primer/react and react-compiler-runtime in Vite optimizeDeps so the CJS named export `c` resolves correctly in the browser (fixes "does not provide an export named 'c'" runtime error in consumer apps).
+
+-   Pre-bundle @primer/react and react-compiler-runtime in Vite optimizeDeps so the CJS named export `c` resolves correctly in consumer browsers (fixes "does not provide an export named 'c'" runtime error).
+
 ## 0.5.0-beta.49
 
 ### Patch Changes
