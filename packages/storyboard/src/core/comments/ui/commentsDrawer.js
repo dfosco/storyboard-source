@@ -13,6 +13,7 @@ import { isAuthenticated } from '../auth.js'
 import { setCommentMode } from '../commentMode.js'
 import './comment-layout.css'
 import './comments.css'
+import { sbNavigate } from '../../navigation/sbNavigate.js'
 
 let activeDrawer = null
 
@@ -54,7 +55,7 @@ export async function openCommentsDrawer() {
         const navUrl = new URL(window.location.href)
         navUrl.pathname = route
         navUrl.searchParams.set('comment', commentId)
-        window.location.href = navUrl.toString()
+        sbNavigate(navUrl.toString())
       } else {
         const navUrl = new URL(window.location.href)
         navUrl.searchParams.set('comment', commentId)

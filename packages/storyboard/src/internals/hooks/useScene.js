@@ -1,5 +1,6 @@
 import { useContext, useCallback } from 'react'
 import { StoryboardContext } from '../StoryboardContext.js'
+import { sbNavigate } from '../../core/navigation/sbNavigate.js'
 
 /**
  * Read the current flow name and programmatically switch flows.
@@ -19,7 +20,7 @@ export function useFlow() {
     url.searchParams.delete('scene')
     url.searchParams.set('flow', name)
     // Preserve hash params across flow switches
-    window.location.href = url.toString()
+    sbNavigate(url.toString())
   }, [])
 
   return {

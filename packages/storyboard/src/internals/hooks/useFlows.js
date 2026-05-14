@@ -1,6 +1,6 @@
 import { useContext, useMemo, useCallback } from 'react'
 import { StoryboardContext } from '../StoryboardContext.js'
-import { getFlowsForPrototype, resolveFlowRoute } from '../../core/index.js'
+import { getFlowsForPrototype, resolveFlowRoute, sbNavigate } from '../../core/index.js'
 import { getFlowMeta } from '../../core/index.js'
 
 /**
@@ -37,7 +37,7 @@ export function useFlows() {
   const switchFlow = useCallback((flowKey) => {
     const flow = flows.find(f => f.key === flowKey)
     if (flow) {
-      window.location.href = flow.route
+      sbNavigate(flow.route)
     }
   }, [flows])
 

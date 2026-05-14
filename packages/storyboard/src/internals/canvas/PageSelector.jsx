@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState, useEffect } from 'react'
 import { createCanvas, renamePage, reorderPages, getPageOrder, duplicateCanvas } from './canvasApi.js'
+import { sbNavigate } from '../../core/navigation/sbNavigate.js'
 import styles from './PageSelector.module.css'
 
 const DragGrip = () => (
@@ -110,7 +111,7 @@ export default function PageSelector({ currentName, pages: initialPages, isLocal
   }, [])
 
   const navigateTo = useCallback((page) => {
-    window.location.href = getPageHref(page)
+    sbNavigate(getPageHref(page))
   }, [getPageHref])
 
   const handleSelect = useCallback(
@@ -210,7 +211,7 @@ export default function PageSelector({ currentName, pages: initialPages, isLocal
         // up the renamed canvas from the fresh virtual module.
         const base = (import.meta.env?.BASE_URL || '/').replace(/\/$/, '')
         const targetUrl = base + route
-        window.location.href = targetUrl
+        sbNavigate(targetUrl)
       }
     } catch (err) {
       console.error('Failed to rename page:', err)
@@ -267,7 +268,7 @@ export default function PageSelector({ currentName, pages: initialPages, isLocal
       // live, an SPA navigation would also work for the new canvas — but
       // some refs (e.g. `_jsxModule`) only get filled in by a fresh module
       // build, so a hard reload is the safer default.
-      window.location.href = targetUrl
+      sbNavigate(targetUrl)
     } catch (err) {
       console.error('Failed to duplicate page:', err)
     }
@@ -365,7 +366,7 @@ export default function PageSelector({ currentName, pages: initialPages, isLocal
 
       // Navigate immediately. The server has already written the file; the
       // route map will be rebuilt on hard reload.
-      window.location.href = targetUrl
+      sbNavigate(targetUrl)
     } catch (err) {
       console.error('Failed to create canvas page:', err)
       setCreating(false)

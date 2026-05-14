@@ -59,3 +59,5 @@ export { default as PrototypeErrorBoundary, ImportErrorFallback, AppErrorBoundar
 
 // Icon
 export { default as Icon } from './Icon.jsx'
+
+export { sbNavigate } from '../core/navigation/sbNavigate.js'

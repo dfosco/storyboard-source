@@ -1,4 +1,5 @@
 import { interceptHideParams } from '../core/index.js'
+import { setNavigationRouter } from '../core/navigation/sbNavigate.js'
 
 /**
  * Preserve URL hash params across all navigations — both <a> clicks
@@ -17,6 +18,10 @@ import { interceptHideParams } from '../core/index.js'
 export function installHashPreserver(router, basename = '') {
   // Normalize basename: ensure no trailing slash
   const base = basename.replace(/\/+$/, '')
+
+  // Expose the router to sbNavigate() so internal call sites can do SPA
+  // navigation instead of full-reload via window.location.href.
+  setNavigationRouter(router, base)
 
   // --- 1. Intercept <a> clicks ---
   document.addEventListener('click', (e) => {

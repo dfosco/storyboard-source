@@ -13,6 +13,7 @@ import { getActionsForMode, executeAction, getActionChildren } from './commandAc
 import { getToolbarToolState } from './toolStateStore.js'
 import { getRecent, trackRecent } from './recentArtifacts.js'
 import { fuzzySearch } from '../utils/fuzzySearch.js'
+import { sbNavigate } from '../navigation/sbNavigate.js'
 
 // ---------------------------------------------------------------------------
 // Palette item factory helpers
@@ -88,9 +89,9 @@ export function buildCommandItems(mode, basePath) {
         action: () => {
           if (action.url.startsWith('/') && !action.url.startsWith('//')) {
             const base = (basePath || '/').replace(/\/+$/, '')
-            window.location.href = (base === '/' ? '' : base) + action.url
+            sbNavigate((base === '/' ? '' : base) + action.url)
           } else {
-            window.location.href = action.url
+            sbNavigate(action.url)
           }
         },
       })
@@ -144,7 +145,7 @@ export function buildPrototypeItems(basePath) {
         hint: proto.folder || undefined,
         action: () => {
           trackRecent('prototype', proto.dirName, proto.name)
-          window.location.href = route
+          sbNavigate(route)
         },
       })
     }
@@ -185,7 +186,7 @@ export function buildCanvasItems(basePath) {
       hint: canvas.folder || undefined,
       action: () => {
         trackRecent('canvas', canvas.dirName, canvas.name)
-        window.location.href = route
+        sbNavigate(route)
       },
     })
   }
@@ -228,7 +229,7 @@ export function buildStoryItems(basePath) {
       category: 'Stories',
       action: () => {
         trackRecent('story', name, name)
-        window.location.href = (base === '/' ? '' : base) + route
+        sbNavigate((base === '/' ? '' : base) + route)
       },
     })
   }
@@ -260,7 +261,7 @@ export function buildRecentItems(basePath) {
       // Re-track to bump to top
       trackRecent(entry.type, entry.key, entry.label)
       const route = resolveRecentRoute(entry, base)
-      if (route) window.location.href = route
+      if (route) sbNavigate(route)
     },
   }))
 }

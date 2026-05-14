@@ -8,6 +8,7 @@ export const id = 'flows'
 
 export async function handler(ctx) {
   const loader = await import('../../index.js')
+  const { sbNavigate } = await import('../../navigation/sbNavigate.js')
   const vf = loader
   const { basePath = '/' } = ctx
 
@@ -55,7 +56,7 @@ export async function handler(ctx) {
           type: 'radio',
           active: f.key === active,
           href: url,
-          execute: () => { window.location.href = url },
+          execute: () => { sbNavigate(url) },
         }
       })
     },

@@ -15,6 +15,7 @@ import Icon from './Icon.jsx'
 import { getActionsForMode, executeAction, getActionChildren, subscribeToCommandActions } from '../stores/commandActions.js'
 import { getToolbarToolState, isToolbarToolLocalOnly, subscribeToToolbarToolStates } from '../stores/toolStateStore.js'
 import { getCurrentMode, subscribeToMode } from '../modes/modes.js'
+import { sbNavigate } from '../navigation/sbNavigate.js'
 
 const localDotStyle = {
   display: 'inline-block',
@@ -201,9 +202,9 @@ export default function CommandMenu({
             setOpen(false)
             if (action.url.startsWith('/') && !action.url.startsWith('//')) {
               const base = (basePath || '/').replace(/\/+$/, '')
-              window.location.href = (base === '/' ? '' : base) + action.url
+              sbNavigate((base === '/' ? '' : base) + action.url)
             } else {
-              window.location.href = action.url
+              sbNavigate(action.url)
             }
           }}
           disabled={itemState === 'inactive'}

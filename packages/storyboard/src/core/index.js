@@ -122,3 +122,6 @@ export { default as Icon, default as IconDefault } from './ui/Icon.jsx'
 
 // Shared UI components
 export { default as BranchSelect } from './ui/BranchSelect.jsx'
+
+// sbNavigate — SPA-first navigation helper for internal call sites
+export { sbNavigate, setNavigationRouter, getNavigationRouter } from './navigation/sbNavigate.js'
