@@ -23,7 +23,8 @@ export default function ComponentSetPage({ name }) {
   const navigate = useNavigate()
   const searchParams = new URLSearchParams(location.search)
 
-  const layout = searchParams.get('layout') || 'horizontal'
+  const layout = searchParams.get('layout') || 'auto'
+  const density = searchParams.get('density') || 'comfy'
   const selected = searchParams.get('selected') || ''
   const isEmbed = searchParams.has('_sb_embed')
 
@@ -58,6 +59,10 @@ export default function ComponentSetPage({ name }) {
         const namedExports = {}
         for (const [key, value] of Object.entries(mod)) {
           if (key !== 'default' && typeof value === 'function') {
+            // Opt-out: exports with `componentSet = false` are excluded
+            // from the grid (e.g. showcase exports that already render
+            // every variant themselves).
+            if (value.componentSet === false) continue
             namedExports[key] = value
           }
         }
@@ -84,26 +89,13 @@ export default function ComponentSetPage({ name }) {
 
   const gridRef = useRef(null)
 
-  // Measure all cell content elements and snap cells to the largest.
-  // Posts the total grid size to the parent widget so it can auto-size.
+  // Post total grid size to parent widget so the canvas can auto-fit.
+  // No snap-to-max: each cell sizes to its own content.
   useLayoutEffect(() => {
     const grid = gridRef.current
     if (!grid || !exports) return
 
-    const cells = grid.querySelectorAll('[data-cell-content]')
-    if (cells.length === 0) return
-
     function measure() {
-      let maxW = 0
-      let maxH = 0
-      for (const el of cells) {
-        maxW = Math.max(maxW, el.scrollWidth)
-        maxH = Math.max(maxH, el.scrollHeight)
-      }
-      grid.style.setProperty('--cell-snap-w', `${maxW}px`)
-      grid.style.setProperty('--cell-snap-h', `${maxH}px`)
-
-      // Post total grid size to parent widget
       if (isEmbed && window.parent !== window) {
         requestAnimationFrame(() => {
           window.parent.postMessage({
@@ -115,14 +107,13 @@ export default function ComponentSetPage({ name }) {
       }
     }
 
-    // Measure after fonts load and initial paint
     measure()
     document.fonts.ready.then(() => requestAnimationFrame(measure))
 
     const ro = new ResizeObserver(measure)
-    for (const el of cells) ro.observe(el)
+    ro.observe(grid)
     return () => ro.disconnect()
-  }, [exports, layout, isEmbed])
+  }, [exports, layout, density, isEmbed])
 
   const handleSelect = useCallback((exportName) => {
     const params = new URLSearchParams(location.search)
@@ -166,15 +157,20 @@ export default function ComponentSetPage({ name }) {
           ref={gridRef}
           className={styles.grid}
           data-layout={layout}
+          data-density={density}
         >
           {exportNames.map((exportName) => {
             const Component = exports[exportName]
             const isSelected = exportName === selected
+            const cellStyle = typeof Component.minHeight === 'number'
+              ? { '--cell-min-h': `${Component.minHeight}px` }
+              : undefined
             return (
               <div
                 key={exportName}
                 className={styles.cell}
                 data-selected={isSelected || undefined}
+                style={cellStyle}
               >
                 <button
                   className={styles.cellLabel}

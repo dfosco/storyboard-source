@@ -1,109 +1,84 @@
-/* ComponentSetPage — grid layout for all exports of a story */
+/* ComponentSetPage — grid layout for all exports of a story.
+ *
+ * Each cell is an independently-sized framed card (white bg, border, radius,
+ * padding) holding a label and a centered content stage. Rows flow naturally —
+ * no snap-to-max sizing, so a tall cell doesn't force its neighbors to grow. */
 
 .grid {
-  background-color: var(--bgColor-default, #ffffff);
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
+  background: var(--bgColor-muted, #f6f8fa);
+  display: grid;
+  gap: 16px;
+  padding: 16px;
   box-sizing: border-box;
+  width: 100%;
+  min-height: 100%;
 }
 
-/* Wide / horizontal: cells share width, full height */
+/* Density controls column floor only — rows always size to content. */
+.grid[data-density="compact"] { --cell-min-w: 240px; --cell-min-h: 220px; }
+.grid[data-density="comfy"]   { --cell-min-w: 320px; --cell-min-h: 280px; }
+.grid[data-density="roomy"]   { --cell-min-w: 420px; --cell-min-h: 340px; }
+
+/* Auto (default): wrap into columns, rows hug their content. */
+.grid[data-layout="auto"] {
+  grid-template-columns: repeat(auto-fill, minmax(var(--cell-min-w, 320px), 1fr));
+  grid-auto-rows: min-content;
+}
+
+/* Wide / horizontal: single row, equal-width columns, rows size to content. */
 .grid[data-layout="wide"],
 .grid[data-layout="horizontal"] {
-  flex-direction: row;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(var(--cell-min-w, 320px), 1fr);
+  grid-template-rows: min-content;
 }
 
-.grid[data-layout="wide"] .cell,
-.grid[data-layout="horizontal"] .cell {
-  flex: 1 1 var(--cell-min-w, 200px);
-  min-width: var(--cell-min-w, 200px);
-  height: 100%;
-}
-
-/* Tall / vertical: cells share height, full width */
+/* Tall / vertical: single column. */
 .grid[data-layout="tall"],
 .grid[data-layout="vertical"] {
-  flex-direction: column;
-}
-
-.grid[data-layout="tall"] .cell,
-.grid[data-layout="vertical"] .cell {
-  flex: 1 1 var(--cell-min-h, 160px);
-  min-height: var(--cell-min-h, 160px);
-  width: 100%;
-}
-
-/* Auto: CSS grid that wraps and fills proportionally in both axes */
-.grid[data-layout="auto"] {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(var(--cell-min-w, 200px), 1fr));
-  grid-auto-rows: minmax(var(--cell-min-h, 160px), 1fr);
-  flex-wrap: initial;
-}
-
-.grid[data-layout="auto"] .cell {
-  min-width: 0;
-  min-height: 0;
+  grid-template-columns: 1fr;
+  grid-auto-rows: min-content;
 }
 
 .cell {
+  background: var(--bgColor-default, #ffffff);
+  border: 1px solid var(--borderColor-default, #d0d7de);
+  border-radius: 8px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--borderColor-muted, #d8dee4);
-  border-radius: 0;
-  overflow: hidden;
-  transition: border-color 120ms ease, box-shadow 120ms ease;
+  gap: 12px;
+  min-height: var(--cell-min-h, 280px);
   position: relative;
-  background: var(--bgColor-muted, #f6f8fa);
-}
-
-/* Collapse double borders between adjacent cells */
-.grid[data-layout="wide"] .cell + .cell,
-.grid[data-layout="horizontal"] .cell + .cell {
-  border-left: none;
-}
-
-.grid[data-layout="tall"] .cell + .cell,
-.grid[data-layout="vertical"] .cell + .cell {
-  border-top: none;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
 }
 
 .cell[data-selected] {
   border-color: var(--fgColor-accent, #0969da);
   box-shadow: 0 0 0 1px var(--fgColor-accent, #0969da);
-  z-index: 1;
 }
 
 .cellLabel {
   all: unset;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 10px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
-  color: var(--fgColor-muted, #656d76);
-  background: var(--bgColor-default, #ffffff);
-  border-bottom: 1px solid var(--borderColor-muted, #d8dee4);
+  color: var(--fgColor-muted, #59636e);
   cursor: pointer;
   user-select: none;
-  transition: background 100ms ease, color 100ms ease;
+  transition: color 100ms ease;
   flex-shrink: 0;
 }
 
 .cellLabel:hover {
-  background: var(--bgColor-neutral-muted, #eaeef2);
   color: var(--fgColor-default, #1f2328);
 }
 
 .cellLabel[data-selected] {
   color: var(--fgColor-accent, #0969da);
-  background: var(--bgColor-accent-muted, #ddf4ff);
 }
 
 .cellRadio {
@@ -113,7 +88,7 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  border: 2px solid var(--borderColor-accent, #d8dee4);
+  border: 2px solid var(--borderColor-default, #d0d7de);
   flex-shrink: 0;
   transition: border-color 100ms ease, background 100ms ease;
 }
@@ -124,11 +99,11 @@
 }
 
 .cellContent {
-  flex: 1 1 0;
+  flex: 1 1 auto;
+  display: grid;
+  place-items: center;
   min-height: 0;
-  overflow: auto;
   position: relative;
-  padding: 12px;
 }
 
 .error {

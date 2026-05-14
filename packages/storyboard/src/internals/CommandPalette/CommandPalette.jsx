@@ -434,6 +434,7 @@ function buildDynamicSection(section, prefix, onNavigateToPage, onCreateAction) 
     const items = Object.entries(widgetTypes).filter(([type]) => !hiddenTypes.has(type)).map(([type, def]) => ({
       id: `create-widget:${type}`,
       children: def.label,
+      tag: `Add ${def.label}`,
       keywords: ['add', 'widget', 'create', type, def.label.toLowerCase()],
       itemType: type,
       onClick: () => {
@@ -480,6 +481,7 @@ function buildDynamicSection(section, prefix, onNavigateToPage, onCreateAction) 
         items.push({
           id: 'create-widget:agent',
           children: 'Agent',
+          tag: 'Add Agent',
           keywords: ['add', 'widget', 'create', 'agent'],
           itemType: 'agent',
           hideFromSearch: true,
@@ -1231,9 +1233,13 @@ export default function StoryboardCommandPalette({ basePath }) {
     return result
   }, [items])
 
-  // Build search value string from keywords array
+  // Build search value string from keywords array.
+  // `tag` is prepended so it gets prefix-match scoring (highest tier),
+  // allowing per-entry boosting in search ranking (e.g. tag:"Add Sticky note"
+  // means typing "add" ranks this item at the top via SCORE_PREFIX).
   function itemValue(item) {
     const parts = []
+    if (item.tag) parts.push(item.tag)
     if (typeof item.children === 'string') parts.push(item.children)
     if (item.label) parts.push(item.label)
     if (item.keywords) parts.push(...item.keywords)
@@ -1351,7 +1357,7 @@ export default function StoryboardCommandPalette({ basePath }) {
                 !search && <Command.Separator key={list.id} />
               ) : (
                 <Command.Group key={list.id} heading={list.heading}>
-                  {list.items.map(({ id, children, keywords, onClick, onAltClick, itemType, toolIcon, toolMeta, closeOnSelect, hideFromSearch, url }) => {
+                  {list.items.map(({ id, children, keywords, tag, onClick, onAltClick, itemType, toolIcon, toolMeta, closeOnSelect, hideFromSearch, url }) => {
                     if (search && hideFromSearch) return null
                     if (hiddenFromSearchIds.size > 0) {
                       for (const toolId of hiddenFromSearchIds) {
@@ -1361,7 +1367,7 @@ export default function StoryboardCommandPalette({ basePath }) {
                     return (
                       <Command.Item
                         key={id}
-                        value={itemValue({ children, keywords })}
+                        value={itemValue({ children, keywords, tag })}
                         onSelect={() => {
                           if (url && altHeldRef.current) {
                             copyLinkToClipboard(url, itemType)
@@ -1379,7 +1385,10 @@ export default function StoryboardCommandPalette({ basePath }) {
                         }}
                       >
                         <ItemIcon type={itemType} toolIcon={toolIcon} toolMeta={toolMeta} />
-                        {children}
+                        <span style={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
+                          <span>{children}</span>
+                          {tag && <span data-cmdk-item-tag="">{tag}</span>}
+                        </span>
                       </Command.Item>
                     )
                   })}

@@ -82,7 +82,7 @@ function resolveModulePath(raw) {
 }
 
 // ── Component-Set Grid (mirrors ComponentSetPage UI) ────────────────
-function ComponentSetGrid({ exports, layout, initialSelected }) {
+function ComponentSetGrid({ exports, layout, density, initialSelected }) {
   const [selected, setSelected] = useState(initialSelected)
   const gridRef = useRef(null)
 
@@ -105,62 +105,46 @@ function ComponentSetGrid({ exports, layout, initialSelected }) {
     }
   }, [selected])
 
-  // Measure each cell's intrinsic content size, take the max, set CSS vars
-  // so the grid (in any layout) uses that as its minimum cell size and grows
-  // with `1fr` to fill any extra space. Then post the resulting natural size
-  // to the parent so newly dropped widgets get a sensible initial size.
+  // Post a sensible initial widget size to the parent. Each cell sizes to
+  // its own content via CSS; here we measure individual cells (which have
+  // intrinsic widths thanks to `minmax` + the iframe being narrow at first)
+  // and arrange them in a near-square grid to compute an initial widget size.
   useLayoutEffect(() => {
     const grid = gridRef.current
     if (!grid || !exports) return
 
     let posted = false
     function measureAndPost() {
-      if (posted) return
-      // Find each cell's content element and measure its intrinsic size by
-      // temporarily removing layout constraints.
-      const cells = grid.querySelectorAll('[data-cell-content]')
+      if (posted || window.parent === window) return
+      const cells = grid.querySelectorAll(`.${styles.cell}`)
+      if (cells.length === 0) return
       let maxW = 0
       let maxH = 0
-      cells.forEach((cellContent) => {
-        // Save & clear constraints
-        const prev = cellContent.style.cssText
-        cellContent.style.cssText = `${prev};width:auto;height:auto;max-width:none;max-height:none;overflow:visible;flex:none;`
-        const w = cellContent.scrollWidth
-        const h = cellContent.scrollHeight
-        cellContent.style.cssText = prev
-        if (w > maxW) maxW = w
-        if (h > maxH) maxH = h
+      cells.forEach((cell) => {
+        const r = cell.getBoundingClientRect()
+        if (r.width > maxW) maxW = r.width
+        if (r.height > maxH) maxH = r.height
       })
-
-      // Add cell label height (~28px) so each cell has room for label + content
-      const labelH = 28
-      const cellMinW = Math.max(160, Math.ceil(maxW))
-      const cellMinH = Math.max(120, Math.ceil(maxH) + labelH)
-
-      grid.style.setProperty('--cell-min-w', `${cellMinW}px`)
-      grid.style.setProperty('--cell-min-h', `${cellMinH}px`)
-
-      if (window.parent === window) return
+      if (maxW < 10 || maxH < 10) return
+      const count = cells.length
+      const cols = Math.max(1, Math.min(count, Math.ceil(Math.sqrt(count))))
+      const rows = Math.ceil(count / cols)
+      const gap = 16
+      const pad = 32 // 16px padding on both sides
+      const width = Math.ceil(maxW * cols + gap * (cols - 1) + pad)
+      const height = Math.ceil(maxH * rows + gap * (rows - 1) + pad)
       posted = true
-
-      // Compute a sensible initial widget size: lay out cells in a roughly
-      // square grid using the per-cell minimums.
-      const count = cells.length || 1
-      const cols = Math.max(1, Math.ceil(Math.sqrt(count)))
-      const rows = Math.max(1, Math.ceil(count / cols))
-      const initialWidth = cellMinW * cols
-      const initialHeight = cellMinH * rows
-
       window.parent.postMessage({
         type: 'storyboard:component-set:initial-size',
-        width: initialWidth,
-        height: initialHeight,
+        width,
+        height,
       }, '*')
     }
 
-    requestAnimationFrame(measureAndPost)
+    // Measure after layout + fonts settle
+    requestAnimationFrame(() => requestAnimationFrame(measureAndPost))
     document.fonts.ready.then(() => requestAnimationFrame(measureAndPost))
-  }, [exports, layout])
+  }, [exports, layout, density])
 
   // Signal snapshot-ready
   useEffect(() => {
@@ -178,14 +162,19 @@ function ComponentSetGrid({ exports, layout, initialSelected }) {
     ref: gridRef,
     className: styles.grid,
     'data-layout': layout,
+    'data-density': density,
   },
     exportNames.map((exportName) => {
       const Component = exports[exportName]
       const isSelected = exportName === selected
+      const cellStyle = typeof Component.minHeight === 'number'
+        ? { '--cell-min-h': `${Component.minHeight}px` }
+        : undefined
       return createElement('div', {
         key: exportName,
         className: styles.cell,
         'data-selected': isSelected || undefined,
+        style: cellStyle,
       },
         createElement('button', {
           className: styles.cellLabel,
@@ -211,6 +200,7 @@ const params = new URLSearchParams(window.location.search)
 const modulePath = params.get('module')
 const layoutParam = params.get('layout') || 'auto'
 const layout = layoutParam === 'horizontal' ? 'wide' : layoutParam === 'vertical' ? 'tall' : layoutParam
+const density = params.get('density') || 'comfy'
 const selected = params.get('selected') || ''
 const theme = params.get('theme') || 'light'
 
@@ -249,6 +239,8 @@ async function mount() {
     const namedExports = {}
     for (const [key, value] of Object.entries(mod)) {
       if (key !== 'default' && typeof value === 'function') {
+        // Opt-out: showcase exports that already render every variant.
+        if (value.componentSet === false) continue
         namedExports[key] = value
       }
     }
@@ -260,7 +252,7 @@ async function mount() {
     root.render(
       createElement(ThemeProvider, { colorMode },
         createElement(BaseStyles, null,
-          createElement(ComponentSetGrid, { exports: namedExports, layout, initialSelected: selected }),
+          createElement(ComponentSetGrid, { exports: namedExports, layout, density, initialSelected: selected }),
         ),
       ),
     )

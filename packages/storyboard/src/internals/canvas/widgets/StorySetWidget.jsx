@@ -26,7 +26,7 @@ function GridIcon({ size = 16 }) {
   return <Icon name="iconoir/view-grid" size={size} />
 }
 
-function resolveStorySetUrl(storyId, layout, selected) {
+function resolveStorySetUrl(storyId, layout, selected, density) {
   const story = getStoryData(storyId)
   if (!story?._storyModule) return ''
   const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '')
@@ -34,6 +34,7 @@ function resolveStorySetUrl(storyId, layout, selected) {
   params.set('module', story._storyModule)
   if (layout) params.set('layout', layout)
   if (selected) params.set('selected', selected)
+  if (density) params.set('density', density)
   return `${base}/_storyboard/canvas/isolate-set?${params}`
 }
 
@@ -42,6 +43,7 @@ export default forwardRef(function StorySetWidget({ id: widgetId, props, onUpdat
   const rawLayout = props?.layout || 'auto'
   // Migrate legacy values (horizontal/vertical) to the new vocabulary.
   const layout = rawLayout === 'horizontal' ? 'wide' : rawLayout === 'vertical' ? 'tall' : rawLayout
+  const density = props?.density || ''
   const selected = props?.selected || ''
   const width = props?.width
   const height = props?.height
@@ -134,10 +136,10 @@ export default forwardRef(function StorySetWidget({ id: widgetId, props, onUpdat
   }), [storyId, layout, onUpdate, setExpanded])
 
   const iframeSrc = useMemo(
-    () => resolveStorySetUrl(storyId, layout, selected),
+    () => resolveStorySetUrl(storyId, layout, selected, density),
     // storyIndexKey forces re-evaluation when HMR mutates the story index
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [storyId, layout, selected, storyIndexKey],
+    [storyId, layout, selected, density, storyIndexKey],
   )
 
   useIframeDevLogs({
