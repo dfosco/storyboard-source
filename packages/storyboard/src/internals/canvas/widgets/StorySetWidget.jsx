@@ -118,18 +118,25 @@ export default forwardRef(function StorySetWidget({ id: widgetId, props, onUpdat
     onUpdate?.({ width: w, height: h })
   }, [onUpdate])
 
-  // On resize end: if the widget is taller than the content grid needs,
-  // snap height down to fit (with a CSS transition for a smooth settle).
+  // On resize end: if the widget is larger than the content grid needs in
+  // either axis, snap that axis down to fit (with a CSS transition for a
+  // smooth settle).
   const handleResizeEnd = useCallback((w, h) => {
     const headerH = 37
     const contentH = contentSizeRef.current.height
-    if (!contentH) return
-    const fitH = contentH + headerH
-    if (h > fitH + 2) {
-      setSnapping(true)
-      onUpdate?.({ width: w, height: fitH })
-      setTimeout(() => setSnapping(false), 260)
-    }
+    const contentW = contentSizeRef.current.width
+    if (!contentH && !contentW) return
+    const fitH = contentH ? contentH + headerH : h
+    const fitW = contentW || w
+    const shouldSnapH = contentH && h > fitH + 2
+    const shouldSnapW = contentW && w > fitW + 2
+    if (!shouldSnapH && !shouldSnapW) return
+    setSnapping(true)
+    onUpdate?.({
+      width: shouldSnapW ? fitW : w,
+      height: shouldSnapH ? fitH : h,
+    })
+    setTimeout(() => setSnapping(false), 260)
   }, [onUpdate])
 
   useImperativeHandle(ref, () => ({
@@ -200,7 +207,7 @@ export default forwardRef(function StorySetWidget({ id: widgetId, props, onUpdat
   const sizeStyle = {}
   if (typeof width === 'number') sizeStyle.width = `${width}px`
   if (typeof height === 'number') sizeStyle.height = `${height}px`
-  if (snapping) sizeStyle.transition = 'height 220ms cubic-bezier(0.2, 0.8, 0.2, 1)'
+  if (snapping) sizeStyle.transition = 'width 220ms cubic-bezier(0.2, 0.8, 0.2, 1), height 220ms cubic-bezier(0.2, 0.8, 0.2, 1)'
 
   return (
     <>

@@ -1,40 +1,317 @@
 SESSION: agent-yctlxr | copper-vireo
 CANVAS:  storyboarding/terminal-widget-prompts
-BRANCH:  0.5.0--simple-server
-TIME:    2026-05-14T21:50:05.467Z
+BRANCH:  0.6.0
+TIME:    2026-05-14T21:58:15.025Z
 
 ================================================================================
 SCREEN
 ================================================================================
 
-  └ L40:70 (30 lines read)
 
-● Edit StorySetWidget.jsx +2
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
+0.6.0 on  0.6.0 [$?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/
+worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6
+.0" --canvas "storyboarding/terminal-widget-prompts" --name "copper-vireo" --startup "cop
+ilot --agent terminal-agent"
+│
+●  name: copper-vireo  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Copilot CLI...
 
-● Edit StorySetWidget.jsx +5
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
 
-● Edit StorySetWidget.jsx +14
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
+[?996n[>c[>q
 
-● Edit StorySetWidget.jsx +1
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
 
-● Edit StorySetWidget.jsx +1 -1
-  └ packages/storyboard/src/internals/canvas/widgets/StorySetWidget.jsx
 
-● Done. Flow:
 
-   1. The iframe (componentSetIsolate) observes its grid and posts :content-size
-  messages whenever the grid's height changes.
-   2. StorySetWidget stores the latest content size in a ref.
-   3. On onResizeEnd, if widget height > content height + header, it calls onUpdate
-  with the snapped height and toggles a snapping flag that adds a 220ms cubic-bezier
-  height transition for that one update.
 
- ~/workspace/storyboard-core/worktrees/0.5.0--simple-server [⎇ 0.5.0--simple-server*%]
-─────────────────────────────────────────────────────────────────────────────────────────
-❯  
-─────────────────────────────────────────────────────────────────────────────────────────
- / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[sb-d0822d0:zsh*                         "Daniels-MacBook-Pro.l" 23:58 14-May-26
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[sb-d0822d0:zsh*                         "Daniels-MacBook-Pro.l" 23:58 14-May-26
+░▒▓   …/0.6.0   0.6.0 $?   23:58  
+❯ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[sb-d0822d0:zsh*                                  "Daniels-MacBook-Pro.l" 23:58 14-May-26
+░▒▓   …/0.6.0   0.6.0 $?   23:58  
+❯ export STORYBOARD_WIDGET_ID="agent-yctlxr" && export STORYBOARD_CANVAS_ID="storyboarding/terminal-widget-prompts" && export STORYBOARD_BRANCH="0.6.0" && export STORYBOARD_SERVER_URL="http://localhost:1235" && export STARSHIP_CONFIG="/dev/null" && export POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD="true" && export ZSH_THEME="" && export TERM_PROGRAM="storyboard" && export COLORTERM="truecolor" && export FORCE_COLOR="3" && export PATH="/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/bin:/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/node_modules/.bin:/Users/dfosco/workspace/storybboard-core/worktrees/0.6.0/node_modules/.bin:/Users/dfosco/workspace/storyboard-core/worktrees/node_modules/.bin:/Users/dfosco/workspace/storyboard-core/node_modules/.bin:/Users/ddfosco/workspace/node_modules/.bin:/Users/dfosco/node_modules/.bin:/Users/node_modules/.biin:/node_modules/.bin:/opt/homebrew/Cellar/node@22/22.22.0/lib/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/Users/dfosco/workspace/storyboard-core/worktrees//0.6.0/node_modules/.bin:/Users/dfosco/workspace/storyboard-core/worktrees/node_modules/.bbin:/Users/dfosco/workspace/storyboard-core/node_modules/.bin:/Users/dfosco/workspace/nodee_modules/.bin:/Users/dfosco/node_modules/.bin:/Users/node_modules/.bin:/node_modules/.binn:/opt/homebrew/Cellar/node@22/22.22.0/lib/node_modules/npm/node_modules/@npmcli/run-scrippt/lib/node-gyp-bin:/Users/dfosco/.loc
+
+
+
+
+
+
+
+
+
+
+
+0.6.0 on  0.6.0 [$?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "copper-vireo" --startup "copilot --agent terminal-agent"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+0.6.0 on  0.6.0 [$?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "copper-vireo" --startup "copilot --agent terminal-agent"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+0.6.0 on  0.6.0 [$?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "copper-vireo" --startup "copilot --agent terminal-agent"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+0.6.0 on  0.6.0 [$?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "copper-vireo" --startup "copilot --agent terminal-agent"
+│
+●  name: copper-vireo  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Copilot CLI...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+0.6.0 on  0.6.0 [$?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "copper-vireo" --startup "copilot --agent terminal-agent"
+│
+●  name: copper-vireo  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Copilot CLI...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+0.6.0 on  0.6.0 [$?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "copper-vireo" --startup "copilot --agent terminal-agent"
+│
+●  name: copper-vireo  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Copilot CLI...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+0.6.0 on  0.6.0 [$?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "copper-vireo" --startup "copilot --agent terminal-agent"
+│
+●  name: copper-vireo  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Copilot CLI...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+0.6.0 on  0.6.0 [$?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "copper-vireo" --startup "copilot --agent terminal-agent"
+│
+●  name: copper-vireo  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Copilot CLI...

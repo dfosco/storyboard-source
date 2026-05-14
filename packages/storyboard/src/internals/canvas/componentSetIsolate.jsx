@@ -141,15 +141,33 @@ function ComponentSetGrid({ exports, layout, density, initialSelected }) {
       }, '*')
     }
 
-    // Re-post on grid size changes too (content height changes as cells reflow)
-    const ro = new ResizeObserver(() => {
+    // Re-post on grid size changes too (content height changes as cells reflow).
+    // Measure from cell bounding boxes (not scrollWidth/scrollHeight) so the
+    // reported content size reflects the *natural* extent of the cells —
+    // scrollWidth always matches the container width when the widget is
+    // wider than needed, which would defeat width-snapping on resize end.
+    function postContentSize() {
       if (window.parent === window) return
+      const cells = grid.querySelectorAll(`.${styles.cell}`)
+      if (!cells.length) return
+      const gridRect = grid.getBoundingClientRect()
+      let maxRight = 0
+      let maxBottom = 0
+      cells.forEach((cell) => {
+        const r = cell.getBoundingClientRect()
+        const right = r.right - gridRect.left
+        const bottom = r.bottom - gridRect.top
+        if (right > maxRight) maxRight = right
+        if (bottom > maxBottom) maxBottom = bottom
+      })
+      const pad = 16 // mirror grid padding
       window.parent.postMessage({
         type: 'storyboard:component-set:content-size',
-        width: grid.scrollWidth,
-        height: grid.scrollHeight,
+        width: Math.ceil(maxRight + pad),
+        height: Math.ceil(maxBottom + pad),
       }, '*')
-    })
+    }
+    const ro = new ResizeObserver(postContentSize)
     ro.observe(grid)
 
     // Measure after layout + fonts settle
