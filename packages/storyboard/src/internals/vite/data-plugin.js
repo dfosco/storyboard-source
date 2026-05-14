@@ -1046,6 +1046,10 @@ export default function storyboardDataPlugin() {
             // imports `c` from react-compiler-runtime (CJS). Pre-bundle both
             // so Vite generates the proper named-export interop.
             '@primer/react', 'react-compiler-runtime',
+            // react-is ships as CJS and @primer/react imports `isElement` as a
+            // named ESM import. Without pre-bundling, Vite serves the raw CJS
+            // file which breaks the named import in the browser.
+            'react-is',
           ],
           exclude: ['@dfosco/storyboard'],
         },
