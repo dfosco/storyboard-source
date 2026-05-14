@@ -1,7 +1,7 @@
 import { spawn } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import {
   AcquireRequest,
   AcquireResponse,
@@ -152,6 +152,32 @@ function killExistingDaemon(): void {
   } catch { /* ignore */ }
 }
 
+/**
+ * Tracks which (baseUrl, daemonVersion) pairs have already been warned about
+ * within this process — and persists the last-warned daemon version to
+ * `~/.storyboard/runtime.version-warned` so sibling CLI invocations
+ * (`sb run` → `sb dev`) don't re-warn for the same daemon. Cleared on
+ * `sb reset` (which also removes the daemon).
+ */
+const warnedInProcess = new Set<string>()
+function versionWarnFile(): string {
+  return resolve(process.env.HOME || '', '.storyboard', 'runtime.version-warned')
+}
+function alreadyWarnedForVersion(daemonVersion: string): boolean {
+  try {
+    const file = versionWarnFile()
+    if (!existsSync(file)) return false
+    return readFileSync(file, 'utf8').trim() === daemonVersion
+  } catch { return false }
+}
+function recordWarnedForVersion(daemonVersion: string): void {
+  try {
+    const file = versionWarnFile()
+    mkdirSync(resolve(process.env.HOME || '', '.storyboard'), { recursive: true })
+    writeFileSync(file, daemonVersion)
+  } catch { /* best-effort */ }
+}
+
 export class RuntimeClient {
   readonly baseUrl: string
   readonly autoStart: boolean
@@ -161,7 +187,7 @@ export class RuntimeClient {
     this.autoStart = opts.autoStart !== false
   }
 
-  async health(): Promise<Health> {
+  async health(opts: { silent?: boolean } = {}): Promise<Health> {
     try {
       const result = await request(this.baseUrl, 'GET', '/health', undefined, Health)
       // Auto-respawn on version mismatch — a long-lived daemon from a
@@ -188,12 +214,18 @@ export class RuntimeClient {
           }
         } catch { /* fall through; treat as zero */ }
         if (activeCount > 0) {
-          // eslint-disable-next-line no-console
-          console.warn(
-            `[storyboard] daemon version ${result.version} differs from client ${CLIENT_VERSION}, ` +
-            `but ${activeCount} dev server(s) are active. Reusing the existing daemon. ` +
-            `Run \`sb reset\` to restart it once those are stopped.`,
-          )
+          const warnKey = `${this.baseUrl}::${result.version}`
+          const shouldWarn = !opts.silent && !warnedInProcess.has(warnKey) && !alreadyWarnedForVersion(result.version)
+          if (shouldWarn) {
+            // eslint-disable-next-line no-console
+            console.warn(
+              `[storyboard] daemon version ${result.version} differs from client ${CLIENT_VERSION}, ` +
+              `but ${activeCount} dev server(s) are active. Reusing the existing daemon. ` +
+              `Run \`sb reset\` to restart it once those are stopped.`,
+            )
+            warnedInProcess.add(warnKey)
+            recordWarnedForVersion(result.version)
+          }
           return result
         }
         killExistingDaemon()
@@ -218,7 +250,7 @@ export class RuntimeClient {
     // respawns it. Without this, `sb run` would happily POST against an
     // outdated daemon and inherit all of its bugs.
     if (this.autoStart) {
-      try { await this.health() } catch { /* health() will throw on hard failure; let acquire surface it */ }
+      try { await this.health({ silent: true }) } catch { /* health() will throw on hard failure; let acquire surface it */ }
     }
     const body = AcquireRequest.parse(input)
     return request(this.baseUrl, 'POST', '/devserver/acquire', body, AcquireResponse)

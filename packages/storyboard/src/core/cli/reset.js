@@ -29,6 +29,7 @@ p.intro('storyboard reset')
 const HOME = process.env.HOME || ''
 const LOCK = resolve(HOME, '.storyboard', 'runtime.lock')
 const PID = resolve(HOME, '.storyboard', 'runtime.pid')
+const VERSION_WARNED = resolve(HOME, '.storyboard', 'runtime.version-warned')
 
 // 1. Kill the runtime daemon.
 {
@@ -45,6 +46,7 @@ const PID = resolve(HOME, '.storyboard', 'runtime.pid')
   // Always clear the lock/pid files so a fresh daemon can claim them.
   try { unlinkSync(LOCK) } catch { /* not present */ }
   try { unlinkSync(PID) } catch { /* not present */ }
+  try { unlinkSync(VERSION_WARNED) } catch { /* not present */ }
   s.stop('Runtime daemon stopped')
 }
 
