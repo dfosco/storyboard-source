@@ -1,7 +1,7 @@
 SESSION: agent-1o0enx | indigo-finch
 CANVAS:  storyboarding/terminal-widget-prompts
 BRANCH:  0.5.0
-TIME:    2026-05-14T17:56:48.458Z
+TIME:    2026-05-14T17:58:40.800Z
 
 ================================================================================
 SCREEN
@@ -35,6 +35,6 @@ SCREEN
 
  ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                  @data-plugin.js
 ─────────────────────────────────────────────────────────────────────────────────────────
-❯ err 
+❯ errr 
 ─────────────────────────────────────────────────────────────────────────────────────────
  @ files · # issues         terminal-agent · Claude Opus 4.7 (1M context)(Internal only)

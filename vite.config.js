@@ -135,7 +135,33 @@ export default defineConfig(() => {
         },
     },
     optimizeDeps: {
-        include: ['@primer/react', '@primer/octicons-react', 'use-sync-external-store/shim', 'use-sync-external-store/shim/with-selector'],
+        include: [
+            '@primer/react',
+            '@primer/octicons-react',
+            'use-sync-external-store/shim',
+            'use-sync-external-store/shim/with-selector',
+            // Prototype-side deps — pre-bundle so the first prototype load
+            // doesn't discover them on the fly and trigger a chain of
+            // "optimized dependencies changed. reloading" cycles. Each entry
+            // here came from a real reload-loop log line.
+            '@base-ui/react/dialog',
+            '@base-ui/react/menu',
+            '@primer/react/experimental',
+            '@neodrag/react',
+            'ghostty-web',
+            'highlight.js/lib/core',
+            'highlight.js/lib/languages/javascript',
+            'highlight.js/lib/languages/typescript',
+            'highlight.js/lib/languages/xml',
+            'clsx',
+            'tailwind-merge',
+            'tailwind-variants',
+            '@radix-ui/react-separator',
+            '@radix-ui/react-avatar',
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-tooltip',
+            'lucide-react',
+        ],
     },
     esbuild: {
         // Preserve function names so the storyboard inspector shows
