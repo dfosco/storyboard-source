@@ -1440,13 +1440,24 @@ export default function storyboardDataPlugin() {
 
     handleHotUpdate(ctx) {
       const normalized = ctx.file.replace(/\\/g, '/')
-      if (!/\.canvas\.jsonl$/.test(normalized)) return
+      if (/\.canvas\.jsonl$/.test(normalized)) {
+        // Canvas JSONL: the watcher 'change' handler soft-invalidates and
+        // emits a custom HMR event. Drop Vite's default full-reload.
+        return []
+      }
 
-      // Prevent Vite's default fallback behavior (full page reload) for
-      // non-module .canvas.jsonl edits. The watcher 'change' handler
-      // (invalidate) already sends the custom HMR event and soft-invalidates
-      // the virtual module — no duplicate event needed here.
-      return []
+      // Prototype / component / template edits: defer to Fast Refresh.
+      // Returning ctx.modules unchanged keeps Vite's normal HMR pipeline —
+      // module-level updates flow, no full-reload fallback. If Fast Refresh
+      // can't apply (mixed-export file etc.), the prototype-reload-guard
+      // will still drop the resulting full-reload broadcast; the user can
+      // hit reload manually for those edge cases.
+      if (/\/src\/(prototypes|components|templates)\//.test(normalized)
+          && /\.(jsx?|tsx?|mdx)$/.test(normalized)) {
+        return ctx.modules
+      }
+
+      return undefined
     },
 
     // Inject __SB_BRANCHES__ into HTML so the Viewfinder branch selector works.
