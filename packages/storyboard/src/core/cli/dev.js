@@ -174,6 +174,10 @@ async function main() {
   } catch (err) {
     s.stop('Failed')
     p.log.error(err.message || String(err))
+    const stderr = err?.details?.stderr
+    if (stderr && typeof stderr === 'string' && stderr.trim()) {
+      p.log.message(stderr.trim())
+    }
     if (err.code === 'CONFLICT') p.log.info('Tip: another repo is already bound to this slot. Use a unique devDomain in storyboard.config.json.')
     if (err.code === 'FORBIDDEN_DEFAULT_DOMAIN') p.log.info('Tip: edit storyboard.config.json and replace "storyboard" with a unique devDomain.')
     process.exit(1)

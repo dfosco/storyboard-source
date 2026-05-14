@@ -306,7 +306,7 @@ function batchGitMetadata(root, filePaths) {
  */
 function buildIndex(root, opts = {}) {
   const { includeTilde = false } = opts
-  const ignore = ['node_modules/**', 'dist/**', '.git/**', '.worktrees/**', 'public/**']
+  const ignore = ['node_modules/**', 'dist/**', '.git/**', '.worktrees/**', 'worktrees/**', 'public/**']
   const files = globSync(GLOB_PATTERN, { cwd: root, ignore, absolute: false })
   const canvasFiles = globSync(CANVAS_GLOB_PATTERN, { cwd: root, ignore, absolute: false })
   const canvasMetaFiles = globSync(CANVAS_META_GLOB_PATTERN, { cwd: root, ignore, absolute: false })
