@@ -1042,6 +1042,10 @@ export default function storyboardDataPlugin() {
             'remark', 'remark-gfm', 'remark-html',
             'use-sync-external-store/shim', 'use-sync-external-store/shim/with-selector',
             'feather-icons', '@primer/octicons', 'ansi-to-html',
+            // @primer/react ≥38 ships pre-compiled with React Compiler and
+            // imports `c` from react-compiler-runtime (CJS). Pre-bundle both
+            // so Vite generates the proper named-export interop.
+            '@primer/react', 'react-compiler-runtime',
           ],
           exclude: ['@dfosco/storyboard'],
         },
