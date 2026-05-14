@@ -1,5 +1,21 @@
 # @dfosco/storyboard
 
+## 0.6.0-beta.0
+
+### Minor Changes
+
+-   0.6.0 simplifies the dev-server stack and tightens agent workflows.
+
+-   Simplified server stack: removed Caddy, runtime daemon, and persistent server in favor of plain per-worktree Vite dev servers.
+-   Multi-worktree dev servers restored without a daemon — each worktree runs its own server independently.
+-   App shell stays mounted across HMR and internal navigation, eliminating full-page reloads on most edits.
+-   Stopped terminal-driven reload loops by unwatching `.storyboard/` and fixing an Octicon guard self-match in the data plugin.
+-   `BranchBar` now reads the current branch from git instead of inferring it from the URL.
+-   HMR biased toward React Fast Refresh in `src/{prototypes,components,templates}`.
+-   New `tag` prop on command-palette items for fine-grained search ranking, split from visual labels via `index_tags`.
+-   Added `.agents/data/primer-octicons.json` (368 valid icon exports) and a regenerator script so agents stop importing icons that don't exist.
+-   Role docs: forbid >2s poll sleeps and clarify the cluster-token ordered fan-out for hub conversations.
+
 ## 0.5.0-beta.52
 
 ### Patch Changes
