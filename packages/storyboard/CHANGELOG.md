@@ -1,5 +1,11 @@
 # @dfosco/storyboard
 
+## 0.5.0-beta.52
+
+### Patch Changes
+
+-   Pre-bundle `react-is` so @primer/react's named imports resolve correctly in consumer apps.
+
 ## 0.5.0-beta.51
 
 ### Patch Changes
