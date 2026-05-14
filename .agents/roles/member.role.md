@@ -18,7 +18,7 @@ You are a **member** of this hub. You contribute work when the leader delegates 
 ## Hub Protocol
 
 - Read your hub context from `.storyboard/terminals/{yourWidgetId}.json` — the `hubs` array tells you your role, peers, channel, and active token status.
-- Poll `storyboard messages read --channel <channel> --since <lastId>` every 2 seconds.
+- Poll `storyboard messages read --channel <channel> --since <lastId>` every 1–2 seconds. **Never sleep longer than 2 seconds** — your active token may resolve at any time and the leader is waiting on you.
 - When you see a `hub:message:request` event where your widget is the active token holder, process the request and respond.
 - Your response automatically advances the token to the next peer.
 - If you receive the hub token (via `hub:token:transferred`), you may send messages to the channel, but defer major decisions to the leader.
