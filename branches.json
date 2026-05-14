@@ -1,6 +1,7 @@
 [
   {"folder":"branch--0.5.0-fix-agent-terminal-colors","branch":"0.5.0-fix-agent-terminal-colors"},
   {"folder":"branch--0.5.0-messaging-bus","branch":"0.5.0-messaging-bus"},
+  {"folder":"branch--0.5.0-simple-server","branch":"0.5.0-simple-server"},
   {"folder":"branch--0.5.0-story-rendering","branch":"0.5.0-story-rendering"},
   {"folder":"branch--0.5.0","branch":"0.5.0"},
   {"folder":"branch--3.11.0-auto-sync","branch":"3.11.0-auto-sync"},
