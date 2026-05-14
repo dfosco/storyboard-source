@@ -1,0 +1,10 @@
+{
+  "widgetId": "agent-5ug6dk",
+  "canvasId": "storyboarding/terminal-bus",
+  "prettyName": "copilot-agent",
+  "timestamp": "2026-05-03T09:12:26.088Z",
+  "cols": 80,
+  "rows": 24,
+  "paneContent": "┌  storyboard terminal\n│\n◆  How would you like to start?\n│  ● ✦ Start a new agent session\n│  ○ ▸ Start a new terminal session\n│  ○ ⊞ Browse existing sessions\n└\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+  "scrollback": "\u001b[?996n\u001b[>c\u001b[>q┌  storyboard terminal\r\n│\r\n◆  How would you like to start?\r\n│  ● ✦ Start a new agent session\r\n│  ○ ▸ Start a new terminal session\r\n│  ○ ⊞ Browse existing sessions\r\n└\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n"
+}

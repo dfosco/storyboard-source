@@ -1,0 +1,863 @@
+SESSION: agent-3yqcms | azure-thrush
+CANVAS:  storyboarding/form-schema
+BRANCH:  0.5.0
+TIME:    2026-05-09T16:43:58.835Z
+
+================================================================================
+SCREEN
+================================================================================
+
+
+  I'm going to skip the formal plan document and just start shipping Phase 1 work, 
+  beginning with the materializer events for waypoint persistence.
+
+● Starting Phase 1: data + server + CLI layer (no Part A dependency). Let me get the
+  baseline test command first.
+
+● Check test scripts (shell)
+  │ cat packages/storyboard/package.json | jq '.scripts | {test, lint}'
+  └ 5 lines...
+
+● Read materializer.test.js
+  │ packages/storyboard/src/core/canvas/materializer.test.js
+  └ L1:30 (30 lines read)
+
+● root scripts (shell)
+  │ cat package.json | jq '.scripts'
+  └ 32 lines...
+
+● Baseline materializer test (shell)
+  │ npx vitest run packages/storyboard/src/core/canvas/materializer.test.js 2>&1 | tail
+  │ -15
+  └ 15 lines...
+
+◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
+─────────────────────────────────────────────────────────────────────────────────────────
+❯  
+─────────────────────────────────────────────────────────────────────────────────────────
+ / commands · ? help · ctrl+q enqueue
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+◉ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)○ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)● Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)○ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)● Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)○ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)● Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)○ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)● Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)○ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)● Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)○ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)● Exploring connector code for Part B (Esc to cancel · 2.6 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)○ Exploring connector code for Part B (Esc to cancel · 2.6 KiB)○ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)  └ L1320:1500 (181 lines read)
+
+● Find existing waypoint code (shell)
+  │ grep -n "connector_waypoints\|setWaypoints\|waypoint"
+  │ packages/storyboard/src/core/canvas/server.js
+  │ packages/storyboard/src/core/canvas/materializer.test.js 2>/dev/null | head -30
+  │ echo "---"
+  │ grep -rn "connector_waypoints\|waypoint" packages/storyboard/src/cli/ 2>/dev/null |…
+  └ 7 lines...
+
+● Find CLI (shell)
+  │ find packages/storyboard -path '*/node_modules' -prune -o -type d -name cli -print
+  │ 2>/dev/null
+  │ echo "---"
+  │ find packages/storyboard -path '*/node_modules' -prune -o -type f -name '*.js' -print  │ 2>/dev/null | xargs grep -l "canvas connector" 2>/dev/null | head -10
+  └ 5 lines...
+
+● Read canvasConnector.js
+  │ packages/storyboard/src/core/cli/canvasConnector.js
+  └ 110 lines read
+
+◐ Looking at the integration co◎ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◐ Looking at the integration contract with Geometry Agent,◐ Looking at the integration contract with Geometry Agent, I need to understand h
+● Find existing waypoint code (shell)
+  │ grep -n "connector_waypoints\|setWaypoints\|waypoint"
+  │ packages/storyboard/src/core/canvas/server.js
+  │ packages/storyboard/src/core/canvas/materializer.test.js 2>/dev/null | head -30
+  │ echo "---"
+  │ grep -rn "connector_waypoints\|waypoint" packages/storyboard/src/cli/ 2>/dev/null |…
+  └ 7 lines...
+
+● Find CLI (shell)
+  │ find packages/storyboard -path '*/node_modules' -prune -o -type d -name cli -print
+  │ 2>/dev/null
+  │ echo "---"
+  │ find packages/storyboard -path '*/node_modules' -prune -o -type f -name '*.js' -print  │ 2>/dev/null | xargs grep -l "canvas connector" 2>/dev/null | head -10
+  └ 5 lines...
+
+● Read canvasConnector.js
+  │ packages/storyboard/src/core/cli/canvasConnector.js
+  └ 110 lines read
+
+◐ Looking at the integration contract with Geometry Agent, I need to understand how 
+  `buildConnectorPa  `buildConnectorPath` works—it takes◉ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)  `buildConnectorPath` works—it takes styling, start  `buildConnectorPath` works—it takes styling, start and end points  `buildConnectorPath` works—it takes styling, start and end points with their● Exploring connector code for Part B (Esc to cancel · 2.8 KiB)  `buildConnectorPath` works—it takes styling, start and end points with their anchors, p● Find existing waypoint code (shell)
+  │ grep -n "connector_waypoints\|setWaypoints\|waypoint"
+  │ packages/storyboard/src/core/canvas/server.js
+  │ packages/storyboard/src/core/canvas/materializer.test.js 2>/dev/null | head -30
+  │ echo "---"
+  │ grep -rn "connector_waypoints\|waypoint" packages/storyboard/src/cli/ 2>/dev/null |…
+  └ 7 lines...
+
+● Find CLI (shell)
+  │ find packages/storyboard -path '*/node_modules' -prune -o -type d -name cli -print
+  │ 2>/dev/null
+  │ echo "---"
+  │ find packages/storyboard -path '*/node_modules' -prune -o -type f -name '*.js' -print  │ 2>/dev/null | xargs grep -l "canvas connector" 2>/dev/null | head -10
+  └ 5 lines...
+
+● Read canvasConnector.js
+  │ packages/storyboard/src/core/cli/canvasConnector.js
+  └ 110 lines read
+
+◐ Looking at the integration contract with Geometry Agent, I need to understand how 
+  `buildConnectorPath` works—it takes styling, start and end points with their anchors, 
+  plus optio  plus optional para◉ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)  plus optional parameters  plus optional parameters like w  plus optional parameters like waypoi  plus optional parameters like waypoints,◎ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)  plus optional parameters like waypoints, free  plus optional parameters like waypoints, free end  plus optional parameters like waypoints, free end han  plus optional parameters like waypoints, free end handlin○ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)  plus optional parameters like waypoints, free end handling, a  plus optional parameters like waypoints, free end handling, and  plus optional parameters like waypoints, free end handling, and co◎ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)  plus optional parameters like waypoints, free end handling, and corn  plus optional parameters like waypoints, free end handling, and corne  plus optional parameters like waypoints, free end handling, and corner◉ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)● Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)○ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)● Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)○ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)● Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)○ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)● Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)○ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)● Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)○ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)● Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)○ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)● Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)○ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◎ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)◉ Exploring connector code for Part B (Esc to cancel · 2.8 KiB)● Exploring connector code for Part B (Esc to cancel · 2.8 KiB)● Exploring connector code for Part B (Esc to cancel · 3.1 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.1 KiB)  │ grep -n "connector_waypoints\|setWaypoints\|waypoint"
+  │ packages/storyboard/src/core/canvas/server.js
+  │ packages/storyboard/src/core/canvas/materializer.test.js 2>/dev/null | head -30
+  │ echo "---"
+  │ grep -rn "connector_waypoints\|waypoint" packages/storyboard/src/cli/ 2>/dev/null |…
+  └ 7 lines...
+
+● Find CLI (shell)
+  │ find packages/storyboard -path '*/node_modules' -prune -o -type d -name cli -print
+  │ 2>/dev/null
+  │ echo "---"
+  │ find packages/storyboard -path '*/node_modules' -prune -o -type f -name '*.js' -print  │ 2>/dev/null | xargs grep -l "canvas connector" 2>/dev/null | head -10
+  └ 5 lines...
+
+● Read canvasConnector.js
+  │ packages/storyboard/src/core/cli/canvasConnector.js
+  └ 110 lines read
+
+◐ Looking at the integration contract with Geometry Agent, I need to understand how 
+  `buildConnectorPath` works—it takes styling, start and end points with their anchors, 
+  plus optional parameters like waypoints, free end handling, and corner radius. The 
+  Geometry Agent will provid  Geometry Agent will provide the `buildConnectorPath` impleme  │ packages/storyboard/src/core/canvas/server.js
+  │ packages/storyboard/src/core/canvas/materializer.test.js 2>/dev/null | head -30
+  │ echo "---"
+  │ grep -rn "connector_waypoints\|waypoint" packages/storyboard/src/cli/ 2>/dev/null |…
+  └ 7 lines...
+
+● Find CLI (shell)
+  │ find packages/storyboard -path '*/node_modules' -prune -o -type d -name cli -print
+  │ 2>/dev/null
+  │ echo "---"
+  │ find packages/storyboard -path '*/node_modules' -prune -o -type f -name '*.js' -print  │ 2>/dev/null | xargs grep -l "canvas connector" 2>/dev/null | head -10
+  └ 5 lines...
+
+● Read canvasConnector.js
+  │ packages/storyboard/src/core/cli/canvasConnector.js
+  └ 110 lines read
+
+◐ Looking at the integration contract with Geometry Agent, I need to understand how 
+  `buildConnectorPath` works—it takes styling, start and end points with their anchors, 
+  plus optional parameters like waypoints, free end handling, and corner radius. The 
+  Geometry Agent will provide the `buildConnectorPath` implementation and handle waypoint   ge  │ echo "---"
+  │ grep -rn "connector_waypoints\|waypoint" packages/storyboard/src/cli/ 2>/dev/null |…
+  └ 7 lines...
+
+● Find CLI (shell)
+  │ find packages/storyboard -path '*/node_modules' -prune -o -type d -name cli -print
+  │ 2>/dev/null
+  │ echo "---"
+  │ find packages/storyboard -path '*/node_modules' -prune -o -type f -name '*.js' -print  │ 2>/dev/null | xargs grep -l "canvas connector" 2>/dev/null | head -10
+  └ 5 lines...
+
+● Read canvasConnector.js
+  │ packages/storyboard/src/core/cli/canvasConnector.js
+  └ 110 lines read
+
+◐ Looking at the integration contract with Geometry Agent, I need to understand how 
+  `buildConnectorPath` works—it takes styling, start and end points with their anchors, 
+  plus optional parameters like waypoints, free end handling, and corner radius. The 
+  Geometry Agent will provide the `buildConnectorPath` implementation and handle waypoint   generation.
+
+  Since the Geome◎ Exploring connector code for Part B (Esc to cancel · 3.1 KiB)  Since the Geometry Agent work is still  Since the Geometry Agent work is still pending, I should t  Since the Geometry Agent work is still pending, I should tackle the foundat○ Exploring connector code for Part B (Esc to cancel · 3.1 KiB)  │ grep -rn "connector_waypoints\|waypoint" packages/storyboard/src/cli/ 2>/dev/null |…
+  └ 7 lines...
+
+● Find CLI (shell)
+  │ find packages/storyboard -path '*/node_modules' -prune -o -type d -name cli -print
+  │ 2>/dev/null
+  │ echo "---"
+  │ find packages/storyboard -path '*/node_modules' -prune -o -type f -name '*.js' -print  │ 2>/dev/null | xargs grep -l "canvas connector" 2>/dev/null | head -10
+  └ 5 lines...
+
+● Read canvasConnector.js
+  │ packages/storyboard/src/core/cli/canvasConnector.js
+  └ 110 lines read
+
+◐ Looking at the integration contract with Geometry Agent, I need to understand how 
+  `buildConnectorPath` works—it takes styling, start and end points with their anchors, 
+  plus optional parameters like waypoints, free end handling, and corner radius. The 
+  Geometry Agent will provide the `buildConnectorPath` implementation and handle waypoint   generation.
+
+  Since the Geometry Agent work is still pending, I should tackle the foundational pieces   fi   first—the data○ Exploring connector code for Part B (Esc to cancel · 3.3 KiB)   first—the data layer (materializer events, server PATCH  └ 7 lines...
+
+● Find CLI (shell)
+  │ find packages/storyboard -path '*/node_modules' -prune -o -type d -name cli -print
+  │ 2>/dev/null
+  │ echo "---"
+  │ find packages/storyboard -path '*/node_modules' -prune -o -type f -name '*.js' -print  │ 2>/dev/null | xargs grep -l "canvas connector" 2>/dev/null | head -10
+  └ 5 lines...
+
+● Read canvasConnector.js
+  │ packages/storyboard/src/core/cli/canvasConnector.js
+  └ 110 lines read
+
+◐ Looking at the integration contract with Geometry Agent, I need to understand how 
+  `buildConnectorPath` works—it takes styling, start and end points with their anchors, 
+  plus optional parameters like waypoints, free end handling, and corner radius. The 
+  Geometry Agent will provide the `buildConnectorPath` implementation and handle waypoint   generation.
+
+  Since the Geometry Agent work is still pending, I should tackle the foundational pieces   first—the data layer (materializer events, server PATCH, CLI support) and connector 
+  routin◎ Exploring connector code for Part B (Esc to cancel · 3.3 KiB)  routing logic that don't depend on t  routing logic that don't depend on that integration. Once the d  routing logic that don't depend on that integration. Once the dispatcher is available,◉ Exploring connector code for Part B (Esc to cancel · 3.3 KiB)
+● Find CLI (shell)
+  │ find packages/storyboard -path '*/node_modules' -prune -o -type d -name cli -print
+  │ 2>/dev/null
+  │ echo "---"
+  │ find packages/storyboard -path '*/node_modules' -prune -o -type f -name '*.js' -print  │ 2>/dev/null | xargs grep -l "canvas connector" 2>/dev/null | head -10
+  └ 5 lines...
+
+● Read canvasConnector.js
+  │ packages/storyboard/src/core/cli/canvasConnector.js
+  └ 110 lines read
+
+◐ Looking at the integration contract with Geometry Agent, I need to understand how 
+  `buildConnectorPath` works—it takes styling, start and end points with their anchors, 
+  plus optional parameters like waypoints, free end handling, and corner radius. The 
+  Geometry Agent will provide the `buildConnectorPath` implementation and handle waypoint   generation.
+
+  Since the Geometry Agent work is still pending, I should tackle the foundational pieces   first—the data layer (materializer events, server PATCH, CLI support) and connector 
+  routing logic that don't depend on that integration. Once the dispatcher is available,   I can wire up the r  I can wire up the rendering layer. Le  I can wire up the rendering layer. Let me start by ex  I can wire up the rendering layer. Let me start by examining how Ca● Exploring connector code for Part B (Esc to cancel · 3.3 KiB)  I can wire up the rendering layer. Let me start by examining how CanvasPage cur● Find CLI (shell)
+  │ find packages/storyboard -path '*/node_modules' -prune -o -type d -name cli -print
+  │ 2>/dev/null
+  │ echo "---"
+  │ find packages/storyboard -path '*/node_modules' -prune -o -type f -name '*.js' -print  │ 2>/dev/null | xargs grep -l "canvas connector" 2>/dev/null | head -10
+  └ 5 lines...
+
+● Read canvasConnector.js
+  │ packages/storyboard/src/core/cli/canvasConnector.js
+  └ 110 lines read
+
+◐ Looking at the integration contract with Geometry Agent, I need to understand how 
+  `buildConnectorPath` works—it takes styling, start and end points with their anchors, 
+  plus optional parameters like waypoints, free end handling, and corner radius. The 
+  Geometry Agent will provide the `buildConnectorPath` implementation and handle waypoint   generation.
+
+  Since the Geometry Agent work is still pending, I should tackle the foundational pieces   first—the data layer (materializer events, server PATCH, CLI support) and connector 
+  routing logic that don't depend on that integration. Once the dispatcher is available,   I can wire up the rendering layer. Let me start by examining how CanvasPage currently 
+  han  handles conn◉ Exploring connector code for Part B (Esc to cancel · 3.3 KiB)  handles connector op  handles connector operation  handles connector operations so I  handles connector operations so I can◎ Exploring connector code for Part B (Esc to cancel · 3.3 KiB)  handles connector operations so I can build  handles connector operations so I can build the  handles connector operations so I can build the add  handles connector operations so I can build the add/rem  handles connector operations so I can build the add/remove  handles connector operations so I can build the add/remove flow  handles connector operations so I can build the add/remove flow pro◉ Exploring connector code for Part B (Esc to cancel · 3.3 KiB)  handles connector operations so I can build the add/remove flow prope  handles connector operations so I can build the add/remove flow properl  handles connector operations so I can build the add/remove flow properly  handles connector operations so I can build the add/remove flow properly.● Exploring connector code for Part B (Esc to cancel · 3.3 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.3 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.3 KiB)○ Exploring connector code for Part B (Esc to cancel · 3.3 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.3 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.5 KiB)  │ 2>/dev/null
+  │ echo "---"
+  │ find packages/storyboard -path '*/node_modules' -prune -o -type f -name '*.js' -print  │ 2>/dev/null | xargs grep -l "canvas connector" 2>/dev/null | head -10
+  └ 5 lines...
+
+● Read canvasConnector.js
+  │ packages/storyboard/src/core/cli/canvasConnector.js
+  └ 110 lines read
+
+◐ Looking at the integration contract with Geometry Agent, I need to understand how 
+  `buildConnectorPath` works—it takes styling, start and end points with their anchors, 
+  plus optional parameters like waypoints, free end handling, and corner radius. The 
+  Geometry Agent will provide the `buildConnectorPath` implementation and handle waypoint   generation.
+
+  Since the Geometry Agent work is still pending, I should tackle the foundational pieces   first—the data layer (materializer events, server PATCH, CLI support) and connector 
+  routing logic that don't depend on that integration. Once the dispatcher is available,   I can wire up the rendering layer. Let me start by examining how CanvasPage currently 
+  handles connector operations so I can build the add/remove flow properly.
+
+● Got it. I'll start● Got it. I'll start with foundation◉ Exploring connector code for Part B (Esc to cancel · 3.5 KiB)● Got it. I'll start with foundational layers (dat● Got it. I'll start with foundational layers (data, server, C● Got it. I'll start with foundational layers (data, server, CLI) that do● Got it. I'll start with foundational layers (data, server, CLI) that don't depen● Exploring connector code for Part B (Esc to cancel · 3.5 KiB)  │ echo "---"
+  │ find packages/storyboard -path '*/node_modules' -prune -o -type f -name '*.js' -print  │ 2>/dev/null | xargs grep -l "canvas connector" 2>/dev/null | head -10
+  └ 5 lines...
+
+● Read canvasConnector.js
+  │ packages/storyboard/src/core/cli/canvasConnector.js
+  └ 110 lines read
+
+◐ Looking at the integration contract with Geometry Agent, I need to understand how 
+  `buildConnectorPath` works—it takes styling, start and end points with their anchors, 
+  plus optional parameters like waypoints, free end handling, and corner radius. The 
+  Geometry Agent will provide the `buildConnectorPath` implementation and handle waypoint   generation.
+
+  Since the Geometry Agent work is still pending, I should tackle the foundational pieces   first—the data layer (materializer events, server PATCH, CLI support) and connector 
+  routing logic that don't depend on that integration. Once the dispatcher is available,   I can wire up the rendering layer. Let me start by examining how CanvasPage currently 
+  handles connector operations so I can build the add/remove flow properly.
+
+● Got it. I'll start with foundational layers (data, server, CLI) that don't depend on
+  Par  Part A's g  Part A's geometr  Part A's geometry disp◉ Exploring connector code for Part B (Esc to cancel · 3.5 KiB)  Part A's geometry dispatche  Part A's geometry dispatcher, t  Part A's geometry dispatcher, then◎ Exploring connector code for Part B (Esc to cancel · 3.5 KiB)  Part A's geometry dispatcher, then laye  Part A's geometry dispatcher, then layer on  Part A's geometry dispatcher, then layer on ren◎ Exploring connector code for Part B (Esc to cancel · 3.7 KiB)  Part A's geometry dispatcher, then layer on render○ Exploring connector code for Part B (Esc to cancel · 3.7 KiB)  Part A's geometry dispatcher, then layer on render and  Part A's geometry dispatcher, then layer on render and U  Part A's geometry dispatcher, then layer on render and UI◎ Exploring connector code for Part B (Esc to cancel · 3.7 KiB)  Part A's geometry dispatcher, then layer on render and UI.◉ Exploring connector code for Part B (Esc to cancel · 3.7 KiB)● Exploring connector code for Part B (Esc to cancel · 3.7 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.7 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.7 KiB)○ Exploring connector code for Part B (Esc to cancel · 3.7 KiB)○ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◐ Looking at the integration contract with Geometry Agent, I need to understand how 
+  `buildConnectorPath` works—it takes styling, start and end points with their anchors, 
+  plus optional parameters like waypoints, free end handling, and corner radius. The 
+  Geometry Agent will provide the `buildConnectorPath` implementation and handle waypoint   generation.
+
+  Since the Geometry Agent work is still pending, I should tackle the foundational pieces   first—the data layer (materializer events, server PATCH, CLI support) and connector 
+  routing logic that don't depend on that integration. Once the dispatcher is available,   I can wire up the rendering layer. Let me start by examining how CanvasPage currently 
+  handles connector operations so I can build the add/remove flow properly.
+
+● Got it. I'll start with foundational layers (data, server, CLI) that don't depend on
+  Part A's geometry dispatcher, then layer on render and UI.● Find CanvasPage connector wiring (shell)
+  └ grep -n "addConnector\|removeConnector\|onEndpointDrag\|onConnectorRemove\|connector_    added\|/_storyboard/canvas/connector"
+    packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -40
+
+● Find snap helpers (shell)
+  └ grep -n "snapValue\|snapToGrid\|gridSize"
+    packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -20◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB) / commands · ? help · ctrl+q enqueue · ctrl+x → b background task● Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)○ Exploring connector code for Part B (Esc to cancel · 3.9 KiB) / commands · ? help · ctrl+q enqueue  plus optional parameters like waypoints, free end handling, and corner radius. The 
+  Geometry Agent will provide the `buildConnectorPath` implementation and handle waypoint   generation.
+
+  Since the Geometry Agent work is still pending, I should tackle the foundational pieces   first—the data layer (materializer events, server PATCH, CLI support) and connector 
+  routing logic that don't depend on that integration. Once the dispatcher is available,   I can wire up the rendering layer. Let me start by examining how CanvasPage currently 
+  handles connector operations so I can build the add/remove flow properly.
+
+● Got it. I'll start with foundational layers (data, server, CLI) that don't depend on
+  Part A's geometry dispatcher, then layer on render and UI.
+
+● Find CanvasPage connector wiring (shell)
+  │ grep -n "addConnector\|removeConnector\|onEndpointDrag\|onConnectorRemove\|connector_  │ added\|/_storyboard/canvas/connector"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -40
+  └ 8 lines...
+
+● Find snap helpers (shell)
+  │ grep -n "snapValue\|snapToGrid\|gridSize"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -20
+  └ 21 lines...◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)● Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)○ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)● Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)○ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)● Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)○ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)● Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)○ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)● Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)○ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)● Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)○ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)● Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)○ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)● Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)○ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)● Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)○ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)● Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)○ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)● Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)○ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)● Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)○ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 3.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.0 KiB)● Exploring connector code for Part B (Esc to cancel · 4.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.0 KiB)● Exploring connector code for Part B (Esc to cancel · 4.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)  handles connector operations so I can build the add/remove flow properly.
+
+● Got it. I'll start with foundational layers (data, server, CLI) that don't depend on
+  Part A's geometry dispatcher, then layer on render and UI.
+
+● Find CanvasPage connector wiring (shell)
+  │ grep -n "addConnector\|removeConnector\|onEndpointDrag\|onConnectorRemove\|connector_  │ added\|/_storyboard/canvas/connector"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -40
+  └ 8 lines...
+
+● Find snap helpers (shell)
+  │ grep -n "snapValue\|snapToGrid\|gridSize"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -20
+  └ 21 lines...
+
+● canvasApi connector methods (shell)
+  └ grep -n "addConnector\|setWaypoints\|removeConnector\|updateConnector"
+    packages/storyboard/src/internals/canvas/canvasApi.js
+
+● Read canvasApi.js
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 169 lines read◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB) / commands · ? help · ctrl+q enqueue · ctrl+x → b background task◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB) / commands · ? help · ctrl+q enqueue◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)
+● Got it. I'll start with foundational layers (data, server, CLI) that don't depend on
+  Part A's geometry dispatcher, then layer on render and UI.
+
+● Find CanvasPage connector wiring (shell)
+  │ grep -n "addConnector\|removeConnector\|onEndpointDrag\|onConnectorRemove\|connector_  │ added\|/_storyboard/canvas/connector"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -40
+  └ 8 lines...
+
+● Find snap helpers (shell)
+  │ grep -n "snapValue\|snapToGrid\|gridSize"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -20
+  └ 21 lines...
+
+● canvasApi connector methods (shell)
+  │ grep -n "addConnector\|setWaypoints\|removeConnector\|updateConnector"
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 4 lines...◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)
+● Got it. I'll start with foundational layers (data, server, CLI) that don't depend on
+  Part A's geometry dispatcher, then layer on render and UI.
+
+● Find CanvasPage connector wiring (shell)
+  │ grep -n "addConnector\|removeConnector\|onEndpointDrag\|onConnectorRemove\|connector_  │ added\|/_storyboard/canvas/connector"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -40
+  └ 8 lines...
+
+● Find snap helpers (shell)
+  │ grep -n "snapValue\|snapToGrid\|gridSize"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -20
+  └ 21 lines...
+
+● canvasApi connector methods (shell)
+  │ grep -n "addConnector\|setWaypoints\|removeConnector\|updateConnector"
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 4 lines...
+
+● Read canvasApi.js
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 169 lines read
+
+◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+● Got it. I'll start with foundational layers (data, server, CLI) that don't depend on
+  Part A's geometry dispatcher, then layer on render and UI.
+
+● Find CanvasPage connector wiring (shell)
+  │ grep -n "addConnector\|removeConnector\|onEndpointDrag\|onConnectorRemove\|connector_  │ added\|/_storyboard/canvas/connector"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -40
+  └ 8 lines...
+
+● Find snap helpers (shell)
+  │ grep -n "snapValue\|snapToGrid\|gridSize"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -20
+  └ 21 lines...
+
+● canvasApi connector methods (shell)
+  │ grep -n "addConnector\|setWaypoints\|removeConnector\|updateConnector"
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 4 lines...
+
+● Read canvasApi.js
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 169 lines read
+
+◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◉ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)○ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)◎ Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 4.2 KiB)● Exploring connector code for Part B (Esc to cancel · 5.1 KiB)◉ Exploring connector code for Part B (Esc to cancel · 5.1 KiB)● Find CanvasPage connector wiring (shell)
+  │ grep -n "addConnector\|removeConnector\|onEndpointDrag\|onConnectorRemove\|connector_  │ added\|/_storyboard/canvas/connector"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -40
+  └ 8 lines...
+
+● Find snap helpers (shell)
+  │ grep -n "snapValue\|snapToGrid\|gridSize"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -20
+  └ 21 lines...
+
+● canvasApi connector methods (shell)
+  │ grep -n "addConnector\|setWaypoints\|removeConnector\|updateConnector"
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 4 lines...
+
+● Read canvasApi.js
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 169 lines read
+
+◐ I'm laying out a structured plan to tackle this in phases, starting with the data layer   work that doesn't dep● Find CanvasPage connector wiring (shell)
+  │ grep -n "addConnector\|removeConnector\|onEndpointDrag\|onConnectorRemove\|connector_  │ added\|/_storyboard/canvas/connector"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -40
+  └ 8 lines...
+
+● Find snap helpers (shell)
+  │ grep -n "snapValue\|snapToGrid\|gridSize"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -20
+  └ 21 lines...
+
+● canvasApi connector methods (shell)
+  │ grep -n "addConnector\|setWaypoints\|removeConnector\|updateConnector"
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 4 lines...
+
+● Read canvasApi.js
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 169 lines read
+
+◐ I'm laying out a structured plan to tackle this in phases, starting with the data layer   work that doesn't depend on the Geometry Agent—materializing the waypoint events, 
+  building the server endpoints for m  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -40
+  └ 8 lines...
+
+● Find snap helpers (shell)
+  │ grep -n "snapValue\|snapToGrid\|gridSize"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -20
+  └ 21 lines...
+
+● canvasApi connector methods (shell)
+  │ grep -n "addConnector\|setWaypoints\|removeConnector\|updateConnector"
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 4 lines...
+
+● Read canvasApi.js
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 169 lines read
+
+◐ I'm laying out a structured plan to tackle this in phases, starting with the data layer   work that doesn't depend on the Geometry Agent—materializing the waypoint events, 
+  building the server endpoints for managing connector waypoints, and creating the CLI 
+  subcommand to support it.
+
+  For Pha  For Phase 2 and 3, I need the Geometry Agent's `buildConnectorPath` signature to◎ Exploring connector code for Part B (Esc to cancel · 5.1 KiB)  └ 8 lines...
+
+● Find snap helpers (shell)
+  │ grep -n "snapValue\|snapToGrid\|gridSize"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -20
+  └ 21 lines...
+
+● canvasApi connector methods (shell)
+  │ grep -n "addConnector\|setWaypoints\|removeConnector\|updateConnector"
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 4 lines...
+
+● Read canvasApi.js
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 169 lines read
+
+◐ I'm laying out a structured plan to tackle this in phases, starting with the data layer   work that doesn't depend on the Geometry Agent—materializing the waypoint events, 
+  building the server endpoints for managing connector waypoints, and creating the CLI 
+  subcommand to support it.
+
+  For Phase 2 and 3, I need the Geometry Agent's `buildConnectorPath` signature to 
+  understand how waypoints flow through the system. The contract sh
+● Find snap helpers (shell)
+  │ grep -n "snapValue\|snapToGrid\|gridSize"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -20
+  └ 21 lines...
+
+● canvasApi connector methods (shell)
+  │ grep -n "addConnector\|setWaypoints\|removeConnector\|updateConnector"
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 4 lines...
+
+● Read canvasApi.js
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 169 lines read
+
+◐ I'm laying out a structured plan to tackle this in phases, starting with the data layer   work that doesn't depend on the Geometry Agent—materializing the waypoint events, 
+  building the server endpoints for managing connector waypoints, and creating the CLI 
+  subcommand to support it.
+
+  For Phase 2 and 3, I need the Geometry Agent's `buildConnectorPath` signature to 
+  understand how waypoints flow through the system. The contract shows waypoints as 
+  relative offsets with optional hints, bu● Find snap helpers (shell)
+  │ grep -n "snapValue\|snapToGrid\|gridSize"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -20
+  └ 21 lines...
+
+● canvasApi connector methods (shell)
+  │ grep -n "addConnector\|setWaypoints\|removeConnector\|updateConnector"
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 4 lines...
+
+● Read canvasApi.js
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 169 lines read
+
+◐ I'm laying out a structured plan to tackle this in phases, starting with the data layer   work that doesn't depend on the Geometry Agent—materializing the waypoint events, 
+  building the server endpoints for managing connector waypoints, and creating the CLI 
+  subcommand to support it.
+
+  For Phase 2 and 3, I need the Geometry Agent's `buildConnectorPath` signature to 
+  understand how waypoints flow through the system. The contract shows waypoints as 
+  relative offsets with optional hints, but I'm realizing the actual routing math for 
+  waypo○ Exploring connector code for Part B (Esc to cancel · 5.1 KiB)  waypoints needs to live in `connectorRouting.js`  waypoints needs to live in `connectorRouting.js` on the Routing Agent side, not in the  │ grep -n "snapValue\|snapToGrid\|gridSize"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -20
+  └ 21 lines...
+
+● canvasApi connector methods (shell)
+  │ grep -n "addConnector\|setWaypoints\|removeConnector\|updateConnector"
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 4 lines...
+
+● Read canvasApi.js
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 169 lines read
+
+◐ I'm laying out a structured plan to tackle this in phases, starting with the data layer   work that doesn't depend on the Geometry Agent—materializing the waypoint events, 
+  building the server endpoints for managing connector waypoints, and creating the CLI 
+  subcommand to support it.
+
+  For Phase 2 and 3, I need the Geometry Agent's `buildConnectorPath` signature to 
+  understand how waypoints flow through the system. The contract shows waypoints as 
+  relative offsets with optional hints, but I'm realizing the actual routing math for 
+  waypoints needs to live in `connectorRouting.js` on the Routing Agent side, not in the   geometry layer. The dispatcher w  geometry layer. The dispatcher will call into that routing lo◎ Exploring connector code for Part B (Esc to cancel · 5.1 KiB)  geometry layer. The dispatcher will call into that routing logic, so I need to clarify  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -20
+  └ 21 lines...
+
+● canvasApi connector methods (shell)
+  │ grep -n "addConnector\|setWaypoints\|removeConnector\|updateConnector"
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 4 lines...
+
+● Read canvasApi.js
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 169 lines read
+
+◐ I'm laying out a structured plan to tackle this in phases, starting with the data layer   work that doesn't depend on the Geometry Agent—materializing the waypoint events, 
+  building the server endpoints for managing connector waypoints, and creating the CLI 
+  subcommand to support it.
+
+  For Phase 2 and 3, I need the Geometry Agent's `buildConnectorPath` signature to 
+  understand how waypoints flow through the system. The contract shows waypoints as 
+  relative offsets with optional hints, but I'm realizing the actual routing math for 
+  waypoints needs to live in `connectorRouting.js` on the Routing Agent side, not in the   geometry layer. The dispatcher will call into that routing logic, so I need to clarify   where the boundary si◎ Exploring connector code for Part B (Esc to cancel · 5.4 KiB)
+● canvasApi connector methods (shell)
+  │ grep -n "addConnector\|setWaypoints\|removeConnector\|updateConnector"
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 4 lines...
+
+● Read canvasApi.js
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 169 lines read
+
+◐ I'm laying out a structured plan to tackle this in phases, starting with the data layer   work that doesn't depend on the Geometry Agent—materializing the waypoint events, 
+  building the server endpoints for managing connector waypoints, and creating the CLI 
+  subcommand to support it.
+
+  For Phase 2 and 3, I need the Geometry Agent's `buildConnectorPath` signature to 
+  understand how waypoints flow through the system. The contract shows waypoints as 
+  relative offsets with optional hints, but I'm realizing the actual routing math for 
+  waypoints needs to live in `connectorRouting.js` on the Routing Agent side, not in the   geometry layer. The dispatcher will call into that routing logic, so I need to clarify   where the boundary sits between what each agent owns.
+
+  The cleanest approach is to◉ Exploring connector code for Part B (Esc to cancel · 5.4 KiB)  The cleanest approach is to have ConnectorLayer check if waypoints exist — if the● canvasApi connector methods (shell)
+  │ grep -n "addConnector\|setWaypoints\|removeConnector\|updateConnector"
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 4 lines...
+
+● Read canvasApi.js
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 169 lines read
+
+◐ I'm laying out a structured plan to tackle this in phases, starting with the data layer   work that doesn't depend on the Geometry Agent—materializing the waypoint events, 
+  building the server endpoints for managing connector waypoints, and creating the CLI 
+  subcommand to support it.
+
+  For Phase 2 and 3, I need the Geometry Agent's `buildConnectorPath` signature to 
+  understand how waypoints flow through the system. The contract shows waypoints as 
+  relative offsets with optional hints, but I'm realizing the actual routing math for 
+  waypoints needs to live in `connectorRouting.js` on the Routing Agent side, not in the   geometry layer. The dispatcher will call into that routing logic, so I need to clarify   where the boundary sits between what each agent owns.
+
+  The cleanest approach is to have ConnectorLayer check if waypoints exist — if they do,   use the manual routing path from `connect  use the manual routing path from `connectorRouting.js`; otherwise fall back to the  │ grep -n "addConnector\|setWaypoints\|removeConnector\|updateConnector"
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 4 lines...
+
+● Read canvasApi.js
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 169 lines read
+
+◐ I'm laying out a structured plan to tackle this in phases, starting with the data layer   work that doesn't depend on the Geometry Agent—materializing the waypoint events, 
+  building the server endpoints for managing connector waypoints, and creating the CLI 
+  subcommand to support it.
+
+  For Phase 2 and 3, I need the Geometry Agent's `buildConnectorPath` signature to 
+  understand how waypoints flow through the system. The contract shows waypoints as 
+  relative offsets with optional hints, but I'm realizing the actual routing math for 
+  waypoints needs to live in `connectorRouting.js` on the Routing Agent side, not in the   geometry layer. The dispatcher will call into that routing logic, so I need to clarify   where the boundary sits between what each agent owns.
+
+  The cleanest approach is to have ConnectorLayer check if waypoints exist — if they do,   use the manual routing path from `connectorRouting.js`; otherwise fall back to the 
+  auto-routing from `connectorGeometr● Exploring connector code for Part B (Esc to cancel · 5.4 KiB)  auto-routing from `connectorGeometry.js`. That keeps ownership cle  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 4 lines...
+
+● Read canvasApi.js
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 169 lines read
+
+◐ I'm laying out a structured plan to tackle this in phases, starting with the data layer   work that doesn't depend on the Geometry Agent—materializing the waypoint events, 
+  building the server endpoints for managing connector waypoints, and creating the CLI 
+  subcommand to support it.
+
+  For Phase 2 and 3, I need the Geometry Agent's `buildConnectorPath` signature to 
+  understand how waypoints flow through the system. The contract shows waypoints as 
+  relative offsets with optional hints, but I'm realizing the actual routing math for 
+  waypoints needs to live in `connectorRouting.js` on the Routing Agent side, not in the   geometry layer. The dispatcher will call into that routing logic, so I need to clarify   where the boundary sits between what each agent owns.
+
+  The cleanest approach is to have ConnectorLayer check if waypoints exist — if they do,   use the manual routing path from `connectorRouting.js`; otherwise fall back to the 
+  auto-routing from `connectorGeometry.js`. That keeps ownership clear and avoids the 
+  geometry  geometry agent needing to underst
+● Read canvasApi.js
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 169 lines read
+
+◐ I'm laying out a structured plan to tackle this in phases, starting with the data layer   work that doesn't depend on the Geometry Agent—materializing the waypoint events, 
+  building the server endpoints for managing connector waypoints, and creating the CLI 
+  subcommand to support it.
+
+  For Phase 2 and 3, I need the Geometry Agent's `buildConnectorPath` signature to 
+  understand how waypoints flow through the system. The contract shows waypoints as 
+  relative offsets with optional hints, but I'm realizing the actual routing math for 
+  waypoints needs to live in `connectorRouting.js` on the Routing Agent side, not in the   geometry layer. The dispatcher will call into that routing logic, so I need to clarify   where the boundary sits between what each agent owns.
+
+  The cleanest approach is to have ConnectorLayer check if waypoints exist — if they do,   use the manual routing path from `connectorRouting.js`; otherwise fall back to the 
+  auto-routing from `connectorGeometry.js`. That keeps ownership clear and avoids the 
+  geometry agent needing to understand waypoint math.
+
+  I◉ Exploring connector code for Part B (Esc to cancel · 5.4 KiB)  I'm going to skip t  I'm going to skip the formal plan d  I'm going to skip the formal plan document and ju◎ Exploring connector code for Part B (Esc to cancel · 5.4 KiB)  I'm going to skip the formal plan document and just start shi  I'm going to skip the formal plan document and just start shipping Phase  I'm going to skip the formal plan document and just start shipping Phase 1 work, b● Read canvasApi.js
+  │ packages/storyboard/src/internals/canvas/canvasApi.js
+  └ 169 lines read
+
+◐ I'm laying out a structured plan to tackle this in phases, starting with the data layer   work that doesn't depend on the Geometry Agent—materializing the waypoint events, 
+  building the server endpoints for managing connector waypoints, and creating the CLI 
+  subcommand to support it.
+
+  For Phase 2 and 3, I need the Geometry Agent's `buildConnectorPath` signature to 
+  understand how waypoints flow through the system. The contract shows waypoints as 
+  relative offsets with optional hints, but I'm realizing the actual routing math for 
+  waypoints needs to live in `connectorRouting.js` on the Routing Agent side, not in the   geometry layer. The dispatcher will call into that routing logic, so I need to clarify   where the boundary sits between what each agent owns.
+
+  The cleanest approach is to have ConnectorLayer check if waypoints exist — if they do,   use the manual routing path from `connectorRouting.js`; otherwise fall back to the 
+  auto-routing from `connectorGeometry.js`. That keeps ownership clear and avoids the 
+  geometry agent needing to understand waypoint math.
+
+  I'm going to skip the formal plan document and just start shipping Phase 1 work, 
+  beginning○ Exploring connector code for Part B (Esc to cancel · 5.4 KiB)  beginning with t  beginning with the mat  beginning with the materiali◎ Exploring connector code for Part B (Esc to cancel · 5.4 KiB)  beginning with the materializer e  beginning with the materializer event  beginning with the materializer events fo  beginning with the materializer events for wa◉ Exploring connector code for Part B (Esc to cancel · 5.4 KiB)  beginning with the materializer events for waypoi  beginning with the materializer events for waypoint p  beginning with the materializer events for waypoint persi● Exploring connector code for Part B (Esc to cancel · 5.4 KiB)  beginning with the materializer events for waypoint persiste  beginning with the materializer events for waypoint persistenc  beginning with the materializer events for waypoint persistence  beginning with the materializer events for waypoint persistence.◉ Exploring connector code for Part B (Esc to cancel · 5.4 KiB)◎ Exploring connector code for Part B (Esc to cancel · 5.4 KiB)○ Exploring connector code for Part B (Esc to cancel · 5.4 KiB)◎ Exploring connector code for Part B (Esc to cancel · 5.4 KiB)◉ Exploring connector code for Part B (Esc to cancel · 5.4 KiB)◉ Exploring connector code for Part B (Esc to cancel · 5.6 KiB)  └ 169 lines read
+
+◐ I'm laying out a structured plan to tackle this in phases, starting with the data layer   work that doesn't depend on the Geometry Agent—materializing the waypoint events, 
+  building the server endpoints for managing connector waypoints, and creating the CLI 
+  subcommand to support it.
+
+  For Phase 2 and 3, I need the Geometry Agent's `buildConnectorPath` signature to 
+  understand how waypoints flow through the system. The contract shows waypoints as 
+  relative offsets with optional hints, but I'm realizing the actual routing math for 
+  waypoints needs to live in `connectorRouting.js` on the Routing Agent side, not in the   geometry layer. The dispatcher will call into that routing logic, so I need to clarify   where the boundary sits between what each agent owns.
+
+  The cleanest approach is to have ConnectorLayer check if waypoints exist — if they do,   use the manual routing path from `connectorRouting.js`; otherwise fall back to the 
+  auto-routing from `connectorGeometry.js`. That keeps ownership clear and avoids the 
+  geometry agent needing to understand waypoint math.
+
+  I'm going to skip the formal plan document and just start shipping Phase 1 work, 
+  beginning with the materializer events for waypoint persistence.
+
+● Starting Phase● Exploring connector code for Part B (Esc to cancel · 5.6 KiB)● Starting Phase 1: data + se● Starting Phase 1: data + server + CLI● Starting Phase 1: data + server + CLI layer (no◉ Exploring connector code for Part B (Esc to cancel · 5.8 KiB)  understand how waypoints flow through the system. The contract shows waypoints as 
+  relative offsets with optional hints, but I'm realizing the actual routing math for 
+  waypoints needs to live in `connectorRouting.js` on the Routing Agent side, not in the   geometry layer. The dispatcher will call into that routing logic, so I need to clarify   where the boundary sits between what each agent owns.
+
+  The cleanest approach is to have ConnectorLayer check if waypoints exist — if they do,   use the manual routing path from `connectorRouting.js`; otherwise fall back to the 
+  auto-routing from `connectorGeometry.js`. That keeps ownership clear and avoids the 
+  geometry agent needing to understand waypoint math.
+
+  I'm going to skip the formal plan document and just start shipping Phase 1 work, 
+  beginning with the materializer events for waypoint persistence.● Starting Phase 1: data + server + CLI layer (no Part A dependency). Let me get the
+  baseline test command first.
+
+● Check test scripts (shell)
+  └ cat packages/storyboard/package.json | jq '.scripts | {test, lint}'
+
+● Read materializer.test.js
+  │ packages/storyboard/src/core/canvas/materializer.test.js
+  └ L1:30 (30 lines read)◎ Exploring connector code for Part B (Esc to cancel · 5.8 KiB)○ Exploring connector code for Part B (Esc to cancel · 5.8 KiB) / commands · ? help · ctrl+q enqueue · ctrl+x → b background task◎ Exploring connector code for Part B (Esc to cancel · 5.8 KiB)◉ Exploring connector code for Part B (Esc to cancel · 5.8 KiB) / commands · ? help · ctrl+q enqueue● Exploring connector code for Part B (Esc to cancel · 5.8 KiB)  relative offsets with optional hints, but I'm realizing the actual routing math for 
+  waypoints needs to live in `connectorRouting.js` on the Routing Agent side, not in the   geometry layer. The dispatcher will call into that routing logic, so I need to clarify   where the boundary sits between what each agent owns.
+
+  The cleanest approach is to have ConnectorLayer check if waypoints exist — if they do,   use the manual routing path from `connectorRouting.js`; otherwise fall back to the 
+  auto-routing from `connectorGeometry.js`. That keeps ownership clear and avoids the 
+  geometry agent needing to understand waypoint math.
+
+  I'm going to skip the formal plan document and just start shipping Phase 1 work, 
+  beginning with the materializer events for waypoint persistence.
+
+● Starting Phase 1: data + server + CLI layer (no Part A dependency). Let me get the
+  baseline test command first.
+
+● Check test scripts (shell)
+  │ cat packages/storyboard/package.json | jq '.scripts | {test, lint}'
+  └ 5 lines...◉ Exploring connector code for Part B (Esc to cancel · 5.8 KiB)◎ Exploring connector code for Part B (Esc to cancel · 5.8 KiB)○ Exploring connector code for Part B (Esc to cancel · 5.8 KiB)◎ Exploring connector code for Part B (Esc to cancel · 5.8 KiB)◉ Exploring connector code for Part B (Esc to cancel · 5.8 KiB)● Exploring connector code for Part B (Esc to cancel · 5.8 KiB)◉ Exploring connector code for Part B (Esc to cancel · 5.8 KiB)◎ Exploring connector code for Part B (Esc to cancel · 5.8 KiB)○ Exploring connector code for Part B (Esc to cancel · 5.8 KiB)◎ Exploring connector code for Part B (Esc to cancel · 5.8 KiB)◉ Exploring connector code for Part B (Esc to cancel · 5.8 KiB)● Exploring connector code for Part B (Esc to cancel · 5.8 KiB)◉ Exploring connector code for Part B (Esc to cancel · 5.8 KiB)◎ Exploring connector code for Part B (Esc to cancel · 5.8 KiB)○ Exploring connector code for Part B (Esc to cancel · 5.8 KiB)◎ Exploring connector code for Part B (Esc to cancel · 5.8 KiB)◉ Exploring connector code for Part B (Esc to cancel · 5.8 KiB)● Exploring connector code for Part B (Esc to cancel · 5.8 KiB)◉ Exploring connector code for Part B (Esc to cancel · 5.8 KiB)◎ Exploring connector code for Part B (Esc to cancel · 5.8 KiB)○ Exploring connector code for Part B (Esc to cancel · 5.8 KiB)◎ Exploring connector code for Part B (Esc to cancel · 5.8 KiB)◉ Exploring connector code for Part B (Esc to cancel · 5.8 KiB)● Exploring connector code for Part B (Esc to cancel · 5.8 KiB)● Exploring connector code for Part B (Esc to cancel · 5.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)  where the boundary sits between what each agent owns.
+
+  The cleanest approach is to have ConnectorLayer check if waypoints exist — if they do,   use the manual routing path from `connectorRouting.js`; otherwise fall back to the 
+  auto-routing from `connectorGeometry.js`. That keeps ownership clear and avoids the 
+  geometry agent needing to understand waypoint math.
+
+  I'm going to skip the formal plan document and just start shipping Phase 1 work, 
+  beginning with the materializer events for waypoint persistence.● Starting Phase 1: data + server + CLI layer (no Part A dependency). Let me get the
+  baseline test command first.● Check test scripts (shell)
+  │ cat packages/storyboard/package.json | jq '.scripts | {test, lint}'
+  └ 5 lines...
+
+● Read materializer.test.js
+  │ packages/storyboard/src/core/canvas/materializer.test.js
+  └ L1:30 (30 lines read)
+
+● root scripts (shell)
+  └ cat package.json | jq '.scripts'◎ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)○ Exploring connector code for Part B (Esc to cancel · 5.9 KiB) / commands · ? help · ctrl+q enqueue · ctrl+x → b background task◎ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 5.9 KiB) / commands · ? help · ctrl+q enqueue
+  The cleanest approach is to have ConnectorLayer check if waypoints exist — if they do,   use the manual routing path from `connectorRouting.js`; otherwise fall back to the 
+  auto-routing from `connectorGeometry.js`. That keeps ownership clear and avoids the 
+  geometry agent needing to understand waypoint math.
+
+  I'm going to skip the formal plan document and just start shipping Phase 1 work, 
+  beginning with the materializer events for waypoint persistence.
+
+● Starting Phase 1: data + server + CLI layer (no Part A dependency). Let me get the
+  baseline test command first.
+
+● Check test scripts (shell)
+  │ cat packages/storyboard/package.json | jq '.scripts | {test, lint}'
+  └ 5 lines...
+
+● Read materializer.test.js
+  │ packages/storyboard/src/core/canvas/materializer.test.js
+  └ L1:30 (30 lines read)
+
+● root scripts (shell)
+  │ cat package.json | jq '.scripts'
+  └ 32 lines...● Exploring connector code for Part B (Esc to cancel · 5.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)○ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)● Exploring connector code for Part B (Esc to cancel · 5.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)○ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)● Exploring connector code for Part B (Esc to cancel · 5.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)○ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)● Exploring connector code for Part B (Esc to cancel · 5.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)○ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)● Exploring connector code for Part B (Esc to cancel · 5.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)○ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)◎ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)● Exploring connector code for Part B (Esc to cancel · 5.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 5.9 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)  geometry agent needing to understand waypoint math.
+
+  I'm going to skip the formal plan document and just start shipping Phase 1 work, 
+  beginning with the materializer events for waypoint persistence.
+
+● Starting Phase 1: data + server + CLI layer (no Part A dependency). Let me get the
+  baseline test command first.
+
+● Check test scripts (shell)
+  │ cat packages/storyboard/package.json | jq '.scripts | {test, lint}'
+  └ 5 lines...● Read materializer.test.js
+  │ packages/storyboard/src/core/canvas/materializer.test.js
+  └ L1:30 (30 lines read)● root scripts (shell)
+  │ cat package.json | jq '.scripts'
+  └ 32 lines...● Baseline materializer test (shell)
+  └ npx vitest run packages/storyboard/src/core/canvas/materializer.test.js 2>&1 | tail
+    -15○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB) / commands · ? help · ctrl+q enqueue · ctrl+x → b background task◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)  geometry agent needing to understand waypoint math.
+
+  I'm going to skip the formal plan document and just start shipping Phase 1 work, 
+  beginning with the materializer events for waypoint persistence.
+
+● Starting Phase 1: data + server + CLI layer (no Part A dependency). Let me get the
+  baseline test command first.
+
+● Check test scripts (shell)
+  │ cat packages/storyboard/package.json | jq '.scripts | {test, lint}'
+  └ 5 lines...
+
+● Read materializer.test.js
+  │ packages/storyboard/src/core/canvas/materializer.test.js
+  └ L1:30 (30 lines read)
+
+● root scripts (shell)
+  │ cat package.json | jq '.scripts'
+  └ 32 lines...
+
+● Baseline materializer test (shell)
+  └ npx vitest run packages/storyboard/src/core/canvas/materializer.test.js 2>&1 | tail
+    -15
+
+◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue · ctrl+x → b background task
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)  geometry agent needing to understand waypoint math.
+
+  I'm going to skip the formal plan document and just start shipping Phase 1 work, 
+  beginning with the materializer events for waypoint persistence.
+
+● Starting Phase 1: data + server + CLI layer (no Part A dependency). Let me get the
+  baseline test command first.
+
+● Check test scripts (shell)
+  │ cat packages/storyboard/package.json | jq '.scripts | {test, lint}'
+  └ 5 lines...
+
+● Read materializer.test.js
+  │ packages/storyboard/src/core/canvas/materializer.test.js
+  └ L1:30 (30 lines read)
+
+● root scripts (shell)
+  │ cat package.json | jq '.scripts'
+  └ 32 lines...
+
+● Baseline materializer test (shell)
+  └ npx vitest run packages/storyboard/src/core/canvas/materializer.test.js 2>&1 | tail
+    -15
+
+◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue · ctrl+x → b background task
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB) / commands · ? help · ctrl+q enqueue◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)
+  I'm going to skip the formal plan document and just start shipping Phase 1 work, 
+  beginning with the materializer events for waypoint persistence.
+
+● Starting Phase 1: data + server + CLI layer (no Part A dependency). Let me get the
+  baseline test command first.
+
+● Check test scripts (shell)
+  │ cat packages/storyboard/package.json | jq '.scripts | {test, lint}'
+  └ 5 lines...
+
+● Read materializer.test.js
+  │ packages/storyboard/src/core/canvas/materializer.test.js
+  └ L1:30 (30 lines read)
+
+● root scripts (shell)
+  │ cat package.json | jq '.scripts'
+  └ 32 lines...
+
+● Baseline materializer test (shell)
+  │ npx vitest run packages/storyboard/src/core/canvas/materializer.test.js 2>&1 | tail
+  │ -15
+  └ 15 lines...○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)○ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◎ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)◉ Exploring connector code for Part B (Esc to cancel · 6.0 KiB)● Exploring connector code for Part B (Esc to cancel · 6.0 KiB)

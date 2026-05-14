@@ -1,0 +1,371 @@
+SESSION: agent-jyw97x | blue-falcon
+CANVAS:  storyboarding/form-schema
+BRANCH:  0.5.0
+TIME:    2026-05-11T09:44:01.758Z
+
+================================================================================
+SCREEN
+================================================================================
+
+  Fix: give MarkdownSecondaryPane local state that updates synchronously on every
+  keystroke, dispatch in parallel, and only resync from the bridge when external
+  changes differ.
+
+● Edit expandUtils.js +25 -9
+  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
+
+● Lint, commit, push (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && npx eslint
+  │ packages/storyboard/src/internals/canvas/widgets/expandUtils.js 2>&1 | tail -5 &&
+  │ git add packages/storyboard/src/internals/canvas/widgets/expandUtils.js && git
+  │ commit -m "fix(canvas): preserve caret in split-screen markdown secondary panes…
+  └ 20 lines...
+
+● Done — 346f2a0fa on 0.5.0.
+
+  The textarea is now driven by local state (synchronous on keystroke), preserving the
+  caret. The canvas update is dispatched in parallel, and the bridge subscription only
+  overwrites local content when an external edit comes in with a different value — so
+  concurrent edits from elsewhere still propagate without disrupting in-progress
+  typing.
+
+❯ 📡 [Broadcast two-way ACTIVE with silver-condor, maple-sparrow, Research, Implement]
+
+● Acknowledged. Let me know what you'd like me to do.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                @CreateDialog.jsx
+─────────────────────────────────────────────────────────────────────────────────────────
+❯  
+─────────────────────────────────────────────────────────────────────────────────────────
+ / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+  onChange → dispatched event (async) → CanvasPage update → bridge update → re-render →
+  content prop arrives. Between those steps React reverts the textarea and the cursor
+  jumps to the end.
+
+  Fix: give MarkdownSecondaryPane local state that updates synchronously on every
+  keystroke, dispatch in parallel, and only resync from the bridge when external
+  changes differ.
+
+● Edit expandUtils.js +25 -9
+  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
+
+● Lint, commit, push (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && npx eslint
+  │ packages/storyboard/src/internals/canvas/widgets/expandUtils.js 2>&1 | tail -5 &&
+  │ git add packages/storyboard/src/internals/canvas/widgets/expandUtils.js && git
+  │ commit -m "fix(canvas): preserve caret in split-screen markdown secondary panes…
+  └ 20 lines...
+
+● Done — 346f2a0fa on 0.5.0.
+
+  The textarea is now driven by local state (synchronous on keystroke), preserving the
+  caret. The canvas update is dispatched in parallel, and the bridge subscription only
+  overwrites local content when an external edit comes in with a different value — so
+  concurrent edits from elsewhere still propagate without disrupting in-progress
+  typing.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                @CreateDialog.jsx
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+  onChange → dispatched event (async) → CanvasPage update → bridge update → re-re  content prop arrives. Between those steps React reverts the textarea and the cu  jumps to the end.
+
+  Fix: give MarkdownSecondaryPane local state that updates synchronously on every  keystroke, dispatch in parallel, and only resync from the bridge when external
+  changes differ.
+
+● Edit expandUtils.js +25 -9
+  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
+
+● Lint, commit, push (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && npx eslint
+  │ packages/storyboard/src/internals/canvas/widgets/expandUtils.js 2>&1 | tail -  │ git add packages/storyboard/src/internals/canvas/widgets/expandUtils.js && gi  │ commit -m "fix(canvas): preserve caret in split-screen markdown secondary pan  └ 20 lines...
+
+● Done — 346f2a0fa on 0.5.0.
+
+  The textarea is now driven by local state (synchronous on keystroke), preservin  caret. The canvas update is dispatched in parallel, and the bridge subscription  overwrites local content when an external edit comes in with a different value   concurrent edits from elsewhere still propagate without disrupting in-progress
+  typing.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                @CreateDia─────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Interna
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  onChange → dispatched event (async) → CanvasPage update → bridge update → re-r… ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]        @CreateDialog.jsx
+─────────────────────────────────────────────────────────────────────────────────❯ ───────────────────────────────────────────────────────────────────────────────── / commands · ? help
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+  The fix is to maintain local state in MarkdownSecondaryPane that updates 
+synchronously 
+  on onChange, while dispatching the update event in parallel. Then only re-sync from the
+   bridge when it detects an external change, rather than treating the bridge as the 
+  authoritative source during active editing.● Right — async update loop is breaking controlled textarea. The flow: keystroke
+→
+  onChange → dispatched event (async) → CanvasPage update → bridge update →
+re-render →
+  content prop arrives. Between those steps React reverts the textarea and the
+cursor
+  jumps to the end.  Fix: give MarkdownSecondaryPane local state that updates synchronously on every  keystroke, dispatch in parallel, and only resync from the bridge when external
+  changes differ.● Edit expandUtils.js +25 -9
+  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js● Lint, commit, push (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && npx eslint
+  │ packages/storyboard/src/internals/canvas/widgets/expandUtils.js 2>&1 | tail
+-5 &&
+  │ git add packages/storyboard/src/internals/canvas/widgets/expandUtils.js &&
+git
+  │ commit -m "fix(canvas): preserve caret in split-screen markdown secondary
+panes…
+  └ 20 lines...● Done — 346f2a0fa on 0.5.0.  The textarea is now driven by local state (synchronous on keystroke),
+preserving the
+  caret. The canvas update is dispatched in parallel, and the bridge subscription only
+  overwrites local content when an external edit comes in with a different value
+— so
+  concurrent edits from elsewhere still propagate without disrupting in-progress
+  typing. ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]        @CreateDialog.jsx
+─────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────── / commands · ? help
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)  where text only appends to the end. The issue seems to stem from a useEffect 
+  that forces the cursor to the end whenever the `editing` state changes, and I'm   wondering if the re-renders triggered by content updates through the bridge 
+  are also resetting the cursor position, though controlled textareas should 
+  normally preserve selection state. The issue is that when the user types in the   middle of the textarea, onChange fires with the new value, but React 
+  re-renders with stale content from the bridge before it's been updated. This 
+  causes the textarea's controlled value to revert to the old content, resetting   the cursor position. The async nature of the bridge update means the cursor 
+  gets lost between the keystroke and when the new content finally propagates 
+  back.
+
+  The fix is to maintain local state in MarkdownSecondaryPane that updates 
+  synchronously on onChange, while dispatching the update event in parallel. Then   only re-sync from the bridge when it detects an external change, rather than 
+  treating the bridge as the authoritative source during active editing.● Right — async update loop is breaking controlled textarea. The flow:
+  keystroke → onChange → dispatched event (async) → CanvasPage update → bridge
+  update → re-render → content prop arrives. Between those steps React reverts
+  the textarea and the cursor jumps to the end.
+
+  Fix: give MarkdownSecondaryPane local state that updates synchronously on
+  every keystroke, dispatch in parallel, and only resync from the bridge when
+  external changes differ.
+
+● Edit expandUtils.js +25 -9
+  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
+
+● Lint, commit, push (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && npx eslint
+  │ packages/storyboard/src/internals/canvas/widgets/expandUtils.js 2>&1 | tail
+  │ -5 && git add
+  │ packages/storyboard/src/internals/canvas/widgets/expandUtils.js && git
+  │ commit -m "fix(canvas): preserve caret in split-screen markdown secondary …
+  └ 21 lines...
+
+● Done — 346f2a0fa on 0.5.0.
+
+  The textarea is now driven by local state (synchronous on keystroke),
+  preserving the caret. The canvas update is dispatched in parallel, and the
+  bridge subscription only overwrites local content when an external edit comes
+  in with a different value — so concurrent edits from elsewhere still
+  propagate without disrupting in-progress typing.  The fix is to maintain local state in MarkdownSecondaryPane that updates 
+  synchronously on onChange, while dispatching the update event in parallel. Then
+   only re-sync from the bridge when it detects an external change, rather than 
+  treating the bridge as the authoritative source during active editing.
+
+● Right — async update loop is breaking controlled textarea. The flow:
+  keystroke → onChange → dispatched event (async) → CanvasPage update → bridge
+  update → re-render → content prop arrives. Between those steps React reverts
+  the textarea and the cursor jumps to the end.
+
+  Fix: give MarkdownSecondaryPane local state that updates synchronously on
+  every keystroke, dispatch in parallel, and only resync from the bridge when
+  external changes differ.
+
+● Edit expandUtils.js +25 -9
+  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
+
+● Lint, commit, push (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && npx eslint
+  │ packages/storyboard/src/internals/canvas/widgets/expandUtils.js 2>&1 | tail
+  │ -5 && git add
+  │ packages/storyboard/src/internals/canvas/widgets/expandUtils.js && git
+  │ commit -m "fix(canvas): preserve caret in split-screen markdown secondary …
+  └ 21 lines...
+
+● Done — 346f2a0fa on 0.5.0.
+
+  The textarea is now driven by local state (synchronous on keystroke),
+  preserving the caret. The canvas update is dispatched in parallel, and the
+  bridge subscription only overwrites local content when an external edit comes
+  in with a different value — so concurrent edits from elsewhere still
+  propagate without disrupting in-progress typing.  where text only appends to the end. The issue seems to stem from a useEffect 
+  that forces the cursor to the end whenever the `editing` state changes, and I'm
+   wondering if the re-renders triggered by content updates through the bridge 
+  are also resetting the cursor position, though controlled textareas should 
+  normally preserve selection state. The issue is that when the user types in the
+   middle of the textarea, onChange fires with the new value, but React 
+  re-renders with stale content from the bridge before it's been updated. This 
+  causes the textarea's controlled value to revert to the old content, resetting 
+  the cursor position. The async nature of the bridge update means the cursor 
+  gets lost between the keystroke and when the new content finally propagates 
+  back.  The fix is to maintain local state in MarkdownSecondaryPane that updates 
+  synchronously on onChange, while dispatching the update event in parallel. Then
+   only re-sync from the bridge when it detects an external change, rather than 
+  treating the bridge as the authoritative source during active editing.● Right — async update loop is breaking controlled textarea. The flow:
+  keystroke → onChange → dispatched event (async) → CanvasPage update → bridge
+  update → re-render → content prop arrives. Between those steps React reverts
+  the textarea and the cursor jumps to the end.  Fix: give MarkdownSecondaryPane local state that updates synchronously on
+  every keystroke, dispatch in parallel, and only resync from the bridge when
+  external changes differ.● Edit expandUtils.js +25 -9
+  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js● Lint, commit, push (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && npx eslint
+  │ packages/storyboard/src/internals/canvas/widgets/expandUtils.js 2>&1 | tail  update → re-render → content prop arrives. Between those steps React reverts
+  the textarea and the cursor jumps to the end.
+
+  Fix: give MarkdownSecondaryPane local state that updates synchronously on
+  every keystroke, dispatch in parallel, and only resync from the bridge when
+  external changes differ.
+
+● Edit expandUtils.js +25 -9
+  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
+
+● Lint, commit, push (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && npx eslint
+  │ packages/storyboard/src/internals/canvas/widgets/expandUtils.js 2>&1 | tail
+  │ -5 && git add
+  │ packages/storyboard/src/internals/canvas/widgets/expandUtils.js && git
+  │ commit -m "fix(canvas): preserve caret in split-screen markdown secondary …
+  └ 21 lines...
+
+● Done — 346f2a0fa on 0.5.0.
+
+  The textarea is now driven by local state (synchronous on keystroke),
+  preserving the caret. The canvas update is dispatched in parallel, and the
+  bridge subscription only overwrites local content when an external edit comes
+  in with a different value — so concurrent edits from elsewhere still
+  propagate without disrupting in-progress typing. ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                @CreateDialog.jsx
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+  onChange → dispatched event (async) → CanvasPage update → bridge update → re-render →
+  content prop arrives. Between those steps React reverts the textarea and the cursor
+  jumps to the end.
+
+  Fix: give MarkdownSecondaryPane local state that updates synchronously on every
+  keystroke, dispatch in parallel, and only resync from the bridge when external
+  changes differ.
+
+● Edit expandUtils.js +25 -9
+  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
+
+● Lint, commit, push (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && npx eslint
+  │ packages/storyboard/src/internals/canvas/widgets/expandUtils.js 2>&1 | tail -5 &&
+  │ git add packages/storyboard/src/internals/canvas/widgets/expandUtils.js && git
+  │ commit -m "fix(canvas): preserve caret in split-screen markdown secondary panes…
+  └ 20 lines...  The textarea is now driven by local state (synchronous on keystroke), preserving the
+  caret. The canvas update is dispatched in parallel, and the bridge subscription only
+  overwrites local content when an external edit comes in with a different value — so
+  concurrent edits from elsewhere still propagate without disrupting in-progress
+  typing.  jumps to the end.
+
+  Fix: give MarkdownSecondaryPane local state that updates synchronously on every
+  keystroke, dispatch in parallel, and only resync from the bridge when external
+  changes differ.
+
+● Edit expandUtils.js +25 -9
+  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
+
+● Lint, commit, push (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && npx eslint
+  │ packages/storyboard/src/internals/canvas/widgets/expandUtils.js 2>&1 | tail -5 &&
+  │ git add packages/storyboard/src/internals/canvas/widgets/expandUtils.js && git
+  │ commit -m "fix(canvas): preserve caret in split-screen markdown secondary panes…
+  └ 20 lines...
+
+● Done — 346f2a0fa on 0.5.0.  The textarea is now driven by local state (synchronous on keystroke), preserving the
+  caret. The canvas update is dispatched in parallel, and the bridge subscription only
+  overwrites local content when an external edit comes in with a different value — so
+  concurrent edits from elsewhere still propagate without disrupting in-progress
+  typing.
+
+● Thinking (Esc to cancel)
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                @CreateDialog.jsx
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)  Fix: give MarkdownSecondaryPane local state that updates synchronously on every
+  keystroke, dispatch in parallel, and only resync from the bridge when external
+  changes differ.
+
+● Edit expandUtils.js +25 -9
+  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
+
+● Lint, commit, push (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && npx eslint
+  │ packages/storyboard/src/internals/canvas/widgets/expandUtils.js 2>&1 | tail -5 &&
+  │ git add packages/storyboard/src/internals/canvas/widgets/expandUtils.js && git
+  │ commit -m "fix(canvas): preserve caret in split-screen markdown secondary panes…
+  └ 20 lines...
+
+● Done — 346f2a0fa on 0.5.0.  The textarea is now driven by local state (synchronous on keystroke), preserving the
+  caret. The canvas update is dispatched in parallel, and the bridge subscription only
+  overwrites local content when an external edit comes in with a different value — so
+  concurrent edits from elsewhere still propagate without disrupting in-progress
+  typing.
+
+❯ 📡 [Broadcast two-way ACTIVE with silver-condor, maple-sparrow, Research, Implement]◎ Thinking (Esc to cancel)○ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)○ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)● Thinking (Esc to cancel)◉ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)○ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)● Thinking (Esc to cancel)◉ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)○ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)● Thinking (Esc to cancel)◉ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)○ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)● Thinking (Esc to cancel)◉ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)○ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)● Thinking (Esc to cancel)◉ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)○ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)● Thinking (Esc to cancel · 51 B)  jumps to the end.
+
+  Fix: give MarkdownSecondaryPane local state that updates synchronously on every
+  keystroke, dispatch in parallel, and only resync from the bridge when external
+  changes differ.
+
+● Edit expandUtils.js +25 -9
+  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
+
+● Lint, commit, push (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && npx eslint
+  │ packages/storyboard/src/internals/canvas/widgets/expandUtils.js 2>&1 | tail -5 &&
+  │ git add packages/storyboard/src/internals/canvas/widgets/expandUtils.js && git
+  │ commit -m "fix(canvas): preserve caret in split-screen markdown secondary panes…
+  └ 20 lines...● Done — 346f2a0fa on 0.5.0.
+
+  The textarea is now driven by local state (synchronous on keystroke), preserving the
+  caret. The canvas update is dispatched in parallel, and the bridge subscription only
+  overwrites local content when an external edit comes in with a different value — so
+  concurrent edits from elsewhere still propagate without disrupting in-progress
+  typing.❯ 📡 [Broadcast two-way ACTIVE with silver-condor, maple-sparrow, Research, Implement]
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                @CreateDialog.jsx
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)  Fix: give MarkdownSecondaryPane local state that updates synchronously on every
+  keystroke, dispatch in parallel, and only resync from the bridge when external
+  changes differ.
+
+● Edit expandUtils.js +25 -9
+  └ packages/storyboard/src/internals/canvas/widgets/expandUtils.js
+
+● Lint, commit, push (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && npx eslint
+  │ packages/storyboard/src/internals/canvas/widgets/expandUtils.js 2>&1 | tail -5 &&
+  │ git add packages/storyboard/src/internals/canvas/widgets/expandUtils.js && git
+  │ commit -m "fix(canvas): preserve caret in split-screen markdown secondary panes…
+  └ 20 lines...
+
+● Done — 346f2a0fa on 0.5.0.  The textarea is now driven by local state (synchronous on keystroke), preserving the
+  caret. The canvas update is dispatched in parallel, and the bridge subscription only
+  overwrites local content when an external edit comes in with a different value — so
+  concurrent edits from elsewhere still propagate without disrupting in-progress
+  typing.
+
+❯ 📡 [Broadcast two-way ACTIVE with silver-condor, maple-sparrow, Research, Implement]● Acknowledged. Let me know what you'd like me to do.

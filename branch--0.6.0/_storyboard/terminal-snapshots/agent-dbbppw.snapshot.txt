@@ -1,0 +1,762 @@
+SESSION: agent-dbbppw | crimson-thrush
+CANVAS:  storyboarding/form-schema
+BRANCH:  0.5.0
+TIME:    2026-05-09T16:43:58.743Z
+
+================================================================================
+SCREEN
+================================================================================
+
+  │ grep -n "useMarqueeSelect\|connectorStyle"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head
+  └ 3 lines...
+
+◐ I'm keeping the marquee behavior as-is since the bezier sampling works well enough for
+  orthogonal paths too, but I'll add the minimal branching that A5 requires by passing 
+  connectorStyle through an options object to connectorIntersectsRect and threading it 
+  through useMarqueeSelect. Let me stick to what's essential and avoid unnecessary 
+  changes.
+
+  Now I'm ready to implement this. I need to update connectorGeometry.js with orthogonal
+  path building and a dispatcher function, add the new CanvasConnectorStyle component, 
+  wire up the toolbar handler and config, update CanvasPage to manage connectorStyle 
+  state and broadcast it, modify ConnectorLayer to use the new path builder, and update 
+  useMarqueeSelect to accept the style option.
+
+  Writing geometry functions...
+
+● I have enough context. Let me implement Part A. Starting with geometry, then UI, then
+  wiring.
+
+● Edit connectorGeometry.js +150
+  └ packages/storyboard/src/internals/canvas/connectorGeometry.js
+
+◎ Implementing connector geometry + toggle (Esc to cancel · 10.6 KiB)
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
+─────────────────────────────────────────────────────────────────────────────────────────
+❯  
+─────────────────────────────────────────────────────────────────────────────────────────
+ / commands · ? help · ctrl+q enqueue
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+◐ I need to verify the ConnectorLayer styles and check how it's being used i  └ 283 lines read
+
+● Read ConnectorLayer.jsx
+  │ packages/storyboard/src/internals/canvas/ConnectorLayer.jsx
+  └ 208 lines read
+
+● find snap wiring in CanvasPage (shell)
+  │ grep -n "snapToGrid\|toggle-snap\|snap-state\|snapEnabled\|gridSize"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -40; echo ---MAT---;
+  │ grep -n "settings_updated\|snapToGrid"
+  │ packages/storyboard/src/core/canvas/materializer.js | head -20
+  └ 43 lines...
+
+● Read materializer.js
+  │ packages/storyboard/src/core/canvas/materializer.js
+  └ L140:170 (31 lines read)
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2200:2270 (71 lines read)
+
+◐ I need to verify the ConnectorLayer styles and check how it's being used in CanvasPage,   then   then see if the new f   then see if the new file needs to b○ Implementing Part A: connector style toggle (Esc to cancel · 2.3 KiB)   then see if the new file needs to be added to th   then see if the new file needs to be added to the vite.ui.c   then see if the new file needs to be added to the vite.ui.config shar   then see if the new file needs to be added to the vite.ui.config shared modul◎ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)   then see if the new file needs to be added to the vite.ui.config shared modules or i
+● Read ConnectorLayer.jsx
+  │ packages/storyboard/src/internals/canvas/ConnectorLayer.jsx
+  └ 208 lines read
+
+● find snap wiring in CanvasPage (shell)
+  │ grep -n "snapToGrid\|toggle-snap\|snap-state\|snapEnabled\|gridSize"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -40; echo ---MAT---;
+  │ grep -n "settings_updated\|snapToGrid"
+  │ packages/storyboard/src/core/canvas/materializer.js | head -20
+  └ 43 lines...
+
+● Read materializer.js
+  │ packages/storyboard/src/core/canvas/materializer.js
+  └ L140:170 (31 lines read)
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2200:2270 (71 lines read)
+
+◐ I need to verify the ConnectorLayer styles and check how it's being used in CanvasPage,   then see if the new file needs to be added to the vite.ui.config shared modules or if   it fo  it follows◉ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)● find snap wiring in CanvasPage (shell)
+  │ grep -n "snapToGrid\|toggle-snap\|snap-state\|snapEnabled\|gridSize"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -40; echo ---MAT---;
+  │ grep -n "settings_updated\|snapToGrid"
+  │ packages/storyboard/src/core/canvas/materializer.js | head -20
+  └ 43 lines...
+
+● Read materializer.js
+  │ packages/storyboard/src/core/canvas/materializer.js
+  └ L140:170 (31 lines read)
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2200:2270 (71 lines read)
+
+◐ I need to verify the ConnectorLayer styles and check how it's being used in CanvasPage,   then see if the new file needs to be added to the vite.ui.config shared modules or if   it follows a different pattern like CanvasSnap.
+
+● find ConnectorLayer use and ui config (shell)
+  └ grep -n "ConnectorLayer\|<ConnectorLayer"
+    packages/storyboard/src/internals/canvas/CanvasPage.jsx | head; echo ---; grep -n
+    "CanvasSnap\|sharedStateModules" packages/storyboard/vite.ui.config.js | head -30● Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB) / commands · ? help · ctrl+q enqueue · ctrl+x → b background task◎ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB) / commands · ? help · ctrl+q enqueue● Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)  │ grep -n "snapToGrid\|toggle-snap\|snap-state\|snapEnabled\|gridSize"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head -40; echo ---MAT---;
+  │ grep -n "settings_updated\|snapToGrid"
+  │ packages/storyboard/src/core/canvas/materializer.js | head -20
+  └ 43 lines...
+
+● Read materializer.js
+  │ packages/storyboard/src/core/canvas/materializer.js
+  └ L140:170 (31 lines read)
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2200:2270 (71 lines read)
+
+◐ I need to verify the ConnectorLayer styles and check how it's being used in CanvasPage,   then see if the new file needs to be added to the vite.ui.config shared modules or if   it follows a different pattern like CanvasSnap.
+
+● find ConnectorLayer use and ui config (shell)
+  │ grep -n "ConnectorLayer\|<ConnectorLayer"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head; echo ---; grep -n
+  │ "CanvasSnap\|sharedStateModules" packages/storyboard/vite.ui.config.js | head -30
+  └ 7 lines...◉ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.5 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.7 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)  └ L140:170 (31 lines read)
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2200:2270 (71 lines read)◐ I need to verify the ConnectorLayer styles and check how it's being used in CanvasPage,   then see if the new file needs to be added to the vite.ui.config shared modules or if   it follows a different pattern like CanvasSnap.● find ConnectorLayer use and ui config (shell)
+  │ grep -n "ConnectorLayer\|<ConnectorLayer"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head; echo ---; grep -n
+  │ "CanvasSnap\|sharedStateModules" packages/storyboard/vite.ui.config.js | head -30
+  └ 7 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L3278:3300 (23 lines read)
+
+● Read vite.ui.config.js
+  │ packages/storyboard/vite.ui.config.js
+  └ L25:60 (36 lines read)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 2.8 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.2 KiB)● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2200:2270 (71 lines read)
+
+◐ I need to verify the ConnectorLayer styles and check how it's being used in CanvasPage,   then see if the new file needs to be added to the vite.ui.config shared modules or if   it follows a different pattern like CanvasSnap.
+
+● find ConnectorLayer use and ui config (shell)
+  │ grep -n "ConnectorLayer\|<ConnectorLayer"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head; echo ---; grep -n
+  │ "CanvasSnap\|sharedStateModules" packages/storyboard/vite.ui.config.js | head -30
+  └ 7 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L3278:3300 (23 lines read)
+
+● Read vite.ui.config.js
+  │ packages/storyboard/vite.ui.config.js
+  └ L25:60 (36 lines read)
+
+◐ CanvasSnap.jsx stays in the bundle with◐ CanvasSnap.jsx stays in the bundle with the other UI components, so Canvas◎ Implementing Part A: connector style toggle (Esc to cancel · 3.2 KiB)  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L2200:2270 (71 lines read)
+
+◐ I need to verify the ConnectorLayer styles and check how it's being used in CanvasPage,   then see if the new file needs to be added to the vite.ui.config shared modules or if   it follows a different pattern like CanvasSnap.
+
+● find ConnectorLayer use and ui config (shell)
+  │ grep -n "ConnectorLayer\|<ConnectorLayer"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head; echo ---; grep -n
+  │ "CanvasSnap\|sharedStateModules" packages/storyboard/vite.ui.config.js | head -30
+  └ 7 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L3278:3300 (23 lines read)
+
+● Read vite.ui.config.js
+  │ packages/storyboard/vite.ui.config.js
+  └ L25:60 (36 lines read)
+
+◐ CanvasSnap.jsx stays in the bundle with the other UI components, so 
+  CanvasConnectorStyle.jsx should follo  CanvasConnectorStyle.jsx should follow the same pattern. Now I'm  └ L2200:2270 (71 lines read)
+
+◐ I need to verify the ConnectorLayer styles and check how it's being used in CanvasPage,   then see if the new file needs to be added to the vite.ui.config shared modules or if   it follows a different pattern like CanvasSnap.
+
+● find ConnectorLayer use and ui config (shell)
+  │ grep -n "ConnectorLayer\|<ConnectorLayer"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head; echo ---; grep -n
+  │ "CanvasSnap\|sharedStateModules" packages/storyboard/vite.ui.config.js | head -30
+  └ 7 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L3278:3300 (23 lines read)
+
+● Read vite.ui.config.js
+  │ packages/storyboard/vite.ui.config.js
+  └ L25:60 (36 lines read)
+
+◐ CanvasSnap.jsx stays in the bundle with the other UI components, so 
+  CanvasConnectorStyle.jsx should follow the same pattern. Now I'm checking where 
+  `connect◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)  `connectorIntersectsRect` get● find ConnectorLayer use and ui config (shell)
+  │ grep -n "ConnectorLayer\|<ConnectorLayer"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head; echo ---; grep -n
+  │ "CanvasSnap\|sharedStateModules" packages/storyboard/vite.ui.config.js | head -30
+  └ 7 lines...● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L3278:3300 (23 lines read)
+
+● Read vite.ui.config.js
+  │ packages/storyboard/vite.ui.config.js
+  └ L25:60 (36 lines read)
+
+◐ CanvasSnap.jsx stays in the bundle with the other UI components, so 
+  CanvasConnectorStyle.jsx should follow the same pattern. Now I'm checking where 
+  `connectorIntersectsRect` gets called to see if fixing marquee selection for orthogonal   connectors is feasible, and whether the test setup already supports that scenario.
+
+● existing tests + callers (shell)
+  └ find packages/storyboard -name "connectorGeometry.test.*" -o -name "*.test.js" -path
+    "*connector*"; echo ---; ls packages/storyboard/src/internals/canvas/ | head -30;
+    echo ---; grep -rn "connectorIntersectsRect" packages/storyboard/src | head◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB) / commands · ? help · ctrl+q enqueue · ctrl+x → b background task● Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)  │ grep -n "ConnectorLayer\|<ConnectorLayer"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head; echo ---; grep -n
+  │ "CanvasSnap\|sharedStateModules" packages/storyboard/vite.ui.config.js | head -30
+  └ 7 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L3278:3300 (23 lines read)
+
+● Read vite.ui.config.js
+  │ packages/storyboard/vite.ui.config.js
+  └ L25:60 (36 lines read)
+
+◐ CanvasSnap.jsx stays in the bundle with the other UI components, so 
+  CanvasConnectorStyle.jsx should follow the same pattern. Now I'm checking where 
+  `connectorIntersectsRect` gets called to see if fixing marquee selection for orthogonal   connectors is feasible, and whether the test setup already supports that scenario.
+
+● existing tests + callers (shell)
+  │ find packages/storyboard -name "connectorGeometry.test.*" -o -name "*.test.js" -path
+  │ "*connector*"; echo ---; ls packages/storyboard/src/internals/canvas/ | head -30;
+  │ echo ---; grep -rn "connectorIntersectsRect" packages/storyboard/src | head
+  └ 32 lines...◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB) / commands · ? help · ctrl+q enqueue  └ 36 lines...◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.4 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.9 KiB)  │ "CanvasSnap\|sharedStateModules" packages/storyboard/vite.ui.config.js | head -30
+  └ 7 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L3278:3300 (23 lines read)
+
+● Read vite.ui.config.js
+  │ packages/storyboard/vite.ui.config.js
+  └ L25:60 (36 lines read)
+
+◐ CanvasSnap.jsx stays in the bundle with the other UI components, so 
+  CanvasConnectorStyle.jsx should follow the same pattern. Now I'm checking where 
+  `connectorIntersectsRect` gets called to see if fixing marquee selection for orthogonal   connectors is feasible, and whether the test setup already supports that scenario.
+
+● existing tests + callers (shell)
+  │ find packages/storyboard -name "connectorGeometry.test.*" -o -name "*.test.js" -path
+  │ "*connector*"; echo ---; ls packages/storyboard/src/internals/canvas/ | head -30;
+  │ echo ---; grep -rn "connectorIntersectsRect" packages/storyboard/src | head
+  └ 36 lines...
+
+◐ I need to add a test for connectorGeometry since there a  └ 7 lines...
+
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L3278:3300 (23 lines read)
+
+● Read vite.ui.config.js
+  │ packages/storyboard/vite.ui.config.js
+  └ L25:60 (36 lines read)
+
+◐ CanvasSnap.jsx stays in the bundle with the other UI components, so 
+  CanvasConnectorStyle.jsx should follow the same pattern. Now I'm checking where 
+  `connectorIntersectsRect` gets called to see if fixing marquee selection for orthogonal   connectors is feasible, and whether the test setup already supports that scenario.
+
+● existing tests + callers (shell)
+  │ find packages/storyboard -name "connectorGeometry.test.*" -o -name "*.test.js" -path
+  │ "*connector*"; echo ---; ls packages/storyboard/src/internals/canvas/ | head -30;
+  │ echo ---; grep -rn "connectorIntersectsRect" packages/storyboard/src | head
+  └ 36 lines...
+
+◐ I need to add a test for connectorGeometry since there aren't any existing ones. The 
+  marquee selection in  marquee selection in useMarqueeSelect doesn't pass a style parame◎ Implementing Part A: connector style toggle (Esc to cancel · 3.9 KiB)
+● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L3278:3300 (23 lines read)
+
+● Read vite.ui.config.js
+  │ packages/storyboard/vite.ui.config.js
+  └ L25:60 (36 lines read)
+
+◐ CanvasSnap.jsx stays in the bundle with the other UI components, so 
+  CanvasConnectorStyle.jsx should follow the same pattern. Now I'm checking where 
+  `connectorIntersectsRect` gets called to see if fixing marquee selection for orthogonal   connectors is feasible, and whether the test setup already supports that scenario.
+
+● existing tests + callers (shell)
+  │ find packages/storyboard -name "connectorGeometry.test.*" -o -name "*.test.js" -path
+  │ "*connector*"; echo ---; ls packages/storyboard/src/internals/canvas/ | head -30;
+  │ echo ---; grep -rn "connectorIntersectsRect" packages/storyboard/src | head
+  └ 36 lines...
+
+◐ I need to add a test for connectorGeometry since there aren't any existing ones. The 
+  marquee selection in useMarqueeSelect doesn't pass a style parameter, so the default 
+  fluid sampling wor  fluid sampling works fine for now. But in orthogona  fluid sampling works fine for now. But in orthogonal mode, the cubic bezier samp○ Implementing Part A: connector style toggle (Esc to cancel · 3.9 KiB)● Read CanvasPage.jsx
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L3278:3300 (23 lines read)
+
+● Read vite.ui.config.js
+  │ packages/storyboard/vite.ui.config.js
+  └ L25:60 (36 lines read)
+
+◐ CanvasSnap.jsx stays in the bundle with the other UI components, so 
+  CanvasConnectorStyle.jsx should follow the same pattern. Now I'm checking where 
+  `connectorIntersectsRect` gets called to see if fixing marquee selection for orthogonal   connectors is feasible, and whether the test setup already supports that scenario.
+
+● existing tests + callers (shell)
+  │ find packages/storyboard -name "connectorGeometry.test.*" -o -name "*.test.js" -path
+  │ "*connector*"; echo ---; ls packages/storyboard/src/internals/canvas/ | head -30;
+  │ echo ---; grep -rn "connectorIntersectsRect" packages/storyboard/src | head
+  └ 36 lines...
+
+◐ I need to add a test for connectorGeometry since there aren't any existing ones. The 
+  marquee selection in useMarqueeSelect doesn't pass a style parameter, so the default 
+  fluid sampling works fine for now. But in orthogonal mode, the cubic bezier sampling 
+  can miss the midpoint  can miss the midpoints of orthogonal segmen  can miss the midpoints of orthogonal segments, so I'll branch o  can miss the midpoints of orthogonal segments, so I'll branch on style as planne◎ Implementing Part A: connector style toggle (Esc to cancel · 3.9 KiB)  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx
+  └ L3278:3300 (23 lines read)
+
+● Read vite.ui.config.js
+  │ packages/storyboard/vite.ui.config.js
+  └ L25:60 (36 lines read)
+
+◐ CanvasSnap.jsx stays in the bundle with the other UI components, so 
+  CanvasConnectorStyle.jsx should follow the same pattern. Now I'm checking where 
+  `connectorIntersectsRect` gets called to see if fixing marquee selection for orthogonal   connectors is feasible, and whether the test setup already supports that scenario.
+
+● existing tests + callers (shell)
+  │ find packages/storyboard -name "connectorGeometry.test.*" -o -name "*.test.js" -path
+  │ "*connector*"; echo ---; ls packages/storyboard/src/internals/canvas/ | head -30;
+  │ echo ---; grep -rn "connectorIntersectsRect" packages/storyboard/src | head
+  └ 36 lines...
+
+◐ I need to add a test for connectorGeometry since there aren't any existing ones. The 
+  marquee selection in useMarqueeSelect doesn't pass a style parameter, so the default 
+  fluid sampling works fine for now. But in orthogonal mode, the cubic bezier sampling 
+  can miss the midpoints of orthogonal segments, so I'll branch on style as planned and 
+  update co  update connectorInters  update connectorIntersectsRect to◉ Implementing Part A: connector style toggle (Esc to cancel · 3.9 KiB)  update connectorIntersectsRect to accept an  update connectorIntersectsRect to accept an optional  update connectorIntersectsRect to accept an optional style a  update connectorIntersectsRect to accept an optional style argument● Implementing Part A: connector style toggle (Esc to cancel · 3.9 KiB)  update connectorIntersectsRect to accept an optional style argument that  update connectorIntersectsRect to accept an optional style argument that useMa  update connectorIntersectsRect to accept an optional style argument that useMarque  update connectorIntersectsRect to accept an optional style argument that useMarqueeSel◉ Implementing Part A: connector style toggle (Esc to cancel · 3.9 KiB)  └ L3278:3300 (23 lines read)
+
+● Read vite.ui.config.js
+  │ packages/storyboard/vite.ui.config.js
+  └ L25:60 (36 lines read)
+
+◐ CanvasSnap.jsx stays in the bundle with the other UI components, so 
+  CanvasConnectorStyle.jsx should follow the same pattern. Now I'm checking where 
+  `connectorIntersectsRect` gets called to see if fixing marquee selection for orthogonal   connectors is feasible, and whether the test setup already supports that scenario.
+
+● existing tests + callers (shell)
+  │ find packages/storyboard -name "connectorGeometry.test.*" -o -name "*.test.js" -path
+  │ "*connector*"; echo ---; ls packages/storyboard/src/internals/canvas/ | head -30;
+  │ echo ---; grep -rn "connectorIntersectsRect" packages/storyboard/src | head
+  └ 36 lines...
+
+◐ I need to add a test for connectorGeometry since there aren't any existing ones. The 
+  marquee selection in useMarqueeSelect doesn't pass a style parameter, so the default 
+  fluid sampling works fine for now. But in orthogonal mode, the cubic bezier sampling 
+  can miss the midpoints of orthogonal segments, so I'll branch on style as planned and 
+  update connectorIntersectsRect to accept an optional style argument that 
+  useMarqueeSelect  useMarqueeSelect can  useMarqueeSelect can read◎ Implementing Part A: connector style toggle (Esc to cancel · 3.9 KiB)  useMarqueeSelect can read fro  useMarqueeSelect can read from s  useMarqueeSelect can read from sta  useMarqueeSelect can read from stat○ Implementing Part A: connector style toggle (Esc to cancel · 3.9 KiB)  useMarqueeSelect can read from state  useMarqueeSelect can read from state.◎ Implementing Part A: connector style toggle (Esc to cancel · 3.9 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 3.9 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 3.9 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.0 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)  `connectorIntersectsRect` gets called to see if fixing marquee selection for orthogonal   connectors is feasible, and whether the test setup already supports that scenario.
+
+● existing tests + callers (shell)
+  │ find packages/storyboard -name "connectorGeometry.test.*" -o -name "*.test.js" -path
+  │ "*connector*"; echo ---; ls packages/storyboard/src/internals/canvas/ | head -30;
+  │ echo ---; grep -rn "connectorIntersectsRect" packages/storyboard/src | head
+  └ 36 lines...
+
+◐ I need to add a test for connectorGeometry since there aren't any existing ones. The 
+  marquee selection in useMarqueeSelect doesn't pass a style parameter, so the default 
+  fluid sampling works fine for now. But in orthogonal mode, the cubic bezier sampling 
+  can miss the midpoints of orthogonal segments, so I'll branch on style as planned and 
+  update connectorIntersectsRect to accept an optional style argument that 
+  useMarqueeSelect can read from state.
+
+● Read useMarqueeSelect.js
+  │ packages/storyboard/src/internals/canvas/useMarqueeSelect.js
+  └ L1:50 (50 lines read)
+
+● marquee usage (shell)
+  └ grep -n "useMarqueeSelect\|connectorStyle"
+    packages/storyboard/src/internals/canvas/CanvasPage.jsx | head◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB) / commands · ? help · ctrl+q enqueue · ctrl+x → b background task○ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)  `connectorIntersectsRect` gets called to see if fixing marquee selection for orthogonal   connectors is feasible, and whether the test setup already supports that scenario.
+
+● existing tests + callers (shell)
+  │ find packages/storyboard -name "connectorGeometry.test.*" -o -name "*.test.js" -path
+  │ "*connector*"; echo ---; ls packages/storyboard/src/internals/canvas/ | head -30;
+  │ echo ---; grep -rn "connectorIntersectsRect" packages/storyboard/src | head
+  └ 36 lines...
+
+◐ I need to add a test for connectorGeometry since there aren't any existing ones. The 
+  marquee selection in useMarqueeSelect doesn't pass a style parameter, so the default 
+  fluid sampling works fine for now. But in orthogonal mode, the cubic bezier sampling 
+  can miss the midpoints of orthogonal segments, so I'll branch on style as planned and 
+  update connectorIntersectsRect to accept an optional style argument that 
+  useMarqueeSelect can read from state.
+
+● Read useMarqueeSelect.js
+  │ packages/storyboard/src/internals/canvas/useMarqueeSelect.js
+  └ L1:50 (50 lines read)
+
+● marquee usage (shell)
+  └ grep -n "useMarqueeSelect\|connectorStyle"
+    packages/storyboard/src/internals/canvas/CanvasPage.jsx | head
+
+◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue · ctrl+x → b background task
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)  `connectorIntersectsRect` gets called to see if fixing marquee selection for orthogonal   connectors is feasible, and whether the test setup already supports that scenario.
+
+● existing tests + callers (shell)
+  │ find packages/storyboard -name "connectorGeometry.test.*" -o -name "*.test.js" -path
+  │ "*connector*"; echo ---; ls packages/storyboard/src/internals/canvas/ | head -30;
+  │ echo ---; grep -rn "connectorIntersectsRect" packages/storyboard/src | head
+  └ 36 lines...
+
+◐ I need to add a test for connectorGeometry since there aren't any existing ones. The 
+  marquee selection in useMarqueeSelect doesn't pass a style parameter, so the default 
+  fluid sampling works fine for now. But in orthogonal mode, the cubic bezier sampling 
+  can miss the midpoints of orthogonal segments, so I'll branch on style as planned and 
+  update connectorIntersectsRect to accept an optional style argument that 
+  useMarqueeSelect can read from state.
+
+● Read useMarqueeSelect.js
+  │ packages/storyboard/src/internals/canvas/useMarqueeSelect.js
+  └ L1:50 (50 lines read)
+
+● marquee usage (shell)
+  └ grep -n "useMarqueeSelect\|connectorStyle"
+    packages/storyboard/src/internals/canvas/CanvasPage.jsx | head
+
+● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue · ctrl+x → b background task
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+ / commands · ? help · ctrl+q enqueue◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)   connectors is feasible, and whether the test setup already supports that scenario.
+
+● existing tests + callers (shell)
+  │ find packages/storyboard -name "connectorGeometry.test.*" -o -name "*.test.js" -path
+  │ "*connector*"; echo ---; ls packages/storyboard/src/internals/canvas/ | head -30;
+  │ echo ---; grep -rn "connectorIntersectsRect" packages/storyboard/src | head
+  └ 36 lines...
+
+◐ I need to add a test for connectorGeometry since there aren't any existing ones. The 
+  marquee selection in useMarqueeSelect doesn't pass a style parameter, so the default 
+  fluid sampling works fine for now. But in orthogonal mode, the cubic bezier sampling 
+  can miss the midpoints of orthogonal segments, so I'll branch on style as planned and 
+  update connectorIntersectsRect to accept an optional style argument that 
+  useMarqueeSelect can read from state.
+
+● Read useMarqueeSelect.js
+  │ packages/storyboard/src/internals/canvas/useMarqueeSelect.js
+  └ L1:50 (50 lines read)
+
+● marquee usage (shell)
+  │ grep -n "useMarqueeSelect\|connectorStyle"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head
+  └ 3 lines...◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.2 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.9 KiB)  │ find packages/storyboard -name "connectorGeometry.test.*" -o -name "*.test.js" -path
+  │ "*connector*"; echo ---; ls packages/storyboard/src/internals/canvas/ | head -30;
+  │ echo ---; grep -rn "connectorIntersectsRect" packages/storyboard/src | head
+  └ 36 lines...
+
+◐ I need to add a test for connectorGeometry since there aren't any existing ones. The 
+  marquee selection in useMarqueeSelect doesn't pass a style parameter, so the default 
+  fluid sampling works fine for now. But in orthogonal mode, the cubic bezier sampling 
+  can miss the midpoints of orthogonal segments, so I'll branch on style as planned and 
+  update connectorIntersectsRect to accept an optional style argument that 
+  useMarqueeSelect can read from state.
+
+● Read useMarqueeSelect.js
+  │ packages/storyboard/src/internals/canvas/useMarqueeSelect.js
+  └ L1:50 (50 lines read)
+
+● marquee usage (shell)
+  │ grep -n "useMarqueeSelect\|connectorStyle"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head
+  └ 3 lines...
+
+◐ I'm keeping the marquee behavior as-is since the bezier sampling works well enough for   orthogon○ Implementing Part A: connector style toggle (Esc to cancel · 4.9 KiB)  │ "*connector*"; echo ---; ls packages/storyboard/src/internals/canvas/ | head -30;
+  │ echo ---; grep -rn "connectorIntersectsRect" packages/storyboard/src | head
+  └ 36 lines...
+
+◐ I need to add a test for connectorGeometry since there aren't any existing ones. The 
+  marquee selection in useMarqueeSelect doesn't pass a style parameter, so the default 
+  fluid sampling works fine for now. But in orthogonal mode, the cubic bezier sampling 
+  can miss the midpoints of orthogonal segments, so I'll branch on style as planned and 
+  update connectorIntersectsRect to accept an optional style argument that 
+  useMarqueeSelect can read from state.
+
+● Read useMarqueeSelect.js
+  │ packages/storyboard/src/internals/canvas/useMarqueeSelect.js
+  └ L1:50 (50 lines read)
+
+● marquee usage (shell)
+  │ grep -n "useMarqueeSelect\|connectorStyle"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head
+  └ 3 lines...
+
+◐ I'm keeping the marquee behavior as-is since the bezier sampling works well enough for   orthogonal paths too, but I'll add the minimal branching that A5 requires by passing 
+  connect  connectorStyle through an options object to connectorIntersectsRect and threading  │ echo ---; grep -rn "connectorIntersectsRect" packages/storyboard/src | head
+  └ 36 lines...
+
+◐ I need to add a test for connectorGeometry since there aren't any existing ones. The 
+  marquee selection in useMarqueeSelect doesn't pass a style parameter, so the default 
+  fluid sampling works fine for now. But in orthogonal mode, the cubic bezier sampling 
+  can miss the midpoints of orthogonal segments, so I'll branch on style as planned and 
+  update connectorIntersectsRect to accept an optional style argument that 
+  useMarqueeSelect can read from state.
+
+● Read useMarqueeSelect.js
+  │ packages/storyboard/src/internals/canvas/useMarqueeSelect.js
+  └ L1:50 (50 lines read)
+
+● marquee usage (shell)
+  │ grep -n "useMarqueeSelect\|connectorStyle"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head
+  └ 3 lines...
+
+◐ I'm keeping the marquee behavior as-is since the bezier sampling works well enough for   orthogonal paths too, but I'll add the minimal branching that A5 requires by passing 
+  connectorStyle through an options object to connectorIntersectsRect and threading it 
+  through useMarqueeSelect. Let me stick to what's essential a◐ I need to add a test for connectorGeometry since there aren't any existing ones. The 
+  marquee selection in useMarqueeSelect doesn't pass a style parameter, so the default 
+  fluid sampling works fine for now. But in orthogonal mode, the cubic bezier sampling 
+  can miss the midpoints of orthogonal segments, so I'll branch on style as planned and 
+  update connectorIntersectsRect to accept an optional style argument that 
+  useMarqueeSelect can read from state.
+
+● Read useMarqueeSelect.js
+  │ packages/storyboard/src/internals/canvas/useMarqueeSelect.js
+  └ L1:50 (50 lines read)
+
+● marquee usage (shell)
+  │ grep -n "useMarqueeSelect\|connectorStyle"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head
+  └ 3 lines...
+
+◐ I'm keeping the marquee behavior as-is since the bezier sampling works well enough for   orthogonal paths too, but I'll add the minimal branching that A5 requires by passing 
+  connectorStyle through an options object to connectorIntersectsRect and threading it 
+  through useMarqueeSelect. Let me stick to what's essential and avoid unnecessary 
+  changes.
+
+  Now I'm ready to implemen◎ Implementing Part A: connector style toggle (Esc to cancel · 4.9 KiB)  Now I'm ready to implement this. I need to update connectorGeometry.js wit  marquee selection in useMarqueeSelect doesn't pass a style parameter, so the default 
+  fluid sampling works fine for now. But in orthogonal mode, the cubic bezier sampling 
+  can miss the midpoints of orthogonal segments, so I'll branch on style as planned and 
+  update connectorIntersectsRect to accept an optional style argument that 
+  useMarqueeSelect can read from state.
+
+● Read useMarqueeSelect.js
+  │ packages/storyboard/src/internals/canvas/useMarqueeSelect.js
+  └ L1:50 (50 lines read)
+
+● marquee usage (shell)
+  │ grep -n "useMarqueeSelect\|connectorStyle"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head
+  └ 3 lines...
+
+◐ I'm keeping the marquee behavior as-is since the bezier sampling works well enough for   orthogonal paths too, but I'll add the minimal branching that A5 requires by passing 
+  connectorStyle through an options object to connectorIntersectsRect and threading it 
+  through useMarqueeSelect. Let me stick to what's essential and avoid unnecessary 
+  changes.
+
+  Now I'm ready to implement this. I need to update connectorGeometry.js with orthogonal   path building and a dispatcher  path building and a dispatcher function, add the new CanvasConnector◉ Implementing Part A: connector style toggle (Esc to cancel · 4.9 KiB)  fluid sampling works fine for now. But in orthogonal mode, the cubic bezier sampling 
+  can miss the midpoints of orthogonal segments, so I'll branch on style as planned and 
+  update connectorIntersectsRect to accept an optional style argument that 
+  useMarqueeSelect can read from state.
+
+● Read useMarqueeSelect.js
+  │ packages/storyboard/src/internals/canvas/useMarqueeSelect.js
+  └ L1:50 (50 lines read)
+
+● marquee usage (shell)
+  │ grep -n "useMarqueeSelect\|connectorStyle"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head
+  └ 3 lines...
+
+◐ I'm keeping the marquee behavior as-is since the bezier sampling works well enough for   orthogonal paths too, but I'll add the minimal branching that A5 requires by passing 
+  connectorStyle through an options object to connectorIntersectsRect and threading it 
+  through useMarqueeSelect. Let me stick to what's essential and avoid unnecessary 
+  changes.
+
+  Now I'm ready to implement this. I need to update connectorGeometry.js with orthogonal   path building and a dispatcher function, add the new CanvasConnectorStyle component, 
+  wire up the tool  wire up the toolbar handler and config, updat  wire up the toolbar handler and config, update CanvasPage to manage co  can miss the midpoints of orthogonal segments, so I'll branch on style as planned and 
+  update connectorIntersectsRect to accept an optional style argument that 
+  useMarqueeSelect can read from state.
+
+● Read useMarqueeSelect.js
+  │ packages/storyboard/src/internals/canvas/useMarqueeSelect.js
+  └ L1:50 (50 lines read)
+
+● marquee usage (shell)
+  │ grep -n "useMarqueeSelect\|connectorStyle"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head
+  └ 3 lines...
+
+◐ I'm keeping the marquee behavior as-is since the bezier sampling works well enough for   orthogonal paths too, but I'll add the minimal branching that A5 requires by passing 
+  connectorStyle through an options object to connectorIntersectsRect and threading it 
+  through useMarqueeSelect. Let me stick to what's essential and avoid unnecessary 
+  changes.
+
+  Now I'm ready to implement this. I need to update connectorGeometry.js with orthogonal   path building and a dispatcher function, add the new CanvasConnectorStyle component, 
+  wire up the toolbar handler and config, update CanvasPage to manage connectorStyle 
+  state and● Implementing Part A: connector style toggle (Esc to cancel · 4.9 KiB)  state and broadcast it, modi  state and broadcast it, modify ConnectorLayer  state and broadcast it, modify ConnectorLayer to use the new  state and broadcast it, modify ConnectorLayer to use the new path builder◉ Implementing Part A: connector style toggle (Esc to cancel · 4.9 KiB)  state and broadcast it, modify ConnectorLayer to use the new path builder, and updat  update connectorIntersectsRect to accept an optional style argument that 
+  useMarqueeSelect can read from state.
+
+● Read useMarqueeSelect.js
+  │ packages/storyboard/src/internals/canvas/useMarqueeSelect.js
+  └ L1:50 (50 lines read)
+
+● marquee usage (shell)
+  │ grep -n "useMarqueeSelect\|connectorStyle"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head
+  └ 3 lines...
+
+◐ I'm keeping the marquee behavior as-is since the bezier sampling works well enough for   orthogonal paths too, but I'll add the minimal branching that A5 requires by passing 
+  connectorStyle through an options object to connectorIntersectsRect and threading it 
+  through useMarqueeSelect. Let me stick to what's essential and avoid unnecessary 
+  changes.
+
+  Now I'm ready to implement this. I need to update connectorGeometry.js with orthogonal   path building and a dispatcher function, add the new CanvasConnectorStyle component, 
+  wire up the toolbar handler and config, update CanvasPage to manage connectorStyle 
+  state and broadcast it, modify ConnectorLayer to use the new path builder, and update 
+  useMarqu  useMarqueeSelect◎ Implementing Part A: connector style toggle (Esc to cancel · 4.9 KiB)  useMarqueeSelect to accep  useMarqueeSelect to accept the s  useMarqueeSelect to accept the style o  useMarqueeSelect to accept the style option○ Implementing Part A: connector style toggle (Esc to cancel · 4.9 KiB)
+● Read useMarqueeSelect.js
+  │ packages/storyboard/src/internals/canvas/useMarqueeSelect.js
+  └ L1:50 (50 lines read)
+
+● marquee usage (shell)
+  │ grep -n "useMarqueeSelect\|connectorStyle"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head
+  └ 3 lines...
+
+◐ I'm keeping the marquee behavior as-is since the bezier sampling works well enough for   orthogonal paths too, but I'll add the minimal branching that A5 requires by passing 
+  connectorStyle through an options object to connectorIntersectsRect and threading it 
+  through useMarqueeSelect. Let me stick to what's essential and avoid unnecessary 
+  changes.
+
+  Now I'm ready to implement this. I need to update connectorGeometry.js with orthogonal   path building and a dispatcher function, add the new CanvasConnectorStyle component, 
+  wire up the toolbar handler and config, update CanvasPage to manage connectorStyle 
+  state and broadcast it, modify ConnectorLayer to use the new path builder, and update 
+  useMarqueeSelect to accept the style option.
+
+  W  Writi  Writing g◎ Implementing Part A: connector style toggle (Esc to cancel · 4.9 KiB)  Writing geome  Writing geometry  Writing geometry func  Writing geometry functio◉ Implementing Part A: connector style toggle (Esc to cancel · 4.9 KiB)  Writing geometry functions  Writing geometry functions.  Writing geometry functions..  Writing geometry functions...● Implementing Part A: connector style toggle (Esc to cancel · 4.9 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 4.9 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 4.9 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)  │ packages/storyboard/src/internals/canvas/useMarqueeSelect.js
+  └ L1:50 (50 lines read)
+
+● marquee usage (shell)
+  │ grep -n "useMarqueeSelect\|connectorStyle"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head
+  └ 3 lines...
+
+◐ I'm keeping the marquee behavior as-is since the bezier sampling works well enough for   orthogonal paths too, but I'll add the minimal branching that A5 requires by passing 
+  connectorStyle through an options object to connectorIntersectsRect and threading it 
+  through useMarqueeSelect. Let me stick to what's essential and avoid unnecessary 
+  changes.
+
+  Now I'm ready to implement this. I need to update connectorGeometry.js with orthogonal   path building and a dispatcher function, add the new CanvasConnectorStyle component, 
+  wire up the toolbar handler and config, update CanvasPage to manage connectorStyle 
+  state and broadcast it, modify ConnectorLayer to use the new path builder, and update 
+  useMarqueeSelect to accept the style option.
+
+  Writing geometry functions...● I have enoug○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● I have enough context.● I have enough context. Let me im● I have enough context. Let me implement◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● I have enough context. Let me implement Part A.● I have enough context. Let me implement Part A. Start● I have enough context. Let me implement Part A. Starting w● I have enough context. Let me implement Part A. Starting with g◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● I have enough context. Let me implement Part A. Starting with geome● I have enough context. Let me implement Part A. Starting with geometry,● I have enough context. Let me implement Part A. Starting with geometry, the● I have enough context. Let me implement Part A. Starting with geometry, then UI● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● I have enough context. Let me implement Part A. Starting with geometry, then UI, th  └ L1:50 (50 lines read)
+
+● marquee usage (shell)
+  │ grep -n "useMarqueeSelect\|connectorStyle"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head
+  └ 3 lines...
+
+◐ I'm keeping the marquee behavior as-is since the bezier sampling works well enough for   orthogonal paths too, but I'll add the minimal branching that A5 requires by passing 
+  connectorStyle through an options object to connectorIntersectsRect and threading it 
+  through useMarqueeSelect. Let me stick to what's essential and avoid unnecessary 
+  changes.
+
+  Now I'm ready to implement this. I need to update connectorGeometry.js with orthogonal   path building and a dispatcher function, add the new CanvasConnectorStyle component, 
+  wire up the toolbar handler and config, update CanvasPage to manage connectorStyle 
+  state and broadcast it, modify ConnectorLayer to use the new path builder, and update 
+  useMarqueeSelect to accept the style option.
+
+  Writing geometry functions...
+
+● I have enough context. Let me implement Part A. Starting with geometry, then UI, then
+  w  wir◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)  wirin  wiring  wiring.◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)  └ L1:50 (50 lines read)
+
+● marquee usage (shell)
+  │ grep -n "useMarqueeSelect\|connectorStyle"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head
+  └ 3 lines...
+
+◐ I'm keeping the marquee behavior as-is since the bezier sampling works well enough for   orthogonal paths too, but I'll add the minimal branching that A5 requires by passing 
+  connectorStyle through an options object to connectorIntersectsRect and threading it 
+  through useMarqueeSelect. Let me stick to what's essential and avoid unnecessary 
+  changes.
+
+  Now I'm ready to implement this. I need to update connectorGeometry.js with orthogonal   path building and a dispatcher function, add the new CanvasConnectorStyle component, 
+  wire up the toolbar handler and config, update CanvasPage to manage connectorStyle 
+  state and broadcast it, modify ConnectorLayer to use the new path builder, and update 
+  useMarqueeSelect to accept the style option.
+
+  Writing geometry functions...
+
+● I have enough context. Let me implement Part A. Starting with geometry, then UI, then
+  wiring.
+
+○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+  └ L1:50 (50 lines read)
+
+● marquee usage (shell)
+  │ grep -n "useMarqueeSelect\|connectorStyle"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head
+  └ 3 lines...
+
+◐ I'm keeping the marquee behavior as-is since the bezier sampling works well enough for   orthogonal paths too, but I'll add the minimal branching that A5 requires by passing 
+  connectorStyle through an options object to connectorIntersectsRect and threading it 
+  through useMarqueeSelect. Let me stick to what's essential and avoid unnecessary 
+  changes.
+
+  Now I'm ready to implement this. I need to update connectorGeometry.js with orthogonal   path building and a dispatcher function, add the new CanvasConnectorStyle component, 
+  wire up the toolbar handler and config, update CanvasPage to manage connectorStyle 
+  state and broadcast it, modify ConnectorLayer to use the new path builder, and update 
+  useMarqueeSelect to accept the style option.
+
+  Writing geometry functions...
+
+● I have enough context. Let me implement Part A. Starting with geometry, then UI, then
+  wiring.
+
+○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)○ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)● Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◉ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing Part A: connector style toggle (Esc to cancel · 5.1 KiB)◎ Implementing connector geometry + toggle (Esc to cancel · 5.3 KiB)● Implementing connector geometry + toggle (Esc to cancel · 5.3 KiB)◉ Implementing connector geometry + toggle (Esc to cancel · 5.3 KiB)◎ Implementing connector geometry + toggle (Esc to cancel · 5.3 KiB)○ Implementing connector geometry + toggle (Esc to cancel · 5.3 KiB)◎ Implementing connector geometry + toggle (Esc to cancel · 5.3 KiB)◉ Implementing connector geometry + toggle (Esc to cancel · 5.3 KiB)● Implementing connector geometry + toggle (Esc to cancel · 5.3 KiB)◉ Implementing connector geometry + toggle (Esc to cancel · 5.3 KiB)◎ Implementing connector geometry + toggle (Esc to cancel · 5.3 KiB)○ Implementing connector geometry + toggle (Esc to cancel · 5.3 KiB)◎ Implementing connector geometry + toggle (Esc to cancel · 5.3 KiB)◉ Implementing connector geometry + toggle (Esc to cancel · 5.3 KiB)● Implementing connector geometry + toggle (Esc to cancel · 5.3 KiB)◉ Implementing connector geometry + toggle (Esc to cancel · 5.3 KiB)◉ Implementing connector geometry + toggle (Esc to cancel · 5.5 KiB)◎ Implementing connector geometry + toggle (Esc to cancel · 5.9 KiB)◎ Implementing connector geometry + toggle (Esc to cancel · 6.0 KiB)○ Implementing connector geometry + toggle (Esc to cancel · 6.3 KiB)○ Implementing connector geometry + toggle (Esc to cancel · 6.7 KiB)○ Implementing connector geometry + toggle (Esc to cancel · 6.9 KiB)○ Implementing connector geometry + toggle (Esc to cancel · 7.6 KiB)◎ Implementing connector geometry + toggle (Esc to cancel · 7.6 KiB)◎ Implementing connector geometry + toggle (Esc to cancel · 8.2 KiB)◉ Implementing connector geometry + toggle (Esc to cancel · 9.3 KiB)◉ Implementing connector geometry + toggle (Esc to cancel · 9.5 KiB)◉ Implementing connector geometry + toggle (Esc to cancel · 9.8 KiB)◉ Implementing connector geometry + toggle (Esc to cancel · 10.4 KiB)● Implementing connector geometry + toggle (Esc to cancel · 10.4 KiB)● Implementing connector geometry + toggle (Esc to cancel · 10.6 KiB)◉ Implementing connector geometry + toggle (Esc to cancel · 10.6 KiB)  │ grep -n "useMarqueeSelect\|connectorStyle"
+  │ packages/storyboard/src/internals/canvas/CanvasPage.jsx | head
+  └ 3 lines...
+
+◐ I'm keeping the marquee behavior as-is since the bezier sampling works well enough for   orthogonal paths too, but I'll add the minimal branching that A5 requires by passing 
+  connectorStyle through an options object to connectorIntersectsRect and threading it 
+  through useMarqueeSelect. Let me stick to what's essential and avoid unnecessary 
+  changes.
+
+  Now I'm ready to implement this. I need to update connectorGeometry.js with orthogonal   path building and a dispatcher function, add the new CanvasConnectorStyle component, 
+  wire up the toolbar handler and config, update CanvasPage to manage connectorStyle 
+  state and broadcast it, modify ConnectorLayer to use the new path builder, and update 
+  useMarqueeSelect to accept the style option.
+
+  Writing geometry functions...
+
+● I have enough context. Let me implement Part A. Starting with geometry, then UI, then
+  wiring.● Edit connectorGeometry.js +150
+  └ packages/storyboard/src/internals/canvas/connectorGeometry.js◎ Implementing connector geometry + toggle (Esc to cancel · 10.6 KiB)○ Implementing connector geometry + toggle (Esc to cancel · 10.6 KiB)

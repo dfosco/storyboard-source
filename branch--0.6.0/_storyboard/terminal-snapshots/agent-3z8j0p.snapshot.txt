@@ -1,0 +1,221 @@
+SESSION: agent-3z8j0p | ruby-heron
+CANVAS:  storyboarding/form-schema
+BRANCH:  0.5.0
+TIME:    2026-05-11T09:00:09.472Z
+
+================================================================================
+SCREEN
+================================================================================
+
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
+
+● Edit ArtifactForm.jsx +10 -8
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
+
+● Commit Primer Dialog refactor (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git add -A && git
+  │ commit -m "fix(CreateDialog): use Primer Dialog from @primer/react/experimental
+  │
+  │ Replaces hand-rolled overlay/dialog markup with Primer's Dialog
+  │ component, which provides a properly scrollable body region while…
+  └ 12 lines...
+
+● Add summary widget + signal done (shell)
+  │ SERVER="http://localhost:1240/branch--0.5.0"
+  │ RESP=$(curl -s -X POST "$SERVER/_storyboard/canvas/widget" -H "Content-Type:
+  │ application/json" -d '{"name":"storyboarding/form-schema","type":"markdown","positi
+  │ on":{"x":9912,"y":3300},"props":{"content":"# CreateDialog: Primer
+  │ Dialog\n\nReplaced hand-rolled overlay with `Dialog` from …
+  └ 18 lines...
+
+● Done. Refactored CreateDialog.jsx to use Primer's Dialog from
+  @primer/react/experimental — its built-in body region scrolls while the title and
+  close button stay fixed. Also added a hideHeader prop to ArtifactForm to avoid
+  duplicating the title shown by the Dialog.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                   @CoreUIBar.jsx
+─────────────────────────────────────────────────────────────────────────────────────────
+❯  
+─────────────────────────────────────────────────────────────────────────────────────────
+ / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+[lost tty]
+[?996n[>c[>q  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
+
+● Edit ArtifactForm.jsx +10 -8
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
+
+● Commit Primer Dialog refactor (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git add -A && git
+  │ commit -m "fix(CreateDialog): use Primer Dialog from @primer/react/experimental
+  │
+  │ Replaces hand-rolled overlay/dialog markup with Primer's Dialog
+  │ component, which provides a properly scrollable body region while…
+  └ 12 lines...
+
+● Add summary widget + signal done (shell)
+  │ SERVER="http://localhost:1240/branch--0.5.0"
+  │ RESP=$(curl -s -X POST "$SERVER/_storyboard/canvas/widget" -H "Content-Type:
+  │ application/json" -d '{"name":"storyboarding/form-schema","type":"markdown","positi
+  │ on":{"x":9912,"y":3300},"props":{"content":"# CreateDialog: Primer
+  │ Dialog\n\nReplaced hand-rolled overlay with `Dialog` from …
+  └ 18 lines...
+
+● Done. Refactored CreateDialog.jsx to use Primer's Dialog from
+  @primer/react/experimental — its built-in body region scrolls while the title and
+  close button stay fixed. Also added a hideHeader prop to ArtifactForm to avoid
+  duplicating the title shown by the Dialog.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                @CreateDialog.jsx
+─────────────────────────────────────────────────────────────────────────────────────────❯
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
+
+● Edit ArtifactForm.jsx +10 -8
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
+
+● Commit Primer Dialog refactor (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git add -A && git
+  │ commit -m "fix(CreateDialog): use Primer Dialog from @primer/react/experimental
+  │
+  │ Replaces hand-rolled overlay/dialog markup with Primer's Dialog
+  │ component, which provides a properly scrollable body region while…
+  └ 12 lines...
+
+● Add summary widget + signal done (shell)
+  │ SERVER="http://localhost:1240/branch--0.5.0"
+  │ RESP=$(curl -s -X POST "$SERVER/_storyboard/canvas/widget" -H "Content-Type:
+  │ application/json" -d '{"name":"storyboarding/form-schema","type":"markdown","positi
+  │ on":{"x":9912,"y":3300},"props":{"content":"# CreateDialog: Primer
+  │ Dialog\n\nReplaced hand-rolled overlay with `Dialog` from …
+  └ 18 lines...
+
+● Done. Refactored CreateDialog.jsx to use Primer's Dialog from
+  @primer/react/experimental — its built-in body region scrolls while the title and
+  close button stay fixed. Also added a hideHeader prop to ArtifactForm to avoid
+  duplicating the title shown by the Dialog.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                @CreateDialog.jsx
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
+
+● Edit ArtifactForm.jsx +10 -8
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
+
+● Commit Primer Dialog refactor (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git add -A && git
+  │ commit -m "fix(CreateDialog): use Primer Dialog from @primer/react/experimental
+  │
+  │ Replaces hand-rolled overlay/dialog markup with Primer's Dialog
+  │ component, which provides a properly scrollable body region while…
+  └ 12 lines...
+
+● Add summary widget + signal done (shell)
+  │ SERVER="http://localhost:1240/branch--0.5.0"
+  │ RESP=$(curl -s -X POST "$SERVER/_storyboard/canvas/widget" -H "Content-Type:
+  │ application/json" -d '{"name":"storyboarding/form-schema","type":"markdown","positi
+  │ on":{"x":9912,"y":3300},"props":{"content":"# CreateDialog: Primer
+  │ Dialog\n\nReplaced hand-rolled overlay with `Dialog` from …
+  └ 18 lines...
+
+● Done. Refactored CreateDialog.jsx to use Primer's Dialog from
+  @primer/react/experimental — its built-in body region scrolls while the title and
+  close button stay fixed. Also added a hideHeader prop to ArtifactForm to avoid
+  duplicating the title shown by the Dialog.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                @CreateDialog.jsx
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
+
+● Edit ArtifactForm.jsx +10 -8
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
+
+● Commit Primer Dialog refactor (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git add -A && git
+  │ commit -m "fix(CreateDialog): use Primer Dialog from @primer/react/experimental
+  │
+  │ Replaces hand-rolled overlay/dialog markup with Primer's Dialog
+  │ component, which provides a properly scrollable body region while…
+  └ 12 lines...
+
+● Add summary widget + signal done (shell)
+  │ SERVER="http://localhost:1240/branch--0.5.0"
+  │ RESP=$(curl -s -X POST "$SERVER/_storyboard/canvas/widget" -H "Content-Type:
+  │ application/json" -d '{"name":"storyboarding/form-schema","type":"markdown","positi
+  │ on":{"x":9912,"y":3300},"props":{"content":"# CreateDialog: Primer
+  │ Dialog\n\nReplaced hand-rolled overlay with `Dialog` from …
+  └ 18 lines...
+
+● Done. Refactored CreateDialog.jsx to use Primer's Dialog from
+  @primer/react/experimental — its built-in body region scrolls while the title and
+  close button stay fixed. Also added a hideHeader prop to ArtifactForm to avoid
+  duplicating the title shown by the Dialog.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                @CreateDialog.jsx
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
+
+● Edit ArtifactForm.jsx +10 -8
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
+
+● Commit Primer Dialog refactor (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git add -A && git
+  │ commit -m "fix(CreateDialog): use Primer Dialog from @primer/react/experimental
+  │
+  │ Replaces hand-rolled overlay/dialog markup with Primer's Dialog
+  │ component, which provides a properly scrollable body region while…
+  └ 12 lines...
+
+● Add summary widget + signal done (shell)
+  │ SERVER="http://localhost:1240/branch--0.5.0"
+  │ RESP=$(curl -s -X POST "$SERVER/_storyboard/canvas/widget" -H "Content-Type:
+  │ application/json" -d '{"name":"storyboarding/form-schema","type":"markdown","positi
+  │ on":{"x":9912,"y":3300},"props":{"content":"# CreateDialog: Primer
+  │ Dialog\n\nReplaced hand-rolled overlay with `Dialog` from …
+  └ 18 lines...
+
+● Done. Refactored CreateDialog.jsx to use Primer's Dialog from
+  @primer/react/experimental — its built-in body region scrolls while the title and
+  close button stay fixed. Also added a hideHeader prop to ArtifactForm to avoid
+  duplicating the title shown by the Dialog.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                @CreateDialog.jsx
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
+
+● Edit ArtifactForm.jsx +10 -8
+  └ packages/storyboard/src/internals/ArtifactForm/ArtifactForm.jsx
+
+● Commit Primer Dialog refactor (shell)
+  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && git add -A && git
+  │ commit -m "fix(CreateDialog): use Primer Dialog from @primer/react/experimental
+  │
+  │ Replaces hand-rolled overlay/dialog markup with Primer's Dialog
+  │ component, which provides a properly scrollable body region while…
+  └ 12 lines...
+
+● Add summary widget + signal done (shell)
+  │ SERVER="http://localhost:1240/branch--0.5.0"
+  │ RESP=$(curl -s -X POST "$SERVER/_storyboard/canvas/widget" -H "Content-Type:
+  │ application/json" -d '{"name":"storyboarding/form-schema","type":"markdown","positi
+  │ on":{"x":9912,"y":3300},"props":{"content":"# CreateDialog: Primer
+  │ Dialog\n\nReplaced hand-rolled overlay with `Dialog` from …
+  └ 18 lines...
+
+● Done. Refactored CreateDialog.jsx to use Primer's Dialog from
+  @primer/react/experimental — its built-in body region scrolls while the title and
+  close button stay fixed. Also added a hideHeader prop to ArtifactForm to avoid
+  duplicating the title shown by the Dialog.
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                @CreateDialog.jsx
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                @ArtifactForm.jsx ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]                   @CoreUIBar.jsx
