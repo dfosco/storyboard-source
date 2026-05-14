@@ -211,9 +211,13 @@ async function main() {
     const useLocal = existsSync(localVite)
     const args = ['--config', protoConfigPath, '--port', String(protoPort), '--strictPort']
     const env = { ...process.env, STORYBOARD_PROTO_PORT: String(protoPort), VITE_BASE_PATH: '/' }
+    // Proto stdout is silenced by default (its banner duplicates the shell's
+    // and clutters the CLI). Set STORYBOARD_PROTO_VERBOSE=1 to surface Vite's
+    // restart/page-reload/error logs for debugging.
+    const protoStdout = process.env.STORYBOARD_PROTO_VERBOSE ? 'inherit' : 'ignore'
     protoChild = useLocal
-      ? spawn(localVite, args, { cwd: targetCwd, env, stdio: ['ignore', 'ignore', 'inherit'] })
-      : spawn('npx', ['vite', ...args], { cwd: targetCwd, env, stdio: ['ignore', 'ignore', 'inherit'] })
+      ? spawn(localVite, args, { cwd: targetCwd, env, stdio: ['ignore', protoStdout, 'inherit'] })
+      : spawn('npx', ['vite', ...args], { cwd: targetCwd, env, stdio: ['ignore', protoStdout, 'inherit'] })
     p.log.info(`Prototype devserver: ${protoUrl}`)
     protoChild.on('exit', (code) => {
       if (code !== null && code !== 0) {
