@@ -1,5 +1,12 @@
 # @dfosco/storyboard
 
+## 0.5.0-beta.51
+
+### Patch Changes
+
+-   [`23ccaaa`](https://github.com/dfosco/storyboard/commit/23ccaaad202b5cfa3b6ebcb6accfef0aa3dc2cff) Thanks [@dfosco](https://github.com/dfosco)! - - data-plugin: ignore nested `worktrees/**` directories (in addition to `.worktrees/**`) so git worktrees inside the project root no longer cause "Duplicate object" build errors
+    -   dev CLI: surface vite stderr when the dev server exits before becoming ready, instead of swallowing it behind a generic "exited (code 1)" message
+
 ## 0.5.0-beta.50
 
 ### Patch Changes
