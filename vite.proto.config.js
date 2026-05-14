@@ -1,91 +1,116 @@
 /**
- * Split-serve spike (Option C): the proto Vite.
+ * Split-serve spike (Option C): the proto Vite, standalone.
  *
- * Spawned by `storyboard dev` as a sibling of the shell Vite. Owns HMR for
- * everything under `src/prototypes/**`. Strips `storyboard/vite/server`
- * (no canvas/messaging/terminal — those are shell-only) and ignores
- * non-prototype source from its watcher.
+ * IMPORTANT: this config does NOT import vite.config.js. Doing so pulls
+ * @dfosco/storyboard's server-plugin into config-load, which transitively
+ * imports ~40 source files (canvas/server, messaging/bus, terminal-server,
+ * autosync, etc). Every one of those becomes a Vite configFileDependency,
+ * which means writes the shell makes during normal use trigger a proto
+ * server restart — producing a continuous reload loop in the iframe.
  *
- * Cross-origin iframe: PrototypeEmbed iframes `http://localhost:<protoPort>/<path>`
- * via `window.__SB_PROTO_URL__`, injected by the shell's transformIndexHtml.
+ * Standalone keeps the proto's configFileDependencies list small (just
+ * data-plugin + its handful of imports), so shell-side activity is invisible.
+ *
+ * Spawned by `storyboard dev`. Owns HMR for src/prototypes, src/components,
+ * src/templates. PrototypeEmbed iframes http://localhost:<port>/<path> via
+ * window.__SB_PROTO_URL__, injected by the shell's transformIndexHtml.
  */
 /* global process */
 import { defineConfig } from 'vite'
 import path from 'path'
-import shellConfigFactory from './vite.config.js'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+import generouted from '@generouted/react-router/plugin'
+import storyboardData from './packages/storyboard/src/internals/vite/data-plugin.js'
+import postcssGlobalData from '@csstools/postcss-global-data'
+import postcssPresetEnv from 'postcss-preset-env'
+import browsers from '@github/browserslist-config'
+import { globSync } from 'glob'
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname)
 
 const PROTO_PORT = Number(process.env.STORYBOARD_PROTO_PORT) || 1235
 
-export default defineConfig(async (env) => {
-    const shell = await shellConfigFactory(env)
-
-    // Drop only the shell-exclusive plugins: storyboard-server (canvas,
-    // messaging bus, terminal server — would double-bind sockets and fight
-    // for .storyboard/ files), prototypes-watcher (fires full-reload on
-    // every prototype add/unlink — the data plugin already handles this
-    // softly), and base-redirect (proto serves at root so the redirect is
-    // misleading). Keep storyboard-data so prototypes can resolve
-    // useFlowData/useObject/useRecord.
-    const plugins = (shell.plugins || []).filter((p) => {
-        if (!p) return false
-        const name = p && p.name
-        return (
-            name !== 'storyboard-server' &&
-            name !== 'storyboard-terminal-snapshots' &&
-            name !== 'prototypes-watcher' &&
-            name !== 'base-redirect'
-        )
-    })
-
-    return {
-        ...shell,
-        // Always serve at the root — proto is its own origin.
-        base: '/',
-        plugins,
-        // Separate dep-optimizer cache. Sharing node_modules/.vite/deps/ with
-        // the shell causes 504 "Outdated Optimize Dep" because each Vite
-        // re-hashes on boot and evicts the other's entries.
-        cacheDir: 'node_modules/.vite-proto',
-        server: {
-            ...(shell.server || {}),
-            port: PROTO_PORT,
-            strictPort: true,
-            // Watch ONLY src/prototypes, src/components, src/templates.
-            // Chokidar `ignored` accepts a function: return true to ignore.
-            // Anything outside the allowed roots — and anything in node_modules,
-            // .git, .storyboard, *.canvas.jsonl — is ignored. This keeps the
-            // proto iframe quiet while the shell churns through canvas writes.
-            watch: {
-                ignored: (filePath) => {
-                    if (!filePath) return false
-                    const norm = filePath.replace(/\\/g, '/')
-                    if (norm.includes('/node_modules/')) return true
-                    if (norm.includes('/.git/')) return true
-                    if (norm.includes('/.storyboard/')) return true
-                    if (norm.includes('/dist/') || norm.includes('/build/')) return true
-                    if (norm.endsWith('.canvas.jsonl')) return true
-                    // Allow the project root itself so chokidar can recurse.
-                    if (!norm.includes('/src/')) return false
-                    return !(
-                        norm.includes('/src/prototypes/') ||
-                        norm.includes('/src/components/') ||
-                        norm.includes('/src/templates/') ||
-                        norm.endsWith('/src/prototypes') ||
-                        norm.endsWith('/src/components') ||
-                        norm.endsWith('/src/templates')
-                    )
-                },
+export default defineConfig(() => ({
+    base: '/',
+    cacheDir: 'node_modules/.vite-proto',
+    resolve: {
+        dedupe: ['react', 'react-dom'],
+        alias: {
+            '@': path.resolve(__dirname, './src'),
+            '@dfosco/storyboard/widgets.config.json': path.resolve(__dirname, 'packages/storyboard/widgets.config.json'),
+            '@dfosco/storyboard/paste.config.json': path.resolve(__dirname, 'packages/storyboard/paste.config.json'),
+            '@dfosco/storyboard/canvas/style.css': path.resolve(__dirname, 'packages/storyboard/src/canvas/style.css'),
+            '@dfosco/storyboard/canvas': path.resolve(__dirname, 'packages/storyboard/src/canvas/index.js'),
+            '@dfosco/storyboard/hash-preserver': path.resolve(__dirname, 'packages/storyboard/src/internals/hashPreserver.js'),
+            '@dfosco/storyboard/error-boundary': path.resolve(__dirname, 'packages/storyboard/src/internals/PrototypeErrorBoundary.jsx'),
+            '@dfosco/storyboard/context': path.resolve(__dirname, 'packages/storyboard/src/internals/context.jsx'),
+            '@dfosco/storyboard/hooks/useFeatureFlag': path.resolve(__dirname, 'packages/storyboard/src/internals/hooks/useFeatureFlag.js'),
+            '@dfosco/storyboard/vite': path.resolve(__dirname, 'packages/storyboard/src/internals/vite/data-plugin.js'),
+            '@dfosco/storyboard': path.resolve(__dirname, 'packages/storyboard/src/internals/index.js'),
+        },
+    },
+    plugins: [
+        tailwindcss(),
+        storyboardData(),
+        react(),
+        generouted({
+            source: {
+                routes: './src/prototypes/**/[\\w[-]*.{jsx,tsx,mdx}',
+                modals: './src/prototypes/**/[+]*.{jsx,tsx,mdx}',
             },
-            // Allow the shell origin to embed prototype pages in iframes.
-            cors: true,
-            headers: {
-                // Permit cross-origin embedding from the shell host.
-                'Access-Control-Allow-Origin': '*',
+        }),
+    ],
+    server: {
+        port: PROTO_PORT,
+        strictPort: true,
+        fs: { allow: ['..'] },
+        cors: true,
+        headers: { 'Access-Control-Allow-Origin': '*' },
+        // Watch only the dirs prototypes care about. Anything outside is
+        // ignored — most importantly .storyboard/ (selectedwidgets writes),
+        // *.canvas.jsonl, and any node_modules write.
+        watch: {
+            ignored: (filePath) => {
+                if (!filePath) return false
+                const norm = filePath.replace(/\\/g, '/')
+                if (norm.includes('/node_modules/')) return true
+                if (norm.includes('/.git/')) return true
+                if (norm.includes('/.storyboard/')) return true
+                if (norm.includes('/dist/') || norm.includes('/build/')) return true
+                if (norm.endsWith('.canvas.jsonl')) return true
+                if (!norm.includes('/src/')) return false
+                return !(
+                    norm.includes('/src/prototypes/') ||
+                    norm.includes('/src/components/') ||
+                    norm.includes('/src/templates/') ||
+                    norm.endsWith('/src/prototypes') ||
+                    norm.endsWith('/src/components') ||
+                    norm.endsWith('/src/templates')
+                )
             },
         },
-    }
-})
-
-void __dirname
+    },
+    optimizeDeps: {
+        include: ['@primer/react', '@primer/octicons-react', 'use-sync-external-store/shim', 'use-sync-external-store/shim/with-selector'],
+    },
+    esbuild: { keepNames: true },
+    css: {
+        postcss: {
+            plugins: [
+                postcssGlobalData({
+                    files: globSync('node_modules/@primer/primitives/dist/css/**/*.css', { ignore: ['**/themes/**'] }),
+                }),
+                postcssPresetEnv({
+                    stage: 2,
+                    browsers,
+                    features: {
+                        'nesting-rules': { noIsPseudoSelector: true },
+                        'focus-visible-pseudo-class': false,
+                        'logical-properties-and-values': false,
+                    },
+                }),
+            ],
+        },
+    },
+}))
