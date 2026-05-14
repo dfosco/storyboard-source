@@ -116,37 +116,81 @@ const PromptWidget = forwardRef(function PromptWidget({ id, props, onUpdate, res
   const onUpdateRef = useRef(onUpdate)
   useEffect(() => { onUpdateRef.current = onUpdate }, [onUpdate])
 
+  // Apply a status payload (from WS event or polled config) to local + persisted state.
+  const applyStatus = useCallback((data) => {
+    if (!data || !data.status) return
+    if (data.status === 'done' || data.status === 'completed') {
+      setExecStatus('done')
+      onUpdateRef.current?.({ status: 'done' })
+    } else if (data.status === 'error') {
+      setExecStatus('error')
+      setExecError(data.message || 'Unknown error')
+      onUpdateRef.current?.({ status: 'error', errorMessage: data.message || 'Unknown error' })
+    } else if (data.status === 'cancelled') {
+      setExecStatus('idle')
+      onUpdateRef.current?.({ status: 'idle', sessionId: '', errorMessage: '' })
+    } else if (data.status === 'working' || data.status === 'running' || data.status === 'pending') {
+      setExecStatus('pending')
+      onUpdateRef.current?.({ status: 'pending' })
+    }
+  }, [])
+
   useEffect(() => {
     if (!import.meta.hot) return
-
     const handler = (data) => {
       if (data.widgetId !== id) return
-      if (data.status === 'done' || data.status === 'completed') {
-        setExecStatus('done')
-        onUpdateRef.current?.({ status: 'done' })
-      } else if (data.status === 'error') {
-        setExecStatus('error')
-        setExecError(data.message || 'Unknown error')
-        onUpdateRef.current?.({ status: 'error', errorMessage: data.message || 'Unknown error' })
-      } else if (data.status === 'cancelled') {
-        setExecStatus('idle')
-        onUpdateRef.current?.({ status: 'idle', sessionId: '', errorMessage: '' })
-      } else if (data.status === 'working') {
-        setExecStatus('pending')
-        onUpdateRef.current?.({ status: 'pending' })
-      } else if (data.status === 'running' || data.status === 'pending') {
-        setExecStatus('pending')
-        onUpdateRef.current?.({ status: 'pending' })
-      }
+      applyStatus(data)
     }
-
     import.meta.hot.on('storyboard:agent-status', handler)
     return () => {
       if (typeof import.meta.hot.off === 'function') {
         import.meta.hot.off('storyboard:agent-status', handler)
       }
     }
-  }, [id])
+  }, [id, applyStatus])
+
+  // Reconcile with the server-side persisted agentStatus.
+  // The agent always writes its final status to .storyboard/terminals/{id}.json
+  // via POST /agent/signal, but the live `storyboard:agent-status` WS event
+  // can be missed (tab in background, HMR reconnect, page navigation). On
+  // mount and while we believe the agent is still pending, poll the persisted
+  // status as a safety net so the widget can never get stuck.
+  useEffect(() => {
+    if (execStatus !== 'pending' && execStatus !== 'idle') return
+
+    let cancelled = false
+    let timer = null
+
+    async function pollOnce() {
+      try {
+        const url = `${getBase()}/_storyboard/canvas/agent/status?widgetId=${encodeURIComponent(id)}`
+        const res = await fetch(url)
+        if (!res.ok) return
+        const json = await res.json().catch(() => null)
+        const persisted = json?.agentStatus
+        if (cancelled || !persisted?.status) return
+        // Only apply terminal states or transitions we don't already reflect.
+        if (persisted.status === 'done' || persisted.status === 'error' || persisted.status === 'cancelled') {
+          applyStatus(persisted)
+        } else if (execStatus === 'idle' && (persisted.status === 'running' || persisted.status === 'working' || persisted.status === 'pending')) {
+          applyStatus(persisted)
+        }
+      } catch { /* offline — try again next tick */ }
+    }
+
+    // Reconcile immediately on mount / when we enter pending.
+    pollOnce()
+    // And keep polling at a low cadence while pending, in case the WS event
+    // is missed entirely.
+    if (execStatus === 'pending') {
+      timer = setInterval(pollOnce, 5000)
+    }
+
+    return () => {
+      cancelled = true
+      if (timer) clearInterval(timer)
+    }
+  }, [id, execStatus, applyStatus])
 
   useImperativeHandle(ref, () => ({
     handleAction(action) {
