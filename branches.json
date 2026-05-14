@@ -4,6 +4,7 @@
   {"folder":"branch--0.5.0-simple-server","branch":"0.5.0-simple-server"},
   {"folder":"branch--0.5.0-story-rendering","branch":"0.5.0-story-rendering"},
   {"folder":"branch--0.5.0","branch":"0.5.0"},
+  {"folder":"branch--0.6.0","branch":"0.6.0"},
   {"folder":"branch--3.11.0-auto-sync","branch":"3.11.0-auto-sync"},
   {"folder":"branch--3.11.0-canvas-hmr","branch":"3.11.0-canvas-hmr"},
   {"folder":"branch--3.11.0-canvas-route-404","branch":"3.11.0-canvas-route-404"},
