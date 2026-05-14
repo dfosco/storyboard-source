@@ -24,7 +24,8 @@ import { createAutosyncHandler } from '../autosync/server.js'
 import { setupTerminalServer } from '../canvas/terminal-server.js'
 import { listSessions, detachSession, killSession, orphanSession, bulkCleanup, getSessionStats } from '../canvas/terminal-registry.js'
 import { execSync as cpExecSync } from 'node:child_process'
-import { list as listRunningServers } from '../worktree/serverRegistry.js'
+import { list as listRunningServers, register as registerServer, unregister as unregisterServer, generateId as generateServerId } from '../worktree/serverRegistry.js'
+import { detectWorktreeName } from '../worktree/port.js'
 import { initBus, subscribeAll } from '../messaging/bus.js'
 import { JsonlAdapter } from '../messaging/storage/jsonl-adapter.js'
 import { createMessagingRoutes } from '../messaging/routes.js'
@@ -307,6 +308,34 @@ export default function storyboardServer() {
         setupTerminalServer(server.httpServer, base, branch, hotPool)
       }
 
+      // Self-register in .storyboard/servers.json so sibling workflows
+      // (cli helpers, BranchBar, agent terminals) can discover this Vite.
+      // Registration happens once the HTTP server is actually listening so
+      // the recorded port is the real one (handles strictPort fallbacks).
+      if (server.httpServer) {
+        const serverId = generateServerId()
+        const worktreeName = detectWorktreeName()
+        const onListening = () => {
+          try {
+            const addr = server.httpServer.address()
+            const port = typeof addr === 'object' && addr ? addr.port : null
+            if (port) {
+              registerServer({ id: serverId, worktree: worktreeName, pid: process.pid, port }, root)
+            }
+          } catch { /* best effort */ }
+        }
+        if (server.httpServer.listening) onListening()
+        else server.httpServer.once('listening', onListening)
+
+        const unregister = () => {
+          try { unregisterServer(serverId, root) } catch { /* */ }
+        }
+        server.httpServer.on('close', unregister)
+        process.on('SIGINT', unregister)
+        process.on('SIGTERM', unregister)
+        process.on('exit', unregister)
+      }
+
       // Ignore assets/canvas/ so image/snapshot writes don't trigger reloads
       server.watcher.unwatch(path.join(root, 'assets', 'canvas', 'images'))
       server.watcher.unwatch(path.join(root, 'assets', 'canvas', 'snapshots'))
@@ -444,15 +473,18 @@ export default function storyboardServer() {
         sendJsonLogged(res, 404, { error: 'Not found' })
       })
 
-      // Worktrees API — lists running worktrees/branches from server registry
+      // Worktrees API — lists running worktrees/branches from server registry.
+      // With proxy/daemon removed, each worktree runs its own Vite on its own
+      // port, so we expose `port` + `url` for the BranchBar to navigate directly.
       routeHandlers.set('worktrees', async (req, res) => {
         try {
-          const servers = listRunningServers()
+          const servers = listRunningServers(root)
           const branches = servers.map(srv => ({
             branch: srv.worktree,
             folder: srv.worktree === 'main' ? '' : `branch--${srv.worktree}/`,
+            port: srv.port,
+            url: `http://localhost:${srv.port}/storyboard/`,
           }))
-          // Always include main
           if (!branches.some(b => b.branch === 'main')) {
             branches.unshift({ branch: 'main', folder: '' })
           }

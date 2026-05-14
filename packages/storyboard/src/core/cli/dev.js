@@ -1,190 +1,44 @@
 /**
- * storyboard dev [branch] — request a dev session from the Storyboard Runtime.
+ * storyboard dev — start a Vite dev server for the current worktree.
  *
- * Replaces the legacy per-repo server (kept at dev.legacy.js for reference).
- * The runtime daemon (~/.storyboard/runtime.lock) owns Vite child processes,
- * port allocation, and Caddy routes for the entire machine. This command is a
- * thin client that:
- *
- * 1. Resolves the target worktree (using the same logic as legacy).
- * 2. Reads devDomain from storyboard.config.json.
- * 3. POSTs /devserver/acquire to the runtime — auto-spawning the daemon if needed.
- * 4. Prints the canonical proxy URL the runtime returns.
- * 5. Holds the lease until SIGINT, then releases.
+ * One Vite per worktree, on its own port, no proxy, no daemon. The
+ * `/_storyboard/*` API endpoints are mounted by `core/vite/server-plugin`
+ * as Vite middleware, so a single child process owns everything.
  *
  * Usage:
- *   storyboard dev                 # detect worktree from cwd
- *   storyboard dev main            # repo root
- *   storyboard dev <worktree>      # existing or auto-created worktree
+ *   storyboard dev          # start in current cwd
+ *   storyboard dev --port=N # override port
+ *
+ * To switch worktrees, use `storyboard branch <name>` then run `storyboard dev`
+ * from the new worktree.
  */
 
 import * as p from '@clack/prompts'
-import { execFileSync } from 'child_process'
-import { existsSync, readFileSync } from 'fs'
-import { resolve } from 'path'
-import { detectWorktreeName, getPort, releasePort, repoRoot, worktreeDir } from '../worktree/port.js'
+import { spawn } from 'node:child_process'
+import { resolve } from 'node:path'
+import { detectWorktreeName, getPort, releasePort } from '../worktree/port.js'
 import { startRenameWatcher } from '../rename-watcher/watcher.js'
-import { parseFlags } from './flags.js'
-import { localBranchExists } from './dev-helpers.js'
 import { compactAll } from '../canvas/compact.js'
+import { parseFlags } from './flags.js'
 
 const flagSchema = {
   port: { type: 'number', description: 'Override dev server port' },
-  create: { type: 'boolean', default: true, description: 'Allow creating worktrees/branches (disable with --no-create)' },
-}
-
-/**
- * Read the devDomain for this checkout from the **repo root**, never from
- * the worktree's own cwd.
- *
- * Why root-only: every worktree is a checkout of the same repo, so its
- * `storyboard.config.json` is just a branch's copy of the root's file.
- * Reading the worktree's copy first would let an experimental branch edit
- * silently pin a different devDomain, defeating the whole "one repo = one
- * devDomain" invariant that closes RCA hypothesis H3.
- */
-function readDevDomain(targetCwd) {
-  try {
-    const root = repoRoot(targetCwd)
-    const cfg = JSON.parse(readFileSync(resolve(root, 'storyboard.config.json'), 'utf8'))
-    return cfg.devDomain || null
-  } catch {
-    return null
-  }
-}
-
-// Returns true when the storyboard.config.json explicitly contains a
-// `devDomain` key (even if the value happens to be the literal "storyboard").
-// The runtime's FORBIDDEN_DEFAULT_DOMAIN guard exists to catch users who
-// forgot to set one — it must not punish projects that legitimately picked
-// "storyboard" (e.g. the storyboard repo itself).
-function devDomainIsExplicit(targetCwd) {
-  try {
-    const root = repoRoot(targetCwd)
-    const cfg = JSON.parse(readFileSync(resolve(root, 'storyboard.config.json'), 'utf8'))
-    return Object.prototype.hasOwnProperty.call(cfg, 'devDomain')
-  } catch {
-    return false
-  }
-}
-
-function remoteBranchExists(name, cwd) {
-  try {
-    const result = execFileSync('git', ['ls-remote', '--exit-code', '--heads', 'origin', name], { cwd, encoding: 'utf8' })
-    return result.trim().length > 0
-  } catch {
-    return false
-  }
-}
-
-function createWorktree(name, root, { newBranch = false } = {}) {
-  const targetDir = resolve(root, 'worktrees', name)
-  const gitArgs = newBranch
-    ? ['worktree', 'add', targetDir, '-b', name]
-    : ['worktree', 'add', targetDir, name]
-  p.log.step(`Creating worktree: worktrees/${name}`)
-  execFileSync('git', gitArgs, { cwd: root, stdio: 'inherit' })
-  p.log.step('Installing dependencies…')
-  const npmBin = process.platform === 'win32' ? 'npm.cmd' : 'npm'
-  execFileSync(npmBin, ['install'], { cwd: targetDir, stdio: 'inherit' })
-  getPort(name)
-  return targetDir
-}
-
-async function resolveDevTarget(branchArg, { allowCreate = true } = {}) {
-  if (!branchArg) {
-    return { worktreeName: detectWorktreeName(), targetCwd: process.cwd(), created: false }
-  }
-
-  const root = repoRoot()
-  const detectedName = detectWorktreeName()
-  if (detectedName === branchArg) return { worktreeName: branchArg, targetCwd: process.cwd(), created: false }
-  if (branchArg === 'main') return { worktreeName: 'main', targetCwd: root, created: false }
-  const existingDir = worktreeDir(branchArg)
-  if (existsSync(resolve(existingDir, '.git'))) {
-    return { worktreeName: branchArg, targetCwd: existingDir, created: false }
-  }
-  if (!allowCreate) { p.log.error(`Worktree "${branchArg}" does not exist. Use without --no-create to auto-create.`); process.exit(1) }
-
-  const hasLocal = localBranchExists(branchArg, root)
-  const hasRemote = !hasLocal && remoteBranchExists(branchArg, root)
-  if (hasLocal || hasRemote) {
-    return { worktreeName: branchArg, targetCwd: createWorktree(branchArg, root, { newBranch: false }), created: true }
-  }
-  if (process.stdin.isTTY) {
-    const confirmed = await p.confirm({ message: `Branch "${branchArg}" doesn't exist. Create it from HEAD?` })
-    if (p.isCancel(confirmed) || !confirmed) { p.cancel('Cancelled.'); process.exit(0) }
-  } else {
-    p.log.step(`Branch "${branchArg}" not found — creating from HEAD`)
-  }
-  return { worktreeName: branchArg, targetCwd: createWorktree(branchArg, root, { newBranch: true }), created: true }
 }
 
 async function main() {
-  const { flags, positional } = parseFlags(process.argv.slice(3), flagSchema)
-  const branchArg = positional[0] || undefined
-  const allowCreate = flags.create
+  const { flags } = parseFlags(process.argv.slice(3), flagSchema)
+  const worktreeName = detectWorktreeName()
+  const targetCwd = resolve(process.cwd())
+  const port = flags.port || getPort(worktreeName)
 
   p.intro('storyboard dev')
+  p.log.info(`worktree: ${worktreeName}`)
 
-  const { worktreeName, targetCwd, created } = await resolveDevTarget(branchArg, { allowCreate })
-  if (created) p.log.success(`Worktree ready: worktrees/${worktreeName}`)
-  else if (branchArg) p.log.info(`Using ${worktreeName === 'main' ? 'main repo' : `worktrees/${worktreeName}`}`)
-
-  // M3b enforcement: devDomain MUST be set per-repo. The runtime refuses
-  // the legacy default "storyboard" with FORBIDDEN_DEFAULT_DOMAIN, which
-  // would surface as a useless error here. Catch it early with a helpful
-  // suggestion derived from the repo folder name.
-  const devDomain = readDevDomain(targetCwd)
-  if (!devDomain) {
-    const root = repoRoot(targetCwd)
-    const suggested = root.split('/').filter(Boolean).pop()?.toLowerCase().replace(/[^a-z0-9-]/g, '-') || 'my-app'
-    p.log.error('storyboard.config.json is missing a `devDomain`.')
-    p.log.info(`Add e.g. {"devDomain": "${suggested}"} to ${root}/storyboard.config.json and rerun.`)
-    p.log.info('This is required because two repos sharing the default "storyboard" devDomain produce the cross-branch URL bug.')
-    p.log.info('Worktrees inherit the root devDomain — you only need to set this once at the repo root.')
-    process.exit(1)
-  }
-
-  // Compact bloated canvas JSONL files before requesting Vite (preserves legacy behavior).
+  // Compact bloated canvas JSONL files before booting Vite.
   const compacted = compactAll(targetCwd)
   for (const r of compacted) {
     p.log.info(`[compact] ${r.name}: ${(r.before / 1024).toFixed(0)}KB → ${(r.after / 1024).toFixed(0)}KB`)
   }
-
-  // Lazy-load the runtime client so this CLI doesn't blow up during scaffold
-  // (when dist/runtime/ may not be built yet).
-  const { RuntimeClient } = await import('../../../dist/runtime/client/index.js')
-  const runtime = new RuntimeClient()
-
-  const s = p.spinner()
-  s.start(`Acquiring dev server for ${devDomain}/${worktreeName}`)
-
-  let result
-  try {
-    result = await runtime.acquire({
-      slot: { devDomain, worktree: worktreeName },
-      targetCwd: resolve(targetCwd),
-      // Allow the literal "storyboard" devDomain when the user set it
-      // explicitly. The guard only catches the case where it was inherited
-      // from the runtime default because the field was missing.
-      allowDefaultDomain: devDomainIsExplicit(targetCwd),
-    })
-    s.stop(`Ready: ${result.lease.url}`)
-  } catch (err) {
-    s.stop('Failed')
-    p.log.error(err.message || String(err))
-    const stderr = err?.details?.stderr
-    if (stderr && typeof stderr === 'string' && stderr.trim()) {
-      p.log.message(stderr.trim())
-    }
-    if (err.code === 'CONFLICT') p.log.info('Tip: another repo is already bound to this slot. Use a unique devDomain in storyboard.config.json.')
-    if (err.code === 'FORBIDDEN_DEFAULT_DOMAIN') p.log.info('Tip: edit storyboard.config.json and replace "storyboard" with a unique devDomain.')
-    process.exit(1)
-  }
-
-  p.log.info(`devserver port: ${result.devServer.port}`)
-  p.log.info('Stop with Ctrl+C')
 
   const renameWatcher = startRenameWatcher(targetCwd)
   const compactInterval = setInterval(() => {
@@ -194,18 +48,31 @@ async function main() {
     } catch { /* non-critical */ }
   }, 15 * 60 * 1000)
 
+  const npmBin = process.platform === 'win32' ? 'npx.cmd' : 'npx'
+  const child = spawn(npmBin, ['vite', '--port', String(port), '--strictPort'], {
+    cwd: targetCwd,
+    stdio: 'inherit',
+    env: { ...process.env, STORYBOARD_WORKTREE: worktreeName },
+  })
+
+  p.log.success(`http://localhost:${port}/storyboard/`)
+  p.log.info('Stop with Ctrl+C')
+
   function shutdown() {
     clearInterval(compactInterval)
     renameWatcher.close()
-    runtime.release({ leaseId: result.lease.id }).catch(() => undefined).finally(() => {
-      releasePort(worktreeName)
-      process.exit(0)
-    })
+    try { child.kill('SIGTERM') } catch { /* already dead */ }
+    releasePort(worktreeName)
   }
   process.on('SIGINT', shutdown)
   process.on('SIGTERM', shutdown)
 
-  p.outro('Server running')
+  child.on('exit', (code) => {
+    clearInterval(compactInterval)
+    renameWatcher.close()
+    releasePort(worktreeName)
+    process.exit(code ?? 0)
+  })
 }
 
 main().catch((err) => {

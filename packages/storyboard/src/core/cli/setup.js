@@ -13,7 +13,6 @@ import * as p from '@clack/prompts'
 import { existsSync, writeFileSync, readFileSync, mkdirSync, readdirSync, symlinkSync } from 'fs'
 import path from 'path'
 import { execSync } from 'child_process'
-import { isCaddyInstalled, isCaddyRunning, startCaddy } from './proxy.js'
 import { gettingStartedLines, dim, magenta, bold, yellow, green } from './intro.js'
 import { parseFlags } from './flags.js'
 
@@ -28,8 +27,7 @@ const { flags } = parseFlags(process.argv.slice(3), flagSchema)
 // Hidden: output uninstall command for testing fresh setups
 if (flags.nuke) {
   const nukeCmd = [
-    'sudo pkill caddy 2>/dev/null',
-    'brew uninstall caddy gh git 2>/dev/null',
+    'brew uninstall gh git 2>/dev/null',
     'rm -f ~/.local/bin/copilot /usr/local/bin/copilot ~/.local/bin/code /usr/local/bin/code',
     '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"',
     'sudo rm -rf /Library/Developer/CommandLineTools',
@@ -135,22 +133,11 @@ if (hasBrew) {
   }
 }
 
-// 4. Caddy
-if (hasBrew) {
-  if (isCaddyInstalled()) {
-    p.log.success('Caddy proxy installed')
-  } else {
-    const caddySpin = p.spinner()
-    caddySpin.start('Installing Caddy')
-    try {
-      run('brew install caddy')
-      caddySpin.stop('Caddy proxy installed')
-    } catch {
-      caddySpin.stop('Failed to install Caddy')
-      p.log.warning('Install manually: brew install caddy')
-    }
-  }
+// 4. Caddy is no longer used. Worktrees run their own Vite directly on
+//    `http://localhost:<port>/storyboard/`. The block below intentionally
+//    skips the previous Caddy install + start steps.
 
+if (hasBrew) {
   // 5. GitHub CLI
   if (isInstalled('gh')) {
     p.log.success('GitHub CLI installed')
@@ -363,59 +350,17 @@ if (isInstalled('copilot')) {
   } catch { /* ignore */ }
 }
 
-// 10. Proxy — runtime daemon owns Caddy's route table; here we only need
-// to ensure an empty Caddy instance is reachable. Routes are pushed
-// per-devserver via the runtime's admin API on dev start.
-if (isCaddyInstalled()) {
-  const proxySpin = p.spinner()
-  if (isCaddyRunning()) {
-    p.log.success('Proxy already running')
-  } else {
-    proxySpin.start('Starting proxy')
-    if (startCaddy()) proxySpin.stop('Proxy started')
-    else proxySpin.stop('Proxy failed to start (continuing)')
-  }
-}
-
-// 11. Install / sync dependencies
-// Skip npm install if a dev server is running — it would trigger Vite's
-// file watcher and restart the server on a different port.
+// 10. Install / sync dependencies
 {
-  const { SERVER_PORT } = await import('../server/index.js')
-  const { readDevDomain: readDomain } = await import('./proxy.js')
-  const http = await import('node:http')
-
-  const devRunning = await new Promise((resolve) => {
-    const req = http.get(`http://localhost:${SERVER_PORT}/health`, (res) => {
-      if (res.statusCode !== 200) { resolve(false); return }
-      let data = ''
-      res.on('data', (chunk) => { data += chunk })
-      res.on('end', () => {
-        try {
-          const json = JSON.parse(data)
-          const ourDomain = readDomain()
-          resolve(json.ok === true && json.devDomain === ourDomain)
-        } catch { resolve(false) }
-      })
-    })
-    req.on('error', () => resolve(false))
-    req.setTimeout(1000, () => { req.destroy(); resolve(false) })
-  })
-
-  if (devRunning) {
-    p.log.info(dim('Skipping npm install — dev server is running (would cause restart)'))
-    p.log.info(dim('Run `npm install` manually after stopping the dev server if needed'))
-  } else {
-    try {
-      await withSpin(
-        'Installing dependencies...',
-        'Dependencies installed',
-        () => { run('npm install', { stdio: 'ignore' }) }
-      )
-    } catch {
-      p.log.warning('npm install failed — run it manually to see details')
-      p.log.info(`  ${dim('npm install')}`)
-    }
+  try {
+    await withSpin(
+      'Installing dependencies...',
+      'Dependencies installed',
+      () => { run('npm install', { stdio: 'ignore' }) }
+    )
+  } catch {
+    p.log.warning('npm install failed — run it manually to see details')
+    p.log.info(`  ${dim('npm install')}`)
   }
 }
 

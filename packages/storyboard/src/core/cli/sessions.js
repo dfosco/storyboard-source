@@ -13,7 +13,6 @@
 import * as p from '@clack/prompts'
 import { execSync as execSyncFn } from 'node:child_process'
 import { detectWorktreeName, resolveRunningPort } from '../worktree/port.js'
-import { readDevDomain } from './proxy.js'
 import { parseFlags } from './flags.js'
 import { dim, cyan, bold, yellow } from './intro.js'
 
@@ -28,22 +27,19 @@ const flagSchema = {
 
 const { flags } = parseFlags(process.argv.slice(3), flagSchema)
 
-/** Resolve the dev server base URL (proxy or direct) */
+/** Resolve the dev server base URL (direct localhost) */
 function getBaseUrl(worktreeName, port) {
-  const domain = readDevDomain()
-  const isMain = worktreeName === 'main'
-  const proxyBase = isMain ? `http://${domain}/` : `http://${domain}/branch--${worktreeName}/`
-  const directBase = isMain ? `http://localhost:${port}/` : `http://localhost:${port}/branch--${worktreeName}/`
-  return { proxyBase, directBase }
+  const directBase = `http://localhost:${port}/`
+  return { directBase }
 }
 
 async function fetchSessions(worktreeName, port, branch = null) {
-  const { proxyBase, directBase } = getBaseUrl(worktreeName, port)
+  const { directBase } = getBaseUrl(worktreeName, port)
   const suffix = branch
     ? `_storyboard/terminal/sessions?branch=${encodeURIComponent(branch)}`
     : `_storyboard/terminal/sessions`
 
-  for (const base of [proxyBase, directBase]) {
+  for (const base of [directBase]) {
     try {
       const res = await fetch(`${base}${suffix}`, { signal: AbortSignal.timeout(3000) })
       if (!res.ok) continue
@@ -129,8 +125,8 @@ function formatRow(idx, entry, isCurrent = false, showCanvas = true) {
 
 /** Call the bulk cleanup API */
 async function cleanupSessions(worktreeName, port, statuses) {
-  const { proxyBase, directBase } = getBaseUrl(worktreeName, port)
-  for (const base of [proxyBase, directBase]) {
+  const { directBase } = getBaseUrl(worktreeName, port)
+  for (const base of [directBase]) {
     try {
       const res = await fetch(`${base}_storyboard/terminal/sessions/cleanup`, {
         method: 'POST',
@@ -403,9 +399,9 @@ async function main() {
         if (p.isCancel(confirm) || !confirm) continue
 
         try {
-          const { proxyBase, directBase } = getBaseUrl(worktreeName, port)
+          const { directBase } = getBaseUrl(worktreeName, port)
           let removed = false
-          for (const base of [proxyBase, directBase]) {
+          for (const base of [directBase]) {
             try {
               const res = await fetch(
                 `${base}_storyboard/terminal/sessions/${encodeURIComponent(session.tmuxName)}`,
@@ -426,7 +422,7 @@ async function main() {
 
           // Remove widget from canvas
           if (session.widgetId && session.widgetId !== 'unknown' && session.canvasId && session.canvasId !== 'unknown') {
-            for (const base of [proxyBase, directBase]) {
+            for (const base of [directBase]) {
               try {
                 const res = await fetch(`${base}_storyboard/canvas/widget`, {
                   method: 'DELETE',

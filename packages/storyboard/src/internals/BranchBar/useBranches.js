@@ -57,37 +57,27 @@ export function useSwitchBranch(basePath, branchBasePath) {
   const [switching, setSwitching] = useState(null)
   const [switchError, setSwitchError] = useState(null)
 
-  const switchBranch = useCallback(async (branch, folder) => {
+  const switchBranch = useCallback(async (branch, folder, url) => {
     if (switching) return
     setSwitching(branch)
     setSwitchError(null)
 
+    // Dev: each worktree has its own Vite on its own port — navigate directly.
+    if (isLocalDev && url) {
+      window.location.href = url
+      return
+    }
+
+    // Prod / static deploy: use folder path within the same origin.
     if (!isLocalDev) {
-      // Prod: direct navigation
       window.location.href = `${branchBasePath}${folder || (branch === 'main' ? '' : `branch--${branch}/`)}`
       return
     }
 
-    // Dev: call switch-branch API to spin up server
-    const apiBase = (basePath || '/').replace(/\/$/, '')
-    try {
-      const res = await fetch(`${apiBase}/_storyboard/switch-branch`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ branch }),
-      })
-      const data = await res.json()
-      if (res.ok && data.url) {
-        window.location.href = data.url
-      } else {
-        setSwitchError(data.error || 'Failed to switch')
-        setSwitching(null)
-      }
-    } catch (e) {
-      setSwitchError(e.message || 'Server not reachable')
-      setSwitching(null)
-    }
-  }, [basePath, branchBasePath, switching])
+    // Dev fallback: target worktree isn't running. Surface a hint.
+    setSwitchError(`No dev server running for "${branch}". Start it with: storyboard dev`)
+    setSwitching(null)
+  }, [branchBasePath, switching])
 
   return { switching, switchError, switchBranch }
 }

@@ -1458,7 +1458,12 @@ export default function storyboardDataPlugin() {
         const servers = listRunningServers()
         const branches = servers
           .filter(srv => srv.worktree !== 'main')
-          .map(srv => ({ branch: srv.worktree, folder: `branch--${srv.worktree}`, port: srv.port }))
+          .map(srv => ({
+            branch: srv.worktree,
+            folder: `branch--${srv.worktree}`,
+            port: srv.port,
+            url: `http://localhost:${srv.port}/storyboard/`,
+          }))
 
         if (branches.length === 0) return html
 

@@ -7,8 +7,7 @@
   "bin": {
     "storyboard-scaffold": "./src/core/scaffold.js",
     "storyboard": "./src/core/cli/index.js",
-    "sb": "./src/core/cli/index.js",
-    "storyboard-runtime": "./bin/storyboard-runtime.js"
+    "sb": "./src/core/cli/index.js"
   },
   "repository": {
     "type": "git",
@@ -22,18 +21,15 @@
     "toolbar.config.json",
     "widgets.config.json",
     "paste.config.json",
-    "commandpalette.config.json",
-    "bin"
+    "commandpalette.config.json"
   ],
   "scripts": {
     "build:css": "tailwindcss -i src/core/styles/tailwind.css -o dist/tailwind.css --minify",
     "build:ui": "vite build --config vite.ui.config.js",
     "build:canvas": "vite build --config vite.canvas.config.js",
     "dev:ui": "vite build --config vite.ui.config.js --watch",
-    "prepublishOnly": "npm run build:css && npm run build:ui && npm run build:canvas && npm run build:runtime",
-    "check:imports": "echo 'no svelte checks needed'",
-    "build:runtime": "tsup --config tsup.runtime.config.ts",
-    "typecheck:runtime": "tsc --noEmit -p tsconfig.runtime.json"
+    "prepublishOnly": "npm run build:css && npm run build:ui && npm run build:canvas",
+    "check:imports": "echo 'no svelte checks needed'"
   },
   "exports": {
     ".": "./src/internals/index.js",
@@ -73,26 +69,7 @@
     "./worktree/serverRegistry": "./src/core/worktree/serverRegistry.js",
     "./inspector/highlighter": "./src/core/inspector/highlighter.js",
     "./smooth-corners": "./src/core/utils/smoothCorners.js",
-    "./primer": "./src/primer/index.js",
-    "./runtime": {
-      "types": "./dist/runtime/index.d.ts",
-      "import": "./dist/runtime/index.js"
-    },
-    "./runtime/client": {
-      "types": "./dist/runtime/client/index.d.ts",
-      "import": "./dist/runtime/client/index.js"
-    },
-    "./runtime/schema": {
-      "types": "./dist/runtime/schema/index.d.ts",
-      "import": "./dist/runtime/schema/index.js"
-    },
-    "./runtime/vite-plugin": {
-      "types": "./dist/runtime/vite-plugin/index.d.ts",
-      "import": "./dist/runtime/vite-plugin/index.js"
-    },
-    "./runtime/vite-config-wrapper": {
-      "import": "./dist/runtime/vite-plugin/wrapper.js"
-    }
+    "./primer": "./src/primer/index.js"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",
@@ -141,7 +118,6 @@
     "tailwindcss": "^4.2.2",
     "tw-animate-css": "^1.4.0",
     "vite": "^7.3.1",
-    "tsup": "^8.3.0",
     "typescript": "^5.6.0",
     "@types/node": "^20.0.0"
   },

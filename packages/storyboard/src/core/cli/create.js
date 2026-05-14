@@ -98,15 +98,11 @@ async function ensureDevServer({ quiet = false } = {}) {
   }
 
   const { spawn } = await import('child_process')
-  const { generateCaddyfile, isCaddyRunning, reloadCaddy } = await import('./proxy.js')
 
   const worktreeName = detectWorktreeName()
   const port = getPort(worktreeName)
-  const isMain = worktreeName === 'main'
-  const basePath = isMain ? '/' : `/branch--${worktreeName}/`
 
   const child = spawn('npx', ['vite', '--port', String(port)], {
-    env: { ...process.env, VITE_BASE_PATH: basePath },
     stdio: ['ignore', 'pipe', 'pipe'],
     detached: true,
   })
@@ -118,11 +114,6 @@ async function ensureDevServer({ quiet = false } = {}) {
     await new Promise((r) => setTimeout(r, 500))
     try {
       await fetch(`http://localhost:${port}`, { signal: AbortSignal.timeout(2000) })
-      // Update Caddy with actual port
-      try {
-        const caddyfilePath = generateCaddyfile({ [worktreeName]: port })
-        if (isCaddyRunning()) reloadCaddy(caddyfilePath)
-      } catch { /* empty */ }
       if (s) s.stop('Dev server started')
       return
     } catch {
@@ -132,17 +123,10 @@ async function ensureDevServer({ quiet = false } = {}) {
   if (s) s.stop('Dev server may still be starting...')
 }
 
-function getProxyUrl() {
-  const name = detectWorktreeName()
-  const isMain = name === 'main'
-  return isMain ? 'http://storyboard.localhost/' : `http://storyboard.localhost/branch--${name}/`
-}
-
 function getDirectUrl() {
   const name = detectWorktreeName()
   const port = resolveRunningPort(name)
-  const isMain = name === 'main'
-  return isMain ? `http://localhost:${port}/` : `http://localhost:${port}/branch--${name}/`
+  return `http://localhost:${port}/storyboard/`
 }
 
 /**
@@ -151,9 +135,7 @@ function getDirectUrl() {
  * @param {'canvas'|'prototype'} type
  */
 async function postCreateFlow(resultPath, type) {
-  const { isCaddyRunning } = await import('./proxy.js')
-  const proxyRunning = isCaddyRunning()
-  const baseUrl = proxyRunning ? getProxyUrl() : getDirectUrl()
+  const baseUrl = getDirectUrl()
 
   // Build the view URL
   let viewUrl = baseUrl

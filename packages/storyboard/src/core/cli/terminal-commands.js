@@ -8,7 +8,6 @@
 import * as p from '@clack/prompts'
 import { execSync } from 'node:child_process'
 import { detectWorktreeName, resolveRunningPort } from '../worktree/port.js'
-import { readDevDomain } from './proxy.js'
 import { parseFlags } from './flags.js'
 import { dim, cyan, bold, yellow } from './intro.js'
 
@@ -19,19 +18,16 @@ const flagSchema = {
 const subcommand = process.argv[3]
 const { flags, missing, errors } = parseFlags(process.argv.slice(4), flagSchema)
 
-/** Resolve the dev server base URL (proxy or direct) */
+/** Resolve the dev server base URL (direct localhost) */
 function getBaseUrl(worktreeName, port) {
-  const domain = readDevDomain()
-  const isMain = worktreeName === 'main'
-  const proxyBase = isMain ? `http://${domain}/` : `http://${domain}/branch--${worktreeName}/`
-  const directBase = isMain ? `http://localhost:${port}/` : `http://localhost:${port}/branch--${worktreeName}/`
-  return { proxyBase, directBase }
+  const directBase = `http://localhost:${port}/`
+  return { directBase }
 }
 
 /** Fetch all sessions from the dev server */
 async function fetchSessions(worktreeName, port) {
-  const { proxyBase, directBase } = getBaseUrl(worktreeName, port)
-  for (const base of [proxyBase, directBase]) {
+  const { directBase } = getBaseUrl(worktreeName, port)
+  for (const base of [directBase]) {
     try {
       const res = await fetch(`${base}_storyboard/terminal/sessions`, { signal: AbortSignal.timeout(3000) })
       if (!res.ok) continue
@@ -44,8 +40,8 @@ async function fetchSessions(worktreeName, port) {
 
 /** POST/DELETE helper that tries proxy then direct */
 async function apiRequest(worktreeName, port, path, method = 'POST', body = null) {
-  const { proxyBase, directBase } = getBaseUrl(worktreeName, port)
-  for (const base of [proxyBase, directBase]) {
+  const { directBase } = getBaseUrl(worktreeName, port)
+  for (const base of [directBase]) {
     try {
       const opts = { method, signal: AbortSignal.timeout(5000) }
       if (body) {

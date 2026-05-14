@@ -3,10 +3,9 @@
  * storyboard CLI — unified dev tooling for Storyboard projects.
  *
  * Commands:
- *   storyboard dev              Start Vite dev server + update proxy
- *   storyboard setup            Install deps, Caddy, start proxy
- *   storyboard proxy start      Start or reload Caddy proxy
- *   storyboard proxy close      Stop Caddy proxy
+ *   storyboard dev              Start Vite dev server for the current worktree
+ *   storyboard setup            Install deps, GitHub CLI, VS Code CLI, git hooks
+ *   storyboard branch           Switch to / create a worktree
  *   storyboard update:version   Update @dfosco/storyboard-* packages to latest
  *   storyboard update:beta      Update to latest beta
  *   storyboard update:alpha     Update to latest alpha
@@ -52,15 +51,8 @@ function helpScreen(version) {
     `  ${bold('All commands:')}`,
     '',
     `  ${bold(cyan('Development'))}`,
-    cmd('run', 'Start proxy + dev server in one command'),
-    cmd('run [branch]', 'Start proxy + dev for a specific branch'),
-    cmd('dev', 'Alias for `run`'),
-    cmd('reset', 'Nuke daemon + Caddy routes + orphan vites; respawn fresh'),
-    cmd('server list', 'List running dev servers'),
-    cmd('server start [wt]', 'Start dev server for a worktree'),
-    cmd('server stop <wt|ID>', 'Stop a dev server'),
+    cmd('dev', 'Start Vite dev server for the current worktree'),
     cmd('code [branch]', 'Open a worktree in VS Code'),
-    cmd('exit', 'Stop all dev servers and proxy'),
     '',
     `  ${bold(cyan('Create'))}`,
     cmd('create', 'Interactive creation picker'),
@@ -127,7 +119,7 @@ function helpScreen(version) {
     cmd('<agent>', 'Shorthand for start <agent> ' + dim('(accepts extra flags)')),
     '',
     `  ${bold(cyan('Setup'))}`,
-    cmd('setup', 'Install deps, Caddy proxy, start proxy'),
+    cmd('setup', 'Install deps, GitHub CLI, VS Code CLI, git hooks'),
     cmd('setup --skip-branch', 'Non-interactive setup (skip branch prompt)'),
     cmd('setup --branch=<name>', 'Setup + switch to a branch'),
     cmd('branch', 'Switch to a branch (interactive worktree guide)'),
@@ -135,9 +127,6 @@ function helpScreen(version) {
     cmd('branch --worktree=<name>', 'Non-interactive branch switch'),
     cmd('pull', 'Pull latest changes from remote (untracked-safe)'),
     cmd('publish', 'Push local commits to remote (pulls first)'),
-    cmd('proxy start', 'Start or reload Caddy proxy'),
-    cmd('proxy close', 'Stop Caddy proxy'),
-    cmd('proxy restart', 'Restart the runtime daemon (use after upgrading)'),
     '',
     `  ${bold(cyan('Updates'))}`,
     cmd('update', 'Update storyboard packages to latest'),
@@ -157,11 +146,7 @@ const command = process.argv[2]
 
 switch (command) {
   case 'dev':
-  case 'run':
-    import('./run.js')
-    break
-  case 'reset':
-    import('./reset.js')
+    import('./dev.js')
     break
   case 'setup':
     import('./setup.js')
@@ -174,9 +159,6 @@ switch (command) {
     break
   case 'publish':
     import('./publish.js')
-    break
-  case 'proxy':
-    import('./proxy.js')
     break
   case 'create':
     import('./create.js')
@@ -216,9 +198,6 @@ switch (command) {
       p.log.error(`Unknown canvas subcommand: ${bold(process.argv[3] || '(none)')}`)
       process.exit(1)
     }
-    break
-  case 'exit':
-    import('./exit.js')
     break
   case 'terminal':
     if (process.argv[3] === 'start') {
@@ -271,9 +250,6 @@ switch (command) {
   case 'terminal-welcome':
     // Internal alias used by terminal-server
     import('./terminal-welcome.js')
-    break
-  case 'server':
-    import('./server.js')
     break
   case 'agent':
     import('./agent.js')
