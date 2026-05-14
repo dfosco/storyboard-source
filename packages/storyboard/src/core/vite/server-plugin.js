@@ -340,7 +340,13 @@ export default function storyboardServer() {
       server.watcher.unwatch(path.join(root, 'assets', 'canvas', 'images'))
       server.watcher.unwatch(path.join(root, 'assets', 'canvas', 'snapshots'))
       server.watcher.unwatch(path.join(root, 'assets', '.storyboard-public', 'terminal-snapshots'))
-      server.watcher.unwatch(path.join(root, '.storyboard', 'messages'))
+      // The entire `.storyboard/` directory is gitignored runtime state
+      // (terminal buffers + snapshots, hub messages, selectedwidgets,
+      // logs, server registry). None of it should ever feed Vite's
+      // watcher — active terminals especially write here on a sub-second
+      // cadence, which previously produced full-reload loops on any
+      // route without the canvas/prototype HMR guard.
+      server.watcher.unwatch(path.join(root, '.storyboard'))
 
       // Wire autosync API routes (always enabled — git automation for dev)
       routeHandlers.set('autosync', createAutosyncHandler({ root, sendJson: sendJsonLogged }))
