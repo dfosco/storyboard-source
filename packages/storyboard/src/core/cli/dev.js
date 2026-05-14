@@ -212,9 +212,9 @@ async function main() {
     const args = ['--config', protoConfigPath, '--port', String(protoPort), '--strictPort']
     const env = { ...process.env, STORYBOARD_PROTO_PORT: String(protoPort), VITE_BASE_PATH: '/' }
     protoChild = useLocal
-      ? spawn(localVite, args, { cwd: targetCwd, env, stdio: ['ignore', 'inherit', 'inherit'] })
-      : spawn('npx', ['vite', ...args], { cwd: targetCwd, env, stdio: ['ignore', 'inherit', 'inherit'] })
-    p.log.info(`proto devserver: ${protoUrl}`)
+      ? spawn(localVite, args, { cwd: targetCwd, env, stdio: ['ignore', 'ignore', 'inherit'] })
+      : spawn('npx', ['vite', ...args], { cwd: targetCwd, env, stdio: ['ignore', 'ignore', 'inherit'] })
+    p.log.info(`Prototype devserver: ${protoUrl}`)
     protoChild.on('exit', (code) => {
       if (code !== null && code !== 0) {
         p.log.warn(`Proto Vite exited (code ${code}). Prototypes will fall back to same-origin.`)
