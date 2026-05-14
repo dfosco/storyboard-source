@@ -48,6 +48,7 @@
     "./vite/server": "./src/core/vite/server-plugin.js",
     "./hash-preserver": "./src/internals/hashPreserver.js",
     "./context": "./src/internals/context.jsx",
+    "./workspace": "./src/internals/Workspace.jsx",
     "./error-boundary": "./src/internals/PrototypeErrorBoundary.jsx",
     "./hooks/useFeatureFlag": "./src/internals/hooks/useFeatureFlag.js",
     "./config": "./src/core/stores/configSchema.js",
