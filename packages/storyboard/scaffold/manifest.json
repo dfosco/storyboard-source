@@ -74,6 +74,17 @@
       "directory": true
     },
     {
+      "source": "scaffold/data/",
+      "target": ".agents/data/",
+      "mode": "updateable",
+      "directory": true
+    },
+    {
+      "source": "scaffold/scripts/gen-octicons-list.mjs",
+      "target": "scripts/gen-octicons-list.mjs",
+      "mode": "updateable"
+    },
+    {
       "source": "scaffold/codex/config.toml",
       "target": ".codex/config.toml",
       "mode": "updateable"

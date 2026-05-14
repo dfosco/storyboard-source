@@ -679,6 +679,16 @@ export function Default() {
 
 **Never place component files flat in `src/components/` — always use a subdirectory.**
 
+### Icon imports
+
+Components and stories frequently fail at runtime with errors like `does not provide an export named 'ScissorsIcon'` because agents invent icon names. Before adding any `import { FooIcon } from '@primer/octicons-react'`:
+
+1. **Check `.agents/data/primer-octicons.json`** — the authoritative list of valid icon exports (generated from the installed package).
+2. If the icon name you want is NOT in that list, pick the closest available one from the list. Do not guess — there is no `ScissorsIcon`, no `EditIcon` (use `PencilIcon`), no `DeleteIcon` (use `TrashIcon`), etc.
+3. Same rule applies to prototypes, stories, components, and any other React code.
+
+Regenerate the list after a package bump: `node scripts/gen-octicons-list.mjs`.
+
 ### Step C3: Confirm and suggest next steps
 
 1. Show the created directory and file paths
