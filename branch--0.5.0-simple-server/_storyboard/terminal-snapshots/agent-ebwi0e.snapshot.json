@@ -1,0 +1,10 @@
+{
+  "widgetId": "agent-ebwi0e",
+  "canvasId": "storyboarding/terminal-widget-prompts",
+  "prettyName": "plum-harrier",
+  "timestamp": "2026-05-04T18:45:31.887Z",
+  "cols": 89,
+  "rows": 32,
+  "paneContent": "  │ critical review:\n  │\n  │ ## What's Missing…\n  └ 83 lines...\n\n● Save output for peers (shell)\n  │ cd /Users/dfosco/workspace/storyboard-core/worktrees/0.5.0 && npx storyboard\n  │ terminal output --summary \"Delivered critical review of Researcher's 5 principles\"\n  │ --content \"Reviewed the Researcher's 5 principles (Token-First Architecture,\n  │ Governance That Scales, Adoption Through DX, Living Documentation, Incremental\n  │ Adoption). Added: missing topics (API consistency, versioning strategy, success …\n  └ 8 lines...\n\n● Done. I've delivered my critical review to the hub covering:\n\n   - 3 missing topics — API consistency, versioning strategy, success metrics\n   - 3 reality checks — on token absolutism, zero-config idealism, and auto-generated\n  docs\n   - 5 anti-patterns — premature abstraction, governance bottleneck, token explosion,\n  big rewrite trap, documentation debt\n   - 3 key trade-offs — flexibility vs. consistency, speed vs. quality, centralized vs.\n   federated\n\n  The ball is now with cobalt-raven (leader) to synthesize both contributions into the\n  final markdown guide on the canvas.\n\n ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*%]\n─────────────────────────────────────────────────────────────────────────────────────────\n❯ r \n─────────────────────────────────────────────────────────────────────────────────────────\n @ files · # issues                                     terminal-agent · Claude Opus 4.6\n\n",
+  "scrollback": ""
+}

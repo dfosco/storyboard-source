@@ -1,0 +1,40 @@
+SESSION: agent-ua4c6z | teal-dove
+CANVAS:  storyboarding/terminal-widget-prompts
+BRANCH:  0.5.0
+TIME:    2026-05-12T15:26:50.329Z
+
+================================================================================
+SCREEN
+================================================================================
+
+╭───────────────────────────────────────────────────────────────────────────────────────╮
+│                                         ╭─╮╭─╮                                        │
+│                                         ╰─╯╰─╯                                        │
+│                                         █ ▘▝ █                                        │
+│                                          ▔▔▔▔                                         │
+│                                 GitHub Copilot v1.0.45                                │
+│                          Copilot uses AI. Check for mistakes.                         │
+│                                                                                       │
+╰───────────────────────────────────────────────────────────────────────────────────────╯
+
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+
+
+
+ ~/workspace/storyboard-core/worktrees/0.5.0 [⎇ 0.5.0*]
+─────────────────────────────────────────────────────────────────────────────────────────
+❯ [System] Your terminal identity has been set. widgetId=agent-ua4c6z
+  displayName=teal-dove canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-ua4c6z.json serverUrl=htt
+  p://localhost:1240/branch--0.5.0 — this is a configuration step, no response
+  needed. 
+─────────────────────────────────────────────────────────────────────────────────────────
+ @ files · # issues         terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
