@@ -44,6 +44,10 @@ export default defineConfig(async (env) => {
         // Always serve at the root — proto is its own origin.
         base: '/',
         plugins,
+        // Separate dep-optimizer cache. Sharing node_modules/.vite/deps/ with
+        // the shell causes 504 "Outdated Optimize Dep" because each Vite
+        // re-hashes on boot and evicts the other's entries.
+        cacheDir: 'node_modules/.vite-proto',
         server: {
             ...(shell.server || {}),
             port: PROTO_PORT,
