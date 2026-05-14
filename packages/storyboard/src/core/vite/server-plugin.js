@@ -24,8 +24,8 @@ import { createAutosyncHandler } from '../autosync/server.js'
 import { setupTerminalServer } from '../canvas/terminal-server.js'
 import { listSessions, detachSession, killSession, orphanSession, bulkCleanup, getSessionStats } from '../canvas/terminal-registry.js'
 import { execSync as cpExecSync } from 'node:child_process'
-import { list as listRunningServers, register as registerServer, unregister as unregisterServer, generateId as generateServerId } from '../worktree/serverRegistry.js'
-import { detectWorktreeName } from '../worktree/port.js'
+import { list as listRunningServers, register as registerServer, unregister as unregisterServer, generateId as generateServerId, findByWorktree } from '../worktree/serverRegistry.js'
+import { detectWorktreeName, listWorktrees, worktreeDir } from '../worktree/port.js'
 import { initBus, subscribeAll } from '../messaging/bus.js'
 import { JsonlAdapter } from '../messaging/storage/jsonl-adapter.js'
 import { createMessagingRoutes } from '../messaging/routes.js'
@@ -479,23 +479,85 @@ export default function storyboardServer() {
         sendJsonLogged(res, 404, { error: 'Not found' })
       })
 
-      // Worktrees API — lists running worktrees/branches from server registry.
-      // With proxy/daemon removed, each worktree runs its own Vite on its own
-      // port, so we expose `port` + `url` for the BranchBar to navigate directly.
+      // Worktrees API — merge live registry with on-disk worktree list so the
+      // BranchBar can show running siblings (with port + url) AND siblings
+      // that exist but aren't running (so the UI can offer to spin them up).
       routeHandlers.set('worktrees', async (req, res) => {
         try {
           const servers = listRunningServers(root)
-          const branches = servers.map(srv => ({
-            branch: srv.worktree,
-            folder: srv.worktree === 'main' ? '' : `branch--${srv.worktree}/`,
-            port: srv.port,
-            url: `http://localhost:${srv.port}/storyboard/`,
-          }))
-          if (!branches.some(b => b.branch === 'main')) {
-            branches.unshift({ branch: 'main', folder: '' })
+          const runningByName = new Map(servers.map(s => [s.worktree, s]))
+          const allNames = new Set(['main', ...listWorktrees(root)])
+          for (const name of runningByName.keys()) allNames.add(name)
+
+          const branches = []
+          for (const name of allNames) {
+            const srv = runningByName.get(name)
+            const isMain = name === 'main'
+            branches.push({
+              branch: name,
+              folder: isMain ? '' : `branch--${name}/`,
+              running: !!srv,
+              port: srv?.port ?? null,
+              url: srv ? `http://localhost:${srv.port}/storyboard/` : null,
+            })
           }
+          // Main first, then alphabetical
+          branches.sort((a, b) => a.branch === 'main' ? -1 : b.branch === 'main' ? 1 : a.branch.localeCompare(b.branch))
           sendJsonLogged(res, 200, branches)
         } catch { sendJsonLogged(res, 200, []) }
+      })
+
+      // Switch-branch API — spawn a detached `storyboard dev` for the
+      // requested worktree and wait until it self-registers, then return
+      // its URL so the BranchBar can navigate directly.
+      routeHandlers.set('switch-branch', async (req, res) => {
+        const body = await new Promise((resolve) => {
+          let buf = ''
+          req.on('data', (c) => buf += c)
+          req.on('end', () => { try { resolve(JSON.parse(buf || '{}')) } catch { resolve({}) } })
+          req.on('error', () => resolve({}))
+        })
+        const branch = String(body.branch || '').trim()
+        if (!branch) { sendJsonLogged(res, 400, { error: 'Missing "branch"' }); return }
+
+        // Already running? Return immediately.
+        const existing = findByWorktree(branch, root)
+        if (existing.length > 0) {
+          const srv = existing[0]
+          sendJsonLogged(res, 200, { status: 'already_running', url: `http://localhost:${srv.port}/storyboard/`, port: srv.port, id: srv.id })
+          return
+        }
+
+        // Resolve target cwd
+        const cwd = branch === 'main' ? root : worktreeDir(branch, root)
+        if (!fs.existsSync(path.resolve(cwd, '.git'))) {
+          sendJsonLogged(res, 404, { error: `Worktree "${branch}" does not exist` })
+          return
+        }
+
+        // Detached spawn — exits independently of this Vite process.
+        const { spawn } = await import('node:child_process')
+        const npmBin = process.platform === 'win32' ? 'npx.cmd' : 'npx'
+        try {
+          const child = spawn(npmBin, ['storyboard', 'dev'], { cwd, detached: true, stdio: 'ignore' })
+          child.unref()
+        } catch (err) {
+          sendJsonLogged(res, 500, { error: `Spawn failed: ${err.message}` })
+          return
+        }
+
+        // Poll registry up to 30s.
+        const start = Date.now()
+        while (Date.now() - start < 30000) {
+          await new Promise(r => setTimeout(r, 500))
+          const matches = findByWorktree(branch, root)
+          if (matches.length > 0) {
+            const srv = matches[matches.length - 1]
+            sendJsonLogged(res, 200, { status: 'started', url: `http://localhost:${srv.port}/storyboard/`, port: srv.port, id: srv.id })
+            return
+          }
+        }
+        sendJsonLogged(res, 504, { error: `Spawned but did not self-register within 30s` })
       })
 
       // Git user — return git config user name and GitHub login (via gh CLI)

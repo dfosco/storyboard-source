@@ -52,6 +52,10 @@ function helpScreen(version) {
     '',
     `  ${bold(cyan('Development'))}`,
     cmd('dev', 'Start Vite dev server for the current worktree'),
+    cmd('server list', 'List running dev servers'),
+    cmd('server start [wt]', 'Start a detached dev server for a worktree'),
+    cmd('server stop <wt|id>', 'Stop a running dev server'),
+    cmd('exit', 'Stop all running dev servers'),
     cmd('code [branch]', 'Open a worktree in VS Code'),
     '',
     `  ${bold(cyan('Create'))}`,
@@ -246,6 +250,12 @@ switch (command) {
   case 'sessions':
     // Backwards compat alias
     import('./sessions.js')
+    break
+  case 'server':
+    import('./server.js')
+    break
+  case 'exit':
+    import('./exit.js')
     break
   case 'terminal-welcome':
     // Internal alias used by terminal-server

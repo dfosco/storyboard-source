@@ -8,6 +8,7 @@ import { toCanvasId } from '../../core/canvas/identity.js'
 import { isCanvasWriteInFlight } from '../../core/canvas/writeGuard.js'
 import { getConfig } from '../../core/stores/configSchema.js'
 import { list as listRunningServers } from '../../core/worktree/serverRegistry.js'
+import { listWorktrees } from '../../core/worktree/port.js'
 
 const VIRTUAL_MODULE_ID = 'virtual:storyboard-data-index'
 const RESOLVED_ID = '\0' + VIRTUAL_MODULE_ID
@@ -1449,21 +1450,30 @@ export default function storyboardDataPlugin() {
     },
 
     // Inject __SB_BRANCHES__ into HTML so the Viewfinder branch selector works.
-    // Uses server registry (live running processes) instead of stale ports.json.
+    // Includes both running (with port + url) and on-disk-but-stopped worktrees.
     transformIndexHtml(html, ctx) {
       // Only inject in dev mode
       if (!ctx.server) return html
 
       try {
         const servers = listRunningServers()
-        const branches = servers
-          .filter(srv => srv.worktree !== 'main')
-          .map(srv => ({
-            branch: srv.worktree,
-            folder: `branch--${srv.worktree}`,
-            port: srv.port,
-            url: `http://localhost:${srv.port}/storyboard/`,
-          }))
+        const runningByName = new Map(servers.map(s => [s.worktree, s]))
+        const onDisk = listWorktrees()
+        const allNames = new Set([...onDisk, ...runningByName.keys()])
+        if (allNames.size === 0) return html
+
+        const branches = []
+        for (const name of allNames) {
+          if (name === 'main') continue
+          const srv = runningByName.get(name)
+          branches.push({
+            branch: name,
+            folder: `branch--${name}`,
+            running: !!srv,
+            port: srv?.port ?? null,
+            url: srv ? `http://localhost:${srv.port}/storyboard/` : null,
+          })
+        }
 
         if (branches.length === 0) return html
 
