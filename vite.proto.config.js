@@ -101,6 +101,8 @@ export default defineConfig(() => ({
                 if (norm.includes('/node_modules/')) return true
                 if (norm.includes('/.git/')) return true
                 if (norm.includes('/.storyboard/')) return true
+                if (norm.includes('/.storyboard-public/')) return true
+                if (norm.includes('/terminal-snapshots/')) return true
                 if (norm.includes('/dist/') || norm.includes('/build/')) return true
                 if (norm.endsWith('.canvas.jsonl')) return true
                 if (!norm.includes('/src/')) return false
