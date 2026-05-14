@@ -1,197 +1,0 @@
-SESSION: agent-xguros | cobalt-magpie
-CANVAS:  storyboarding/terminal-widget-prompts
-BRANCH:  0.5.0--simple-server
-TIME:    2026-05-14T21:50:05.501Z
-
-================================================================================
-SCREEN
-================================================================================
-
-   - General-purpose: any palette entry can now set tag to boost its ranking for a
-  specific query while showing that boost as a background badge.
-
-  Committed e82d05d94, pushed, summary widget connected to terminal.
-
-❯ Oh... ok the visual tags are useful, but I don't want THESE tags to appear. Keep the
-  tag field (string) for these visual tags you added; Move the indexing tags to an
-  index_tags field (array)
-
-● Edit CommandPalette.jsx +6 -4
-  └ packages/storyboard/src/internals/CommandPalette/CommandPalette.jsx
-
-● Edit CommandPalette.jsx +1 -1
-  └ packages/storyboard/src/internals/CommandPalette/CommandPalette.jsx
-
-● Edit CommandPalette.jsx +1 -1
-  └ packages/storyboard/src/internals/CommandPalette/CommandPalette.jsx
-
-● Edit CommandPalette.jsx +1 -1
-  └ packages/storyboard/src/internals/CommandPalette/CommandPalette.jsx
-
-● Edit CommandPalette.jsx +1 -1
-  └ packages/storyboard/src/internals/CommandPalette/CommandPalette.jsx
-
-◎ Splitting tag into visual+index_tags (Esc to cancel · 4.5 KiB)
- ~/workspace/storyboard-core/worktrees/0.5.0--simple-server [⎇ 0.5.0--simple-server*%]
-─────────────────────────────────────────────────────────────────────────────────────────
-❯  
-─────────────────────────────────────────────────────────────────────────────────────────
- / commands · ? help · ctrl+q enqueue
- terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-
-================================================================================
-SCROLLBACK (last 60s)
-================================================================================
-
-❯ Oh... ok the visual tags are useful, but I don't want thNo don't show❯ Oh... ok the visual tags are useful, but I don't want tNo don't show❯ Oh... ok the visual tags are useful, but I don't want No don't show❯ Oh... ok the visual tags are useful, but I don't want TNo don't show❯ Oh... ok the visual tags are useful, but I don't want THNo don't show❯ Oh... ok the visual tags are useful, but I don't want THENo don't show❯ Oh... ok the visual tags are useful, but I don't want THESNo don't show❯ Oh... ok the visual tags are useful, but I don't want THESENo don't show❯ Oh... ok the visual tags are useful, but I don't want THESE No don't show❯ Oh... ok the visual tags are useful, but I don't want THESE tNo don't show❯ Oh... ok the visual tags are useful, but I don't want THESE taNo don't show❯ Oh... ok the visual tags are useful, but I don't want THESE tagNo don't show❯ Oh... ok the visual tags are useful, but I don't want THESE tagsNo don't show❯ Oh... ok the visual tags are useful, but I don't want THESE tags No don't show❯ Oh... ok the visual tags are useful, but I don't want THESE tags tNo don't show❯ Oh... ok the visual tags are useful, but I don't want THESE tags toNo don't show❯ Oh... ok the visual tags are useful, but I don't want THESE tags to No don't show❯ Oh... ok the visual tags are useful, but I don't want THESE tags to aNo don't show  │ "Content-Type: application/json" -d
-  │ '{"name":"storyboarding/terminal-widget-prompts","startWidgetId":"agent-xguros","en
-  │ dWidgetId":"markdown-s9600x","startAnchor":"right","endAnchor":"left"}' | head -c
-  │ 200…
-  └ 8 lines...
-
-● signal done (shell)
-  │ STORYBOARD_WIDGET_ID=agent-xguros
-  │ STORYBOARD_CANVAS_ID=storyboarding/terminal-widget-prompts npx storyboard agent
-  │ signal --status done --message "Added tag prop to palette entries" 2>&1 | tail -3
-  └ 2 lines...
-
-● Done. Summary:
-
-   - itemValue now prepends item.tag first → scoreMatch returns prefix-tier (100) when
-  the query matches the tag, so tagged items beat untagged ones globally.
-   - Create-widget entries now carry tag: "Add <Widget label>" (e.g. "Add Sticky note",
-   "Add Markdown", "Add Agent"). Typing "Add" now sorts the Add widget to canvas group
-  to the top.
-   - Visual badge rendered via [data-cmdk-item-tag] (pill, muted bg, right-aligned).
-   - General-purpose: any palette entry can now set tag to boost its ranking for a
-  specific query while showing that boost as a background badge.
-
-  Committed e82d05d94, pushed, summary widget connected to terminal.
-
- ~/workspace/storyboard-core/worktrees/0.5.0--simple-server [⎇ 0.5.0--simple-server*]
-─────────────────────────────────────────────────────────────────────────────────────────❯ Oh... ok the visual tags are useful, but I don't want THESE tags to apNo don't show
-❯ Oh... ok the visual tags are useful, but I don't want THESE tags to appNo don't
-  show❯ Oh... ok the visual tags are useful, but I don't want THESE tags to appeNo don't❯ Oh... ok the visual tags are useful, but I don't want THESE tags to appeaNo don't❯ Oh... ok the visual tags are useful, but I don't want THESE tags to appearNo don't❯ Oh... ok the visual tags are useful, but I don't want THESE tags to appear.No don't❯ Oh... ok the visual tags are useful, but I don't want THESE tags to appear. No
-  don't show❯ Oh... ok the visual tags are useful, but I don't want THESE tags to appear. KNo❯ Oh... ok the visual tags are useful, but I don't want THESE tags to appear. KeNo❯ Oh... ok the visual tags are useful, but I don't want THESE tags to appear. KeeNo❯ Oh... ok the visual tags are useful, but I don't want THESE tags to appear. KeepNo❯ Oh... ok the visual tags are useful, but I don't want THESE tags to appear. Keep No❯ Oh... ok the visual tags are useful, but I don't want THESE tags to appear. Keep
-  tNo don't show  thNo don't show  theNo don't show  the No don't show  the tNo don't show  the taNo don't show  the tagNo don't show  the tagsNo don't show  the tags No don't show  the tags fNo don't show  the tags fiNo don't show  the tags fieNo don't show  the tags fielNo don't show  the tags fieldNo don't show  the tags field No don't show  the tags field fNo don't show  the tags field foNo don't show  the tags field forNo don't show  the tags field for No don't show  the tags field for tNo don't show  the tags field for thNo don't show  the tags field for theNo don't show  the tags field for thesNo don't show  the tags field for theseNo don't show  the tags field for these No don't show  the tags field for these vNo don't show  the tags field for these viNo don't show  the tags field for these visNo don't show  the tags field for these visuNo don't show  the tags field for these visuaNo don't show  the tags field for these visualNo don't show  the tags field for these visual No don't show  the tags field for these visual tNo don't show  the tags field for these visual taNo don't show  the tags field for these visual tagNo don't show  the tags field for these visual tagsNo don't show  the tags field for these visual tags No don't show  the tags field for these visual tags yNo don't show  the tags field for these visual tags yoNo don't show  the tags field for these visual tags youNo don't show  the tags field for these visual tags you No don't show  the tags field for these visual tags you aNo don't show  the tags field for these visual tags you adNo don't show  the tags field for these visual tags you addNo don't show  the tags field for these visual tags you addeNo don't show  the tags field for these visual tags you addedNo don't show  the tags field for these visual tags you added,No don't show  the tags field for these visual tags you added, No don't show  the tags field for these visual tags you added,No don't show  the tags field for these visual tags you addedNo don't show  the tags field for these visual tags you added;No don't show  the tags field for these visual tags you added; No don't show  the tags field for these visual tags you added; MNo don't show  the tags field for these visual tags you added; MoNo don't show  the tags field for these visual tags you added; MovNo don't show  the tags field for these visual tags you added; MoveNo don't show  the tags field for these visual tags you added; Move No don't show  the tags field for these visual tags you added; Move tNo don't show  the tags field for these visual tags you added; Move thNo don't show  the tags field for these visual tags you added; Move theNo don't show  the tags field for these visual tags you added; Move the No don't show  the tags field for these visual tags you added; Move the iNo don't show  the tags field for these visual tags you added; Move the inNo don't show  the tags field for these visual tags you added; Move the indNo don't show  the tags field for these visual tags you added; Move the indeNo don't show  the tags field for these visual tags you added; Move the indexNo don't show  the tags field for these visual tags you added; Move the indexiNo don't show  the tags field for these visual tags you added; Move the indexinNo don't show  the tags field for these visual tags you added; Move the indexingNo don't show  the tags field for these visual tags you added; Move the indexing No don't show  the tags field for these visual tags you added; Move the indexing tNo don't show  the tags field for these visual tags you added; Move the indexing taNo don't show  the tags field for these visual tags you added; Move the indexing tagNo don't show  │ '{"name":"storyboarding/terminal-widget-prompts","startWidgetId":"agent-xguros","en
-  │ dWidgetId":"markdown-s9600x","startAnchor":"right","endAnchor":"left"}' | head -c
-  │ 200…
-  └ 8 lines...
-
-● signal done (shell)
-  │ STORYBOARD_WIDGET_ID=agent-xguros
-  │ STORYBOARD_CANVAS_ID=storyboarding/terminal-widget-prompts npx storyboard agent
-  │ signal --status done --message "Added tag prop to palette entries" 2>&1 | tail -3
-  └ 2 lines...
-
-● Done. Summary:
-
-   - itemValue now prepends item.tag first → scoreMatch returns prefix-tier (100) when
-  the query matches the tag, so tagged items beat untagged ones globally.
-   - Create-widget entries now carry tag: "Add <Widget label>" (e.g. "Add Sticky note",
-   "Add Markdown", "Add Agent"). Typing "Add" now sorts the Add widget to canvas group
-  to the top.
-   - Visual badge rendered via [data-cmdk-item-tag] (pill, muted bg, right-aligned).
-   - General-purpose: any palette entry can now set tag to boost its ranking for a
-  specific query while showing that boost as a background badge.
-
-  Committed e82d05d94, pushed, summary widget connected to terminal.
-
- ~/workspace/storyboard-core/worktrees/0.5.0--simple-server [⎇ 0.5.0--simple-server*]
-─────────────────────────────────────────────────────────────────────────────────────────❯ Oh... ok the visual tags are useful, but I don't want THESE tags to appear. Keep
-  the tags field for these visual tags you added; Move the indexing tagsNo don't show
-  the tags field for these visual tags you added; Move the indexing tags No don't
-  show  the tags field for these visual tags you added; Move the indexing tags tNo don't  the tags field for these visual tags you added; Move the indexing tags toNo don't  the tags field for these visual tags you added; Move the indexing tags to No don't  the tags field for these visual tags you added; Move the indexing tags to aNo don't  the tags field for these visual tags you added; Move the indexing tags to anNo
-  don't show  the tags field for these visual tags you added; Move the indexing tags to an No  the tags field for these visual tags you added; Move the indexing tags to an iNo  the tags field for these visual tags you added; Move the indexing tags to an inNo  the tags field for these visual tags you added; Move the indexing tags to an indNo  the tags field for these visual tags you added; Move the indexing tags to an indeNo  the tags field for these visual tags you added; Move the indexing tags to an
-  indexNo don't show  index_No don't show  index_tNo don't show  index_taNo don't show  index_tagNo don't show  index_tagsNo don't show  index_tags No don't show  index_tags fNo don't show  index_tags fiNo don't show  index_tags fieNo don't show  index_tags fielNo don't show  index_tags fieltNo don't show  index_tags fielto don't show  index_tags fielt don't show  index_tags fieltdon't show  index_tags fielton't show  index_tags fieltn't show  index_tags fielt't show  index_tags fieltt show  index_tags fielt show  index_tags fieltshow  index_tags fielthow  index_tags fieltow  index_tags fieltw  index_tags fielt   index_tags fiel   index_tags field   index_tags field    index_tags field (   index_tags field (a   index_tags field (ar   index_tags field (arr   index_tags field (arra   index_tags field (array   index_tags field (array)   the tags field for these visual tags you added; Move the indexing tags to an
-  index_tags field (array)  the tags field for these visual tags you added; Move the indexing tags to an  the tags field for these visual tags you added; Move the indexing tags to an  the tags field for these visual tags you added; Move the indexing tags to an  the tags field for these visual tags you added; Move the indexing tags to an  the tag field for these visual tags you added; Move the indexing tags to an  the tag field for these visual tags you added; Move the indexing tags to an  the tag field for these visual tags you added; Move the indexing tags to an  the tag field for these visual tags you added; Move the indexing tags to an  the tag field for these visual tags you added; Move the indexing tags to an  the tag field for these visual tags you added; Move the indexing tags to an  the tag field for these visual tags you added; Move the indexing tags to an  the tag field for these visual tags you added; Move the indexing tags to an  the tag field for these visual tags you added; Move the indexing tags to an  the tag field for these visual tags you added; Move the indexing tags to an  the tag field for these visual tags you added; Move the indexing tags to an  the tag field (for these visual tags you added; Move the indexing tags to an  the tag field (sfor these visual tags you added; Move the indexing tags to an  the tag field (stfor these visual tags you added; Move the indexing tags to an  the tag field (strfor these visual tags you added; Move the indexing tags to an  the tag field (strifor these visual tags you added; Move the indexing tags to an  the tag field (strinfor these visual tags you added; Move the indexing tags to an  the tag field (stringfor these visual tags you added; Move the indexing tags to an  the tag field (string)for these visual tags you added; Move the indexing tags to an  the tag field (string) for these visual tags you added; Move the indexing tags to
-  an index_tags field (array)  the tag field (string) for these visual tags you added; Move the indexing tags to
-  an index_tags field (array)  │ curl -s -X POST "http://localhost:1235/_storyboard/canvas/connector" -H
-  │ "Content-Type: application/json" -d
-  │ '{"name":"storyboarding/terminal-widget-prompts","startWidgetId":"agent-xguros","en
-  │ dWidgetId":"markdown-s9600x","startAnchor":"right","endAnchor":"left"}' | head -c
-  │ 200…
-  └ 8 lines...
-
-● signal done (shell)
-  │ STORYBOARD_WIDGET_ID=agent-xguros
-  │ STORYBOARD_CANVAS_ID=storyboarding/terminal-widget-prompts npx storyboard agent
-  │ signal --status done --message "Added tag prop to palette entries" 2>&1 | tail -3
-  └ 2 lines...● Done. Summary:
-
-   - itemValue now prepends item.tag first → scoreMatch returns prefix-tier (100) when
-  the query matches the tag, so tagged items beat untagged ones globally.
-   - Create-widget entries now carry tag: "Add <Widget label>" (e.g. "Add Sticky note",
-   "Add Markdown", "Add Agent"). Typing "Add" now sorts the Add widget to canvas group
-  to the top.
-   - Visual badge rendered via [data-cmdk-item-tag] (pill, muted bg, right-aligned).
-   - General-purpose: any palette entry can now set tag to boost its ranking for a
-  specific query while showing that boost as a background badge.  Committed e82d05d94, pushed, summary widget connected to terminal.
-
- ~/workspace/storyboard-core/worktrees/0.5.0--simple-server [⎇ 0.5.0--simple-server*]
-─────────────────────────────────────────────────────────────────────────────────────────❯   / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)  │ '{"name":"storyboarding/terminal-widget-prompts","startWidgetId":"agent-xguros","en
-  │ dWidgetId":"markdown-s9600x","startAnchor":"right","endAnchor":"left"}' | head -c
-  │ 200…
-  └ 8 lines...
-
-● signal done (shell)
-  │ STORYBOARD_WIDGET_ID=agent-xguros
-  │ STORYBOARD_CANVAS_ID=storyboarding/terminal-widget-prompts npx storyboard agent
-  │ signal --status done --message "Added tag prop to palette entries" 2>&1 | tail -3
-  └ 2 lines...
-
-● Done. Summary:   - itemValue now prepends item.tag first → scoreMatch returns prefix-tier (100) when
-  the query matches the tag, so tagged items beat untagged ones globally.
-   - Create-widget entries now carry tag: "Add <Widget label>" (e.g. "Add Sticky note",
-   "Add Markdown", "Add Agent"). Typing "Add" now sorts the Add widget to canvas group
-  to the top.
-   - Visual badge rendered via [data-cmdk-item-tag] (pill, muted bg, right-aligned).
-   - General-purpose: any palette entry can now set tag to boost its ranking for a
-  specific query while showing that boost as a background badge.
-
-  Committed e82d05d94, pushed, summary widget connected to terminal.● Thinking (Esc to cancel)
- ~/workspace/storyboard-core/worktrees/0.5.0--simple-server [⎇ 0.5.0--simple-server*]
-─────────────────────────────────────────────────────────────────────────────────────────❯  
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue
- terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-● signal done (shell)
-  │ STORYBOARD_WIDGET_ID=agent-xguros
-  │ STORYBOARD_CANVAS_ID=storyboarding/terminal-widget-prompts npx storyboard agent
-  │ signal --status done --message "Added tag prop to palette entries" 2>&1 | tail -3
-  └ 2 lines...
-
-● Done. Summary:
-
-   - itemValue now prepends item.tag first → scoreMatch returns prefix-tier (100) when
-  the query matches the tag, so tagged items beat untagged ones globally.
-   - Create-widget entries now carry tag: "Add <Widget label>" (e.g. "Add Sticky note",
-   "Add Markdown", "Add Agent"). Typing "Add" now sorts the Add widget to canvas group
-  to the top.
-   - Visual badge rendered via [data-cmdk-item-tag] (pill, muted bg, right-aligned).
-   - General-purpose: any palette entry can now set tag to boost its ranking for a
-  specific query while showing that boost as a background badge.
-
-  Committed e82d05d94, pushed, summary widget connected to terminal.
-
-❯ Oh... ok the visual tags are useful, but I don't want THESE tags to appear. Keep the
-  tag field (string) for these visual tags you added; Move the indexing tags to an
-  index_tags field (array)◎ Thinking (Esc to cancel)
- ~/workspace/storyboard-core/worktrees/0.5.0--simple-server [⎇ 0.5.0--simple-server*%]○ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)● Thinking (Esc to cancel)◉ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)○ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)❯ k  ctrl+q enqueue · @ files · # issues● Thinking (Esc to cancel)◉ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)○ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)● Thinking (Esc to cancel)◉ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)○ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)● Thinking (Esc to cancel)◉ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)○ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)● Thinking (Esc to cancel)◉ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)○ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)● Thinking (Esc to cancel)◉ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)○ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)● Thinking (Esc to cancel)◉ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)○ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)● Thinking (Esc to cancel)◉ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)○ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)● Thinking (Esc to cancel)◉ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)● Thinking (Esc to cancel)◉ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)○ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)● Thinking (Esc to cancel)◉ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)○ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)● Thinking (Esc to cancel)◉ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)○ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)● Thinking (Esc to cancel)● Thinking (Esc to cancel · 326 B)◉ Thinking (Esc to cancel · 326 B)◎ Thinking (Esc to cancel · 326 B)○ Thinking (Esc to cancel · 326 B)◎ Thinking (Esc to cancel · 326 B)◉ Thinking (Esc to cancel · 326 B)● Thinking (Esc to cancel · 326 B)◉ Thinking (Esc to cancel · 326 B)◎ Thinking (Esc to cancel · 326 B)○ Thinking (Esc to cancel · 326 B)◎ Thinking (Esc to cancel · 326 B)◉ Thinking (Esc to cancel · 326 B)● Thinking (Esc to cancel · 326 B)◉ Thinking (Esc to cancel · 326 B)◎ Thinking (Esc to cancel · 326 B)○ Thinking (Esc to cancel · 326 B)◎ Thinking (Esc to cancel · 326 B)◉ Thinking (Esc to cancel · 326 B)● Thinking (Esc to cancel · 326 B)◉ Thinking (Esc to cancel · 326 B)◎ Thinking (Esc to cancel · 326 B)○ Thinking (Esc to cancel · 326 B)◎ Thinking (Esc to cancel · 326 B)◉ Thinking (Esc to cancel · 326 B)● Thinking (Esc to cancel · 326 B)◉ Thinking (Esc to cancel · 326 B)○ Thinking (Esc to cancel · 326 B)◎ Thinking (Esc to cancel · 326 B)◉ Thinking (Esc to cancel · 326 B)● Thinking (Esc to cancel · 326 B)◉ Thinking (Esc to cancel · 326 B)◎ Thinking (Esc to cancel · 326 B)○ Thinking (Esc to cancel · 326 B)◎ Thinking (Esc to cancel · 326 B)◉ Thinking (Esc to cancel · 326 B)● Thinking (Esc to cancel · 326 B)◉ Thinking (Esc to cancel · 326 B)◎ Thinking (Esc to cancel · 326 B)○ Thinking (Esc to cancel · 326 B)○ Splitting tag into visual+index_tags (Esc to cancel · 538 B)● Splitting tag into visual+index_tags (Esc to cancel · 538 B)● Splitting tag into visual+index_tags (Esc to cancel · 996 B)◉ Splitting tag into visual+index_tags (Esc to cancel · 996 B)◎ Splitting tag into visual+index_tags (Esc to cancel · 996 B)○ Splitting tag into visual+index_tags (Esc to cancel · 996 B)◎ Splitting tag into visual+index_tags (Esc to cancel · 996 B)◉ Splitting tag into visual+index_tags (Esc to cancel · 996 B)● Splitting tag into visual+index_tags (Esc to cancel · 996 B)◉ Splitting tag into visual+index_tags (Esc to cancel · 996 B)◎ Splitting tag into visual+index_tags (Esc to cancel · 996 B)○ Splitting tag into visual+index_tags (Esc to cancel · 996 B)◎ Splitting tag into visual+index_tags (Esc to cancel · 996 B)◉ Splitting tag into visual+index_tags (Esc to cancel · 996 B)● Splitting tag into visual+index_tags (Esc to cancel · 996 B)◉ Splitting tag into visual+index_tags (Esc to cancel · 996 B)◎ Splitting tag into visual+index_tags (Esc to cancel · 996 B)○ Splitting tag into visual+index_tags (Esc to cancel · 996 B)◎ Splitting tag into visual+index_tags (Esc to cancel · 996 B)◉ Splitting tag into visual+index_tags (Esc to cancel · 996 B)● Splitting tag into visual+index_tags (Esc to cancel · 996 B)◉ Splitting tag into visual+index_tags (Esc to cancel · 996 B)◎ Splitting tag into visual+index_tags (Esc to cancel · 996 B)○ Splitting tag into visual+index_tags (Esc to cancel · 996 B)◎ Splitting tag into visual+index_tags (Esc to cancel · 996 B)◉ Splitting tag into visual+index_tags (Esc to cancel · 996 B)● Splitting tag into visual+index_tags (Esc to cancel · 996 B)● Splitting tag into visual+index_tags (Esc to cancel · 1.8 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 1.8 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 1.8 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 1.8 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 1.8 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 1.8 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 1.8 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 1.8 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 1.8 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 1.8 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 1.8 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 1.8 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 1.8 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 1.8 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 1.8 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 1.8 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 1.8 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 1.8 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 1.8 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 1.8 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 1.8 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 1.8 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 1.8 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 2.0 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 2.2 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 2.2 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 2.2 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 2.2 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 2.2 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 2.2 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 2.2 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 2.2 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 2.2 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 2.2 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 2.3 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 2.6 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 2.6 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 2.6 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 2.6 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 2.6 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 2.6 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 2.6 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 2.6 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 2.6 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 2.6 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 2.6 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 2.6 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 2.6 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 2.6 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 2.6 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 2.8 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 2.8 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 2.8 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 2.8 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 2.8 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 2.8 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 2.8 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.0 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.0 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 3.0 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.0 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.0 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 3.0 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.0 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.0 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 3.0 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.0 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.1 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.2 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.2 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 3.2 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.2 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.2 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 3.2 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.2 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.2 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 3.2 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.2 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.2 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.4 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 3.4 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.4 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.4 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 3.4 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.4 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.4 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 3.4 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.4 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.4 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 3.4 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 3.5 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.5 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.5 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 3.5 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.5 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.5 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.7 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 3.7 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.7 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.7 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 3.7 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.7 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.7 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 3.7 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)   - General-purpose: any palette entry can now set tag to boost its ranking for a
-  specific query while showing that boost as a background badge.
-
-  Committed e82d05d94, pushed, summary widget connected to terminal.
-
-❯ Oh... ok the visual tags are useful, but I don't want THESE tags to appear. Keep the
-  tag field (string) for these visual tags you added; Move the indexing tags to an
-  index_tags field (array)● Edit CommandPalette.jsx +6 -4
-  └ packages/storyboard/src/internals/CommandPalette/CommandPalette.jsx
-
-● Edit CommandPalette.jsx +1 -1
-  └ packages/storyboard/src/internals/CommandPalette/CommandPalette.jsx
-
-○ Edit CommandPalette.jsx
-  └ packages/storyboard/src/internals/CommandPalette/CommandPalette.jsx○ Edit CommandPalette.jsx
-  └ packages/storyboard/src/internals/CommandPalette/CommandPalette.jsx
-
-○ Edit CommandPalette.jsx
-  └ packages/storyboard/src/internals/CommandPalette/CommandPalette.jsx◎ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)● Edit CommandPalette.jsx +1 -1● Edit CommandPalette.jsx +1 -1● Edit CommandPalette.jsx +1 -1○ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)○ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 3.9 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 4.0 KiB)● Splitting tag into visual+index_tags (Esc to cancel · 4.5 KiB)◉ Splitting tag into visual+index_tags (Esc to cancel · 4.5 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 4.5 KiB)❯   / commands · ? help · ctrl+q enqueue○ Splitting tag into visual+index_tags (Esc to cancel · 4.5 KiB)◎ Splitting tag into visual+index_tags (Esc to cancel · 4.5 KiB)
