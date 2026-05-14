@@ -1460,39 +1460,50 @@ export default function storyboardDataPlugin() {
       return undefined
     },
 
-    // Inject __SB_BRANCHES__ into HTML so the Viewfinder branch selector works.
-    // Includes both running (with port + url) and on-disk-but-stopped worktrees.
+    // Inject __SB_BRANCHES__ + __SB_CURRENT_BRANCH__ into HTML so the
+    // Viewfinder/BranchBar can reflect the live git state. With the
+    // proxy/daemon removed, the URL no longer carries a /branch--<name>/
+    // segment to parse, so we read `git branch --show-current` server-side.
     transformIndexHtml(html, ctx) {
       // Only inject in dev mode
       if (!ctx.server) return html
+
+      let currentBranch = null
+      try {
+        currentBranch = execSync('git branch --show-current', { cwd: root, encoding: 'utf8' }).trim() || null
+      } catch { /* not a git repo */ }
+
+      const scripts = []
+      if (currentBranch) {
+        scripts.push(`<script>window.__SB_CURRENT_BRANCH__ = ${JSON.stringify(currentBranch)};</script>`)
+      }
 
       try {
         const servers = listRunningServers()
         const runningByName = new Map(servers.map(s => [s.worktree, s]))
         const onDisk = listWorktrees()
         const allNames = new Set([...onDisk, ...runningByName.keys()])
-        if (allNames.size === 0) return html
-
-        const branches = []
-        for (const name of allNames) {
-          if (name === 'main') continue
-          const srv = runningByName.get(name)
-          branches.push({
-            branch: name,
-            folder: `branch--${name}`,
-            running: !!srv,
-            port: srv?.port ?? null,
-            url: srv ? `http://localhost:${srv.port}/storyboard/` : null,
-          })
+        if (allNames.size > 0) {
+          const branches = []
+          for (const name of allNames) {
+            if (name === 'main') continue
+            const srv = runningByName.get(name)
+            branches.push({
+              branch: name,
+              folder: `branch--${name}`,
+              running: !!srv,
+              port: srv?.port ?? null,
+              url: srv ? `http://localhost:${srv.port}/storyboard/` : null,
+            })
+          }
+          if (branches.length > 0) {
+            scripts.push(`<script>window.__SB_BRANCHES__ = ${JSON.stringify(branches)};</script>`)
+          }
         }
+      } catch { /* fall through */ }
 
-        if (branches.length === 0) return html
-
-        const script = `<script>window.__SB_BRANCHES__ = ${JSON.stringify(branches)};</script>`
-        return html.replace('</head>', `${script}\n</head>`)
-      } catch {
-        return html
-      }
+      if (scripts.length === 0) return html
+      return html.replace('</head>', `${scripts.join('\n')}\n</head>`)
     },
 
     // Rebuild index on each build start

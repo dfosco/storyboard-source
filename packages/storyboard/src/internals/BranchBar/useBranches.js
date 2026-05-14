@@ -2,7 +2,7 @@
  * useBranches — shared hook for branch data across BranchBar and BranchDropdown.
  * Fetches live branch list from /_storyboard/worktrees API on mount.
  */
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 const isLocalDev = typeof window !== 'undefined' && window.__SB_LOCAL_DEV__ === true
 
@@ -15,6 +15,14 @@ export function useBranches(basePath) {
   })
 
   const [gitUser, setGitUser] = useState(null)
+  const [currentBranch, setCurrentBranch] = useState(() => {
+    if (typeof window !== 'undefined' && typeof window.__SB_CURRENT_BRANCH__ === 'string') {
+      return window.__SB_CURRENT_BRANCH__
+    }
+    // Legacy fallback: parse /branch--<name>/ from BASE_URL (prod branch deploys).
+    const m = (basePath || '').match(/\/branch--([^/]+)\/?$/)
+    return m ? m[1] : 'main'
+  })
   const branchBasePath = (basePath || '/').replace(/\/branch--[^/]*\/?$/, '/')
 
   useEffect(() => {
@@ -23,6 +31,13 @@ export function useBranches(basePath) {
 
     fetch(`${apiBase}/_storyboard/git-user`).then(r => r.ok ? r.json() : null)
       .then(data => { if (data?.name) setGitUser(data.name) })
+      .catch(() => {})
+
+    // Source of truth for current branch in dev: ask the server (`git
+    // branch --show-current`). Falls through to the SSR-injected
+    // window.__SB_CURRENT_BRANCH__ or the URL-derived fallback.
+    fetch(`${apiBase}/_storyboard/current-branch`).then(r => r.ok ? r.json() : null)
+      .then(data => { if (data?.branch) setCurrentBranch(data.branch) })
       .catch(() => {})
 
     // Keep dev behavior: prefer live branch list from server API.
@@ -44,11 +59,6 @@ export function useBranches(basePath) {
           .catch(() => {})
       })
   }, [basePath, branchBasePath])
-
-  const currentBranch = useMemo(() => {
-    const m = (basePath || '').match(/\/branch--([^/]+)\/?$/)
-    return m ? m[1] : 'main'
-  }, [basePath])
 
   return { branches, currentBranch, branchBasePath, gitUser }
 }

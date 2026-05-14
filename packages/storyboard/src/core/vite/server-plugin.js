@@ -575,35 +575,15 @@ export default function storyboardServer() {
         } catch { sendJsonLogged(res, 200, { name: null, login: null }) }
       })
 
-      // Switch branch — proxy to storyboard server which manages worktree
-      // dev servers. The server port is derived from the devDomain.
-      routeHandlers.set('switch-branch', async (req, res, ctx) => {
-        if (ctx.method !== 'POST') {
-          sendJsonLogged(res, 405, { error: 'POST required' })
-          return
-        }
+      // Current branch — live read of HEAD via git. The BranchBar uses
+      // this as the source of truth instead of parsing /branch--<name>/
+      // out of the URL (which doesn't exist anymore).
+      routeHandlers.set('current-branch', async (req, res) => {
         try {
-          // Derive storyboard server port (same algorithm as server/index.js)
-          // readDevDomain() returns "{devDomain}.localhost"
-          const domain = `${config.devDomain || 'storyboard'}.localhost`
-          let h = 0
-          for (let i = 0; i < domain.length; i++) {
-            h = ((h << 5) - h + domain.charCodeAt(i)) | 0
-          }
-          const serverPort = 4100 + (Math.abs(h) % 100)
-
-          const proxyRes = await fetch(`http://localhost:${serverPort}/_storyboard/switch-branch`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(ctx.body),
-          })
-          const data = await proxyRes.json()
-          sendJsonLogged(res, proxyRes.status, data)
-        } catch {
-          sendJsonLogged(res, 502, {
-            error: 'Storyboard server not running. Start it with: npx storyboard server',
-          })
-        }
+          const { execSync } = await import('node:child_process')
+          const branch = execSync('git branch --show-current', { cwd: root, encoding: 'utf8' }).trim() || null
+          sendJsonLogged(res, 200, { branch })
+        } catch { sendJsonLogged(res, 200, { branch: null }) }
       })
 
       // Watch toolbar.config.json for changes — trigger full reload so

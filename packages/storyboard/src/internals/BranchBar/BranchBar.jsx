@@ -10,6 +10,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import { GitBranchIcon } from '@primer/octicons-react'
+import { useBranches } from './useBranches.js'
 import css from './BranchBar.module.css'
 
 /** Check if we're in local dev mode (respects ?prodMode simulation). */
@@ -51,10 +52,7 @@ export default function BranchBar({ basePath }) {
     return params.has('_sb_hide_branch_bar') || params.has('_sb_embed')
   }, [])
 
-  const currentBranch = useMemo(() => {
-    const m = (basePath || '').match(/\/branch--([^/]+)\/?$/)
-    return m ? m[1] : 'main'
-  }, [basePath])
+  const { currentBranch } = useBranches(basePath)
 
   const isLocalDev = checkLocalDev()
   const isOnBranch = currentBranch !== 'main'
