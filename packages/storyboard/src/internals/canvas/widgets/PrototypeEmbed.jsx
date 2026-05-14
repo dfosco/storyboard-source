@@ -56,15 +56,6 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
     if (!src) return ''
     if (/^https?:\/\//.test(src)) return src
     const cleaned = src.replace(/^\/branch--[^/]+/, '')
-    // Split-serve spike: if a sibling proto Vite is running, route the iframe
-    // there instead of the shell origin. Proto serves at base '/' so we drop
-    // any branch/base prefix.
-    const protoUrl = typeof window !== 'undefined' ? window.__SB_PROTO_URL__ : null
-    if (protoUrl) {
-      const stripped = cleaned.replace(new RegExp(`^${basePath}`), '') || '/'
-      const normalized = stripped.startsWith('/') ? stripped : `/${stripped}`
-      return `${protoUrl.replace(/\/$/, '')}${normalized}`
-    }
     if (baseSegment && cleaned.startsWith(basePath)) return cleaned
     if (baseSegment && cleaned.startsWith(baseSegment)) return `/${cleaned}`
     return `${basePath}${cleaned}`
@@ -98,8 +89,18 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
     const base = hashIdx >= 0 ? rawSrc.slice(0, hashIdx) : rawSrc
     const hash = hashIdx >= 0 ? rawSrc.slice(hashIdx) : ''
     const sep = base.includes('?') ? '&' : '?'
-    return `${base}${sep}_sb_embed&_sb_hide_branch_bar&_sb_theme_target=prototype&_sb_canvas_theme=${canvasTheme}${hash}`
-  }, [rawSrc, canvasTheme])
+    const withParams = `${base}${sep}_sb_embed&_sb_hide_branch_bar&_sb_theme_target=prototype&_sb_canvas_theme=${canvasTheme}${hash}`
+    // Split-serve spike: rewrite to the sibling proto Vite AFTER embed params
+    // are appended, so chrome-hiding flags survive. Proto serves at base '/'
+    // so strip any branch/base prefix.
+    const protoUrl = typeof window !== 'undefined' ? window.__SB_PROTO_URL__ : null
+    if (protoUrl) {
+      const stripped = withParams.replace(new RegExp(`^${basePath}`), '') || '/'
+      const normalized = stripped.startsWith('/') ? stripped : `/${stripped}`
+      return `${protoUrl.replace(/\/$/, '')}${normalized}`
+    }
+    return withParams
+  }, [rawSrc, canvasTheme, basePath])
 
   const effectiveSrc = iframeSrc
 

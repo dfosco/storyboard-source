@@ -1405,7 +1405,7 @@ export default function storyboardDataPlugin() {
     // Guard against known invalid named imports from @primer/react.
     // The most common offender is `Octicon`, which lives in
     // `@primer/octicons-react`, not `@primer/react`. When a consumer
-    // writes `import { Octicon } from '@primer/react'`, Vite happily
+    // writes an `Octicon` named import from @primer/react, Vite happily
     // pre-bundles the dep and only fails at runtime with a cryptic
     // "does not provide an export named 'Octicon'" error from inside
     // `node_modules/.vite/deps/@primer_react.js`. Catch it here at
