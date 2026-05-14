@@ -4,6 +4,14 @@
  * padding) holding a label and a centered content stage. Rows flow naturally —
  * no snap-to-max sizing, so a tall cell doesn't force its neighbors to grow. */
 
+/* Fill the iframe / viewport with the muted background so resizing the
+ * widget never reveals the underlying white page. */
+:global(html),
+:global(body) {
+  background: var(--bgColor-muted, #f6f8fa);
+  min-height: 100%;
+}
+
 .grid {
   background: var(--bgColor-muted, #f6f8fa);
   display: grid;
@@ -11,7 +19,7 @@
   padding: 16px;
   box-sizing: border-box;
   width: 100%;
-  min-height: 100%;
+  min-height: 100vh;
 }
 
 /* Density controls column floor only — rows always size to content. */
@@ -19,10 +27,18 @@
 .grid[data-density="comfy"]   { --cell-min-w: 320px; --cell-min-h: 280px; }
 .grid[data-density="roomy"]   { --cell-min-w: 420px; --cell-min-h: 340px; }
 
-/* Auto (default): wrap into columns, rows hug their content. */
+/* Auto (default): wrap cells to their natural content width.
+ * Flexbox is used so each cell can expand horizontally to fit wide content
+ * (e.g. terminal mocks) instead of being clipped to a shared 1fr column. */
 .grid[data-layout="auto"] {
-  grid-template-columns: repeat(auto-fill, minmax(var(--cell-min-w, 320px), 1fr));
-  grid-auto-rows: min-content;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+}
+
+.grid[data-layout="auto"] .cell {
+  flex: 1 1 auto;
+  min-width: var(--cell-min-w, 320px);
 }
 
 /* Wide / horizontal: single row, equal-width columns, rows size to content. */

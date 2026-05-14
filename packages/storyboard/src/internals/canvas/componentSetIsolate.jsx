@@ -141,9 +141,22 @@ function ComponentSetGrid({ exports, layout, density, initialSelected }) {
       }, '*')
     }
 
+    // Re-post on grid size changes too (content height changes as cells reflow)
+    const ro = new ResizeObserver(() => {
+      if (window.parent === window) return
+      window.parent.postMessage({
+        type: 'storyboard:component-set:content-size',
+        width: grid.scrollWidth,
+        height: grid.scrollHeight,
+      }, '*')
+    })
+    ro.observe(grid)
+
     // Measure after layout + fonts settle
     requestAnimationFrame(() => requestAnimationFrame(measureAndPost))
     document.fonts.ready.then(() => requestAnimationFrame(measureAndPost))
+
+    return () => ro.disconnect()
   }, [exports, layout, density])
 
   // Signal snapshot-ready
