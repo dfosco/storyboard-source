@@ -19,9 +19,9 @@
  */
 
 import * as p from '@clack/prompts'
-import { execFileSync } from 'child_process'
-import { existsSync, readFileSync } from 'fs'
-import { resolve } from 'path'
+import { execFileSync, spawn } from 'child_process'
+import { existsSync, mkdirSync, readFileSync, writeFileSync, unlinkSync } from 'fs'
+import { resolve, dirname } from 'path'
 import { detectWorktreeName, getPort, releasePort, repoRoot, worktreeDir } from '../worktree/port.js'
 import { startRenameWatcher } from '../rename-watcher/watcher.js'
 import { parseFlags } from './flags.js'
@@ -186,6 +186,46 @@ async function main() {
   p.log.info(`devserver port: ${result.devServer.port}`)
   p.log.info('Stop with Ctrl+C')
 
+  // ── Split-serve spike (Option C) ─────────────────────────────────────────
+  // Spawn a sibling proto Vite that owns HMR for src/prototypes/**. Iframe
+  // src in PrototypeEmbed routes to this port via window.__SB_PROTO_URL__,
+  // injected by the shell's transformIndexHtml from .storyboard/.devports.json.
+  // Opt out by setting STORYBOARD_NO_PROTO=1 (e.g. for repos without
+  // vite.proto.config.js).
+  const protoConfigPath = resolve(targetCwd, 'vite.proto.config.js')
+  const wantProto = !process.env.STORYBOARD_NO_PROTO && existsSync(protoConfigPath)
+  let protoChild = null
+  let portsFile = null
+  if (wantProto) {
+    const protoPort = Number(process.env.STORYBOARD_PROTO_PORT) || 1235
+    const protoUrl = `http://localhost:${protoPort}`
+    portsFile = resolve(targetCwd, '.storyboard/.devports.json')
+    try { mkdirSync(dirname(portsFile), { recursive: true }) } catch { /* */ }
+    try {
+      writeFileSync(portsFile, JSON.stringify({ proto: { url: protoUrl, port: protoPort } }, null, 2))
+    } catch (err) {
+      p.log.warn(`Could not write ${portsFile}: ${err.message}`)
+      portsFile = null
+    }
+    const localVite = resolve(targetCwd, 'node_modules/.bin/vite')
+    const useLocal = existsSync(localVite)
+    const args = ['--config', protoConfigPath, '--port', String(protoPort), '--strictPort']
+    const env = { ...process.env, STORYBOARD_PROTO_PORT: String(protoPort), VITE_BASE_PATH: '/' }
+    protoChild = useLocal
+      ? spawn(localVite, args, { cwd: targetCwd, env, stdio: ['ignore', 'inherit', 'inherit'] })
+      : spawn('npx', ['vite', ...args], { cwd: targetCwd, env, stdio: ['ignore', 'inherit', 'inherit'] })
+    p.log.info(`proto devserver: ${protoUrl}`)
+    protoChild.on('exit', (code) => {
+      if (code !== null && code !== 0) {
+        p.log.warn(`Proto Vite exited (code ${code}). Prototypes will fall back to same-origin.`)
+      }
+      if (portsFile) {
+        try { unlinkSync(portsFile) } catch { /* */ }
+        portsFile = null
+      }
+    })
+  }
+
   const renameWatcher = startRenameWatcher(targetCwd)
   const compactInterval = setInterval(() => {
     try {
@@ -197,6 +237,12 @@ async function main() {
   function shutdown() {
     clearInterval(compactInterval)
     renameWatcher.close()
+    if (protoChild) {
+      try { protoChild.kill('SIGTERM') } catch { /* */ }
+    }
+    if (portsFile) {
+      try { unlinkSync(portsFile) } catch { /* */ }
+    }
     runtime.release({ leaseId: result.lease.id }).catch(() => undefined).finally(() => {
       releasePort(worktreeName)
       process.exit(0)

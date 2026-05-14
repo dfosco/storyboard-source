@@ -606,6 +606,25 @@ export default function storyboardServer() {
           injectTo: 'head',
         })
 
+        // Split-serve spike (Option C): if a sibling proto Vite is running,
+        // expose its URL so PrototypeEmbed can iframe via the proto port
+        // instead of same-origin. Read at request time so timing between
+        // shell startup and proto startup doesn't matter.
+        try {
+          const portsFile = path.resolve(process.cwd(), '.storyboard/.devports.json')
+          if (fs.existsSync(portsFile)) {
+            const ports = JSON.parse(fs.readFileSync(portsFile, 'utf-8'))
+            const protoUrl = ports?.proto?.url
+            if (protoUrl && typeof protoUrl === 'string') {
+              tags.push({
+                tag: 'script',
+                children: `window.__SB_PROTO_URL__=${JSON.stringify(protoUrl)}`,
+                injectTo: 'head',
+              })
+            }
+          }
+        } catch { /* best-effort; absence is the no-split-serve case */ }
+
         // Inject dev domain name for branch bar display.
         // Falls back to the project directory name so every repo gets a
         // labelled bar (matches the styling of repos that opt in via

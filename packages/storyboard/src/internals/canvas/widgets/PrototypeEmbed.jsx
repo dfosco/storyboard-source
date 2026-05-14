@@ -56,6 +56,15 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
     if (!src) return ''
     if (/^https?:\/\//.test(src)) return src
     const cleaned = src.replace(/^\/branch--[^/]+/, '')
+    // Split-serve spike: if a sibling proto Vite is running, route the iframe
+    // there instead of the shell origin. Proto serves at base '/' so we drop
+    // any branch/base prefix.
+    const protoUrl = typeof window !== 'undefined' ? window.__SB_PROTO_URL__ : null
+    if (protoUrl) {
+      const stripped = cleaned.replace(new RegExp(`^${basePath}`), '') || '/'
+      const normalized = stripped.startsWith('/') ? stripped : `/${stripped}`
+      return `${protoUrl.replace(/\/$/, '')}${normalized}`
+    }
     if (baseSegment && cleaned.startsWith(basePath)) return cleaned
     if (baseSegment && cleaned.startsWith(baseSegment)) return `/${cleaned}`
     return `${basePath}${cleaned}`

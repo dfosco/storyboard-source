@@ -116,7 +116,11 @@ export default defineConfig(() => {
         port: 1234,
         fs: { allow: ['..'] },
         watch: {
-            // Don't ignore .worktrees — this project may run inside one
+            // Don't ignore .worktrees — this project may run inside one.
+            // Split-serve spike: ignore prototype edits in the shell so HMR
+            // and module invalidation don't ripple into the canvas. The
+            // proto Vite (vite.proto.config.js) owns prototype HMR.
+            ignored: ['**/src/prototypes/**'],
         },
         warmup: {
             clientFiles: [
