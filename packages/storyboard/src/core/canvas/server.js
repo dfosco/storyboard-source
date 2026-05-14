@@ -3015,9 +3015,17 @@ export function Default() {
       }
 
       try {
-        const { readTerminalConfig, initTerminalConfig } = await import('./terminal-config.js')
+        const { readTerminalConfig, readTerminalConfigById, initTerminalConfig } = await import('./terminal-config.js')
         initTerminalConfig(root)
-        const config = readTerminalConfig({ branch, canvasId, widgetId })
+        let config = readTerminalConfig({ branch, canvasId, widgetId })
+        // Fallback: when canvasId/branch are missing, mismatched, or stale
+        // (e.g. the persisted canvasId only captured the parent folder),
+        // recover via the widget-id-named symlink that writeTerminalConfig
+        // creates next to the hashed config.
+        if (!config?.agentStatus) {
+          const byId = readTerminalConfigById(widgetId)
+          if (byId?.agentStatus) config = byId
+        }
         sendJson(res, 200, { agentStatus: config?.agentStatus || null })
       } catch (err) {
         sendJson(res, 500, { error: `Failed to read agent status: ${err.message}` })

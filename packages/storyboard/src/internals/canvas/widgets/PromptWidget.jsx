@@ -9,6 +9,27 @@ function getBase() {
   return (import.meta.env?.BASE_URL || '/').replace(/\/$/, '')
 }
 
+/**
+ * Resolve the **full** canvas-page id for the currently-mounted canvas.
+ * Prefer the live bridge state (set by CanvasPage), which always carries the
+ * complete nested id (e.g. `dfosco-explorations/adaptive-threat-view`). Fall
+ * back to URL parsing when the bridge isn't ready yet — and crucially, take
+ * **every** path segment after `/canvas/`, not just the first one, so nested
+ * canvas ids round-trip correctly.
+ */
+function resolveCanvasId() {
+  if (typeof window !== 'undefined') {
+    const fromBridge = window.__storyboardCanvasBridgeState?.canvasId
+    if (fromBridge) return fromBridge
+    const pathParts = window.location.pathname.split('/').filter(Boolean)
+    const canvasIdx = pathParts.indexOf('canvas')
+    if (canvasIdx >= 0 && canvasIdx < pathParts.length - 1) {
+      return pathParts.slice(canvasIdx + 1).join('/')
+    }
+  }
+  return 'default'
+}
+
 async function spawnPromptAgent({ canvasId, widgetId, prompt }) {
   const res = await fetch(`${getBase()}/_storyboard/canvas/prompt/spawn`, {
     method: 'POST',
@@ -163,7 +184,10 @@ const PromptWidget = forwardRef(function PromptWidget({ id, props, onUpdate, res
 
     async function pollOnce() {
       try {
-        const url = `${getBase()}/_storyboard/canvas/agent/status?widgetId=${encodeURIComponent(id)}`
+        const params = new URLSearchParams({ widgetId: id })
+        const cid = resolveCanvasId()
+        if (cid && cid !== 'default') params.set('canvasId', cid)
+        const url = `${getBase()}/_storyboard/canvas/agent/status?${params}`
         const res = await fetch(url)
         if (!res.ok) return
         const json = await res.json().catch(() => null)
@@ -213,9 +237,7 @@ const PromptWidget = forwardRef(function PromptWidget({ id, props, onUpdate, res
     setExecStatus('pending')
     setExecError('')
 
-    const pathParts = window.location.pathname.split('/')
-    const canvasIdx = pathParts.indexOf('canvas')
-    const canvasId = canvasIdx >= 0 ? pathParts[canvasIdx + 1] : 'default'
+    const canvasId = resolveCanvasId()
 
     onUpdate?.({ text: draftText, status: 'pending' })
 
@@ -315,9 +337,7 @@ const PromptWidget = forwardRef(function PromptWidget({ id, props, onUpdate, res
         term.open(termContainerRef.current)
         termRef.current = term
 
-        const pathParts = window.location.pathname.split('/')
-        const canvasIdx = pathParts.indexOf('canvas')
-        const canvasId = canvasIdx >= 0 ? pathParts[canvasIdx + 1] : 'default'
+        const canvasId = resolveCanvasId()
 
         const url = getWsUrl(id, canvasId, true)
         ws = new WebSocket(url)
