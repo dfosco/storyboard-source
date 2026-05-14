@@ -48,20 +48,31 @@ export default defineConfig(async (env) => {
             ...(shell.server || {}),
             port: PROTO_PORT,
             strictPort: true,
-            // Watch ONLY src/prototypes — chokidar semantics need an explicit
-            // ignore-everything + unignore-prototypes pair (a `!` pattern alone
-            // doesn't restrict the watch set). Without this, the proto sees
-            // shell writes to .storyboard/.selectedwidgets.json and *.canvas.jsonl
-            // and full-reloads on every keystroke in the canvas.
+            // Watch ONLY src/prototypes, src/components, src/templates.
+            // Chokidar `ignored` accepts a function: return true to ignore.
+            // Anything outside the allowed roots — and anything in node_modules,
+            // .git, .storyboard, *.canvas.jsonl — is ignored. This keeps the
+            // proto iframe quiet while the shell churns through canvas writes.
             watch: {
-                ignored: [
-                    '**/.git/**',
-                    '**/node_modules/**',
-                    '**/.storyboard/**',
-                    '**/*.canvas.jsonl',
-                    '**/dist/**',
-                    '**/build/**',
-                ],
+                ignored: (filePath) => {
+                    if (!filePath) return false
+                    const norm = filePath.replace(/\\/g, '/')
+                    if (norm.includes('/node_modules/')) return true
+                    if (norm.includes('/.git/')) return true
+                    if (norm.includes('/.storyboard/')) return true
+                    if (norm.includes('/dist/') || norm.includes('/build/')) return true
+                    if (norm.endsWith('.canvas.jsonl')) return true
+                    // Allow the project root itself so chokidar can recurse.
+                    if (!norm.includes('/src/')) return false
+                    return !(
+                        norm.includes('/src/prototypes/') ||
+                        norm.includes('/src/components/') ||
+                        norm.includes('/src/templates/') ||
+                        norm.endsWith('/src/prototypes') ||
+                        norm.endsWith('/src/components') ||
+                        norm.endsWith('/src/templates')
+                    )
+                },
             },
             // Allow the shell origin to embed prototype pages in iframes.
             cors: true,
