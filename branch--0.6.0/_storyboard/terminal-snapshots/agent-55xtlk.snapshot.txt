@@ -1,40 +1,401 @@
 SESSION: agent-55xtlk | coral-warbler
 CANVAS:  storyboarding/terminal-widget-prompts
-BRANCH:  0.5.0--simple-server
-TIME:    2026-05-14T21:50:05.178Z
+BRANCH:  0.6.0
+TIME:    2026-05-14T21:58:28.540Z
 
 ================================================================================
 SCREEN
 ================================================================================
 
-  over list order), why they work (equidistance, direction-as-identity, cheap
-  reversibility), where they break (>8 items, labels vs. geometry, poor discovery,
-  touch reframes the model), where they earn their place (stable verb palettes,
-  summoned surfaces, expert workflows), and an honest framing for our system: radial as
-  a gesture accelerator layered on a canonical linear menu, never the only path.
+│                                         █ ▘▝ █                                        │
+│                                          ▔▔▔▔                                         │
+│                                 GitHub Copilot v1.0.48                                │
+│                          Copilot uses AI. Check for mistakes.                         │
+│                                                                                       │
+╰───────────────────────────────────────────────────────────────────────────────────────╯
 
-❯ 📡 [Broadcast two-way ACTIVE with Starter, Technical Proposer, Component Set
-  Designer, Implementation & Styles Reviewer]
+! Failed to load 1 skill. Run /skills for more details.
 
-● Acknowledged — broadcast active with Starter, Technical Proposer, Component Set
-  Designer, and Implementation & Styles Reviewer. Standing by for the next prompt.
+● Selected custom agent: terminal-agent
 
-❯ 📡 [Broadcast two-way ACTIVE with Starter, Technical Proposer, Component Set
-  Designer, Implementation & Styles Reviewer]
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents
 
-❯ 📡 [Broadcast two-way ACTIVE with Starter, Technical Proposer, Component Set
-  Designer, Implementation & Styles Reviewer]
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
 
-● Acknowledged. Standing by.
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
 
-❯ 📡 [Broadcast two-way ACTIVE with Starter, Technical Proposer, Component Set
-  Designer, Implementation & Styles Reviewer, ComponentSet Refactorer, ComponentSet
-  Refactorer]
+❯ [System] Your terminal identity has been set. widgetId=agent-55xtlk
+  displayName=coral-warbler canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-55xtlk.json serverUrl=http://localhost:1235 —
+  this is a configuration step, no response needed.
 
-● Acknowledged. Standing by.
+● Understood, configuration acknowledged.
 
- ~/workspace/storyboard-core/worktrees/0.5.0--simple-server [⎇ 0.5.0--simple-server*%]
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
 ─────────────────────────────────────────────────────────────────────────────────────────
 ❯  
 ─────────────────────────────────────────────────────────────────────────────────────────
  / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+[?996n[>c[>q│                                    ╰─╯╰─╯                                    │
+│                                    █ ▘▝ █                                    │
+│                                     ▔▔▔▔                                     │
+│                            GitHub Copilot v1.0.48                            │
+│                     Copilot uses AI. Check for mistakes.                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents
+
+● All permissions are now enabled. Tool, path, and URL requests will be
+  automatically approved.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0%]
+────────────────────────────────────────────────────────────────────────────────
+❯  
+────────────────────────────────────────────────────────────────────────────────
+ / commands · ? help
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.48                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+
+
+
+
+
+
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0%]
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.48                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+
+
+
+
+
+
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0%]
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.48                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+
+
+
+
+
+
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0%]
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.48                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+
+
+
+
+
+
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0%]
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+╭───────────────────────────────────────────────────────────────────────────────────────╮│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.48                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+
+
+
+
+
+
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0%]
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+ ▎ ❯ /allow-all on
+ ▎
+ ▎
+ ▎
+ ▎
+ ▎❯ /allow-all on  @ files · # issues         terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+
+
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0%]❯   / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.● Thinking (Esc to cancel)
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0%]
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)│                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.48                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.❯ [System] Your terminal identity has been set. widgetId=agent-55xtlk
+  displayName=coral-warbler canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-55xtlk.json serverUrl=http://localhost:1235 —
+  this is a configuration step, no response needed.◉ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)○ Thinking (Esc to cancel)│                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.48                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+❯ [System] Your terminal identity has been set. widgetId=agent-55xtlk
+  displayName=coral-warbler canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-55xtlk.json serverUrl=http://localhost:1235 —
+  this is a configuration step, no response needed.
+
+○ Thinking (Esc to cancel)
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0%]
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)● Thinking (Esc to cancel)◉ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)○ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)● Thinking (Esc to cancel)◉ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)○ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)● Thinking (Esc to cancel)◎ Thinking (Esc to cancel)○ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)● Thinking (Esc to cancel)◉ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)○ Thinking (Esc to cancel)◎ Thinking (Esc to cancel)◉ Thinking (Esc to cancel)● Thinking (Esc to cancel)│                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.48                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+❯ [System] Your terminal identity has been set. widgetId=agent-55xtlk
+  displayName=coral-warbler canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-55xtlk.json serverUrl=http://localhost:1235 —
+  this is a configuration step, no response needed.
+
+● Thinking (Esc to cancel)
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0%]
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+│                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.48                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+❯ [System] Your terminal identity has been set. widgetId=agent-55xtlk
+  displayName=coral-warbler canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-55xtlk.json serverUrl=http://localhost:1235 —
+  this is a configuration step, no response needed.
+
+● Thinking (Esc to cancel)
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0%]
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help · ctrl+q enqueue
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+◉ Thinking (Esc to cancel)◉ Thinking (Esc to cancel · 39 B)│                                         ╭─╮╭─╮                                        ││                                         ╰─╯╰─╯                                        ││                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.48                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯! Failed to load 1 skill. Run /skills for more details.● Selected custom agent: terminal-agent● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+❯ [System] Your terminal identity has been set. widgetId=agent-55xtlk
+  displayName=coral-warbler canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-55xtlk.json serverUrl=http://localhost:1235 —
+  this is a configuration step, no response needed.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0%]
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)│                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.48                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+! Failed to load 1 skill. Run /skills for more details.● Selected custom agent: terminal-agent● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+❯ [System] Your terminal identity has been set. widgetId=agent-55xtlk
+  displayName=coral-warbler canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-55xtlk.json serverUrl=http://localhost:1235 —
+  this is a configuration step, no response needed.
+
+● Understood, configuration acknowledged. ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]│                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.48                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+❯ [System] Your terminal identity has been set. widgetId=agent-55xtlk
+  displayName=coral-warbler canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-55xtlk.json serverUrl=http://localhost:1235 —
+  this is a configuration step, no response needed.
+
+● Understood, configuration acknowledged.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+│                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.48                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+❯ [System] Your terminal identity has been set. widgetId=agent-55xtlk
+  displayName=coral-warbler canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-55xtlk.json serverUrl=http://localhost:1235 —
+  this is a configuration step, no response needed.
+
+● Understood, configuration acknowledged.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+│                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.48                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+❯ [System] Your terminal identity has been set. widgetId=agent-55xtlk
+  displayName=coral-warbler canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-55xtlk.json serverUrl=http://localhost:1235 —
+  this is a configuration step, no response needed.
+
+● Understood, configuration acknowledged.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+│                                         █ ▘▝ █                                        ││                                          ▔▔▔▔                                         ││                                 GitHub Copilot v1.0.48                                ││                          Copilot uses AI. Check for mistakes.                         ││                                                                                       │╰───────────────────────────────────────────────────────────────────────────────────────╯
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+● Environment loaded: 1 custom instruction, 21 skills, 1 MCP server, 2 agents
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+❯ [System] Your terminal identity has been set. widgetId=agent-55xtlk
+  displayName=coral-warbler canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-55xtlk.json serverUrl=http://localhost:1235 —
+  this is a configuration step, no response needed.
+
+● Understood, configuration acknowledged.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
