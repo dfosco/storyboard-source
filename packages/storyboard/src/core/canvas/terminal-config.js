@@ -55,6 +55,11 @@ function configKey(branch, canvasId, widgetId) {
   return createHash('sha256').update(input).digest('hex').slice(0, 16)
 }
 
+/** Public accessor for the per-widget key (used by agent-session capture). */
+export function getConfigKey(branch, canvasId, widgetId) {
+  return configKey(branch, canvasId, widgetId)
+}
+
 /** Get the config file path */
 function configPath(branch, canvasId, widgetId) {
   return join(rootDir, TERMINALS_DIR, `${configKey(branch, canvasId, widgetId)}.json`)
@@ -393,4 +398,40 @@ export function updateLatestOutput(widgetId, output) {
 
   const fp = configPath(config.branch || 'unknown', config.canvasId || 'unknown', widgetId)
   atomicWrite(fp, config)
+}
+
+/**
+ * Persist the captured agent CLI session id for a widget so the next
+ * cold start can resume it instead of launching fresh.
+ *
+ * Called by the agent-session watcher after the SessionStart hook fires.
+ */
+export function recordAgentSession({ branch, canvasId, widgetId, agentId, sessionId }) {
+  if (!sessionId) return null
+  const fp = configPath(branch, canvasId, widgetId)
+  let config = {}
+  try { config = JSON.parse(readFileSync(fp, 'utf8')) } catch { /* may not exist */ }
+  config.lastAgentSessionId = sessionId
+  config.lastAgentSessionAt = new Date().toISOString()
+  if (agentId) config.lastAgentId = agentId
+  config.updatedAt = new Date().toISOString()
+  try {
+    if (!existsSync(dirname(fp))) mkdirSync(dirname(fp), { recursive: true })
+    atomicWrite(fp, config)
+  } catch { /* best-effort */ }
+  return config
+}
+
+/**
+ * Read the previously-captured agent session id for a widget, if any.
+ * @returns {{ sessionId: string, agentId: string|null, capturedAt: string|null } | null}
+ */
+export function getLastAgentSession({ branch, canvasId, widgetId }) {
+  const cfg = readTerminalConfig({ branch, canvasId, widgetId })
+  if (!cfg?.lastAgentSessionId) return null
+  return {
+    sessionId: cfg.lastAgentSessionId,
+    agentId: cfg.lastAgentId || null,
+    capturedAt: cfg.lastAgentSessionAt || null,
+  }
 }

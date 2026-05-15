@@ -50,11 +50,20 @@ import {
   writeTerminalConfig as writeTermConfig,
   initTerminalConfig,
   readTerminalConfigById,
+  getConfigKey,
+  getLastAgentSession,
+  recordAgentSession,
 } from './terminal-config.js'
 import { findByWorktree } from '../worktree/serverRegistry.js'
 import { detectWorktreeName } from '../worktree/port.js'
 import { bindWidget, unbindWidget } from '../messaging/delivery.js'
 import { joinPresence, leavePresence } from '../messaging/presence.js'
+import {
+  writeSessionCaptureSettings,
+  withSettingsArg,
+  buildResumeStartupCommand,
+  watchSessionIdFile,
+} from './agent-session.js'
 
 let pty
 try {
@@ -941,9 +950,17 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
       const resolvedAgent = resolveAgentConfig(startupCommand)
       if (resolvedAgent?.id) poolId = resolvedAgent.id
 
+      // If we have a saved session id for this widget, skip the hot pool
+      // entirely — we're about to launch with `--resume <id>`, which a
+      // pre-warmed session can't do (it's already past SessionStart). Pool
+      // sessions are recycled normally when not consumed.
+      const savedSession = (resolvedAgent?.cfg?.sessionIdEnv && resolvedAgent?.cfg?.resumeArgsTemplate !== null)
+        ? getLastAgentSession({ branch, canvasId, widgetId })
+        : null
+
       // Try agent pool first, then fall back to terminal pool for bare shells
       const targetPool = poolId || (startupCommand ? null : 'terminal')
-      if (targetPool && hotPoolRef.has(targetPool)) {
+      if (!savedSession && targetPool && hotPoolRef.has(targetPool)) {
         poolSession = hotPoolRef.acquire(targetPool)
       }
 
@@ -1216,9 +1233,62 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
           } else if (agentCfg || startupCommand !== 'shell') {
             // Agent or custom command — route through welcome with --startup
             // so the welcome screen appears when the agent exits
-            const cmd = agentCfg?.startupCommand || startupCommand
+            let cmd = agentCfg?.startupCommand || startupCommand
             const postStartup = agentCfg?.postStartup || null
             const readinessSignal = agentCfg?.readinessSignal || null
+
+            // ── Session capture: if this agent exposes a session id env var,
+            // attach a SessionStart hook via --settings so we can record the
+            // id and resume it on a future cold start. The watcher persists
+            // the captured id onto the widget's terminal config.
+            let captureFile = null
+            if (agentCfg?.sessionIdEnv) {
+              try {
+                const widgetKey = getConfigKey(branch, canvasId, widgetId)
+                const cap = writeSessionCaptureSettings({
+                  root: cwd,
+                  widgetKey,
+                  agentCfg,
+                })
+                if (cap) {
+                  cmd = withSettingsArg(cmd, cap.settingsFile)
+                  captureFile = cap.captureFile
+                }
+              } catch { /* capture is best-effort */ }
+            }
+
+            // ── Resume: if we previously captured a session id for this
+            // widget and the agent supports `--resume`, wrap cmd in a
+            // shell fallback that tries resume first, falls back to fresh.
+            if (agentCfg?.sessionIdEnv && agentCfg?.resumeArgsTemplate !== null) {
+              try {
+                const saved = getLastAgentSession({ branch, canvasId, widgetId })
+                if (saved?.sessionId) {
+                  cmd = buildResumeStartupCommand({
+                    startupCommand: cmd,
+                    sessionId: saved.sessionId,
+                    agentCfg,
+                  })
+                }
+              } catch { /* resume is best-effort */ }
+            }
+
+            // Start the capture-file watcher now so we don't miss the write
+            if (captureFile) {
+              try {
+                watchSessionIdFile(captureFile, (sessionId) => {
+                  try {
+                    recordAgentSession({
+                      branch,
+                      canvasId,
+                      widgetId,
+                      agentId: resolvedAgent?.id || null,
+                      sessionId,
+                    })
+                  } catch { /* empty */ }
+                })
+              } catch { /* empty */ }
+            }
 
             setTimeout(() => {
               const welcomeCmd = `${welcomeBase} --startup ${JSON.stringify(cmd)}`

@@ -65,6 +65,8 @@ Clients on 4.1.x likely have no `canvas` block at all. The full canvas config is
         "icon": "primer/copilot",
         "startupCommand": "copilot --agent terminal-agent",
         "resumeCommand": "copilot --resume",
+        "sessionIdEnv": "COPILOT_AGENT_SESSION_ID",
+        "resumeArgsTemplate": "--resume {id}",
         "postStartup": "/allow-all on",
         "readinessSignal": "Environment loaded:",
         "resizable": true
@@ -113,7 +115,9 @@ Clients on 4.1.x likely have no `canvas` block at all. The full canvas config is
 | `label` | yes | Display name in the Add Agent menu |
 | `icon` | no | Icon name (`primer/copilot`, `claude`, `codex`, or any Icon.jsx name) |
 | `startupCommand` | yes | Shell command to start the agent |
-| `resumeCommand` | no | Shell command to resume an existing session |
+| `resumeCommand` | no | Shell command to resume an existing session (interactive browser) |
+| `sessionIdEnv` | no | Env var exposed inside SessionStart hooks holding the agent's session id (e.g. `COPILOT_AGENT_SESSION_ID`). When set, widget cold restarts auto-resume the previous session. |
+| `resumeArgsTemplate` | no | Args injected to resume the captured session, with `{id}` placeholder (e.g. `--resume {id}`). Falls back to a fresh session if the id is no longer valid. |
 | `postStartup` | no | Text sent to the agent's stdin after it starts |
 | `readinessSignal` | no | Substring to wait for in output before marking agent as ready |
 | `configFiles` | no | Array of config file paths the agent requires |
