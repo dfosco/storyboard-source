@@ -58,12 +58,11 @@
  * @property {string}  [label]         — display label
  * @property {string}  [icon]          — icon name
  * @property {string}  [startupCommand] — command to run on startup
- * @property {string}  [resumeCommand]  — command to browse/resume existing sessions (e.g. "copilot --resume")
  * @property {string}  [postStartup]   — command sent after agent readiness (e.g. "/allow-all on")
  * @property {string}  [readinessSignal] — tmux pane text that signals the agent is ready (fragile, prefer readinessFile)
+ * @property {string}  [resumeCommand]  — full command template to resume a session, with `{id}` placeholder (e.g. `"copilot --resume={id} --agent terminal-agent"`). Used both for auto-resume on cold restart (with `{id}` substituted) and for the interactive "Browse existing sessions" flow (binary derived, `--resume` appended).
  * @property {boolean} [readinessFile]  — use a file-based SessionStart hook for readiness (writes --settings with hook, polls for signal file)
- * @property {string}  [sessionIdEnv]   — env var exposed inside the agent's SessionStart hook that holds its session id (e.g. "COPILOT_AGENT_SESSION_ID"). When set, the server captures the id per-widget so cold restarts can auto-resume.
- * @property {string}  [resumeArgsTemplate] — args injected to resume a captured session, with `{id}` placeholder (e.g. "--resume {id}"). Falls back to a fresh session if the captured id is no longer valid.
+ * @property {string}  [sessionIdEnv]   — env var exposed inside the agent's SessionStart hook payload that holds its session id (e.g. "COPILOT_AGENT_SESSION_ID"). When set, the server captures the id per-widget so cold restarts can auto-resume.
  * @property {boolean} [resizable]     — override terminal resizability for this agent
  * @property {number}  [defaultWidth]  — override default width
  * @property {number}  [defaultHeight] — override default height

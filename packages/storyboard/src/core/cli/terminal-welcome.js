@@ -499,7 +499,10 @@ async function welcomeLoop() {
         continue
       }
 
-      // Agent resume — spawn the resume command interactively
+      // Agent resume — spawn the resume command interactively. The configured
+      // resumeCommand is the full launch template with `{id}` placeholder; for
+      // the interactive picker we strip it to `<binary> --resume` so copilot/
+      // claude/codex open their built-in session selector.
       if (sessionChoice.startsWith('agent:')) {
         const agentId = sessionChoice.replace('agent:', '')
         const agent = resumableAgents.find(a => a.id === agentId)
@@ -508,7 +511,9 @@ async function welcomeLoop() {
           setMouse(true)
           try {
             const shell = process.env.SHELL || '/bin/zsh'
-            const child = spawn(shell, ['-ilc', agent.resumeCommand], {
+            const bin = (agent.resumeCommand || '').split(/\s+/)[0]
+            const browseCmd = `${bin} --resume`
+            const child = spawn(shell, ['-ilc', browseCmd], {
               stdio: 'inherit',
               env: agentEnv(),
             })

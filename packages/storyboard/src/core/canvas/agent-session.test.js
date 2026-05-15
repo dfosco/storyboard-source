@@ -47,22 +47,34 @@ describe('agent-session', () => {
       expect(buildResumeStartupCommand({ startupCommand: 'copilot', sessionId: 'not-uuid', agentCfg: {} })).toBe('copilot')
     })
 
-    it('injects resume args using --resume={id} after the binary, no shell wrapper', () => {
+    it('returns the original command when no resumeCommand is configured', () => {
       const out = buildResumeStartupCommand({
         startupCommand: 'copilot --agent terminal-agent',
         sessionId: '11111111-2222-4333-8444-555555555555',
         agentCfg: { sessionStateDir: null },
       })
+      expect(out).toBe('copilot --agent terminal-agent')
+    })
+
+    it('substitutes {id} into resumeCommand when valid', () => {
+      const out = buildResumeStartupCommand({
+        startupCommand: 'copilot --agent terminal-agent',
+        sessionId: '11111111-2222-4333-8444-555555555555',
+        agentCfg: {
+          sessionStateDir: null,
+          resumeCommand: 'copilot --resume={id} --agent terminal-agent',
+        },
+      })
       expect(out).toBe('copilot --resume=11111111-2222-4333-8444-555555555555 --agent terminal-agent')
     })
 
-    it('honors a custom resumeArgsTemplate', () => {
+    it('returns original when resumeCommand has no {id} placeholder', () => {
       const out = buildResumeStartupCommand({
-        startupCommand: 'mycli run',
+        startupCommand: 'copilot --agent terminal-agent',
         sessionId: '11111111-2222-4333-8444-555555555555',
-        agentCfg: { sessionStateDir: null, resumeArgsTemplate: '--continue {id}' },
+        agentCfg: { sessionStateDir: null, resumeCommand: 'copilot --resume' },
       })
-      expect(out).toBe('mycli --continue 11111111-2222-4333-8444-555555555555 run')
+      expect(out).toBe('copilot --agent terminal-agent')
     })
   })
 

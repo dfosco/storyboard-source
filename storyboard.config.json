@@ -52,9 +52,8 @@
         "default": true,
         "icon": "primer/copilot",
         "startupCommand": "copilot --agent terminal-agent",
-        "resumeCommand": "copilot --resume",
+        "resumeCommand": "copilot --resume={id} --agent terminal-agent",
         "sessionIdEnv": "COPILOT_AGENT_SESSION_ID",
-        "resumeArgsTemplate": "--resume={id}",
         "postStartup": "/allow-all on",
         "readinessSignal": "Environment loaded:",
         "resizable": true
@@ -63,7 +62,7 @@
         "label": "Claude Code",
         "icon": "claude",
         "startupCommand": "claude --agent terminal-agent --dangerously-skip-permissions",
-        "resumeCommand": "claude --resume",
+        "resumeCommand": "claude --resume={id} --agent terminal-agent --dangerously-skip-permissions",
         "resizable": true,
         "readinessSignal": "bypass permissions"
       },
@@ -71,7 +70,7 @@
         "label": "Codex CLI",
         "icon": "codex",
         "startupCommand": "codex --ask-for-approval never",
-        "resumeCommand": "codex --resume",
+        "resumeCommand": "codex --resume={id} --ask-for-approval never",
         "configFiles": [
           ".codex/config.toml"
         ],

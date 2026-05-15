@@ -102,21 +102,19 @@ export function ensureCopilotCaptureHookInstalled() {
  * If validation fails, returns the original `startupCommand` unchanged so
  * the agent launches a fresh session — same UX as today.
  *
- * Otherwise injects the resume args from `agentCfg.resumeArgsTemplate`
- * (default `--resume={id}`) immediately after the binary name.
+ * Otherwise returns `agentCfg.resumeCommand` with `{id}` substituted. The
+ * resume command is the FULL command to run (including the binary, the
+ * --agent flag, and any other startup args), not just the resume flag —
+ * keeping it in one field avoids confusion about which args go where.
  */
 export function buildResumeStartupCommand({ startupCommand, sessionId, agentCfg }) {
   if (!startupCommand || !sessionId) return startupCommand
   if (!isResumableSessionId(sessionId, agentCfg)) return startupCommand
 
-  const template = agentCfg?.resumeArgsTemplate || '--resume={id}'
-  const resumeArgs = template.replace('{id}', sessionId)
+  const template = agentCfg?.resumeCommand
+  if (!template || !template.includes('{id}')) return startupCommand
 
-  const trimmed = startupCommand.trimStart()
-  const firstSpace = trimmed.indexOf(' ')
-  const bin = firstSpace === -1 ? trimmed : trimmed.slice(0, firstSpace)
-  const rest = firstSpace === -1 ? '' : trimmed.slice(firstSpace)
-  return `${bin} ${resumeArgs}${rest}`
+  return template.replace('{id}', sessionId)
 }
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
