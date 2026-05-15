@@ -17,11 +17,12 @@
 
 import * as p from '@clack/prompts'
 import { execSync, spawn } from 'node:child_process'
-import { readFileSync, existsSync } from 'node:fs'
-import { resolve, join } from 'node:path'
+import { existsSync } from 'node:fs'
+import { join } from 'node:path'
 import { parseFlags } from './flags.js'
 import { dim, bold } from './intro.js'
 import { takePendingMessages } from '../canvas/terminal-config.js'
+import { readAgentsConfig } from '../canvas/configReader.js'
 
 const blue = (s) => `\x1b[34m${s}\x1b[0m`
 const yellow = (s) => `\x1b[33m${s}\x1b[0m`
@@ -76,14 +77,12 @@ function agentEnv() {
 }
 
 /**
- * Read agents config from storyboard.config.json.
+ * Read agents config (lib defaults + storyboard.config.json + terminal.config.json merged).
  * Returns an array of { id, label, startupCommand, resumeCommand } entries.
  */
 function loadAgents() {
   try {
-    const raw = readFileSync(resolve(process.cwd(), 'storyboard.config.json'), 'utf8')
-    const config = JSON.parse(raw)
-    const agents = config?.canvas?.agents
+    const agents = readAgentsConfig()
     if (!agents || typeof agents !== 'object') return []
     return Object.entries(agents).map(([id, cfg]) => ({
       id,

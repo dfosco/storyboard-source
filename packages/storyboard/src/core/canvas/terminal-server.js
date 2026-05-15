@@ -158,15 +158,11 @@ function cleanEnv() {
   return filtered
 }
 
-/** Read terminal config from storyboard.config.json */
+import { readTerminalSettings, readAgentsConfig } from './configReader.js'
+
+/** Read terminal-widget settings (merged from lib defaults + storyboard.config.json + terminal.config.json). */
 function readTerminalConfig() {
-  try {
-    const raw = readFileSync(resolve(process.cwd(), 'storyboard.config.json'), 'utf8')
-    const config = JSON.parse(raw)
-    return config?.canvas?.terminal ?? {}
-  } catch {
-    return {}
-  }
+  return readTerminalSettings()
 }
 
 /**
@@ -175,22 +171,19 @@ function readTerminalConfig() {
  */
 function resolveAgentConfig(startupCommand) {
   if (!startupCommand || startupCommand === 'shell') return null
-  try {
-    const raw = readFileSync(resolve(process.cwd(), 'storyboard.config.json'), 'utf8')
-    const agentsConfig = JSON.parse(raw)?.canvas?.agents
-    if (!agentsConfig || typeof agentsConfig !== 'object') return null
-    for (const [id, cfg] of Object.entries(agentsConfig)) {
-      if (!cfg?.startupCommand) continue
-      // Prefer exact/prefix match for deterministic routing; keep binary fallback for backwards compat.
-      if (
-        startupCommand === cfg.startupCommand
-        || startupCommand.startsWith(`${cfg.startupCommand} `)
-        || startupCommand.startsWith(cfg.startupCommand.split(' ')[0])
-      ) {
-        return { id, cfg }
-      }
+  const agentsConfig = readAgentsConfig()
+  if (!agentsConfig || typeof agentsConfig !== 'object') return null
+  for (const [id, cfg] of Object.entries(agentsConfig)) {
+    if (!cfg?.startupCommand) continue
+    // Prefer exact/prefix match for deterministic routing; keep binary fallback for backwards compat.
+    if (
+      startupCommand === cfg.startupCommand
+      || startupCommand.startsWith(`${cfg.startupCommand} `)
+      || startupCommand.startsWith(cfg.startupCommand.split(' ')[0])
+    ) {
+      return { id, cfg }
     }
-  } catch { /* empty */ }
+  }
   return null
 }
 
@@ -1107,8 +1100,7 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
 
         // Agent shorthand scripts (copilot, claude, codex, etc.)
         try {
-          const raw = readFileSync(resolve(process.cwd(), 'storyboard.config.json'), 'utf8')
-          const agentsConfig = JSON.parse(raw)?.canvas?.agents
+          const agentsConfig = readAgentsConfig()
           if (agentsConfig && typeof agentsConfig === 'object') {
             for (const [id, cfg] of Object.entries(agentsConfig)) {
               if (!cfg.startupCommand) continue
@@ -1138,8 +1130,7 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
           `start() { if [ $# -eq 0 ]; then ${welcomeBase}; else ${welcomeBase} --startup "$*"; fi; }`,
         ]
         try {
-          const raw = readFileSync(resolve(process.cwd(), 'storyboard.config.json'), 'utf8')
-          const agentsConfig = JSON.parse(raw)?.canvas?.agents
+          const agentsConfig = readAgentsConfig()
           if (agentsConfig && typeof agentsConfig === 'object') {
             for (const [id, cfg] of Object.entries(agentsConfig)) {
               if (!cfg.startupCommand) continue

@@ -52,6 +52,7 @@ import { markCanvasWrite, unmarkCanvasWrite } from './writeGuard.js'
 import { devLog } from '../logger/devLogger.js'
 import widgetsConfig from '../../../widgets.config.json' with { type: 'json' }
 import { listHubRoles, getDefaultRoleId } from './hub-roles.js'
+import { readAgentsConfig } from './configReader.js'
 
 /**
  * Read the prompt widget's execution config from widgets.config.json.
@@ -713,9 +714,7 @@ export function createCanvasHandler(ctx) {
     // For agent widgets, resolve startupCommand from canvas.agents config if not provided
     if (type === 'agent' && props.agentId && !props.startupCommand) {
       try {
-        const configPath = path.join(root, 'storyboard.config.json')
-        const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'))
-        const agentCfg = config?.canvas?.agents?.[props.agentId]
+        const agentCfg = readAgentsConfig(root)?.[props.agentId]
         if (agentCfg?.startupCommand) {
           props.startupCommand = agentCfg.startupCommand
         }
@@ -725,9 +724,7 @@ export function createCanvasHandler(ctx) {
     // For agent widgets without agentId, default to the first canvas.agents entry
     if (type === 'agent' && !props.agentId) {
       try {
-        const configPath = path.join(root, 'storyboard.config.json')
-        const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'))
-        const agents = config?.canvas?.agents || {}
+        const agents = readAgentsConfig(root) || {}
         const defaultEntry = Object.entries(agents).find(([, cfg]) => cfg.default) || Object.entries(agents)[0]
         if (defaultEntry) {
           const [id, cfg] = defaultEntry
@@ -3112,9 +3109,7 @@ export function Default() {
         // Resolve agent config from storyboard.config.json
         let agentConfig = null
         try {
-          const configPath = path.join(root, 'storyboard.config.json')
-          const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'))
-          const agents = config?.canvas?.agents || {}
+          const agents = readAgentsConfig(root) || {}
           if (agentId && agents[agentId]) {
             agentConfig = agents[agentId]
           } else {
