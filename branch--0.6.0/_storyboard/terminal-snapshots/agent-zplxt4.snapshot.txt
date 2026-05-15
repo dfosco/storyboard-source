@@ -1,0 +1,225 @@
+SESSION: agent-zplxt4 | rose-falcon
+CANVAS:  storyboarding/terminal-widget-prompts
+BRANCH:  0.6.0
+TIME:    2026-05-15T14:20:54.840Z
+
+================================================================================
+SCREEN
+================================================================================
+
+/opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/wo
+rktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0
+" --canvas "storyboarding/terminal-widget-prompts" --name "rose-falcon" --startup "copilo
+t --resume=2ef30e27-be33-4ff4-86b6-0ba0d935c253 --agent terminal-agent"
+
+0.6.0 on  0.6.0 [$!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/
+worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6
+.0" --canvas "storyboarding/terminal-widget-prompts" --name "rose-falcon" --startup "copi
+lot --resume=2ef30e27-be33-4ff4-86b6-0ba0d935c253 --agent terminal-agent"
+│
+●  name: rose-falcon  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Copilot CLI...
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+[?996n[>c[>q
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[sb-88c0410:tmux*                        "Daniels-MacBook-Pro.l" 16:20 15-May-26
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[sb-88c0410:tmux*                        "Daniels-MacBook-Pro.l" 16:20 15-May-26
+░▒▓   …/0.6.0   0.6.0 $!?   16:20  
+❯ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[sb-88c0410:tmux*                                 "Daniels-MacBook-Pro.l" 16:20 15-May-26
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                         /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "rose-falcon" --startup "copilot --resume=2ef30e27-be33-4ff4-86b6-0ba0d935c253 --agent terminal-agent"
+
+
+0.6.0 on  0.6.0 [$!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/wworktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6..0" --canvas "storyboarding/terminal-widget-prompts" --name "rose-falcon" --startup "copillot --resume=2ef30e27-be33-4ff4-86b6-0ba0d935c253 --agent terminal-agent"
+│
+●  name: rose-falcon  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Copilot CLI.../opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "rose-falcon" --startup "copilot --resume=2ef30e27-be33-4ff4-86b6-0ba0d935c253 --agent terminal-agent"
+
+0.6.0 on  0.6.0 [$!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "rose-falcon" --startup "copilot --resume=2ef30e27-be33-4ff4-86b6-0ba0d935c253 --agent terminal-agent"
+│
+●  name: rose-falcon  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Copilot CLI...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "rose-falcon" --startup "copilot --resume=2ef30e27-be33-4ff4-86b6-0ba0d935c253 --agent terminal-agent"
+
+0.6.0 on  0.6.0 [$!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "rose-falcon" --startup "copilot --resume=2ef30e27-be33-4ff4-86b6-0ba0d935c253 --agent terminal-agent"
+│
+●  name: rose-falcon  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Copilot CLI...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "rose-falcon" --startup "copilot --resume=2ef30e27-be33-4ff4-86b6-0ba0d935c253 --agent terminal-agent"
+
+0.6.0 on  0.6.0 [$!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "rose-falcon" --startup "copilot --resume=2ef30e27-be33-4ff4-86b6-0ba0d935c253 --agent terminal-agent"
+│
+●  name: rose-falcon  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Copilot CLI...
