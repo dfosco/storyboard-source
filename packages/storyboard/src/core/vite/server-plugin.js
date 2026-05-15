@@ -19,7 +19,7 @@ import { serverFeatures as workshopFeatures } from '../workshop/features/registr
 import { docsHandler, collectFiles } from './docs-handler.js'
 import { createCanvasHandler } from '../canvas/server.js'
 import { setupSelectedWidgets } from '../canvas/selectedWidgets.js'
-import { readAgentsConfig } from '../canvas/configReader.js'
+import { readAgentsConfig, readHotPoolConfig } from '../canvas/configReader.js'
 import { HotPoolManager } from '../canvas/hot-pool.js'
 import { createAutosyncHandler } from '../autosync/server.js'
 import { setupTerminalServer } from '../canvas/terminal-server.js'
@@ -280,7 +280,7 @@ export default function storyboardServer() {
       routeHandlers.set('docs', docsHandler({ root, sendJson: sendJsonLogged }))
 
       // Create shared hot pool manager (per-type pre-warmed sessions)
-      const hotPoolConfig = config.hotPool || {}
+      const hotPoolConfig = readHotPoolConfig(root)
       const agentsConfig = readAgentsConfig(root)
       const wsSend = server.ws.send.bind(server.ws)
       const hotPool = new HotPoolManager({ root, config: hotPoolConfig, agentsConfig, wsSend })

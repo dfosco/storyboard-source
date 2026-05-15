@@ -44,5 +44,20 @@
       "resizable": true
     }
   },
-  "showAgentsInAddMenu": false
+  "showAgentsInAddMenu": false,
+  "hotPool": {
+    "enabled": true,
+    "verbose": false,
+    "default_pool_size": 1,
+    "default_max_pool_size": 3,
+    "load_balancer": true,
+    "load_balancer_cooldown_mins": 10,
+    "pools": {
+      "terminal": { "pool_size": 1 },
+      "copilot": { "pool_size": 1, "webgl_ready_slots": 1 },
+      "claude": { "pool_size": 1, "webgl_ready_slots": 1 },
+      "codex": { "pool_size": 0 },
+      "prompt": { "pool_size": 1, "webgl_ready_slots": 1 }
+    }
+  }
 }

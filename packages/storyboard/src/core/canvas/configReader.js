@@ -59,10 +59,10 @@ function resolveLibTerminalConfig(root) {
 }
 
 /**
- * Read the merged terminal + agents config for a project root.
+ * Read the merged terminal + agents + hotPool config for a project root.
  *
  * @param {string} [root] - Project root, defaults to `process.cwd()`.
- * @returns {{ terminal: object, agents: object, showAgentsInAddMenu: boolean|undefined }}
+ * @returns {{ terminal: object, agents: object, showAgentsInAddMenu: boolean|undefined, hotPool: object }}
  */
 export function readTerminalConfigMerged(root = process.cwd()) {
   const lib = resolveLibTerminalConfig(root) || {}
@@ -76,6 +76,7 @@ export function readTerminalConfigMerged(root = process.cwd()) {
     ...(sbCanvas.showAgentsInAddMenu !== undefined
       ? { showAgentsInAddMenu: sbCanvas.showAgentsInAddMenu }
       : {}),
+    ...(sb.hotPool ? { hotPool: sb.hotPool } : {}),
   }
 
   const merged = deepMerge(deepMerge(lib, sbLayer), userTerminal)
@@ -83,6 +84,7 @@ export function readTerminalConfigMerged(root = process.cwd()) {
     terminal: merged.terminal || {},
     agents: merged.agents || {},
     showAgentsInAddMenu: merged.showAgentsInAddMenu,
+    hotPool: merged.hotPool || {},
   }
 }
 
@@ -98,4 +100,11 @@ export function readAgentsConfig(root = process.cwd()) {
  */
 export function readTerminalSettings(root = process.cwd()) {
   return readTerminalConfigMerged(root).terminal
+}
+
+/**
+ * Convenience: just the hotPool config.
+ */
+export function readHotPoolConfig(root = process.cwd()) {
+  return readTerminalConfigMerged(root).hotPool
 }

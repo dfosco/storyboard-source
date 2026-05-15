@@ -1,5 +1,5 @@
 {
-  "$comment": "Project-level overrides for terminal + canvas agents. Leaf-level merge: only keys here are overridden, everything else inherits the library defaults from node_modules/@dfosco/storyboard/terminal.config.json. See .storyboard/scaffold/terminal.config.json for the full default reference.",
+  "$comment": "Project-level overrides for terminal + canvas agents + hot pool. Leaf-level merge: only keys here are overridden, everything else inherits the library defaults from node_modules/@dfosco/storyboard/terminal.config.json. See .storyboard/scaffold/terminal.config.json for the full default reference.",
   "terminal": {
     "fontSize": 18,
     "fontFamily": "'Ghostty', 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace"
@@ -8,6 +8,17 @@
     "copilot": {
       "startupCommand": "copilot --remote --agent terminal-agent",
       "resumeCommand": "copilot --resume={id} --remote --agent terminal-agent"
+    },
+    "codex": {
+      "startupCommand": "codex --full-auto"
+    }
+  },
+  "hotPool": {
+    "load_balancer": false,
+    "pools": {
+      "copilot": { "pool_size": 2, "webgl_ready_slots": 2 },
+      "claude": { "pool_size": 2, "webgl_ready_slots": 2 },
+      "prompt": { "pool_size": 2, "webgl_ready_slots": 2 }
     }
   }
 }

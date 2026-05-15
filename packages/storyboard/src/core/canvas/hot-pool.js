@@ -25,7 +25,7 @@
  * Scale-down: After cooldown minutes with no acquisitions, the pool scales
  *             back to pool_size by killing excess warm sessions.
  *
- * ## Configuration (storyboard.config.json → hotPool)
+ * ## Configuration (terminal.config.json → hotPool, or storyboard.config.json → hotPool for legacy back-compat)
  *
  *   hotPool.enabled         — enable/disable all pools (default: true)
  *   hotPool.verbose         — log to Vite terminal (default: false)
