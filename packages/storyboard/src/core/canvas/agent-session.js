@@ -128,6 +128,33 @@ export function buildResumeStartupCommand({ startupCommand, sessionId, agentCfg 
   return `sh -c ${shellQuote(inner)}`
 }
 
+/**
+ * Build the SessionStart hook command that captures the agent's session
+ * id from `sessionIdEnv` (or the JSON `session_id` field on stdin) into
+ * `captureFile`. Returns a string suitable for `{ type: 'command', command }`.
+ */
+export function buildSessionCaptureHookCommand(captureFile, sessionIdEnv) {
+  return (
+    `sh -c 'id="${'$'}{${sessionIdEnv}}"; ` +
+    'if [ -z "$id" ]; then ' +
+    'id=$(cat | sed -n "s/.*\\"session_id\\"[[:space:]]*:[[:space:]]*\\"\\([^\\"]*\\)\\".*/\\1/p" | head -n1); ' +
+    'fi; ' +
+    `[ -n "$id" ] && printf %s "$id" > ${JSON.stringify(captureFile)}'`
+  )
+}
+
+/**
+ * Read a previously-captured session id from a capture file. Returns null
+ * if the file is missing or empty.
+ */
+export function readCapturedSessionId(captureFile) {
+  try {
+    if (!existsSync(captureFile)) return null
+    const id = readFileSync(captureFile, 'utf8').trim()
+    return id || null
+  } catch { return null }
+}
+
 /** Quote a string for sh -c safely. */
 function shellQuote(s) {
   return `'${String(s).replace(/'/g, `'\\''`)}'`

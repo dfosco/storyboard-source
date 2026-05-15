@@ -952,9 +952,10 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
 
       // If we have a saved session id for this widget, skip the hot pool
       // entirely — we're about to launch with `--resume <id>`, which a
-      // pre-warmed session can't do (it's already past SessionStart). Pool
-      // sessions are recycled normally when not consumed.
-      const savedSession = (resolvedAgent?.cfg?.sessionIdEnv && resolvedAgent?.cfg?.resumeArgsTemplate !== null)
+      // pre-warmed session can't do (it's already past startup). The cold
+      // path will then assemble the resume wrapper. Pool sessions stay
+      // intact for other widgets.
+      const savedSession = resolvedAgent?.cfg?.sessionIdEnv
         ? getLastAgentSession({ branch, canvasId, widgetId })
         : null
 
@@ -969,6 +970,22 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
         try {
           try { execSync(`tmux kill-session -t "${tmuxName}" 2>/dev/null`, { stdio: 'ignore' }) } catch { /* empty */ }
           execSync(`tmux rename-session -t "${poolSession.tmuxName}" "${tmuxName}"`, { stdio: 'ignore' })
+          // Persist the agent's captured session id (if the warm hook ran)
+          // onto the widget's terminal config before consuming so a future
+          // cold restart can resume it.
+          try {
+            const capturedId = hotPoolRef.getCapturedSessionId(targetPool, poolSession.id)
+            if (capturedId) {
+              recordAgentSession({
+                branch,
+                canvasId,
+                widgetId,
+                agentId: poolId || null,
+                sessionId: capturedId,
+              })
+              hotPoolRef.clearCapturedSessionId(targetPool, poolSession.id)
+            }
+          } catch { /* best-effort */ }
           hotPoolRef.consume(targetPool, poolSession.id)
           usedWarmAgent = !!poolId // only true for agent pools, not terminal pools
         } catch {
@@ -1237,26 +1254,6 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
             const postStartup = agentCfg?.postStartup || null
             const readinessSignal = agentCfg?.readinessSignal || null
 
-            // ── Session capture: if this agent exposes a session id env var,
-            // attach a SessionStart hook via --settings so we can record the
-            // id and resume it on a future cold start. The watcher persists
-            // the captured id onto the widget's terminal config.
-            let captureFile = null
-            if (agentCfg?.sessionIdEnv) {
-              try {
-                const widgetKey = getConfigKey(branch, canvasId, widgetId)
-                const cap = writeSessionCaptureSettings({
-                  root: cwd,
-                  widgetKey,
-                  agentCfg,
-                })
-                if (cap) {
-                  cmd = withSettingsArg(cmd, cap.settingsFile)
-                  captureFile = cap.captureFile
-                }
-              } catch { /* capture is best-effort */ }
-            }
-
             // ── Resume: if we previously captured a session id for this
             // widget and the agent supports `--resume`, wrap cmd in a
             // shell fallback that tries resume first, falls back to fresh.
@@ -1273,7 +1270,38 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
               } catch { /* resume is best-effort */ }
             }
 
-            // Start the capture-file watcher now so we don't miss the write
+            // ── Capture: when this is a non-pool launch, attach a
+            // SessionStart hook via --settings so we can record the agent's
+            // session id for a future cold restart. (Pool-warmed sessions
+            // get the same hook from hot-pool.js#warmAgent.)
+            let captureFile = null
+            if (agentCfg?.sessionIdEnv) {
+              try {
+                const widgetKey = getConfigKey(branch, canvasId, widgetId)
+                const cap = writeSessionCaptureSettings({
+                  root: cwd,
+                  widgetKey,
+                  agentCfg,
+                })
+                if (cap) {
+                  // Prepend --settings inside the resume wrapper so it
+                  // applies to BOTH the resume attempt and the fallback.
+                  // For unwrapped commands, append directly.
+                  if (cmd.startsWith("sh -c '")) {
+                    // Wrapper form: rebuild with --settings injected into both branches.
+                    const inner = cmd.slice("sh -c '".length, -1).replace(/'\\''/g, "'")
+                    const parts = inner.split(' || ')
+                    const withSettings = parts.map((p) => withSettingsArg(p, cap.settingsFile)).join(' || ')
+                    cmd = `sh -c '${withSettings.replace(/'/g, "'\\''")}'`
+                  } else {
+                    cmd = withSettingsArg(cmd, cap.settingsFile)
+                  }
+                  captureFile = cap.captureFile
+                }
+              } catch { /* best-effort */ }
+            }
+
+            // Watch the capture file and persist on first write.
             if (captureFile) {
               try {
                 watchSessionIdFile(captureFile, (sessionId) => {

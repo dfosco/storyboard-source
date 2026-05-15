@@ -8,6 +8,8 @@ import {
   buildResumeStartupCommand,
   watchSessionIdFile,
   captureFilePath,
+  buildSessionCaptureHookCommand,
+  readCapturedSessionId,
 } from './agent-session.js'
 
 let root
@@ -100,6 +102,40 @@ describe('agent-session', () => {
       await new Promise((r) => setTimeout(r, 200))
       expect(captured).toBe('session-xyz')
       stop()
+    })
+  })
+
+  describe('captureSessionFromProcess', () => {
+    it('removed: capture is hook-based, not process-based', () => {
+      // Process-env capture proved unreliable for tmux-spawned processes
+      // on macOS (sandboxed). The SessionStart hook attached via --settings
+      // is now the sole capture mechanism — see hot-pool.js#warmAgent and
+      // terminal-server.js cold path.
+      expect(true).toBe(true)
+    })
+  })
+
+  describe('buildSessionCaptureHookCommand + readCapturedSessionId', () => {
+    it('produces a hook command that writes the env var into the capture file', () => {
+      const cap = captureFilePath(root, 'cmdkey')
+      const cmd = buildSessionCaptureHookCommand(cap, 'COPILOT_AGENT_SESSION_ID')
+      expect(cmd).toContain('${COPILOT_AGENT_SESSION_ID}')
+      expect(cmd).toContain(cap)
+      // Falls back to JSON stdin parsing
+      expect(cmd).toContain('session_id')
+    })
+
+    it('reads the captured id back when the file exists', () => {
+      const cap = captureFilePath(root, 'readkey')
+      writeFileSync(cap, '  abc-123\n')
+      expect(readCapturedSessionId(cap)).toBe('abc-123')
+    })
+
+    it('returns null when the capture file is missing or empty', () => {
+      const cap = captureFilePath(root, 'missingkey')
+      expect(readCapturedSessionId(cap)).toBeNull()
+      writeFileSync(cap, '')
+      expect(readCapturedSessionId(cap)).toBeNull()
     })
   })
 })

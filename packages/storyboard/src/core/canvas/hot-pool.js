@@ -47,6 +47,7 @@ import { execSync } from 'node:child_process'
 import { writeFileSync, existsSync, unlinkSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { devLog } from '../logger/devLogger.js'
+import { buildSessionCaptureHookCommand, readCapturedSessionId } from './agent-session.js'
 
 /**
  * @typedef {Object} WarmSession
@@ -214,6 +215,28 @@ export class HotPool {
 
     this.#fill().catch(() => {})
     return session
+  }
+
+  /**
+   * Read the captured agent session id (if any) for a pool session. The
+   * id is written by the SessionStart hook configured in #warmAgent when
+   * the agent's `sessionIdEnv` is set. Returns null when no capture file
+   * exists or the agent never wrote one.
+   */
+  getCapturedSessionId(sessionId) {
+    if (!sessionId) return null
+    const captureFile = join(this.#root, '.storyboard', 'hot-pool', `${sessionId}.session-id`)
+    return readCapturedSessionId(captureFile)
+  }
+
+  /**
+   * Delete the capture artifact for a pool session — call after the id
+   * has been consumed onto a widget so we don't leak files.
+   */
+  clearCapturedSessionId(sessionId) {
+    if (!sessionId) return
+    const captureFile = join(this.#root, '.storyboard', 'hot-pool', `${sessionId}.session-id`)
+    try { unlinkSync(captureFile) } catch { /* empty */ }
   }
 
   /**
@@ -434,35 +457,48 @@ export class HotPool {
    *   3. Neither — waits 5s and assumes ready.
    */
   async #warmAgent(tmuxName, sessionId) {
-    const { startupCommand, readinessSignal, readinessFile, postStartup } = this.#agentConfig
+    const { startupCommand, readinessSignal, readinessFile, postStartup, sessionIdEnv } = this.#agentConfig
     this.#log(`⊕ AGENT ${sessionId} launching: ${startupCommand}`)
 
     // Set up file-based readiness hook if configured
     let signalFilePath = null
     let settingsFilePath = null
+    let captureFilePath = null
     let finalCommand = startupCommand
 
+    // Build a settings.json with up to 2 SessionStart hooks (readiness +
+    // session-id capture). Either, both, or neither may be present.
+    const sessionStartHooks = []
+    const hookDir = join(this.#root, '.storyboard', 'hot-pool')
+
     if (readinessFile) {
-      const hookDir = join(this.#root, '.storyboard', 'hot-pool')
       try { mkdirSync(hookDir, { recursive: true }) } catch { /* empty */ }
       signalFilePath = join(hookDir, `${sessionId}.ready`)
-      settingsFilePath = join(hookDir, `${sessionId}.settings.json`)
-
-      // Clean up any stale signal file
       try { unlinkSync(signalFilePath) } catch { /* empty */ }
+      sessionStartHooks.push({ type: 'command', command: `touch ${JSON.stringify(signalFilePath)}` })
+    }
 
-      // Write a settings file with a SessionStart hook
-      const settings = {
-        hooks: {
-          SessionStart: [{
-            type: 'command',
-            command: `touch ${JSON.stringify(signalFilePath)}`,
-          }],
-        },
-      }
+    if (sessionIdEnv) {
+      try { mkdirSync(hookDir, { recursive: true }) } catch { /* empty */ }
+      captureFilePath = join(hookDir, `${sessionId}.session-id`)
+      try { unlinkSync(captureFilePath) } catch { /* empty */ }
+      sessionStartHooks.push({
+        type: 'command',
+        command: buildSessionCaptureHookCommand(captureFilePath, sessionIdEnv),
+      })
+    }
+
+    if (sessionStartHooks.length) {
+      settingsFilePath = join(hookDir, `${sessionId}.settings.json`)
+      const settings = { hooks: { SessionStart: sessionStartHooks } }
       writeFileSync(settingsFilePath, JSON.stringify(settings))
       finalCommand = `${startupCommand} --settings ${JSON.stringify(settingsFilePath)}`
-      this.#log(`⊕ AGENT ${sessionId} readinessFile hook → ${signalFilePath}`)
+      this.#log(
+        `⊕ AGENT ${sessionId} hooks → ${[
+          signalFilePath && `ready=${signalFilePath}`,
+          captureFilePath && `capture=${captureFilePath}`,
+        ].filter(Boolean).join(', ')}`,
+      )
     }
 
     try {
@@ -754,6 +790,16 @@ export class HotPoolManager {
   /** Consume a session (transfer ownership out of pool permanently). */
   consume(poolId, sessionId) {
     this.#pools.get(poolId)?.consume(sessionId)
+  }
+
+  /** Read the captured agent session id for a pool session, if any. */
+  getCapturedSessionId(poolId, sessionId) {
+    return this.#pools.get(poolId)?.getCapturedSessionId(sessionId) ?? null
+  }
+
+  /** Delete the capture artifact for a pool session. */
+  clearCapturedSessionId(poolId, sessionId) {
+    this.#pools.get(poolId)?.clearCapturedSessionId(sessionId)
   }
 
   /** Release a session back to the pool. */
