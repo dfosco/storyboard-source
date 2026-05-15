@@ -50,7 +50,6 @@ import {
   writeTerminalConfig as writeTermConfig,
   initTerminalConfig,
   readTerminalConfigById,
-  getConfigKey,
   getLastAgentSession,
   recordAgentSession,
 } from './terminal-config.js'
@@ -59,10 +58,10 @@ import { detectWorktreeName } from '../worktree/port.js'
 import { bindWidget, unbindWidget } from '../messaging/delivery.js'
 import { joinPresence, leavePresence } from '../messaging/presence.js'
 import {
-  writeSessionCaptureSettings,
-  withSettingsArg,
   buildResumeStartupCommand,
   watchSessionIdFile,
+  captureFilePath,
+  ensureCopilotCaptureHookInstalled,
 } from './agent-session.js'
 
 let pty
@@ -687,6 +686,10 @@ export function setupTerminalServer(httpServer, base = '/', branch = 'unknown', 
   initRegistry(root, { gracePeriod: termCfg.orphanGracePeriod })
   initTerminalConfig(root)
 
+  // Install user-level Copilot CLI hook (~/.copilot/hooks/storyboard-capture.json)
+  // that captures sessionStart payloads into per-widget files. Idempotent.
+  try { ensureCopilotCaptureHookInstalled() } catch { /* best-effort */ }
+
   // Best-effort: apply shell-config overrides if a tmux server already exists
   // from a previous dev server run. If no server exists, this fails silently —
   // overrides are applied again in createTerminal() after the first new-session.
@@ -1149,6 +1152,27 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
         // This keeps reassigned sessions robust when warm-up readiness is flaky.
         const postStartup = resolvedAgentCfg?.postStartup || null
         const readinessSignal = resolvedAgentCfg?.readinessSignal || null
+
+        // Install capture watcher on the widget's capture file — picks up
+        // any subsequent sessionStart events fired inside the agent
+        // (e.g. user runs /new). Initial pool-time sessionId was already
+        // recorded above at handoff via getCapturedSessionId.
+        if (resolvedAgentCfg?.sessionIdEnv) {
+          try {
+            const captureFile = captureFilePath(cwd, widgetId)
+            watchSessionIdFile(captureFile, (sessionId) => {
+              try {
+                recordAgentSession({
+                  branch,
+                  canvasId,
+                  widgetId,
+                  agentId: resolvedAgent?.id || null,
+                  sessionId,
+                })
+              } catch { /* empty */ }
+            })
+          } catch { /* empty */ }
+        }
         setTimeout(() => {
           let completed = false
           const finalize = () => {
@@ -1212,6 +1236,7 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
           `export STORYBOARD_CANVAS_ID="${canvasId}"`,
           `export STORYBOARD_BRANCH="${branch}"`,
           `export STORYBOARD_SERVER_URL="${serverUrl}"`,
+          `export STORYBOARD_PROJECT_ROOT="${cwd}"`,
           ...Object.entries(TMUX_SHELL_OVERRIDES).map(([k, v]) => `export ${k}="${v}"`),
         ]
 
@@ -1258,9 +1283,9 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
             const readinessSignal = agentCfg?.readinessSignal || null
 
             // ── Resume: if we previously captured a session id for this
-            // widget and the agent supports `--resume`, wrap cmd in a
-            // shell fallback that tries resume first, falls back to fresh.
-            if (agentCfg?.sessionIdEnv && agentCfg?.resumeArgsTemplate !== null) {
+            // widget and it's still resumable (UUID + session-state dir
+            // exists), inject the resume args. Otherwise launch fresh.
+            if (agentCfg?.sessionIdEnv) {
               try {
                 const saved = getLastAgentSession({ branch, canvasId, widgetId })
                 if (saved?.sessionId) {
@@ -1273,40 +1298,14 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
               } catch { /* resume is best-effort */ }
             }
 
-            // ── Capture: when this is a non-pool launch, attach a
-            // SessionStart hook via --settings so we can record the agent's
-            // session id for a future cold restart. (Pool-warmed sessions
-            // get the same hook from hot-pool.js#warmAgent.)
-            let captureFile = null
+            // ── Capture: install a watcher on this widget's capture file.
+            // The user-level Copilot hook (~/.copilot/hooks/storyboard-capture.json)
+            // writes the agent's sessionId there using STORYBOARD_WIDGET_ID +
+            // STORYBOARD_PROJECT_ROOT, both exported above. Works for fresh
+            // and resumed sessions alike (sessionStart fires on both).
             if (agentCfg?.sessionIdEnv) {
               try {
-                const widgetKey = getConfigKey(branch, canvasId, widgetId)
-                const cap = writeSessionCaptureSettings({
-                  root: cwd,
-                  widgetKey,
-                  agentCfg,
-                })
-                if (cap) {
-                  // Prepend --settings inside the resume wrapper so it
-                  // applies to BOTH the resume attempt and the fallback.
-                  // For unwrapped commands, append directly.
-                  if (cmd.startsWith("sh -c '")) {
-                    // Wrapper form: rebuild with --settings injected into both branches.
-                    const inner = cmd.slice("sh -c '".length, -1).replace(/'\\''/g, "'")
-                    const parts = inner.split(' || ')
-                    const withSettings = parts.map((p) => withSettingsArg(p, cap.settingsFile)).join(' || ')
-                    cmd = `sh -c '${withSettings.replace(/'/g, "'\\''")}'`
-                  } else {
-                    cmd = withSettingsArg(cmd, cap.settingsFile)
-                  }
-                  captureFile = cap.captureFile
-                }
-              } catch { /* best-effort */ }
-            }
-
-            // Watch the capture file and persist on first write.
-            if (captureFile) {
-              try {
+                const captureFile = captureFilePath(cwd, widgetId)
                 watchSessionIdFile(captureFile, (sessionId) => {
                   try {
                     recordAgentSession({

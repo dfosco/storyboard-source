@@ -47,7 +47,7 @@ import { execSync } from 'node:child_process'
 import { writeFileSync, existsSync, unlinkSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { devLog } from '../logger/devLogger.js'
-import { buildSessionCaptureHookCommand, readCapturedSessionId } from './agent-session.js'
+import { readCapturedSessionId, captureFilePath, clearCaptureFile } from './agent-session.js'
 
 /**
  * @typedef {Object} WarmSession
@@ -219,24 +219,18 @@ export class HotPool {
 
   /**
    * Read the captured agent session id (if any) for a pool session. The
-   * id is written by the SessionStart hook configured in #warmAgent when
-   * the agent's `sessionIdEnv` is set. Returns null when no capture file
-   * exists or the agent never wrote one.
+   * id is written by the user-level Copilot capture hook keyed by the
+   * pool's synthetic widget id (`pool-<sid>`).
    */
   getCapturedSessionId(sessionId) {
     if (!sessionId) return null
-    const captureFile = join(this.#root, '.storyboard', 'hot-pool', `${sessionId}.session-id`)
-    return readCapturedSessionId(captureFile)
+    return readCapturedSessionId(captureFilePath(this.#root, `pool-${sessionId}`))
   }
 
-  /**
-   * Delete the capture artifact for a pool session — call after the id
-   * has been consumed onto a widget so we don't leak files.
-   */
+  /** Delete the capture artifact for a pool session. */
   clearCapturedSessionId(sessionId) {
     if (!sessionId) return
-    const captureFile = join(this.#root, '.storyboard', 'hot-pool', `${sessionId}.session-id`)
-    try { unlinkSync(captureFile) } catch { /* empty */ }
+    clearCaptureFile(captureFilePath(this.#root, `pool-${sessionId}`))
   }
 
   /**
@@ -457,58 +451,54 @@ export class HotPool {
    *   3. Neither — waits 5s and assumes ready.
    */
   async #warmAgent(tmuxName, sessionId) {
-    const { startupCommand, readinessSignal, readinessFile, postStartup, sessionIdEnv } = this.#agentConfig
+    const { startupCommand, readinessSignal, readinessFile, postStartup } = this.#agentConfig
     this.#log(`⊕ AGENT ${sessionId} launching: ${startupCommand}`)
 
-    // Set up file-based readiness hook if configured
+    // Set up file-based readiness hook if configured (Claude Code supports
+    // --settings; Copilot does not, see agent-session.js for the user-level
+    // hook approach used for session-id capture).
     let signalFilePath = null
     let settingsFilePath = null
-    let captureFilePath = null
     let finalCommand = startupCommand
 
-    // Build a settings.json with up to 2 SessionStart hooks (readiness +
-    // session-id capture). Either, both, or neither may be present.
-    const sessionStartHooks = []
-    const hookDir = join(this.#root, '.storyboard', 'hot-pool')
-
     if (readinessFile) {
+      const hookDir = join(this.#root, '.storyboard', 'hot-pool')
       try { mkdirSync(hookDir, { recursive: true }) } catch { /* empty */ }
       signalFilePath = join(hookDir, `${sessionId}.ready`)
-      try { unlinkSync(signalFilePath) } catch { /* empty */ }
-      sessionStartHooks.push({ type: 'command', command: `touch ${JSON.stringify(signalFilePath)}` })
-    }
-
-    if (sessionIdEnv) {
-      try { mkdirSync(hookDir, { recursive: true }) } catch { /* empty */ }
-      captureFilePath = join(hookDir, `${sessionId}.session-id`)
-      try { unlinkSync(captureFilePath) } catch { /* empty */ }
-      sessionStartHooks.push({
-        type: 'command',
-        command: buildSessionCaptureHookCommand(captureFilePath, sessionIdEnv),
-      })
-    }
-
-    if (sessionStartHooks.length) {
       settingsFilePath = join(hookDir, `${sessionId}.settings.json`)
-      const settings = { hooks: { SessionStart: sessionStartHooks } }
+
+      // Clean up any stale signal file
+      try { unlinkSync(signalFilePath) } catch { /* empty */ }
+
+      // Write a settings file with a SessionStart hook
+      const settings = {
+        hooks: {
+          SessionStart: [{
+            type: 'command',
+            command: `touch ${JSON.stringify(signalFilePath)}`,
+          }],
+        },
+      }
       writeFileSync(settingsFilePath, JSON.stringify(settings))
       finalCommand = `${startupCommand} --settings ${JSON.stringify(settingsFilePath)}`
-      this.#log(
-        `⊕ AGENT ${sessionId} hooks → ${[
-          signalFilePath && `ready=${signalFilePath}`,
-          captureFilePath && `capture=${captureFilePath}`,
-        ].filter(Boolean).join(', ')}`,
-      )
+      this.#log(`⊕ AGENT ${sessionId} readinessFile hook → ${signalFilePath}`)
     }
 
     try {
-      // Inject color-safe env vars before launching the agent command
+      // Inject color-safe env vars + a pool-scoped widget id so our
+      // user-level Copilot capture hook (~/.copilot/hooks/storyboard-capture.json)
+      // writes the agent's sessionId to a pool-keyed file. At handoff,
+      // terminal-server reads it from `<root>/.storyboard/agent-sessions/pool-<sid>.session-id`
+      // and renames it onto the widget's key so the next cold restart can resume.
+      const poolWidgetId = `pool-${sessionId}`
       const envExports = [
         'export FORCE_COLOR=3',
         'export COLORTERM=truecolor',
         'export TERM=xterm-256color',
         'export TERM_PROGRAM=storyboard',
         'unset CI NO_COLOR GITHUB_ACTIONS',
+        `export STORYBOARD_WIDGET_ID="${poolWidgetId}"`,
+        `export STORYBOARD_PROJECT_ROOT="${this.#root}"`,
       ].join(' && ')
       execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(envExports)}`, { stdio: 'ignore' })
       execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })

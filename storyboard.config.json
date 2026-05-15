@@ -1,5 +1,6 @@
 {
   "devDomainColor": "#c77f25",
+  "port": 1236,
   "prodDomain": "https://dfosco.github.io/storyboard/",
   "repository": {
     "owner": "dfosco",
@@ -53,7 +54,7 @@
         "startupCommand": "copilot --agent terminal-agent",
         "resumeCommand": "copilot --resume",
         "sessionIdEnv": "COPILOT_AGENT_SESSION_ID",
-        "resumeArgsTemplate": "--resume {id}",
+        "resumeArgsTemplate": "--resume={id}",
         "postStartup": "/allow-all on",
         "readinessSignal": "Environment loaded:",
         "resizable": true

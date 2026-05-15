@@ -66,7 +66,7 @@ Clients on 4.1.x likely have no `canvas` block at all. The full canvas config is
         "startupCommand": "copilot --agent terminal-agent",
         "resumeCommand": "copilot --resume",
         "sessionIdEnv": "COPILOT_AGENT_SESSION_ID",
-        "resumeArgsTemplate": "--resume {id}",
+        "resumeArgsTemplate": "--resume={id}",
         "postStartup": "/allow-all on",
         "readinessSignal": "Environment loaded:",
         "resizable": true
