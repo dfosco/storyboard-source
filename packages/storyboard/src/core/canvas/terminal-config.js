@@ -31,11 +31,11 @@ export function initTerminalConfig(root) {
   }
 }
 
-/** Read storyboard.config.json for devDomain */
+/** Read storyboard.config.json for the dev domain (sourced from repository.name) */
 function readDevDomain() {
   try {
     const raw = readFileSync(join(rootDir, 'storyboard.config.json'), 'utf8')
-    return JSON.parse(raw).devDomain || 'storyboard'
+    return JSON.parse(raw).repository?.name || 'storyboard'
   } catch { return 'storyboard' }
 }
 

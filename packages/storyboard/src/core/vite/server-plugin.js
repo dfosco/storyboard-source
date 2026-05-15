@@ -234,10 +234,10 @@ export default function storyboardServer() {
       // --- End reload guard ------------------------------------------------------
 
       // Initialize dev logger for structured o11y logging
-      const devDomain = config.devDomain || null
       let currentBranch = null
       try { currentBranch = cpExecSync('git branch --show-current', { encoding: 'utf8', cwd: root }).trim() } catch { /* empty */ }
       const logVerbose = config.featureFlags?.['dev-logs'] || false
+      const devDomain = config.repository?.name || null
       const devLogger = createDevLogger({ root, devDomain, branch: currentBranch, verbose: logVerbose })
       setDevLogger(devLogger) // make available to all server-side modules via devLog()
       const sendJsonLogged = createLoggedSendJson(devLogger)
@@ -687,9 +687,9 @@ export default function storyboardServer() {
         })
 
         // Inject dev domain name for branch bar display.
-        // Falls back to the project directory name so every repo gets a
-        // labelled bar (matches the styling of repos that opt in via
-        // storyboard.config.json `devDomain`).
+        // Sourced from config.repository.name, with the project directory
+        // basename as a fallback so every repo gets a labelled bar even
+        // before storyboard.config.json is filled in.
         // Use the main repo root (not cwd) so worktrees don't shadow the
         // project name with the worktree directory name (which often equals
         // the branch name).
@@ -700,7 +700,7 @@ export default function storyboardServer() {
           }).trim()
           if (commonDir) projectRoot = commonDir.replace(/\/?\.git\/?$/, '') || projectRoot
         } catch { /* not a git repo — fall back to cwd */ }
-        const devDomainLabel = config.devDomain || path.basename(projectRoot)
+        const devDomainLabel = config.repository?.name || path.basename(projectRoot)
         if (devDomainLabel) {
           tags.push({
             tag: 'script',

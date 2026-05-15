@@ -90,7 +90,6 @@ The config file contains everything you need — no additional API calls require
   "canvasId": "storyboarding/my-canvas",
   "branch": "4.2.0--terminal-agents",
   "worktree": "4.2.0--terminal-agents",
-  "devDomain": "storyboard-core",
   "serverUrl": "http://localhost:1269",
   "workingDirectory": "/path/to/worktree",
   "connectedWidgets": [

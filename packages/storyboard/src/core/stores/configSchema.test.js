@@ -58,8 +58,8 @@ describe('configSchema', () => {
     })
 
     it('preserves existing keys not in defaults', () => {
-      const c = getConfig({ devDomain: 'my-project', featureFlags: { 'show-banner': true } })
-      expect(c.devDomain).toBe('my-project')
+      const c = getConfig({ customDomain: 'my-project', featureFlags: { 'show-banner': true } })
+      expect(c.customDomain).toBe('my-project')
       expect(c.featureFlags['show-banner']).toBe(true)
     })
 
