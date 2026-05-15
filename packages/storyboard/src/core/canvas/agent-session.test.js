@@ -82,13 +82,28 @@ describe('agent-session', () => {
       expect(out).toBe('copilot --agent terminal-agent')
     })
 
-    it('substitutes {id} into resumeCommand when valid', () => {
+    it('substitutes {id} into resumeCommand and chains a fresh-session fallback', () => {
       const out = buildResumeStartupCommand({
         startupCommand: 'copilot --agent terminal-agent',
         sessionId: '11111111-2222-4333-8444-555555555555',
         agentCfg: {
           sessionStateDir: null,
           resumeCommand: 'copilot --resume={id} --agent terminal-agent',
+        },
+      })
+      expect(out).toContain('copilot --resume=11111111-2222-4333-8444-555555555555 --agent terminal-agent')
+      expect(out).toContain('|| {')
+      expect(out).toContain('copilot --agent terminal-agent')
+    })
+
+    it('skips the fallback when resumeFallback: false', () => {
+      const out = buildResumeStartupCommand({
+        startupCommand: 'copilot --agent terminal-agent',
+        sessionId: '11111111-2222-4333-8444-555555555555',
+        agentCfg: {
+          sessionStateDir: null,
+          resumeCommand: 'copilot --resume={id} --agent terminal-agent',
+          resumeFallback: false,
         },
       })
       expect(out).toBe('copilot --resume=11111111-2222-4333-8444-555555555555 --agent terminal-agent')

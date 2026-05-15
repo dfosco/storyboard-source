@@ -65,6 +65,7 @@
  * @property {string}  [sessionIdEnv]   — env var exposed in the agent's SessionStart hook payload that holds its session id (e.g. "COPILOT_AGENT_SESSION_ID"). When set, the server captures the id per-widget so cold restarts can auto-resume.
  * @property {string}  [sessionStateDir] — directory where the agent stores per-session state, used to pre-flight `--resume` (e.g. "~/.copilot/session-state"). Pass `null` to skip the fs check (UUID-only validation).
  * @property {string}  [sessionStateGlob] — alternative to sessionStateDir for agents that store sessions under a per-project subdir, with `{id}` placeholder (e.g. "~/.claude/projects/*‍/{id}.jsonl").
+ * @property {boolean} [resumeFallback]  — when true (default), the resume command is shell-chained with `|| <startupCommand>` so a runtime resume failure falls through to a fresh session instead of leaving the widget with a dead terminal. Set false to opt out.
  * @property {boolean} [resizable]     — override terminal resizability for this agent
  * @property {number}  [defaultWidth]  — override default width
  * @property {number}  [defaultHeight] — override default height

@@ -11,11 +11,11 @@
  *
  * A watcher on the per-widget capture file persists the captured id onto
  * the widget's terminal config as `lastAgentSessionId`. On the next cold
- * restart, the launch is rewritten to `copilot --resume=<id> --agent ...`,
- * with a pre-flight check that the session-state directory still exists
- * (copilot exits non-interactively when `--resume=<id>` doesn't match an
- * existing session, so we can't rely on `||` shell fallback — we have to
- * pre-validate).
+ * restart, the launch is rewritten to `copilot --resume=<id> --agent ...`
+ * (with a pre-flight check that the on-disk session still exists), and is
+ * shell-chained with a `|| <fresh-startup>` fallback so that if the agent
+ * CLI rejects the id at runtime the widget still ends up with a working
+ * fresh session instead of a dead terminal.
  */
 
 import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync, watch as fsWatch, readdirSync, statSync } from 'node:fs'
@@ -220,7 +220,16 @@ export function buildResumeStartupCommand({ startupCommand, sessionId, agentCfg 
   const template = agentCfg?.resumeCommand
   if (!template || !template.includes('{id}')) return startupCommand
 
-  return template.replace('{id}', sessionId)
+  const resumeCmd = template.replace('{id}', sessionId)
+
+  // Graceful fallback: if the resume command exits non-zero (e.g. the agent
+  // CLI rejected the id, the on-disk session is corrupt, or the binary
+  // doesn't actually support resume the way we expect), fall through to a
+  // fresh session instead of leaving the widget with a dead terminal.
+  // A clean exit (user `/exit`s) returns 0 and skips the fallback.
+  if (agentCfg?.resumeFallback === false) return resumeCmd
+  const notice = `printf '\\n\\033[33m[storyboard] resume failed; starting fresh session...\\033[0m\\n'`
+  return `${resumeCmd} || { ${notice}; ${startupCommand}; }`
 }
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i

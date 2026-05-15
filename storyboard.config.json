@@ -35,53 +35,7 @@
       "min": 10,
       "max": 250,
       "step": 5
-    },
-    "terminal": {
-      "fontSize": 18,
-      "fontFamily": "'Ghostty', 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace",
-      "prompt": "❯ ",
-      "startupCommand": null,
-      "defaultStartupSequence": null,
-      "resizable": true,
-      "defaultWidth": 1000,
-      "defaultHeight": 800
-    },
-    "agents": {
-      "copilot": {
-        "label": "Copilot CLI",
-        "default": true,
-        "icon": "primer/copilot",
-        "startupCommand": "copilot --remote --agent terminal-agent",
-        "resumeCommand": "copilot --resume={id} --remote --agent terminal-agent",
-        "sessionIdEnv": "COPILOT_AGENT_SESSION_ID",
-        "postStartup": "/allow-all on",
-        "readinessSignal": "Environment loaded:",
-        "resizable": true
-      },
-      "claude": {
-        "label": "Claude Code",
-        "icon": "claude",
-        "startupCommand": "claude --agent terminal-agent --dangerously-skip-permissions",
-        "resumeCommand": "claude --resume {id} --agent terminal-agent --dangerously-skip-permissions",
-        "sessionIdEnv": "CLAUDE_SESSION_ID",
-        "sessionStateGlob": "~/.claude/projects/*/{id}.jsonl",
-        "resizable": true,
-        "readinessSignal": "bypass permissions"
-      },
-      "codex": {
-        "label": "Codex CLI",
-        "icon": "codex",
-        "startupCommand": "codex --ask-for-approval never",
-        "resumeCommand": "codex resume {id}",
-        "sessionIdEnv": "CODEX_SESSION_ID",
-        "sessionStateGlob": "~/.codex/sessions/**/rollout-*-{id}.jsonl",
-        "configFiles": [
-          ".codex/config.toml"
-        ],
-        "resizable": true
-      }
-    },
-    "showAgentsInAddMenu": false
+    }
   },
   "hotPool": {
     "enabled": true,

@@ -1,0 +1,48 @@
+{
+  "$schema": "./terminal.schema.json",
+  "$comment": "Defaults for terminal widgets and canvas agents. Users can override at the project root by copying this file from .storyboard/scaffold/terminal.config.json. Leaf-level merge: only the specific keys you set are overridden, everything else inherits the library defaults — so future agent additions or readinessSignal tweaks reach you automatically.",
+  "terminal": {
+    "resizable": true,
+    "defaultWidth": 1000,
+    "defaultHeight": 800,
+    "fontSize": 14,
+    "fontFamily": "'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace",
+    "prompt": "❯ ",
+    "startupCommand": null,
+    "defaultStartupSequence": null
+  },
+  "agents": {
+    "copilot": {
+      "label": "Copilot CLI",
+      "default": true,
+      "icon": "primer/copilot",
+      "startupCommand": "copilot --agent terminal-agent",
+      "resumeCommand": "copilot --resume={id} --agent terminal-agent",
+      "sessionIdEnv": "COPILOT_AGENT_SESSION_ID",
+      "postStartup": "/allow-all on",
+      "readinessSignal": "Environment loaded:",
+      "resizable": true
+    },
+    "claude": {
+      "label": "Claude Code",
+      "icon": "claude",
+      "startupCommand": "claude --agent terminal-agent --dangerously-skip-permissions",
+      "resumeCommand": "claude --resume {id} --agent terminal-agent --dangerously-skip-permissions",
+      "sessionIdEnv": "CLAUDE_SESSION_ID",
+      "sessionStateGlob": "~/.claude/projects/*/{id}.jsonl",
+      "readinessSignal": "bypass permissions",
+      "resizable": true
+    },
+    "codex": {
+      "label": "Codex CLI",
+      "icon": "codex",
+      "startupCommand": "codex --ask-for-approval never",
+      "resumeCommand": "codex resume {id}",
+      "sessionIdEnv": "CODEX_SESSION_ID",
+      "sessionStateGlob": "~/.codex/sessions/**/rollout-*-{id}.jsonl",
+      "configFiles": [".codex/config.toml"],
+      "resizable": true
+    }
+  },
+  "showAgentsInAddMenu": false
+}

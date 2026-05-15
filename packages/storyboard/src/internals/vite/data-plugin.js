@@ -548,6 +548,90 @@ function readCoreConfigFile(root, filename) {
 }
 
 /**
+ * Resolve the absolute path of a library config file (returns the first
+ * candidate that exists, or null). Used by syncScaffoldDir to copy raw
+ * file contents (including comments) rather than re-serializing parsed JSON.
+ */
+function resolveCoreConfigFilePath(root, filename) {
+  const candidates = [
+    path.resolve(root, `packages/storyboard/${filename}`),
+    path.resolve(root, `node_modules/@dfosco/storyboard/${filename}`),
+  ]
+  for (const p of candidates) {
+    try { fs.accessSync(p); return p } catch { /* try next */ }
+  }
+  return null
+}
+
+const SCAFFOLD_README = `# .storyboard/scaffold/
+
+This directory is **always rewritten on dev-server boot** to reflect the
+library's current default config files. The Storyboard server **never reads
+config from this directory** — these files are reference copies for you to
+customize.
+
+## How to customize
+
+1. Pick the config file you want to override (e.g. \`terminal.config.json\`).
+2. **Copy it to your project root** (next to \`storyboard.config.json\`).
+3. Edit only the keys you care about — leaf-level merge means everything
+   else continues to inherit the library defaults, so future updates
+   (new agents, new readiness signals, etc.) reach you automatically.
+
+## Why a separate directory?
+
+- Customers who don't want to customize don't see config clutter at the root.
+- Customers who do want to customize have all the defaults available as a
+  living reference, version-bumped with every storyboard release.
+- Files at the root override the defaults; missing files mean "use library
+  defaults". No empty placeholder files cluttering the project.
+
+## What's in here
+
+| File | What it covers |
+|------|----------------|
+| \`terminal.config.json\` | Terminal widgets + canvas agent CLIs (copilot/claude/codex) |
+| \`toolbar.config.json\` | Toolbar tool registry + visibility |
+| \`commandpalette.config.json\` | Command palette entries |
+| \`paste.config.json\` | URL → widget paste rules |
+| \`widgets.config.json\` | Widget defaults (size, behavior) |
+
+Don't edit files in this directory — your changes will be overwritten on
+the next dev-server boot. Always copy to the project root first.
+`
+
+const SCAFFOLD_FILES = [
+  'terminal.config.json',
+  'toolbar.config.json',
+  'commandpalette.config.json',
+  'paste.config.json',
+  'widgets.config.json',
+]
+
+/**
+ * Sync `.storyboard/scaffold/` with the library's current default config
+ * files. Always overwrites — users must copy to the project root to
+ * customize. Idempotent and best-effort.
+ */
+function syncScaffoldDir(root) {
+  const scaffoldDir = path.resolve(root, '.storyboard', 'scaffold')
+  try { fs.mkdirSync(scaffoldDir, { recursive: true }) } catch { /* empty */ }
+
+  const readmePath = path.resolve(scaffoldDir, 'README.md')
+  try { fs.writeFileSync(readmePath, SCAFFOLD_README) } catch { /* empty */ }
+
+  for (const filename of SCAFFOLD_FILES) {
+    const src = resolveCoreConfigFilePath(root, filename)
+    if (!src) continue
+    const dest = path.resolve(scaffoldDir, filename)
+    try {
+      const raw = fs.readFileSync(src, 'utf-8')
+      fs.writeFileSync(dest, raw)
+    } catch { /* skip on error */ }
+  }
+}
+
+/**
  * Deep-merge helper (same as loader.js deepMerge but available at build time).
  * Arrays are replaced, not concatenated. Objects are recursively merged.
  */
@@ -597,6 +681,7 @@ function buildUnifiedConfig(root) {
   const coreCommandPalette = readCoreConfigFile(root, 'commandpalette.config.json') || {}
   const corePaste = readCoreConfigFile(root, 'paste.config.json') || {}
   const coreWidgets = readCoreConfigFile(root, 'widgets.config.json') || {}
+  const coreTerminal = readCoreConfigFile(root, 'terminal.config.json') || {}
 
   // 2. Read storyboard.config.json (middle priority)
   // Use the schema-defaulted config for most things, but also read
@@ -619,6 +704,17 @@ function buildUnifiedConfig(root) {
   const afterSbWidgets = rawSbConfig.widgets
     ? deepMergeBuild(coreWidgets, sbConfig.widgets || {})
     : coreWidgets
+  // For terminal/agents, slot canvas.terminal + canvas.agents from storyboard.config.json
+  // into the same shape as terminal.config.json so the merge is uniform.
+  const sbTerminalLike = (rawSbConfig.canvas && (rawSbConfig.canvas.terminal || rawSbConfig.canvas.agents))
+    ? {
+        ...(rawSbConfig.canvas.terminal ? { terminal: sbConfig.canvas.terminal } : {}),
+        ...(rawSbConfig.canvas.agents ? { agents: sbConfig.canvas.agents } : {}),
+      }
+    : null
+  const afterSbTerminal = sbTerminalLike
+    ? deepMergeBuild(coreTerminal, sbTerminalLike)
+    : coreTerminal
 
   // 4. Read user domain config files (highest priority)
   const userFiles = [
@@ -626,6 +722,7 @@ function buildUnifiedConfig(root) {
     { domain: 'paste', filename: 'paste.config.json' },
     { domain: 'toolbar', filename: 'toolbar.config.json' },
     { domain: 'commandPalette', filename: 'commandpalette.config.json' },
+    { domain: 'terminal', filename: 'terminal.config.json' },
   ]
 
   const userConfigs = {}
@@ -648,6 +745,9 @@ function buildUnifiedConfig(root) {
   const finalWidgets = userConfigs.widgets
     ? deepMergeBuild(afterSbWidgets, userConfigs.widgets.data)
     : afterSbWidgets
+  const finalTerminal = userConfigs.terminal
+    ? deepMergeBuild(afterSbTerminal, userConfigs.terminal.data)
+    : afterSbTerminal
 
   // 6. Detect overlaps between storyboard.config.json and user domain configs
   const domainOverlapChecks = [
@@ -664,18 +764,31 @@ function buildUnifiedConfig(root) {
       }
     }
   }
+  // Terminal overlap check: storyboard.config.json.canvas.{terminal,agents} vs terminal.config.json
+  if (sbTerminalLike && userConfigs.terminal) {
+    const overlaps = findOverlappingKeys(sbTerminalLike, userConfigs.terminal.data)
+    for (const key of overlaps) {
+      warnings.push(`Config overlap: "${key}" is defined in both storyboard.config.json.canvas and terminal.config.json — terminal.config.json wins.`)
+    }
+  }
 
   // 7. Build the unified config object.
   // Start from the schema-defaulted sbConfig so every top-level key from
   // storyboard.config.json (and every schema default) flows to initConfig().
   // Then override the domain-specific slices that have their own dedicated
-  // config files merged above (toolbar/commandPalette/paste/widgets).
+  // config files merged above (toolbar/commandPalette/paste/widgets/terminal).
   const unified = {
     ...sbConfig,
     toolbar: finalToolbar,
     commandPalette: finalCommandPalette,
     paste: finalPaste,
     widgets: finalWidgets,
+    canvas: {
+      ...sbConfig.canvas,
+      terminal: deepMergeBuild(sbConfig.canvas?.terminal || {}, finalTerminal.terminal || {}),
+      agents: deepMergeBuild(sbConfig.canvas?.agents || {}, finalTerminal.agents || {}),
+      ...(finalTerminal.showAgentsInAddMenu !== undefined ? { showAgentsInAddMenu: finalTerminal.showAgentsInAddMenu } : {}),
+    },
   }
 
   return { unified, warnings }
@@ -1063,6 +1176,14 @@ export default function storyboardDataPlugin() {
       // dev so users can hit their routes, excluded from production builds
       // so private experiments don't ship.
       includeTilde = config.command === 'serve'
+
+      // On dev boot, sync .storyboard/scaffold/ with the library's current
+      // default config files so users always have an up-to-date copy-source
+      // for customizations. Files in .storyboard/scaffold/ are NEVER read by
+      // the server — only files at the project root are. Always overwrites.
+      if (config.command === 'serve') {
+        try { syncScaffoldDir(root) } catch { /* best-effort */ }
+      }
     },
 
     resolveId(id) {
@@ -1209,7 +1330,7 @@ export default function storyboardDataPlugin() {
         }
 
         // Invalidate when any config file inside a prototype changes
-        const protoConfigPattern = /\/(toolbar|commandpalette|widgets|paste)\.config\.json$/
+        const protoConfigPattern = /\/(toolbar|commandpalette|widgets|paste|terminal)\.config\.json$/
         if (protoConfigPattern.test(normalized) && normalized.includes('/prototypes/')) {
           buildResult = null
           const mod = server.moduleGraph.getModuleById(RESOLVED_ID)
@@ -1368,6 +1489,7 @@ export default function storyboardDataPlugin() {
         'commandpalette.config.json',
         'paste.config.json',
         'widgets.config.json',
+        'terminal.config.json',
       ].map(f => path.resolve(root, f))
       const watchedConfigPaths = new Set([configPath, ...domainConfigFiles])
       for (const p of domainConfigFiles) watcher.add(p)
