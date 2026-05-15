@@ -49,7 +49,12 @@ async function main() {
   }, 15 * 60 * 1000)
 
   const npmBin = process.platform === 'win32' ? 'npx.cmd' : 'npx'
-  const child = spawn(npmBin, ['vite', '--port', String(port), '--strictPort'], {
+  // Don't pass --strictPort: if the requested port is taken, Vite picks
+  // the next free one. The server-plugin captures the actual port via
+  // server.httpServer.address() and self-registers that in
+  // .storyboard/servers.json, so consumers (BranchBar, agent terminals,
+  // sbNavigate, switch-branch) always see the real port.
+  const child = spawn(npmBin, ['vite', '--port', String(port)], {
     cwd: targetCwd,
     stdio: 'inherit',
     env: { ...process.env, STORYBOARD_WORKTREE: worktreeName },
