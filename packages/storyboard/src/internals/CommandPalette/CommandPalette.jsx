@@ -42,6 +42,17 @@ function getProdDomain() {
   }
 }
 
+function getCurrentBranchName() {
+  if (typeof window === 'undefined') return null
+  if (typeof window.__SB_CURRENT_BRANCH__ === 'string' && window.__SB_CURRENT_BRANCH__) {
+    return window.__SB_CURRENT_BRANCH__
+  }
+  // Fallback: parse /branch--<name>/ out of BASE_URL for prod static deploys.
+  const base = (window.__STORYBOARD_BASE_PATH__ || '').toString()
+  const m = base.match(/\/branch--([^/]+)\/?$/)
+  return m ? m[1] : null
+}
+
 function openDeployedBranch() {
   if (typeof window === 'undefined') return
   const raw = getProdDomain()
@@ -57,7 +68,16 @@ function openDeployedBranch() {
     url.protocol = 'https:'
     url.host = host
     url.port = ''
-    url.pathname = basePath + url.pathname
+
+    // Strip any /branch--<x>/ prefix already present in the dev pathname
+    // (paranoia — current dev URLs don't have one) before appending the
+    // current-branch segment for prod.
+    let pathname = url.pathname.replace(/^\/branch--[^/]+/, '')
+
+    const branch = getCurrentBranchName()
+    const branchSegment = branch && branch !== 'main' ? `/branch--${branch}` : ''
+
+    url.pathname = basePath + branchSegment + pathname
     window.open(url.toString(), '_blank', 'noopener,noreferrer')
   } catch {
     // ignore malformed URLs
