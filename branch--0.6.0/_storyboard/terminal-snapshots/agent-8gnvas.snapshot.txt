@@ -1,78 +1,18 @@
 SESSION: agent-8gnvas | iron-oriole
 CANVAS:  storyboarding/terminal-widget-prompts
 BRANCH:  0.6.0
-TIME:    2026-05-15T15:34:59.487Z
+TIME:    2026-05-15T17:10:33.958Z
 
 ================================================================================
 SCREEN
 ================================================================================
 
-● Read terminal config by widgetId (shell)
-  │ cat .storyboard/terminals/agent-8gnvas.json 2>/dev/null | jq '{connectedWidgets,
-  │ messaging}'
-  └ 5 lines...
-
-● Hi! 👋 No widgets are connected to me right now. What would you like to work on? You
-  can connect a sticky note, markdown block, or another widget to give me context, or
-  just tell me what to do.
-
-! Failed to load 1 skill. Run /skills for more details.
-
-● Selected custom agent: terminal-agent
-
-● Environment loaded: 1 custom instruction, 1 hook, 21 skills, 1 MCP server, 2 agents,
-  Visual Studio Code - Insiders connected
-
-● All permissions are now enabled. Tool, path, and URL requests will be automatically
-  approved.
-
-❯ [System] Your terminal identity has been set. widgetId=agent-8gnvas
-  displayName=iron-oriole canvasId=storyboarding/terminal-widget-prompts
-  configFile=.storyboard/terminals/agent-8gnvas.json serverUrl=http://localhost:1236 —
-  this is a configuration step, no response needed.
-
-● Acknowledged.
-
- ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]         @storyboard.config.json
-─────────────────────────────────────────────────────────────────────────────────────────
-❯  
-─────────────────────────────────────────────────────────────────────────────────────────
- / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+(empty)
 
 ================================================================================
 SCROLLBACK (last 60s)
 ================================================================================
 
-[lost tty]
-[?996n[>c[>q● Read terminal config by widgetId (shell)
-  │ cat .storyboard/terminals/agent-8gnvas.json 2>/dev/null | jq '{connectedWidgets,
-  │ messaging}'
-  └ 5 lines...
-
-● Hi! 👋 No widgets are connected to me right now. What would you like to work on? You
-  can connect a sticky note, markdown block, or another widget to give me context, or
-  just tell me what to do.
-
-! Failed to load 1 skill. Run /skills for more details.
-
-● Selected custom agent: terminal-agent
-
-● Environment loaded: 1 custom instruction, 1 hook, 21 skills, 1 MCP server, 2 agents,
-  Visual Studio Code - Insiders connected
-
-● All permissions are now enabled. Tool, path, and URL requests will be automatically
-  approved.
-
-❯ [System] Your terminal identity has been set. widgetId=agent-8gnvas
-  displayName=iron-oriole canvasId=storyboarding/terminal-widget-prompts
-  configFile=.storyboard/terminals/agent-8gnvas.json serverUrl=http://localhost:1236 —
-  this is a configuration step, no response needed.
-
-● Acknowledged.
-
- ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]         @storyboard.config.json
-─────────────────────────────────────────────────────────────────────────────────────────❯
-───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
 ● Read terminal config by widgetId (shell)
   │ cat .storyboard/terminals/agent-8gnvas.json 2>/dev/null | jq '{connectedWidgets,
   │ messaging}'
@@ -100,9 +40,9 @@ SCROLLBACK (last 60s)
 ● Acknowledged.
 
  ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]         @storyboard.config.json
-─────────────────────────────────────────────────────────────────────────────────────────❯
+─────────────────────────────────────────────────────────────────────────────────────────❯  
 ───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-❯  ● Read terminal config by widgetId (shell)
+● Read terminal config by widgetId (shell)
   │ cat .storyboard/terminals/agent-8gnvas.json 2>/dev/null | jq '{connectedWidgets,
   │ messaging}'
   └ 5 lines...
@@ -189,3 +129,91 @@ SCROLLBACK (last 60s)
  ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]         @storyboard.config.json
 ─────────────────────────────────────────────────────────────────────────────────────────❯  
 ───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+● Read terminal config by widgetId (shell)
+  │ cat .storyboard/terminals/agent-8gnvas.json 2>/dev/null | jq '{connectedWidgets,
+  │ messaging}'
+  └ 5 lines...
+
+● Hi! 👋 No widgets are connected to me right now. What would you like to work on? You
+  can connect a sticky note, markdown block, or another widget to give me context, or
+  just tell me what to do.
+
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+● Environment loaded: 1 custom instruction, 1 hook, 21 skills, 1 MCP server, 2 agents,
+  Visual Studio Code - Insiders connected
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+❯ [System] Your terminal identity has been set. widgetId=agent-8gnvas
+  displayName=iron-oriole canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-8gnvas.json serverUrl=http://localhost:1236 —
+  this is a configuration step, no response needed.
+
+● Acknowledged.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]         @storyboard.config.json
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+● Read terminal config by widgetId (shell)
+  │ cat .storyboard/terminals/agent-8gnvas.json 2>/dev/null | jq '{connectedWidgets,
+  │ messaging}'
+  └ 5 lines...
+
+● Hi! 👋 No widgets are connected to me right now. What would you like to work on? You
+  can connect a sticky note, markdown block, or another widget to give me context, or
+  just tell me what to do.
+
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+● Environment loaded: 1 custom instruction, 1 hook, 21 skills, 1 MCP server, 2 agents,
+  Visual Studio Code - Insiders connected
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+❯ [System] Your terminal identity has been set. widgetId=agent-8gnvas
+  displayName=iron-oriole canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-8gnvas.json serverUrl=http://localhost:1236 —
+  this is a configuration step, no response needed.
+
+● Acknowledged.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]         @storyboard.config.json
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+● Read terminal config by widgetId (shell)
+  │ cat .storyboard/terminals/agent-8gnvas.json 2>/dev/null | jq '{connectedWidgets,
+  │ messaging}'
+  └ 5 lines...
+
+● Hi! 👋 No widgets are connected to me right now. What would you like to work on? You
+  can connect a sticky note, markdown block, or another widget to give me context, or
+  just tell me what to do.
+
+! Failed to load 1 skill. Run /skills for more details.
+
+● Selected custom agent: terminal-agent
+
+● Environment loaded: 1 custom instruction, 1 hook, 21 skills, 1 MCP server, 2 agents,
+  Visual Studio Code - Insiders connected
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically
+  approved.
+
+❯ [System] Your terminal identity has been set. widgetId=agent-8gnvas
+  displayName=iron-oriole canvasId=storyboarding/terminal-widget-prompts
+  configFile=.storyboard/terminals/agent-8gnvas.json serverUrl=http://localhost:1236 —
+  this is a configuration step, no response needed.
+
+● Acknowledged.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]         @storyboard.config.json
+─────────────────────────────────────────────────────────────────────────────────────────❯  
+───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+[server exited]
