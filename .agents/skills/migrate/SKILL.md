@@ -74,7 +74,9 @@ Clients on 4.1.x likely have no `canvas` block at all. The full canvas config is
         "label": "Claude Code",
         "icon": "claude",
         "startupCommand": "claude --agent terminal-agent --dangerously-skip-permissions",
-        "resumeCommand": "claude --resume={id} --agent terminal-agent --dangerously-skip-permissions",
+        "resumeCommand": "claude --resume {id} --agent terminal-agent --dangerously-skip-permissions",
+        "sessionIdEnv": "CLAUDE_SESSION_ID",
+        "sessionStateGlob": "~/.claude/projects/*/{id}.jsonl",
         "resizable": true,
         "readinessSignal": "bypass permissions"
       },

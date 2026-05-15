@@ -18,7 +18,7 @@
  * pre-validate).
  */
 
-import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync, watch as fsWatch } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync, watch as fsWatch, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { homedir } from 'node:os'
 
@@ -26,6 +26,8 @@ const CAPTURE_DIR = join('.storyboard', 'agent-sessions')
 const COPILOT_USER_HOOKS_DIR = join(homedir(), '.copilot', 'hooks')
 const COPILOT_HOOK_FILENAME = 'storyboard-capture.json'
 const COPILOT_SESSION_STATE_DIR = join(homedir(), '.copilot', 'session-state')
+const CLAUDE_SETTINGS_PATH = join(homedir(), '.claude', 'settings.json')
+const CLAUDE_HOOK_MARKER = 'storyboard-capture'
 
 /** Resolve absolute path to the per-widget capture directory under root. */
 function captureDir(root) {
@@ -62,24 +64,11 @@ export function ensureCopilotCaptureHookInstalled() {
 
   const hookPath = join(COPILOT_USER_HOOKS_DIR, COPILOT_HOOK_FILENAME)
 
-  // Single-line bash script. Reads stdin JSON, extracts sessionId via sed
-  // (no jq dependency), writes it to the widget's per-project capture file.
-  const bashScript =
-    'wid="${STORYBOARD_WIDGET_ID}"; ' +
-    'root="${STORYBOARD_PROJECT_ROOT}"; ' +
-    '[ -z "$wid" ] && exit 0; ' +
-    '[ -z "$root" ] && exit 0; ' +
-    'id=$(cat | sed -n \'s/.*"sessionId"[[:space:]]*:[[:space:]]*"\\([^"]*\\)".*/\\1/p\' | head -n1); ' +
-    '[ -z "$id" ] && exit 0; ' +
-    'dir="$root/.storyboard/agent-sessions"; ' +
-    'mkdir -p "$dir" 2>/dev/null; ' +
-    'printf %s "$id" > "$dir/$wid.session-id"'
-
   const hook = {
     version: 1,
     hooks: {
       sessionStart: [
-        { type: 'command', bash: bashScript, timeoutSec: 5 },
+        { type: 'command', bash: buildCaptureBashScript(), timeoutSec: 5 },
       ],
     },
   }
@@ -92,6 +81,80 @@ export function ensureCopilotCaptureHookInstalled() {
     try { writeFileSync(hookPath, next) } catch { /* best-effort */ }
   }
   return hookPath
+}
+
+/**
+ * Install (idempotently) a SessionStart hook in `~/.claude/settings.json`
+ * that captures Claude Code session ids the same way the Copilot hook does.
+ *
+ * Claude's hook payload uses `session_id` (snake_case) instead of Copilot's
+ * `sessionId` — our capture script handles both. Claude reads the hook from
+ * `~/.claude/settings.json` and merges it with project / local / managed
+ * settings, so we install user-scope and let Claude do the merging.
+ *
+ * Existing settings are preserved: we read, deep-merge our hook into the
+ * SessionStart array (replacing any prior storyboard hook by `command`
+ * marker), and write back.
+ *
+ * Safe to call on every dev-server boot.
+ */
+export function ensureClaudeCaptureHookInstalled() {
+  let settings = {}
+  try {
+    settings = JSON.parse(readFileSync(CLAUDE_SETTINGS_PATH, 'utf8'))
+  } catch { /* file may not exist or be invalid — start fresh */ }
+
+  if (typeof settings !== 'object' || settings === null) settings = {}
+  if (typeof settings.hooks !== 'object' || settings.hooks === null) settings.hooks = {}
+  if (!Array.isArray(settings.hooks.SessionStart)) settings.hooks.SessionStart = []
+
+  const ourHandler = {
+    type: 'command',
+    command: buildCaptureBashScript(),
+    timeout: 5,
+  }
+  // Claude wraps handlers in a matcher group. Use no matcher (matches all).
+  const ourGroup = { hooks: [ourHandler] }
+
+  // Replace any prior storyboard-capture group; identify by marker substring.
+  const next = settings.hooks.SessionStart.filter((g) => {
+    const handlers = Array.isArray(g?.hooks) ? g.hooks : []
+    return !handlers.some((h) => typeof h?.command === 'string' && h.command.includes(CLAUDE_HOOK_MARKER))
+  })
+  // Tag our handler command with the marker so we can find/replace it later.
+  ourHandler.command = `# ${CLAUDE_HOOK_MARKER}\n${ourHandler.command}`
+  next.push(ourGroup)
+
+  settings.hooks.SessionStart = next
+
+  try { mkdirSync(join(homedir(), '.claude'), { recursive: true }) } catch { /* empty */ }
+  try {
+    writeFileSync(CLAUDE_SETTINGS_PATH, JSON.stringify(settings, null, 2) + '\n')
+  } catch { /* best-effort */ }
+  return CLAUDE_SETTINGS_PATH
+}
+
+/**
+ * Shared capture bash script. Handles both Copilot (`sessionId` camelCase)
+ * and Claude (`session_id` snake_case) payload shapes. Reads
+ * STORYBOARD_WIDGET_ID + STORYBOARD_PROJECT_ROOT from env (exported by
+ * terminal-server into the agent shell). Silently no-ops if either env
+ * var is missing.
+ */
+function buildCaptureBashScript() {
+  return [
+    'wid="${STORYBOARD_WIDGET_ID}"',
+    'root="${STORYBOARD_PROJECT_ROOT}"',
+    '[ -z "$wid" ] && exit 0',
+    '[ -z "$root" ] && exit 0',
+    'payload=$(cat)',
+    'id=$(printf %s "$payload" | sed -n \'s/.*"sessionId"[[:space:]]*:[[:space:]]*"\\([^"]*\\)".*/\\1/p\' | head -n1)',
+    '[ -z "$id" ] && id=$(printf %s "$payload" | sed -n \'s/.*"session_id"[[:space:]]*:[[:space:]]*"\\([^"]*\\)".*/\\1/p\' | head -n1)',
+    '[ -z "$id" ] && exit 0',
+    'dir="$root/.storyboard/agent-sessions"',
+    'mkdir -p "$dir" 2>/dev/null',
+    'printf %s "$id" > "$dir/$wid.session-id"',
+  ].join('; ')
 }
 
 /**
@@ -120,18 +183,58 @@ export function buildResumeStartupCommand({ startupCommand, sessionId, agentCfg 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 /**
- * Decide whether a captured sessionId is still resumable. For copilot, this
- * means the id is a UUID and `~/.copilot/session-state/<id>/` still exists.
- * Other agents can opt out of validation by setting `sessionStateDir` to null.
+ * Decide whether a captured sessionId is still resumable.
+ *
+ * Strategies:
+ *   - `agentCfg.sessionStateDir` → check if `<dir>/<id>` exists (Copilot)
+ *   - `agentCfg.sessionStateGlob` → check if any
+ *     `~/.claude/projects/*‍/<id>.jsonl` exists (Claude)
+ *   - both null → trust the UUID
+ *
+ * Defaults to the Copilot session-state dir when nothing is configured.
  */
 export function isResumableSessionId(sessionId, agentCfg = {}) {
   if (!sessionId) return false
   if (!UUID_RE.test(sessionId)) return false
+
+  // Explicit glob check (Claude-style: <dir>/*/<id>.jsonl)
+  if (agentCfg.sessionStateGlob) {
+    return matchesSessionStateGlob(sessionId, agentCfg.sessionStateGlob)
+  }
+
   const stateDir = agentCfg.sessionStateDir === undefined
     ? COPILOT_SESSION_STATE_DIR
     : agentCfg.sessionStateDir
   if (!stateDir) return true // explicit opt-out of fs validation
   return existsSync(join(stateDir, sessionId))
+}
+
+/**
+ * Check if `<root>/<anySubdir>/<id>.jsonl` exists, where `glob` is a
+ * shorthand string. Currently only supports the Claude pattern
+ * `~/.claude/projects/*‍/{id}.jsonl`. The `*` segment is interpreted as
+ * any single directory level.
+ */
+function matchesSessionStateGlob(sessionId, glob) {
+  const expanded = glob.replace('~', homedir()).replace('{id}', sessionId)
+  // Find the `*` segment; everything before it is the root, everything
+  // after is the suffix to test inside each subdir.
+  const parts = expanded.split('/*/')
+  if (parts.length !== 2) {
+    // Plain path with no wildcard — direct check.
+    return existsSync(expanded)
+  }
+  const [root, suffix] = parts
+  let entries = []
+  try { entries = readdirSync(root) } catch { return false }
+  for (const name of entries) {
+    const full = join(root, name)
+    try {
+      if (!statSync(full).isDirectory()) continue
+    } catch { continue }
+    if (existsSync(join(full, suffix))) return true
+  }
+  return false
 }
 
 /**

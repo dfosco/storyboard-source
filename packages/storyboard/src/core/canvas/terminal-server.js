@@ -62,6 +62,7 @@ import {
   watchSessionIdFile,
   captureFilePath,
   ensureCopilotCaptureHookInstalled,
+  ensureClaudeCaptureHookInstalled,
 } from './agent-session.js'
 
 let pty
@@ -687,8 +688,10 @@ export function setupTerminalServer(httpServer, base = '/', branch = 'unknown', 
   initTerminalConfig(root)
 
   // Install user-level Copilot CLI hook (~/.copilot/hooks/storyboard-capture.json)
-  // that captures sessionStart payloads into per-widget files. Idempotent.
+  // and Claude Code hook (~/.claude/settings.json) that capture sessionStart
+  // payloads into per-widget files. Idempotent.
   try { ensureCopilotCaptureHookInstalled() } catch { /* best-effort */ }
+  try { ensureClaudeCaptureHookInstalled() } catch { /* best-effort */ }
 
   // Best-effort: apply shell-config overrides if a tmux server already exists
   // from a previous dev server run. If no server exists, this fails silently —

@@ -39,6 +39,19 @@ describe('agent-session', () => {
       mkdirSync(join(stateDir, id), { recursive: true })
       expect(isResumableSessionId(id, { sessionStateDir: stateDir })).toBe(true)
     })
+
+    it('uses sessionStateGlob to validate per-project session files (Claude shape)', () => {
+      const id = '11111111-2222-4333-8444-555555555555'
+      const { mkdirSync, writeFileSync } = require('node:fs')
+      const projectsDir = join(root, 'projects')
+      mkdirSync(join(projectsDir, '-Users-foo-some-project'), { recursive: true })
+      writeFileSync(join(projectsDir, '-Users-foo-some-project', `${id}.jsonl`), '')
+      expect(isResumableSessionId(id, { sessionStateGlob: `${projectsDir}/*/{id}.jsonl` })).toBe(true)
+      expect(isResumableSessionId(
+        '99999999-2222-4333-8444-555555555555',
+        { sessionStateGlob: `${projectsDir}/*/{id}.jsonl` },
+      )).toBe(false)
+    })
   })
 
   describe('buildResumeStartupCommand', () => {
@@ -78,8 +91,7 @@ describe('agent-session', () => {
     })
   })
 
-  describe('captureFilePath / readCapturedSessionId / clearCaptureFile', () => {
-    it('writes to .storyboard/agent-sessions/<key>.session-id', () => {
+  describe('captureFilePath / readCapturedSessionId / clearCaptureFile', () => {    it('writes to .storyboard/agent-sessions/<key>.session-id', () => {
       const cap = captureFilePath(root, 'agent-foo')
       expect(cap).toBe(join(root, '.storyboard', 'agent-sessions', 'agent-foo.session-id'))
     })

@@ -62,7 +62,9 @@
         "label": "Claude Code",
         "icon": "claude",
         "startupCommand": "claude --agent terminal-agent --dangerously-skip-permissions",
-        "resumeCommand": "claude --agent terminal-agent --dangerously-skip-permissions",
+        "resumeCommand": "claude --resume {id} --agent terminal-agent --dangerously-skip-permissions",
+        "sessionIdEnv": "CLAUDE_SESSION_ID",
+        "sessionStateGlob": "~/.claude/projects/*/{id}.jsonl",
         "resizable": true,
         "readinessSignal": "bypass permissions"
       },

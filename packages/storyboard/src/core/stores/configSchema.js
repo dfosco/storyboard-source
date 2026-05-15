@@ -62,7 +62,9 @@
  * @property {string}  [readinessSignal] — tmux pane text that signals the agent is ready (fragile, prefer readinessFile)
  * @property {string}  [resumeCommand]  — full command template to resume a session, with `{id}` placeholder (e.g. `"copilot --resume={id} --agent terminal-agent"`). Used both for auto-resume on cold restart (with `{id}` substituted) and for the interactive "Browse existing sessions" flow (binary derived, `--resume` appended).
  * @property {boolean} [readinessFile]  — use a file-based SessionStart hook for readiness (writes --settings with hook, polls for signal file)
- * @property {string}  [sessionIdEnv]   — env var exposed inside the agent's SessionStart hook payload that holds its session id (e.g. "COPILOT_AGENT_SESSION_ID"). When set, the server captures the id per-widget so cold restarts can auto-resume.
+ * @property {string}  [sessionIdEnv]   — env var exposed in the agent's SessionStart hook payload that holds its session id (e.g. "COPILOT_AGENT_SESSION_ID"). When set, the server captures the id per-widget so cold restarts can auto-resume.
+ * @property {string}  [sessionStateDir] — directory where the agent stores per-session state, used to pre-flight `--resume` (e.g. "~/.copilot/session-state"). Pass `null` to skip the fs check (UUID-only validation).
+ * @property {string}  [sessionStateGlob] — alternative to sessionStateDir for agents that store sessions under a per-project subdir, with `{id}` placeholder (e.g. "~/.claude/projects/*‍/{id}.jsonl").
  * @property {boolean} [resizable]     — override terminal resizability for this agent
  * @property {number}  [defaultWidth]  — override default width
  * @property {number}  [defaultHeight] — override default height
