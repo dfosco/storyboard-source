@@ -287,7 +287,7 @@ function GestureExample() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <Text sx={{ fontSize: 0, color: 'fg.muted' }}>
-        Mouse-down center, flick ≥24px in a direction
+        Mouse-down center, flick ≥24px in a direction · last: <code>{last ?? '—'}</code>
       </Text>
       <RadialMenu radius={90} gestureThreshold={24} onSelect={(v) => setLast(v)}>
         <RadialMenuItem value="up" icon={<UploadIcon />}>Up</RadialMenuItem>

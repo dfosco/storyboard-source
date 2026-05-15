@@ -179,7 +179,7 @@ export default function RadialMenu({
   const LinearList = (
     <ul role="menu" aria-label={`${ariaLabel} (list view)`} className={styles.linear}>
       {items.map((child, i) => {
-        const { value, icon, disabled, tone, children: label } = child.props
+        const { icon, disabled, tone, children: label } = child.props
         const isGroup = child.type === RadialMenuGroup
         return (
           <li key={`${id}-l-${i}`} role="none">
