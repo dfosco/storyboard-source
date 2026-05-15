@@ -973,21 +973,33 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
         try {
           try { execSync(`tmux kill-session -t "${tmuxName}" 2>/dev/null`, { stdio: 'ignore' }) } catch { /* empty */ }
           execSync(`tmux rename-session -t "${poolSession.tmuxName}" "${tmuxName}"`, { stdio: 'ignore' })
-          // Persist the agent's captured session id (if the warm hook ran)
-          // onto the widget's terminal config before consuming so a future
-          // cold restart can resume it.
+          // Persist the agent's captured session id onto the widget's
+          // terminal config. The hook subprocess writes the capture file
+          // asynchronously after sessionStart fires, so it may not be on
+          // disk yet at handoff. Try once now (in case it already wrote)
+          // and ALSO install a watcher on the pool-keyed capture file so
+          // late writes (and any subsequent sessionStart from /new) are
+          // also persisted. The hook always writes to the pool-keyed
+          // file because copilot's STORYBOARD_WIDGET_ID env was set at
+          // pool warm-time and we can't change a running process's env.
           try {
-            const capturedId = hotPoolRef.getCapturedSessionId(targetPool, poolSession.id)
-            if (capturedId) {
-              recordAgentSession({
-                branch,
-                canvasId,
-                widgetId,
-                agentId: poolId || null,
-                sessionId: capturedId,
-              })
-              hotPoolRef.clearCapturedSessionId(targetPool, poolSession.id)
+            const persist = (sessionId) => {
+              try {
+                recordAgentSession({
+                  branch,
+                  canvasId,
+                  widgetId,
+                  agentId: poolId || null,
+                  sessionId,
+                })
+              } catch { /* empty */ }
             }
+            const immediate = hotPoolRef.getCapturedSessionId(targetPool, poolSession.id)
+            if (immediate) persist(immediate)
+            // Watcher on the pool capture file. Fires for the initial
+            // (delayed) sessionStart and any subsequent ones.
+            const poolCaptureFile = captureFilePath(cwd, `pool-${poolSession.id}`)
+            watchSessionIdFile(poolCaptureFile, persist)
           } catch { /* best-effort */ }
           hotPoolRef.consume(targetPool, poolSession.id)
           usedWarmAgent = !!poolId // only true for agent pools, not terminal pools
@@ -1150,29 +1162,12 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
         // ── Hot pool path: session came from a pre-warmed agent pool ──
         // Re-apply postStartup at handoff and wait for readiness if configured.
         // This keeps reassigned sessions robust when warm-up readiness is flaky.
+        // (Session-id capture is handled in the warm-handoff block above
+        // via a watcher on the pool-keyed capture file — copilot's env is
+        // pool-keyed for the life of the warm process, so the user-level
+        // hook always writes there, not to the widget-keyed file.)
         const postStartup = resolvedAgentCfg?.postStartup || null
         const readinessSignal = resolvedAgentCfg?.readinessSignal || null
-
-        // Install capture watcher on the widget's capture file — picks up
-        // any subsequent sessionStart events fired inside the agent
-        // (e.g. user runs /new). Initial pool-time sessionId was already
-        // recorded above at handoff via getCapturedSessionId.
-        if (resolvedAgentCfg?.sessionIdEnv) {
-          try {
-            const captureFile = captureFilePath(cwd, widgetId)
-            watchSessionIdFile(captureFile, (sessionId) => {
-              try {
-                recordAgentSession({
-                  branch,
-                  canvasId,
-                  widgetId,
-                  agentId: resolvedAgent?.id || null,
-                  sessionId,
-                })
-              } catch { /* empty */ }
-            })
-          } catch { /* empty */ }
-        }
         setTimeout(() => {
           let completed = false
           const finalize = () => {
