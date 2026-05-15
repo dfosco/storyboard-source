@@ -1237,17 +1237,23 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
         const binDir = join(cwd, '.storyboard', 'terminals', 'bin')
         envParts.push(`export PATH="${binDir}:$PATH"`)
 
-        // Chain clear before exports so the typed env soup is wiped from
-        // view as soon as Enter executes, then chain clear again after so
-        // the agent starts on a clean screen.
-        let envExports = envParts.join(' && ')
-        if (startupCommand) {
-          envExports = `clear && ${envExports} && clear`
-        }
+        // Write env exports to a per-widget shell script and source it via a
+        // short send-keys. Avoids tmux send-keys -l truncation when the env
+        // soup (especially PATH expansion) gets large — observed: a 4 KB+
+        // chain stops mid-line on macOS, the agent command never runs.
+        const envScriptDir = join(cwd, '.storyboard', 'terminals')
+        try { mkdirSync(envScriptDir, { recursive: true }) } catch { /* empty */ }
+        const envScriptPath = join(envScriptDir, `${widgetId}.env.sh`)
+        try {
+          writeFileSync(envScriptPath, envParts.join('\n') + '\n')
+        } catch { /* empty */ }
+        const envSourceCmd = startupCommand
+          ? `clear && source ${JSON.stringify(envScriptPath)} && clear`
+          : `source ${JSON.stringify(envScriptPath)}`
 
         setTimeout(() => {
           try {
-            execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(envExports)}`, { stdio: 'ignore' })
+            execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(envSourceCmd)}`, { stdio: 'ignore' })
             execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
           } catch { /* empty */ }
         }, 300)
