@@ -357,11 +357,18 @@ async function welcomeLoop() {
         continue
       }
 
-      // Try to match against a configured agent for label resolution
+      // Try to match against a configured agent for label resolution.
+      // IMPORTANT: when we match, override the matched agent's
+      // startupCommand with the actual startupCmd received from
+      // terminal-server. Otherwise we'd lose injected flags like
+      // `--resume=<id>` because launchAgent reads from agent.startupCommand,
+      // not from the outer startupCmd variable.
       const matchedAgent = agents.find(a =>
         startupCmd.startsWith(a.startupCommand?.split(' ')[0])
       )
-      const agent = matchedAgent || { label: startupCmd.split(/\s+/)[0], startupCommand: startupCmd }
+      const agent = matchedAgent
+        ? { ...matchedAgent, startupCommand: startupCmd }
+        : { label: startupCmd.split(/\s+/)[0], startupCommand: startupCmd }
 
       let succeeded = false
       for (let attempt = 0; attempt < MAX_STARTUP_RETRIES; attempt++) {
