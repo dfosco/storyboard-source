@@ -22,8 +22,71 @@ import {
   initCommandPaletteConfig,
   initToolbarConfig, consumeClientToolbarOverrides,
   initCustomerModeConfig,
+  getCustomerModeConfig,
   getConfig,
 } from './index.js'
+
+/**
+ * Apply customer-mode side effects.
+ *
+ * - `enabled`: adds `storyboard-customer-mode` class to <html> (for CSS hooks
+ *   and runtime gating of dev-only chrome).
+ * - `hideChrome`: forces chrome hidden (toolbars, branchbar, command menu) by
+ *   adding both chrome-hidden classes. Also adds `storyboard-customer-hide-chrome`
+ *   so keyboard shortcut handlers can no-op (Cmd+. and Cmd+K).
+ * - `protoHomepage`: redirects the homepage routes (`/`, `/workspace`,
+ *   `/viewfinder`) to the configured prototype path. Done via
+ *   `history.replaceState` before React mounts so the user never sees the
+ *   workspace flash.
+ * - `hideHomepage`: read by Workspace component to render an empty page.
+ */
+function applyCustomerMode(basePath) {
+  if (typeof document === 'undefined') return
+  const cfg = getCustomerModeConfig()
+  if (!cfg.enabled) return
+
+  document.documentElement.classList.add('storyboard-customer-mode')
+
+  if (cfg.hideChrome) {
+    // Snapshot prior persisted chrome state — we don't want forcing chrome
+    // hidden in customer mode to leak into localStorage and persist after the
+    // setting is later disabled.
+    let priorHidden = null
+    let priorCompletely = null
+    try {
+      priorHidden = localStorage.getItem(CHROME_HIDDEN_KEY)
+      priorCompletely = localStorage.getItem(CHROME_COMPLETELY_HIDDEN_KEY)
+    } catch { /* ignore */ }
+
+    document.documentElement.classList.add('storyboard-customer-hide-chrome')
+    document.documentElement.classList.add('storyboard-chrome-hidden')
+    document.documentElement.classList.add('storyboard-chrome-completely-hidden')
+
+    // Restore prior persisted values after the MutationObserver has fired.
+    queueMicrotask(() => {
+      try {
+        if (priorHidden === null) localStorage.removeItem(CHROME_HIDDEN_KEY)
+        else localStorage.setItem(CHROME_HIDDEN_KEY, priorHidden)
+        if (priorCompletely === null) localStorage.removeItem(CHROME_COMPLETELY_HIDDEN_KEY)
+        else localStorage.setItem(CHROME_COMPLETELY_HIDDEN_KEY, priorCompletely)
+      } catch { /* ignore */ }
+    })
+  }
+
+  if (cfg.protoHomepage && typeof window !== 'undefined') {
+    const base = (basePath || '/').replace(/\/+$/, '')
+    let pathname = window.location.pathname
+    let rel = pathname
+    if (base && pathname.startsWith(base)) rel = pathname.slice(base.length) || '/'
+    if (rel === '/' || rel === '/workspace' || rel === '/viewfinder') {
+      const target = cfg.protoHomepage.startsWith('/')
+        ? cfg.protoHomepage
+        : `/${cfg.protoHomepage}`
+      const url = `${base}${target}${window.location.search}${window.location.hash}`
+      window.history.replaceState(null, '', url)
+    }
+  }
+}
 
 let _mounted = false
 
@@ -265,6 +328,10 @@ export async function mountStoryboardCore(config = {}, options = {}) {
   } else if (config.customerMode) {
     initCustomerModeConfig(config.customerMode)
   }
+
+  // Apply customer-mode side effects (DOM classes + early redirect).
+  // Reads from the now-initialized customerMode store.
+  applyCustomerMode(basePath)
 
   // Initialize comments config (framework-agnostic)
   const commentsConfig = uc.comments && Object.keys(uc.comments).length > 0 ? uc.comments : config.comments

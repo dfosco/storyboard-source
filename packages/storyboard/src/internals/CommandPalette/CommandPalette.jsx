@@ -1090,6 +1090,10 @@ export default function StoryboardCommandPalette({ basePath }) {
   useEffect(() => {
     function handleKeyDown(e) {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        // Customer mode with hideChrome: command palette is part of chrome — disabled.
+        if (document.documentElement.classList.contains('storyboard-customer-hide-chrome')) {
+          return
+        }
         e.preventDefault()
         const built = buildPaletteItems(basePath, handleCreateAction, handleNavigateToPage)
         setItems(built.groups)

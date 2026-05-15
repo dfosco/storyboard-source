@@ -717,6 +717,10 @@ export default function CoreUIBar({ basePath = '/', toolbarConfig, customHandler
   // Keyboard shortcut handler
   useEffect(() => {
     function handleKeydown(e) {
+      // Customer mode with hideChrome: lock toolbars hidden — ignore Cmd+. toggle.
+      if (document.documentElement.classList.contains('storyboard-customer-hide-chrome')) {
+        return
+      }
       const hideKey = shortcutsConfig.hideChrome?.key || '.'
 
       if ((e.metaKey || e.ctrlKey) && !e.shiftKey) {

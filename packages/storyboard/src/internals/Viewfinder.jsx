@@ -5,7 +5,7 @@
  * Formerly known as Viewfinder — renamed to match the /workspace route.
  */
 import { useState, useEffect, useRef, useMemo, useCallback, useSyncExternalStore } from 'react'
-import { buildPrototypeIndex, listStories, getStoryData, BranchSelect } from '../core/index.js'
+import { buildPrototypeIndex, listStories, getStoryData, BranchSelect, getCustomerModeConfig } from '../core/index.js'
 import { MarkGithubIcon, GitBranchIcon, ChevronDownIcon, ChevronRightIcon, PlusIcon, StarIcon, StarFillIcon, ThreeBarsIcon, XIcon, StackIcon, TrashIcon, ShieldLockIcon, KebabHorizontalIcon, PencilIcon } from '@primer/octicons-react'
 import { Menu } from '@base-ui/react/menu'
 import { Dialog } from '@base-ui/react/dialog'
@@ -1087,7 +1087,7 @@ function UserSettingsDialog({ open, onOpenChange, user, onRemoveToken }) {
 
 /* ─── Main Component ─── */
 
-export default function Workspace({
+function WorkspaceImpl({
   pageModules = {},
   basePath,
   title = 'Storyboard',
@@ -1530,4 +1530,16 @@ export default function Workspace({
       </div>
     </div>
   )
+}
+
+/**
+ * Workspace wrapper — short-circuits to an empty page when customer mode
+ * has `hideHomepage` enabled, so the workspace dashboard never renders for
+ * end-customers. Wrapping (instead of an early return inside WorkspaceImpl)
+ * keeps the inner component's hooks call order stable.
+ */
+export default function Workspace(props) {
+  const cm = getCustomerModeConfig()
+  if (cm.enabled && cm.hideHomepage) return null
+  return <WorkspaceImpl {...props} />
 }
