@@ -1,5 +1,11 @@
 # @dfosco/storyboard
 
+## 0.6.0-beta.4
+
+### Patch Changes
+
+-   Scaffold now includes `canvas.agents` defaults so freshly-scaffolded projects get Copilot/Claude/Codex auto-resume wiring out of the box (with `resumeCommand` + `{id}`, `sessionIdEnv`, `sessionStateGlob`). Existing projects still migrate via the migrate skill.
+
 ## 0.6.0-beta.3
 
 ### Patch Changes
