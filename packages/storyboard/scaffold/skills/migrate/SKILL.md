@@ -84,7 +84,9 @@ Clients on 4.1.x likely have no `canvas` block at all. The full canvas config is
         "label": "Codex CLI",
         "icon": "codex",
         "startupCommand": "codex --full-auto",
-        "resumeCommand": "codex --resume={id} --ask-for-approval never",
+        "resumeCommand": "codex resume {id}",
+        "sessionIdEnv": "CODEX_SESSION_ID",
+        "sessionStateGlob": "~/.codex/sessions/**/rollout-*-{id}.jsonl",
         "configFiles": [".codex/config.toml"],
         "resizable": true
       }
@@ -118,6 +120,10 @@ Clients on 4.1.x likely have no `canvas` block at all. The full canvas config is
 | `startupCommand` | yes | Shell command to start the agent |
 | `resumeCommand` | no | Full launch template to resume a session, with `{id}` placeholder (e.g. `copilot --resume={id} --agent terminal-agent`). Used both for auto-resume on cold restart and for the interactive "Browse existing sessions" flow. |
 | `sessionIdEnv` | no | Env var exposed in the agent SessionStart hook payload that holds its session id (e.g. `COPILOT_AGENT_SESSION_ID`). When set, widget cold restarts auto-resume the previous session. |
+| `sessionStateDir` | no | Directory where the agent stores per-session state, used to pre-flight `--resume` (e.g. `~/.copilot/session-state`). Pass `null` to skip the fs check (UUID-only validation). |
+| `sessionStateGlob` | no | Glob to validate session existence for agents that store sessions in nested subdirs. Supports `<root>/*/{id}.jsonl` (Claude) and `<root>/**/<name-with-{id}>` (Codex). |
+
+**Codex CLI: one-time hook trust.** Codex requires explicit user trust for non-managed hooks (`Non-managed command hooks must be reviewed and trusted before they run`). After the first dev-server boot, run `codex` interactively in any directory and enter `/hooks`, navigate to SessionStart, and enable the `storyboard-capture` hook. Trust persists in `~/.codex/state_*.sqlite`. Until trusted, Codex agent widgets will launch fresh on restart instead of resuming.
 | `postStartup` | no | Text sent to the agent's stdin after it starts |
 | `readinessSignal` | no | Substring to wait for in output before marking agent as ready |
 | `configFiles` | no | Array of config file paths the agent requires |

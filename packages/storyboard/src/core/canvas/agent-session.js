@@ -21,6 +21,7 @@
 import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync, watch as fsWatch, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { homedir } from 'node:os'
+import { execFileSync } from 'node:child_process'
 
 const CAPTURE_DIR = join('.storyboard', 'agent-sessions')
 const COPILOT_USER_HOOKS_DIR = join(homedir(), '.copilot', 'hooks')
@@ -28,6 +29,7 @@ const COPILOT_HOOK_FILENAME = 'storyboard-capture.json'
 const COPILOT_SESSION_STATE_DIR = join(homedir(), '.copilot', 'session-state')
 const CLAUDE_SETTINGS_PATH = join(homedir(), '.claude', 'settings.json')
 const CLAUDE_HOOK_MARKER = 'storyboard-capture'
+const CODEX_HOOKS_PATH = join(homedir(), '.codex', 'hooks.json')
 
 /** Resolve absolute path to the per-widget capture directory under root. */
 function captureDir(root) {
@@ -135,6 +137,47 @@ export function ensureClaudeCaptureHookInstalled() {
 }
 
 /**
+ * Install (idempotently) a SessionStart hook for Codex CLI at
+ * `~/.codex/hooks.json` using the same shared capture script.
+ *
+ * Codex's hook format is JSON with PascalCase event names like Claude's
+ * (and uses `session_id` snake_case in the payload, also like Claude).
+ * We own this file end-to-end (Codex merges multiple hook sources, so
+ * other hooks the user has via config.toml or repo-level files keep
+ * working). The marker comment identifies our handler for replace.
+ */
+export function ensureCodexCaptureHookInstalled() {
+  let hooks = { hooks: { SessionStart: [] } }
+  try {
+    const existing = JSON.parse(readFileSync(CODEX_HOOKS_PATH, 'utf8'))
+    if (existing && typeof existing === 'object') hooks = existing
+  } catch { /* file may not exist — start fresh */ }
+
+  if (typeof hooks.hooks !== 'object' || hooks.hooks === null) hooks.hooks = {}
+  if (!Array.isArray(hooks.hooks.SessionStart)) hooks.hooks.SessionStart = []
+
+  const ourHandler = {
+    type: 'command',
+    command: `# ${CLAUDE_HOOK_MARKER}\n${buildCaptureBashScript()}`,
+    timeout: 5,
+  }
+  // Codex matchers for SessionStart: "startup", "resume", "clear" — match all
+  const ourGroup = { matcher: '*', hooks: [ourHandler] }
+
+  hooks.hooks.SessionStart = hooks.hooks.SessionStart.filter((g) => {
+    const handlers = Array.isArray(g?.hooks) ? g.hooks : []
+    return !handlers.some((h) => typeof h?.command === 'string' && h.command.includes(CLAUDE_HOOK_MARKER))
+  })
+  hooks.hooks.SessionStart.push(ourGroup)
+
+  try { mkdirSync(join(homedir(), '.codex'), { recursive: true }) } catch { /* empty */ }
+  try {
+    writeFileSync(CODEX_HOOKS_PATH, JSON.stringify(hooks, null, 2) + '\n')
+  } catch { /* best-effort */ }
+  return CODEX_HOOKS_PATH
+}
+
+/**
  * Shared capture bash script. Handles both Copilot (`sessionId` camelCase)
  * and Claude (`session_id` snake_case) payload shapes. Reads
  * STORYBOARD_WIDGET_ID + STORYBOARD_PROJECT_ROOT from env (exported by
@@ -211,14 +254,28 @@ export function isResumableSessionId(sessionId, agentCfg = {}) {
 
 /**
  * Check if `<root>/<anySubdir>/<id>.jsonl` exists, where `glob` is a
- * shorthand string. Currently only supports the Claude pattern
- * `~/.claude/projects/*‍/{id}.jsonl`. The `*` segment is interpreted as
- * any single directory level.
+ * shorthand string. Supports two forms:
+ *   - `<root>/*` + `/{id}.jsonl` — exactly one subdir level (Claude pattern)
+ *   - `<root>/**` + `/<name-with-{id}>` — recursive find (Codex pattern, where
+ *     sessions are nested under year/month/day and the id is embedded in
+ *     a longer filename like `rollout-<ts>-<id>.jsonl`)
  */
 function matchesSessionStateGlob(sessionId, glob) {
-  const expanded = glob.replace('~', homedir()).replace('{id}', sessionId)
-  // Find the `*` segment; everything before it is the root, everything
-  // after is the suffix to test inside each subdir.
+  const expanded = glob.replace('~', homedir()).replace(/\{id\}/g, sessionId)
+
+  // Recursive form: root/**/name
+  if (expanded.includes('/**/')) {
+    const [root, namePattern] = expanded.split('/**/')
+    if (!existsSync(root)) return false
+    try {
+      const out = execFileSync('find', [root, '-name', namePattern, '-print', '-quit'], {
+        encoding: 'utf8', timeout: 3000, stdio: ['ignore', 'pipe', 'ignore'],
+      })
+      return out.trim().length > 0
+    } catch { return false }
+  }
+
+  // Single-level form: root/*/suffix
   const parts = expanded.split('/*/')
   if (parts.length !== 2) {
     // Plain path with no wildcard — direct check.

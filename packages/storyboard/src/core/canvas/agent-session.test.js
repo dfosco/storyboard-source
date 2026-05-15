@@ -52,6 +52,19 @@ describe('agent-session', () => {
         { sessionStateGlob: `${projectsDir}/*/{id}.jsonl` },
       )).toBe(false)
     })
+
+    it('uses recursive ** in sessionStateGlob to validate nested session files (Codex shape)', () => {
+      const id = '22222222-2222-4333-8444-555555555555'
+      const { mkdirSync, writeFileSync } = require('node:fs')
+      const sessionsRoot = join(root, 'sessions')
+      mkdirSync(join(sessionsRoot, '2026', '05', '15'), { recursive: true })
+      writeFileSync(join(sessionsRoot, '2026', '05', '15', `rollout-2026-05-15T10-00-00-${id}.jsonl`), '')
+      expect(isResumableSessionId(id, { sessionStateGlob: `${sessionsRoot}/**/rollout-*-{id}.jsonl` })).toBe(true)
+      expect(isResumableSessionId(
+        '99999999-2222-4333-8444-555555555555',
+        { sessionStateGlob: `${sessionsRoot}/**/rollout-*-{id}.jsonl` },
+      )).toBe(false)
+    })
   })
 
   describe('buildResumeStartupCommand', () => {
