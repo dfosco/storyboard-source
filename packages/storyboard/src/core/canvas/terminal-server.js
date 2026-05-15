@@ -1220,10 +1220,13 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
         const binDir = join(cwd, '.storyboard', 'terminals', 'bin')
         envParts.push(`export PATH="${binDir}:$PATH"`)
 
-        // Chain clear into env exports so it runs synchronously after exports
-        // complete, avoiding a timing race where clear leaks into the agent prompt
-        if (startupCommand) envParts.push('clear')
-        const envExports = envParts.join(' && ')
+        // Chain clear before exports so the typed env soup is wiped from
+        // view as soon as Enter executes, then chain clear again after so
+        // the agent starts on a clean screen.
+        let envExports = envParts.join(' && ')
+        if (startupCommand) {
+          envExports = `clear && ${envExports} && clear`
+        }
 
         setTimeout(() => {
           try {
@@ -1328,6 +1331,36 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
               if (readinessSignal) {
                 // Poll for readiness, then send postStartup command and deliver messages
                 let sent = false
+                const finalize = (reason) => {
+                  if (sent) return
+                  sent = true
+                  clearInterval(pollInterval)
+                  setTimeout(() => {
+                    if (postStartup) {
+                      try {
+                        execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(postStartup)}`, { stdio: 'ignore' })
+                        execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
+                      } catch { /* empty */ }
+                    }
+                    // Inject identity, then bind to messaging bus. This restores
+                    // hub/role/broadcast context after a tmux restart — the
+                    // widget's terminal-config preserves hubs/role/connectedWidgets,
+                    // and bindWidget reattaches live message delivery + backfill.
+                    injectIdentityMessage(tmuxName, { widgetId, displayName: prettyName, canvasId, branch, serverUrl })
+                    injectRoleMessageForWidget(tmuxName, widgetId)
+                    setTimeout(() => {
+                      migratePendingMessages(widgetId, branch, canvasId).then(() => {
+                        bindWidget({ widgetId, tmuxName, branch, canvasId, displayName: prettyName }).catch(() => {})
+                      }).catch(() => {
+                        bindWidget({ widgetId, tmuxName, branch, canvasId, displayName: prettyName }).catch(() => {})
+                      })
+                      joinPresence({ widgetId, senderName: prettyName || widgetId, branch, canvasId }).catch(() => {})
+                    }, 2000)
+                  }, 500)
+                  if (reason === 'timeout') {
+                    devLog(`[terminal-server] readiness timeout for ${widgetId} (${tmuxName}); proceeding with bind anyway (likely resume mode)`)
+                  }
+                }
                 const pollInterval = setInterval(() => {
                   if (sent) { clearInterval(pollInterval); return }
                   try {
@@ -1335,32 +1368,14 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
                       `tmux capture-pane -t "${tmuxName}" -p`,
                       { encoding: 'utf8', timeout: 1000 }
                     )
-                    if (paneContent.includes(readinessSignal)) {
-                      sent = true
-                      clearInterval(pollInterval)
-                      setTimeout(() => {
-                        if (postStartup) {
-                          try {
-                            execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(postStartup)}`, { stdio: 'ignore' })
-                            execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
-                          } catch { /* empty */ }
-                        }
-                        // Inject identity, then bind to messaging bus
-                        injectIdentityMessage(tmuxName, { widgetId, displayName: prettyName, canvasId, branch, serverUrl })
-                        injectRoleMessageForWidget(tmuxName, widgetId)
-                        setTimeout(() => {
-                          migratePendingMessages(widgetId, branch, canvasId).then(() => {
-                            bindWidget({ widgetId, tmuxName, branch, canvasId, displayName: prettyName }).catch(() => {})
-                          }).catch(() => {
-                            bindWidget({ widgetId, tmuxName, branch, canvasId, displayName: prettyName }).catch(() => {})
-                          })
-                          joinPresence({ widgetId, senderName: prettyName || widgetId, branch, canvasId }).catch(() => {})
-                        }, 2000)
-                      }, 500)
-                    }
+                    if (paneContent.includes(readinessSignal)) finalize('signal')
                   } catch { /* empty */ }
                 }, 2000)
-                setTimeout(() => { if (!sent) { sent = true; clearInterval(pollInterval) } }, 30000)
+                // Fallback: if readiness signal never matches (e.g. resume mode
+                // doesn't print "Environment loaded:", or the agent shows a
+                // prompt we can't detect), bind anyway after 30s so the widget
+                // is at least addressable for live messages and hub broadcast.
+                setTimeout(() => finalize('timeout'), 30000)
               } else {
                 // No readiness signal — inject identity and bind to bus after a delay
                 setTimeout(() => {
