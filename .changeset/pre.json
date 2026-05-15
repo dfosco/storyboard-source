@@ -1,8 +1,8 @@
 {
-  "mode": "exit",
+  "mode": "pre",
   "tag": "beta",
   "initialVersions": {
-    "@dfosco/storyboard": "0.6.0-beta.0"
+    "@dfosco/storyboard": "0.6.0-beta.1"
   },
   "changesets": [
     "changeset-mp10nrwb",
@@ -38,6 +38,7 @@
     "changeset-mp5p8yzy",
     "changeset-mp5pjtvg",
     "changeset-mp72s30r",
+    "changeset-mp737c4n",
     "changeset-tilde-canvas"
   ]
 }
