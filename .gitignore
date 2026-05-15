@@ -53,8 +53,18 @@ packages/storyboard/dist/
 # Agent Browser
 agent-browser.json
 
-# Selected widgets bridge (real-time canvas selection for Copilot)
-.storyboard
+# Auto-generated scaffold dir (copies of library config defaults — overwritten on every dev-server boot)
+.storyboard/scaffold/
+
+# Real-time canvas selection bridge for Copilot
+.storyboard/.selectedwidgets.json
+
+# Runtime/transient state (per-machine, per-session)
+.storyboard/agent-sessions/
+.storyboard/hot-pool/
+.storyboard/logs/
+.storyboard/terminal-buffers/
+.storyboard/messages/
 
 # Private canvas images (tilde prefix = not committed)
 src/canvas/images/~*
