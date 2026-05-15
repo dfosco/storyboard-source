@@ -777,16 +777,17 @@ function buildUnifiedConfig(root) {
   // storyboard.config.json (and every schema default) flows to initConfig().
   // Then override the domain-specific slices that have their own dedicated
   // config files merged above (toolbar/commandPalette/paste/widgets/terminal).
+  const sbCanvas = sbConfig?.canvas || {}
   const unified = {
-    ...sbConfig,
+    ...(sbConfig || {}),
     toolbar: finalToolbar,
     commandPalette: finalCommandPalette,
     paste: finalPaste,
     widgets: finalWidgets,
     canvas: {
-      ...sbConfig.canvas,
-      terminal: deepMergeBuild(sbConfig.canvas?.terminal || {}, finalTerminal.terminal || {}),
-      agents: deepMergeBuild(sbConfig.canvas?.agents || {}, finalTerminal.agents || {}),
+      ...sbCanvas,
+      terminal: deepMergeBuild(sbCanvas.terminal || {}, finalTerminal.terminal || {}),
+      agents: deepMergeBuild(sbCanvas.agents || {}, finalTerminal.agents || {}),
       ...(finalTerminal.showAgentsInAddMenu !== undefined ? { showAgentsInAddMenu: finalTerminal.showAgentsInAddMenu } : {}),
     },
   }

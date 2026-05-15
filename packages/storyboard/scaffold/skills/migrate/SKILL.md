@@ -37,65 +37,81 @@ The storyboard homepage URL changed from `/viewfinder` to `/workspace`. The old 
 
 #### 2. Canvas config — terminal + agents + hot pool
 
-Clients on 4.1.x likely have no `canvas` block at all. The full canvas config is required for terminal widgets, agent widgets, and prompt widgets to work on canvases.
+**As of `0.6.0-beta.4`, terminal + agent config has its own dedicated file: `terminal.config.json` at the project root.** The library ships full defaults in `node_modules/@dfosco/storyboard/terminal.config.json` and a copy is auto-scaffolded to `.storyboard/scaffold/terminal.config.json` on every dev-server boot. Most clients won't need any project-level config — the defaults already cover Copilot/Claude/Codex with auto-resume.
 
-**Read the client's `storyboard.config.json`.** If the `canvas` key is missing or incomplete, merge the missing sections. Here is the complete reference config — adapt values to the client's environment:
+**Only create a root `terminal.config.json`** if you want to override specific keys. Leaf-level merge means you set only what you change; everything else inherits the library defaults (so future agents and tweaks reach you automatically). Example minimal override:
 
 ```jsonc
 {
-  "canvas": {
-    // Terminal widget settings (the plain terminal, not agents)
-    "terminal": {
-      "fontSize": 18,
-      "fontFamily": "'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace",
-      "prompt": "❯ ",
-      "startupCommand": null,
-      "defaultStartupSequence": null,
-      "resizable": true,
-      "defaultWidth": 1000,
-      "defaultHeight": 600
-    },
-
-    // Agent widgets — each key becomes an entry in the "Add Agent" menu
-    // Remove any agents the client doesn't have installed
-    "agents": {
-      "copilot": {
-        "label": "Copilot CLI",
-        "default": true,
-        "icon": "primer/copilot",
-        "startupCommand": "copilot --agent terminal-agent",
-        "resumeCommand": "copilot --resume={id} --agent terminal-agent",
-        "sessionIdEnv": "COPILOT_AGENT_SESSION_ID",
-        "postStartup": "/allow-all on",
-        "readinessSignal": "Environment loaded:",
-        "resizable": true
-      },
-      "claude": {
-        "label": "Claude Code",
-        "icon": "claude",
-        "startupCommand": "claude --agent terminal-agent --dangerously-skip-permissions",
-        "resumeCommand": "claude --resume {id} --agent terminal-agent --dangerously-skip-permissions",
-        "sessionIdEnv": "CLAUDE_SESSION_ID",
-        "sessionStateGlob": "~/.claude/projects/*/{id}.jsonl",
-        "resizable": true,
-        "readinessSignal": "bypass permissions"
-      },
-      "codex": {
-        "label": "Codex CLI",
-        "icon": "codex",
-        "startupCommand": "codex --full-auto",
-        "resumeCommand": "codex resume {id}",
-        "sessionIdEnv": "CODEX_SESSION_ID",
-        "sessionStateGlob": "~/.codex/sessions/**/rollout-*-{id}.jsonl",
-        "configFiles": [".codex/config.toml"],
-        "resizable": true
-      }
-    },
-
-    // Set to true to show agent entries in the canvas "+" add menu
-    // Set to false to only show them in the command palette
-    "showAgentsInAddMenu": false
+  "terminal": {
+    "fontSize": 18,
+    "fontFamily": "'Ghostty', 'SF Mono', monospace"
+  },
+  "agents": {
+    "copilot": {
+      "startupCommand": "copilot --remote --agent terminal-agent"
+    }
   }
+}
+```
+
+**Legacy back-compat.** Existing clients with `canvas.terminal` and `canvas.agents` blocks under `storyboard.config.json` continue to work — the loader merges them with the new file (with `terminal.config.json` winning on overlap, and a warning logged). New clients should prefer `terminal.config.json` and keep `storyboard.config.json` lean.
+
+**Full reference for what `terminal.config.json` accepts** (don't copy this into a new project unless you actually need to override every key — the library ships these as defaults):
+
+```jsonc
+{
+  // Terminal widget settings (the plain terminal, not agents)
+  "terminal": {
+    "fontSize": 18,
+    "fontFamily": "'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace",
+    "prompt": "❯ ",
+    "startupCommand": null,
+    "defaultStartupSequence": null,
+    "resizable": true,
+    "defaultWidth": 1000,
+    "defaultHeight": 600
+  },
+
+  // Agent widgets — each key becomes an entry in the "Add Agent" menu
+  // Remove any agents the client doesn't have installed
+  "agents": {
+    "copilot": {
+      "label": "Copilot CLI",
+      "default": true,
+      "icon": "primer/copilot",
+      "startupCommand": "copilot --agent terminal-agent",
+      "resumeCommand": "copilot --resume={id} --agent terminal-agent",
+      "sessionIdEnv": "COPILOT_AGENT_SESSION_ID",
+      "postStartup": "/allow-all on",
+      "readinessSignal": "Environment loaded:",
+      "resizable": true
+    },
+    "claude": {
+      "label": "Claude Code",
+      "icon": "claude",
+      "startupCommand": "claude --agent terminal-agent --dangerously-skip-permissions",
+      "resumeCommand": "claude --resume {id} --agent terminal-agent --dangerously-skip-permissions",
+      "sessionIdEnv": "CLAUDE_SESSION_ID",
+      "sessionStateGlob": "~/.claude/projects/*/{id}.jsonl",
+      "resizable": true,
+      "readinessSignal": "bypass permissions"
+    },
+    "codex": {
+      "label": "Codex CLI",
+      "icon": "codex",
+      "startupCommand": "codex --full-auto",
+      "resumeCommand": "codex resume {id}",
+      "sessionIdEnv": "CODEX_SESSION_ID",
+      "sessionStateGlob": "~/.codex/sessions/**/rollout-*-{id}.jsonl",
+      "configFiles": [".codex/config.toml"],
+      "resizable": true
+    }
+  },
+
+  // Set to true to show agent entries in the canvas "+" add menu
+  // Set to false to only show them in the command palette
+  "showAgentsInAddMenu": false
 }
 ```
 
