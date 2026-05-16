@@ -1,0 +1,8 @@
+{
+  "meta": {
+    "title": "Loopline Signup",
+    "description": "Sign up flow for the Loopline customer feedback startup",
+    "author": ["dfosco"],
+    "tags": ["signup", "tailwind"]
+  }
+}

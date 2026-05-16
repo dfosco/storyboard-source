@@ -1,0 +1,67 @@
+{
+  "meta": {
+    "author": "dfosco"
+  },
+  "workspace": {
+    "name": "maze-war",
+    "silo": "Silo"
+  },
+  "user": {
+    "name": "Hannah Arendt",
+    "username": "hannah"
+  },
+  "nav": {
+    "sections": [
+      {
+        "title": "MAZE-WAR",
+        "items": [
+          {
+            "label": "Projects",
+            "icon": "file"
+          },
+          {
+            "label": "Images",
+            "icon": "image"
+          },
+          {
+            "label": "Utilization",
+            "icon": "zap",
+            "active": true
+          },
+          {
+            "label": "Silo Access",
+            "icon": "key"
+          }
+        ]
+      }
+    ]
+  },
+  "summary": {
+    "cpu": {
+      "label": "CPU",
+      "percent": 60.0,
+      "provisioned": 30,
+      "quota": 50,
+      "unit": "vCPUs"
+    },
+    "memory": {
+      "label": "Memory",
+      "percent": 78.0,
+      "provisioned": 234,
+      "quota": 300,
+      "unit": "GiB"
+    },
+    "storage": {
+      "label": "Storage",
+      "percent": 61.43,
+      "provisioned": 4.3,
+      "quota": 7,
+      "unit": "TiB"
+    }
+  },
+  "timeRange": {
+    "label": "Last hour",
+    "from": "16/05/2026, 23:13",
+    "to": "17/05/2026, 00:13"
+  }
+}

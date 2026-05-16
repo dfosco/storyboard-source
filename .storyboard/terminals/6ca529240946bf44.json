@@ -1,0 +1,162 @@
+{
+  "widgetProps": {
+    "agentId": "copilot",
+    "alias": "Leader",
+    "startupCommand": "copilot --agent terminal-agent",
+    "width": 1000,
+    "height": 800,
+    "prettyName": "jade-grouse",
+    "role": "leader"
+  },
+  "displayName": "Leader",
+  "connectedWidgets": [
+    {
+      "id": "agent-bqdgr2",
+      "type": "agent",
+      "props": {
+        "alias": "Branding",
+        "agentId": "copilot",
+        "startupCommand": "copilot --agent terminal-agent",
+        "prettyName": "sage-tanager",
+        "role": "member",
+        "status": "running"
+      },
+      "position": {
+        "x": 4188,
+        "y": 1022
+      }
+    },
+    {
+      "id": "agent-v2qu53",
+      "type": "agent",
+      "props": {
+        "alias": "Form",
+        "agentId": "copilot",
+        "startupCommand": "copilot --agent terminal-agent",
+        "prettyName": "opal-osprey",
+        "role": "member"
+      },
+      "position": {
+        "x": 4186,
+        "y": 1788
+      }
+    },
+    {
+      "id": "agent-2lkxmx",
+      "type": "agent",
+      "props": {
+        "alias": "Data",
+        "agentId": "copilot",
+        "startupCommand": "copilot --agent terminal-agent",
+        "prettyName": "green-petrel",
+        "role": "member",
+        "status": "running"
+      },
+      "position": {
+        "x": 4192,
+        "y": 2559
+      }
+    },
+    {
+      "id": "prototype-fgokz2",
+      "type": "prototype",
+      "props": {
+        "src": "/StartupSignup?flow=StartupSignup%2Fempty",
+        "width": 1440,
+        "height": 900,
+        "zoom": 50,
+        "label": "Loopline Signup"
+      },
+      "position": {
+        "x": 1795,
+        "y": 2670
+      }
+    }
+  ],
+  "messaging": {
+    "peers": [
+      {
+        "widgetId": "agent-bqdgr2",
+        "displayName": "Branding",
+        "configPath": ".storyboard/terminals/agent-bqdgr2.json",
+        "type": "agent",
+        "canSend": true,
+        "canReceive": true,
+        "mode": "two-way"
+      },
+      {
+        "widgetId": "agent-v2qu53",
+        "displayName": "Form",
+        "configPath": ".storyboard/terminals/agent-v2qu53.json",
+        "type": "agent",
+        "canSend": true,
+        "canReceive": true,
+        "mode": "two-way"
+      },
+      {
+        "widgetId": "agent-2lkxmx",
+        "displayName": "Data",
+        "configPath": ".storyboard/terminals/agent-2lkxmx.json",
+        "type": "agent",
+        "canSend": true,
+        "canReceive": true,
+        "mode": "two-way"
+      }
+    ]
+  },
+  "role": "leader",
+  "hubs": [
+    {
+      "hubId": "hub_16ab1852a6",
+      "role": "leader",
+      "goal": null,
+      "peers": [
+        {
+          "widgetId": "agent-bqdgr2",
+          "displayName": "Branding",
+          "role": "member",
+          "type": "agent"
+        },
+        {
+          "widgetId": "agent-v2qu53",
+          "displayName": "Form",
+          "role": "member",
+          "type": "agent"
+        },
+        {
+          "widgetId": "agent-2lkxmx",
+          "displayName": "Data",
+          "role": "member",
+          "type": "agent"
+        }
+      ],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_16ab1852a6.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": true,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 3078,
+    "centerY": 2179,
+    "zoom": 130,
+    "topLeftX": 2386,
+    "topLeftY": 1792,
+    "width": 1385,
+    "height": 775
+  },
+  "updatedAt": "2026-05-16T22:27:01.960Z",
+  "widgetId": "agent-l3iu9a",
+  "canvasId": "storyboard-demo",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null,
+  "lastAgentSessionId": "fcd72686-dd01-4d05-b0fa-7c45e5ce11de",
+  "lastAgentSessionAt": "2026-05-16T22:08:22.429Z",
+  "lastAgentId": "copilot"
+}

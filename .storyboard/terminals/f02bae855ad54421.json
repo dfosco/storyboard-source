@@ -1,0 +1,99 @@
+{
+  "widgetProps": {
+    "alias": "Scaffold",
+    "agentId": "copilot",
+    "startupCommand": "copilot --agent terminal-agent",
+    "prettyName": "storm-sparrow",
+    "role": "member",
+    "status": "idle",
+    "errorMessage": ""
+  },
+  "displayName": "Scaffold",
+  "connectedWidgets": [
+    {
+      "id": "agent-5unog9",
+      "type": "agent",
+      "props": {
+        "agentId": "copilot",
+        "alias": "Leader",
+        "startupCommand": "copilot --agent terminal-agent",
+        "width": 1000,
+        "height": 800,
+        "prettyName": "opal-warbler",
+        "role": "leader"
+      },
+      "position": {
+        "x": 2582,
+        "y": 6072
+      }
+    }
+  ],
+  "messaging": {
+    "peers": [
+      {
+        "widgetId": "agent-5unog9",
+        "displayName": "Leader",
+        "configPath": ".storyboard/terminals/agent-5unog9.json",
+        "type": "agent",
+        "canSend": true,
+        "canReceive": true,
+        "mode": "two-way"
+      }
+    ]
+  },
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_0fc6fab42c",
+      "role": "member",
+      "goal": null,
+      "peers": [
+        {
+          "widgetId": "agent-5unog9",
+          "displayName": "Leader",
+          "role": "leader",
+          "type": "agent"
+        },
+        {
+          "widgetId": "agent-hrmw40",
+          "displayName": "Charts",
+          "role": "member",
+          "type": "agent"
+        },
+        {
+          "widgetId": "agent-wve8pt",
+          "displayName": "Data",
+          "role": "member",
+          "type": "agent"
+        }
+      ],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_0fc6fab42c.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 3078,
+    "centerY": 2179,
+    "zoom": 130,
+    "topLeftX": 2386,
+    "topLeftY": 1792,
+    "width": 1385,
+    "height": 775
+  },
+  "updatedAt": "2026-05-16T22:27:01.972Z",
+  "widgetId": "agent-aiagsz",
+  "canvasId": "storyboard-demo",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null,
+  "lastAgentSessionId": "0db3e8be-c768-4425-8033-e01c2ee1d5aa",
+  "lastAgentSessionAt": "2026-05-16T22:14:59.370Z",
+  "lastAgentId": "copilot"
+}

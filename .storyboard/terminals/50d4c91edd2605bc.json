@@ -1,0 +1,102 @@
+{
+  "widgetProps": {
+    "alias": "Form",
+    "agentId": "copilot",
+    "startupCommand": "copilot --agent terminal-agent",
+    "prettyName": "opal-osprey",
+    "role": "member"
+  },
+  "displayName": "Form",
+  "connectedWidgets": [
+    {
+      "id": "agent-l3iu9a",
+      "type": "agent",
+      "props": {
+        "agentId": "copilot",
+        "alias": "Leader",
+        "startupCommand": "copilot --agent terminal-agent",
+        "width": 1000,
+        "height": 800,
+        "prettyName": "jade-grouse",
+        "role": "leader"
+      },
+      "position": {
+        "x": 2563,
+        "y": 1841
+      }
+    }
+  ],
+  "messaging": {
+    "peers": [
+      {
+        "widgetId": "agent-l3iu9a",
+        "displayName": "Leader",
+        "configPath": ".storyboard/terminals/agent-l3iu9a.json",
+        "type": "agent",
+        "canSend": true,
+        "canReceive": true,
+        "mode": "two-way"
+      }
+    ]
+  },
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_16ab1852a6",
+      "role": "member",
+      "goal": null,
+      "peers": [
+        {
+          "widgetId": "agent-l3iu9a",
+          "displayName": "Leader",
+          "role": "leader",
+          "type": "agent"
+        },
+        {
+          "widgetId": "agent-bqdgr2",
+          "displayName": "Branding",
+          "role": "member",
+          "type": "agent"
+        },
+        {
+          "widgetId": "agent-2lkxmx",
+          "displayName": "Data",
+          "role": "member",
+          "type": "agent"
+        }
+      ],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_16ab1852a6.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 3078,
+    "centerY": 2179,
+    "zoom": 130,
+    "topLeftX": 2386,
+    "topLeftY": 1792,
+    "width": 1385,
+    "height": 775
+  },
+  "updatedAt": "2026-05-16T22:27:01.967Z",
+  "widgetId": "agent-v2qu53",
+  "canvasId": "storyboard-demo",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null,
+  "lastAgentSessionId": "734ed3c1-8608-4954-8d11-044ef64128c9",
+  "lastAgentSessionAt": "2026-05-16T22:09:56.449Z",
+  "lastAgentId": "copilot",
+  "latestOutput": {
+    "content": "Wired Google + GitHub OAuth buttons in SignupForm.jsx. Clicking either: sets signup.oauthProvider, sets signup.status='oauth' (button shows 'Connecting…' + disables both), pre-fills signup.fullName/email/company/password/agreedToTerms with provider-specific mock values, then after 900ms sets signup.status='success' to render the success card. Success card now mentions which provider was used when oauth flow ran.",
+    "summary": "OAuth buttons now functional",
+    "updatedAt": "2026-05-16T22:25:48.151Z"
+  }
+}

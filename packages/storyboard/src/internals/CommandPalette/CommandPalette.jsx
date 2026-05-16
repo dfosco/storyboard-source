@@ -1412,7 +1412,7 @@ export default function StoryboardCommandPalette({ basePath }) {
                       >
                         <ItemIcon type={itemType} toolIcon={toolIcon} toolMeta={toolMeta} />
                         <span style={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
-                          <span>{children}</span>
+                          <span style={{ flex: 1, minWidth: 0 }}>{children}</span>
                           {tag && <span data-cmdk-item-tag="">{tag}</span>}
                         </span>
                       </Command.Item>

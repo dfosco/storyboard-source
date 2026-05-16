@@ -1,0 +1,47 @@
+{
+  "widgetProps": {
+    "agentId": "copilot",
+    "alias": "Leader",
+    "startupCommand": "copilot --agent terminal-agent",
+    "width": 1000,
+    "height": 800,
+    "role": "leader",
+    "prettyName": "indigo-magpie"
+  },
+  "displayName": "Leader",
+  "connectedWidgets": [],
+  "messaging": null,
+  "role": "leader",
+  "hubs": [
+    {
+      "hubId": "hub_b9ffe8ac2d",
+      "role": "leader",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_b9ffe8ac2d.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": true,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 3314,
+    "centerY": 1290,
+    "zoom": 48,
+    "topLeftX": 1439,
+    "topLeftY": 273,
+    "width": 3750,
+    "height": 2033
+  },
+  "updatedAt": "2026-05-16T22:18:45.426Z",
+  "widgetId": "agent-gplms1",
+  "canvasId": "storyboard-demo",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null
+}

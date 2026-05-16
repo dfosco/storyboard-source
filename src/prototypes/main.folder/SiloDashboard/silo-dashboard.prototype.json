@@ -1,0 +1,8 @@
+{
+  "meta": {
+    "title": "Silo Dashboard",
+    "description": "Cloud silo utilization dashboard",
+    "author": ["dfosco"],
+    "tags": ["dashboard", "dark"]
+  }
+}

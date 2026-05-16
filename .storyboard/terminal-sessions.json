@@ -34,5 +34,77 @@
     "status": "background",
     "expiresAt": 1778970852155,
     "generation": 63
+  },
+  {
+    "tmuxName": "sb-6ca529240946",
+    "name": "jade-grouse",
+    "branch": "0.6.0",
+    "canvasId": "storyboard-demo",
+    "widgetId": "agent-l3iu9a",
+    "createdAt": "2026-05-16T22:08:20.734Z",
+    "lastConnectedAt": "2026-05-16T22:25:14.953Z",
+    "status": "live",
+    "expiresAt": null,
+    "generation": 4
+  },
+  {
+    "tmuxName": "sb-e90aafa0af9a",
+    "name": "sage-tanager",
+    "branch": "0.6.0",
+    "canvasId": "storyboard-demo",
+    "widgetId": "agent-bqdgr2",
+    "createdAt": "2026-05-16T22:09:53.394Z",
+    "lastConnectedAt": "2026-05-16T22:20:38.512Z",
+    "status": "live",
+    "expiresAt": null,
+    "generation": 3
+  },
+  {
+    "tmuxName": "sb-50d4c91edd26",
+    "name": "opal-osprey",
+    "branch": "0.6.0",
+    "canvasId": "storyboard-demo",
+    "widgetId": "agent-v2qu53",
+    "createdAt": "2026-05-16T22:09:53.476Z",
+    "lastConnectedAt": "2026-05-16T22:20:09.774Z",
+    "status": "live",
+    "expiresAt": null,
+    "generation": 4
+  },
+  {
+    "tmuxName": "sb-f3d5b3588da8",
+    "name": "green-petrel",
+    "branch": "0.6.0",
+    "canvasId": "storyboard-demo",
+    "widgetId": "agent-2lkxmx",
+    "createdAt": "2026-05-16T22:09:53.613Z",
+    "lastConnectedAt": "2026-05-16T22:20:09.949Z",
+    "status": "live",
+    "expiresAt": null,
+    "generation": 4
+  },
+  {
+    "tmuxName": "sb-69dbc90f0ae8",
+    "name": "opal-warbler",
+    "branch": "0.6.0",
+    "canvasId": "storyboard-demo",
+    "widgetId": "agent-5unog9",
+    "createdAt": "2026-05-16T22:12:25.742Z",
+    "lastConnectedAt": "2026-05-16T22:20:10.565Z",
+    "status": "live",
+    "expiresAt": null,
+    "generation": 4
+  },
+  {
+    "tmuxName": "sb-f43e066a0e7a",
+    "name": "indigo-magpie",
+    "branch": "0.6.0",
+    "canvasId": "storyboard-demo",
+    "widgetId": "agent-gplms1",
+    "createdAt": "2026-05-16T22:17:58.991Z",
+    "lastConnectedAt": "2026-05-16T22:18:40.930Z",
+    "status": "archived",
+    "expiresAt": 1778970525517,
+    "generation": 3
   }
 ]

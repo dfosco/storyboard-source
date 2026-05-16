@@ -9,7 +9,7 @@ Storyboard is fully open-source, and can be deployed by your team with any stati
 
 ### What can I do with it?
 
-Create components and prototypes on a canvas
+Create code components and prototypes on a canvas
 
 Run agents and work across windows with the canvas as context
 

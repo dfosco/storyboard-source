@@ -1,0 +1,114 @@
+{
+  "widgetProps": {
+    "alias": "Branding",
+    "agentId": "copilot",
+    "startupCommand": "copilot --agent terminal-agent",
+    "prettyName": "sage-tanager",
+    "role": "member",
+    "status": "running"
+  },
+  "displayName": "Branding",
+  "connectedWidgets": [
+    {
+      "id": "agent-l3iu9a",
+      "type": "agent",
+      "props": {
+        "agentId": "copilot",
+        "alias": "Leader",
+        "startupCommand": "copilot --agent terminal-agent",
+        "width": 1000,
+        "height": 800,
+        "prettyName": "jade-grouse",
+        "role": "leader"
+      },
+      "position": {
+        "x": 2563,
+        "y": 1841
+      }
+    },
+    {
+      "id": "markdown-xpnck7",
+      "type": "markdown",
+      "props": {
+        "content": "### Branding.jsx revised\n\nsrc/prototypes/main.folder/StartupSignup/Branding.jsx\n\n- Solid indigo-950 background (no gradient)\n- High-contrast white body text\n- Indigo-500 accent for logo tile, check bullets, avatar\n- Testimonial: subtle bordered card on indigo-900/60\n- Same content/structure; just calmer + more readable"
+      },
+      "position": {
+        "x": 3178,
+        "y": 1143
+      }
+    }
+  ],
+  "messaging": {
+    "peers": [
+      {
+        "widgetId": "agent-l3iu9a",
+        "displayName": "Leader",
+        "configPath": ".storyboard/terminals/agent-l3iu9a.json",
+        "type": "agent",
+        "canSend": true,
+        "canReceive": true,
+        "mode": "two-way"
+      }
+    ]
+  },
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_16ab1852a6",
+      "role": "member",
+      "goal": null,
+      "peers": [
+        {
+          "widgetId": "agent-l3iu9a",
+          "displayName": "Leader",
+          "role": "leader",
+          "type": "agent"
+        },
+        {
+          "widgetId": "agent-v2qu53",
+          "displayName": "Form",
+          "role": "member",
+          "type": "agent"
+        },
+        {
+          "widgetId": "agent-2lkxmx",
+          "displayName": "Data",
+          "role": "member",
+          "type": "agent"
+        }
+      ],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_16ab1852a6.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 3078,
+    "centerY": 2179,
+    "zoom": 130,
+    "topLeftX": 2386,
+    "topLeftY": 1792,
+    "width": 1385,
+    "height": 775
+  },
+  "updatedAt": "2026-05-16T22:27:01.965Z",
+  "widgetId": "agent-bqdgr2",
+  "canvasId": "storyboard-demo",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null,
+  "lastAgentSessionId": "d7d07a18-2650-4903-bc35-6e39bb979a52",
+  "lastAgentSessionAt": "2026-05-16T22:09:56.443Z",
+  "lastAgentId": "copilot",
+  "latestOutput": {
+    "content": "Toned Branding.jsx down: removed all gradients and blurred orbs. Solid indigo-950 background, white body text for contrast, indigo-500 used only on small accents (logo tile, check bullets, avatar). Testimonial is a quiet bordered card. Same content/layout, calmer feel.",
+    "summary": "Branding revised: flat indigo, higher contrast",
+    "updatedAt": "2026-05-16T22:21:50.137Z"
+  }
+}
