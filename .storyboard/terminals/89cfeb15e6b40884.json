@@ -1,0 +1,42 @@
+{
+  "widgetId": "agent-wicwhf",
+  "displayName": "silver-thrush",
+  "canvasId": "storyboarding/terminal-widget-prompts",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "widgetProps": {
+    "agentId": "copilot",
+    "alias": "",
+    "startupCommand": "copilot --remote --agent terminal-agent",
+    "width": 1000,
+    "height": 800,
+    "prettyName": "silver-thrush",
+    "role": "member"
+  },
+  "connectedWidgets": [],
+  "agentStatus": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_223f8dd681",
+      "role": "member",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboarding--terminal-widget-prompts--hub_223f8dd681.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": null,
+  "updatedAt": "2026-05-16T19:16:03.025Z",
+  "messaging": null,
+  "lastAgentSessionId": "734f245a-4f9e-40d9-a171-833523026f13",
+  "lastAgentSessionAt": "2026-05-16T19:16:03.025Z",
+  "lastAgentId": "copilot"
+}

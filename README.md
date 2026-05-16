@@ -15,9 +15,13 @@ Create components and prototypes and document them on a canvas
 
 Run local agents and work across multiple sessions with the canvas in context
 
+Create hubs of agents that communicate and collaborate autonomously
+
 Add GitHub issues, Figma files and other embeds next to your work 
 
 <!-- lots of medias -->
+
+### Getting Started
 
 <!-- storyboard-launcher-download:start -->
 ## Storyboard Launcher (Desktop App)

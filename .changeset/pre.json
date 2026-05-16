@@ -1,11 +1,12 @@
 {
-  "mode": "exit",
+  "mode": "pre",
   "tag": "beta",
   "initialVersions": {
-    "@dfosco/storyboard": "0.6.0-beta.9"
+    "@dfosco/storyboard": "0.6.0-beta.10"
   },
   "changesets": [
     "changeset-beta10-allow-all-hook",
+    "changeset-beta11-allow-all-postStartup",
     "changeset-beta7-mp88uazh",
     "changeset-beta8-mp89ydws",
     "changeset-beta9-context-fix",

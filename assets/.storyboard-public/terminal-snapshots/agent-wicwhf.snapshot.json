@@ -1,0 +1,10 @@
+{
+  "widgetId": "agent-wicwhf",
+  "canvasId": "storyboarding/terminal-widget-prompts",
+  "prettyName": "silver-thrush",
+  "timestamp": "2026-05-16T19:17:36.717Z",
+  "cols": 89,
+  "rows": 32,
+  "paneContent": "! Failed to load 1 skill. Run /skills for more details.\n\n\n● Selected custom agent: terminal-agent\n\n\n● Remote control connected as dfosco (ctrl+e show QR code)\n  └ https://github.com/copilot/tasks/fa0417cb-dc1a-4553-8c30-ade2e71a2499\n\n\n❯ [System] Your terminal identity has been set. widgetId=agent-wicwhf\n  displayName=silver-thrush canvasId=storyboarding/terminal-widget-prompts\n  configFile=.storyboard/terminals/agent-wicwhf.json serverUrl=http://localhost:1236 —\n  this is a configuration step, no response needed.\n\n\n● Understood.\n\n\n● Tool, path, and URL requests require individual approval.\n\n\n● Tool, path, and URL requests require individual approval.\n\n ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]\n─────────────────────────────────────────────────────────────────────────────────────────\n❯  \n\n\n─────────────────────────────────────────────────────────────────────────────────────────\n / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)\n\n",
+  "scrollback": ""
+}

@@ -5,10 +5,22 @@
     "branch": "0.6.0",
     "canvasId": "storyboarding/terminal-widget-prompts",
     "widgetId": "agent-x9p1r9",
-    "createdAt": "2026-05-16T15:00:39.816Z",
-    "lastConnectedAt": "2026-05-16T15:00:39.816Z",
+    "createdAt": "2026-05-16T19:09:56.239Z",
+    "lastConnectedAt": "2026-05-16T19:15:56.218Z",
+    "status": "archived",
+    "expiresAt": 1778959259616,
+    "generation": 2
+  },
+  {
+    "tmuxName": "sb-89cfeb15e6b4",
+    "name": "silver-thrush",
+    "branch": "0.6.0",
+    "canvasId": "storyboarding/terminal-widget-prompts",
+    "widgetId": "agent-wicwhf",
+    "createdAt": "2026-05-16T19:16:01.559Z",
+    "lastConnectedAt": "2026-05-16T19:16:01.559Z",
     "status": "background",
-    "expiresAt": 1778945667930,
-    "generation": 1
+    "expiresAt": 1778960865029,
+    "generation": 2
   }
 ]

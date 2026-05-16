@@ -27,7 +27,7 @@
     "width": 3012,
     "height": 1519
   },
-  "updatedAt": "2026-05-16T15:00:39.822Z",
+  "updatedAt": "2026-05-16T19:15:57.803Z",
   "widgetId": "agent-x9p1r9",
   "canvasId": "storyboarding/terminal-widget-prompts",
   "canvasFile": null,
@@ -37,5 +37,8 @@
   "serverUrl": "http://localhost:1236",
   "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
   "deleted": false,
-  "agentStatus": null
+  "agentStatus": null,
+  "lastAgentSessionId": "e89d744a-afa3-43ef-a8ef-e955099acc53",
+  "lastAgentSessionAt": "2026-05-16T19:15:57.803Z",
+  "lastAgentId": "copilot"
 }
