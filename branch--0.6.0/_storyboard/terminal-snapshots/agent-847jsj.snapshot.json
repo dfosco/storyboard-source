@@ -1,0 +1,10 @@
+{
+  "widgetId": "agent-847jsj",
+  "canvasId": "storyboarding/terminal-widget-prompts",
+  "prettyName": "frost-petrel",
+  "timestamp": "2026-05-15T19:32:55.188Z",
+  "cols": 89,
+  "rows": 32,
+  "paneContent": "└  Starting Codex CLI...\n\n╭────────────────────────────────────────────────────────╮\n│ >_ OpenAI Codex (v0.130.0)                             │\n│                                                        │\n│ model:     o4-mini xhigh   /model to change            │\n│ directory: ~/workspace/storyboard-core/worktrees/0.6.0 │\n╰────────────────────────────────────────────────────────╯\n\n  Tip: New Build faster with the Codex App. Run 'codex app' or visit\n  https://chatgpt.com/codex?app-landing-page=true\n\n⚠ 1 hook needs review before it can run. Open /hooks to review it.\n\n⚠ Skipped loading 1 skill(s) due to invalid SKILL.md files.\n\n⚠ /Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.agents/skills/create-hub/\n  SKILL.md: invalid YAML: mapping values are not allowed in this context at line 2 column\n  204\n\n⚠ Skipped loading 1 skill(s) due to invalid SKILL.md files.\n\n⚠ /Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.agents/skills/create-hub/\n  SKILL.md: invalid YAML: mapping values are not allowed in this context at line 2 column\n  204\n\n\n› Use /skills to list available skills\n\n  o4-mini xhigh · ~/workspace/storyboard-core/worktrees/0.6.0\n\n\n",
+  "scrollback": ""
+}

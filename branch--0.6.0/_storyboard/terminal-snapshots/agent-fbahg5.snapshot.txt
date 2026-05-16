@@ -1,0 +1,32 @@
+SESSION: agent-fbahg5 | slate-martin
+CANVAS:  storyboarding/terminal-widget-prompts
+BRANCH:  0.6.0
+TIME:    2026-05-15T19:32:53.281Z
+
+================================================================================
+SCREEN
+================================================================================
+
+ ▐▛███▜▌   Claude Code v2.1.142
+▝▜█████▛▘  Opus 4.7 (1M context) · API Usage Billing
+  ▘▘ ▝▝    ~/workspace/storyboard-core/worktrees/0.6.0
+
+❯ [System] Your terminal identity has been set. widgetId=agent-fbahg5 
+  displayName=slate-martin canvasId=storyboarding/terminal-widget-prompts 
+  configFile=.storyboard/terminals/agent-fbahg5.json serverUrl=http://localhost:1236 — 
+  this is a configuration step, no response needed.
+
+⏺ Understood.
+
+✻ Cooked for 3s
+
+❯ Hello there
+
+⏺ Hi! What can I help you with?
+
+✻ Baked for 2s
+
+─────────────────────────────────────────────────────────────────────────────────────────
+❯ what can you help me with
+─────────────────────────────────────────────────────────────────────────────────────────
+  ⏵⏵ bypass permissions on (shift+tab to cycle)

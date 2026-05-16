@@ -1,0 +1,46 @@
+SESSION: agent-8ie6e6 | red-merlin
+CANVAS:  storyboarding/terminal-widget-prompts
+BRANCH:  0.6.0
+TIME:    2026-05-15T19:32:53.386Z
+
+================================================================================
+SCREEN
+================================================================================
+
+  this is a configuration step, no response needed.
+
+
+● Understood, configuration noted.
+
+
+❯ Hello there
+
+
+● read config (shell)
+  │ cat .storyboard/terminals/${STORYBOARD_WIDGET_ID}.json | jq '{connectedWidgets,
+  │ messaging}'
+  └ 2 lines...
+
+
+● read config (shell)
+  │ cat .storyboard/terminals/agent-8ie6e6.json | jq '{connectedWidgets, messaging}'
+  └ 5 lines...
+
+
+● Hi! 👋 I'm red-merlin. No widgets are connected to me yet — connect a sticky note,
+  markdown block, image, or another agent to give me context, and tell me what you'd like
+   to do.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]           @terminal.config.json
+─────────────────────────────────────────────────────────────────────────────────────────
+❯
+
+
+─────────────────────────────────────────────────────────────────────────────────────────
+ / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]         @storyboard.config.json ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]           @terminal.config.json ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]        @1e37b1fca38d64de.json:5 ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                    @SKILL.md:93 ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                       @SKILL.md ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                @SKILL.md:79-109 ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]           @terminal.config.json ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]      @terminal.config.json:9-11 ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]      @terminal.config.json:8-11 ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]           @terminal.config.json
