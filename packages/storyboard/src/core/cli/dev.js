@@ -63,8 +63,19 @@ function normalizeFrames(frames) {
   })
 }
 
-/** Play the mascot animation, leaving `settleText` rendered on exit. */
-async function animateMascot({ configPath, framesDir }, urlLine, stopLine) {
+/**
+ * Play the mascot animation in the background (non-blocking).
+ * Renders the settle frame + URL immediately so the dev URL is visible
+ * right away, then plays the loop frames in-place via setInterval and
+ * settles back on the final frame.
+ *
+ * Caveat: uses cursor-up writes that assume the mascot region hasn't
+ * scrolled. If Vite output races us, the animation will draw at the
+ * wrong line — that's the cost of being truly non-blocking. The total
+ * animation runs for `loops * frames.length * frameDurationMs` ms which
+ * should fit comfortably inside Vite's cold-start window.
+ */
+function animateMascotAsync({ configPath, framesDir }, urlLine, stopLine) {
   if (!existsSync(configPath)) return false
   let config
   try { config = JSON.parse(readFileSync(configPath, 'utf8')) } catch { return false }
@@ -79,43 +90,49 @@ async function animateMascot({ configPath, framesDir }, urlLine, stopLine) {
   try {
     rawFrames = frameNames.map((name) => readFileSync(join(framesDir, name), 'utf8'))
   } catch { return false }
-  // Append the settle frame at the end so it's part of the normalize pass too.
   let settleRaw
   try { settleRaw = readFileSync(join(framesDir, settleName), 'utf8') } catch { settleRaw = rawFrames[rawFrames.length - 1] }
 
   const normalized = normalizeFrames([...rawFrames, settleRaw])
   const loopFrames = normalized.slice(0, -1)
-  let settleFrame = normalized[normalized.length - 1]
+  const settleFrame = normalized[normalized.length - 1]
+  const lineCount = normalized[0].split('\n').length
 
-  // Pin URL/stop hint to the right of the eye row (line 1) and dot row (line 2)
-  // of the settle frame, after colorization.
-  const composeSettle = () => {
-    const lines = colorizeMascot(settleFrame).split('\n')
+  // Compose the settle frame with URL pinned to the right of the eye/dot rows.
+  const composeSettle = (raw) => {
+    const lines = colorizeMascot(raw).split('\n')
     if (lines[1] != null) lines[1] = lines[1] + '  ' + urlLine
     if (lines[2] != null) lines[2] = lines[2] + '  ' + stopLine
     return lines.join('\n')
   }
 
-  const lineCount = normalized[0].split('\n').length
+  // Print settled mascot immediately so the URL is visible without delay.
+  process.stdout.write(composeSettle(settleFrame) + '\n')
 
-  // Anchor: reserve the frame's worth of vertical space.
-  process.stdout.write('\n'.repeat(lineCount))
-
+  // In-place redraw helper: cursor up to top of mascot region, rewrite lines.
   const draw = (frame) => {
-    // Move cursor up to the top of the reserved region, then rewrite each line.
     process.stdout.write(`\x1b[${lineCount}A`)
     for (const line of frame.split('\n')) {
       process.stdout.write('\x1b[2K' + line + '\n')
     }
   }
 
-  for (let l = 0; l < loops; l++) {
-    for (const frame of loopFrames) {
-      draw(colorizeMascot(frame))
-      await new Promise((r) => setTimeout(r, frameDurationMs))
+  let loopIdx = 0
+  let frameIdx = 0
+  const timer = setInterval(() => {
+    if (loopIdx >= loops) {
+      clearInterval(timer)
+      // Settle back on the final composed frame (with URL).
+      draw(composeSettle(settleFrame))
+      return
     }
-  }
-  draw(composeSettle())
+    draw(colorizeMascot(loopFrames[frameIdx]))
+    frameIdx++
+    if (frameIdx >= loopFrames.length) { frameIdx = 0; loopIdx++ }
+  }, frameDurationMs)
+  // Don't keep the event loop alive just for the animation — Vite owns
+  // the process lifetime.
+  if (typeof timer.unref === 'function') timer.unref()
   return true
 }
 
@@ -212,11 +229,12 @@ async function main() {
   if (strictPort) p.log.info(`port ${port} (strict — from storyboard.config.json)`)
 
   // Render the storyboard mascot animation just before Vite takes over stdio.
-  // The animation settles on a final frame with the dev URL beside it; if
-  // disabled, missing, or --no-buddy is set, we fall back to a single line.
+  // Non-blocking: the settle frame + URL render synchronously so the URL is
+  // visible immediately, and the animation runs in the background while
+  // Vite spins up.
   const showBuddy = !flags['no-buddy'] && process.env.STORYBOARD_NO_BUDDY !== '1'
   console.log()
-  const animated = showBuddy && await animateMascot(
+  const animated = showBuddy && animateMascotAsync(
     mascotPaths(targetCwd),
     bold(`http://localhost:${port}/storyboard/`),
     dim('Stop with Ctrl+C'),
