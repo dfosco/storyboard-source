@@ -326,7 +326,15 @@ async function main() {
   function shutdown() {
     clearInterval(compactInterval)
     renameWatcher.close()
-    try { child.kill('SIGTERM') } catch { /* already dead */ }
+    // Suppress Vite's shutdown-time esbuild noise ("Pre-transform error:
+    // The service was stopped" for every in-flight transform).
+    try { child.stdout?.removeAllListeners('data') } catch { /* empty */ }
+    try { child.stderr?.removeAllListeners('data') } catch { /* empty */ }
+    try { child.stdout?.destroy() } catch { /* empty */ }
+    try { child.stderr?.destroy() } catch { /* empty */ }
+    // SIGINT lets Vite shut down esbuild and HMR cleanly; SIGTERM is harsher
+    // and tends to leave in-flight transforms aborting noisily.
+    try { child.kill('SIGINT') } catch { /* already dead */ }
     releasePort(worktreeName)
   }
   process.on('SIGINT', shutdown)
