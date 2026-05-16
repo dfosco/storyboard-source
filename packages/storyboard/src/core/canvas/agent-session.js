@@ -218,22 +218,30 @@ function buildCaptureBashScript() {
  * keeping it in one field avoids confusion about which args go where.
  */
 export function buildResumeStartupCommand({ startupCommand, sessionId, agentCfg }) {
-  if (!startupCommand || !sessionId) return startupCommand
-  if (!isResumableSessionId(sessionId, agentCfg)) return startupCommand
+  if (!startupCommand) return startupCommand
 
-  const template = agentCfg?.resumeCommand
-  if (!template || !template.includes('{id}')) return startupCommand
-
-  const resumeCmd = template.replace('{id}', sessionId)
-
-  // Graceful fallback: if the resume command exits non-zero (e.g. the agent
-  // CLI rejected the id, the on-disk session is corrupt, or the binary
-  // doesn't actually support resume the way we expect), fall through to a
-  // fresh session instead of leaving the widget with a dead terminal.
-  // A clean exit (user `/exit`s) returns 0 and skips the fallback.
-  if (agentCfg?.resumeFallback === false) return resumeCmd
   const notice = `printf '\\n\\033[33m[storyboard] resume failed; starting fresh session...\\033[0m\\n'`
-  return `${resumeCmd} || { ${notice}; ${startupCommand}; }`
+  const wrapFallback = (cmd) => agentCfg?.resumeFallback === false
+    ? cmd
+    : `${cmd} || { ${notice}; ${startupCommand}; }`
+
+  // Primary: per-widget captured sessionId → `resumeCommand` with {id}.
+  if (sessionId && isResumableSessionId(sessionId, agentCfg)) {
+    const template = agentCfg?.resumeCommand
+    if (template && template.includes('{id}')) {
+      return wrapFallback(template.replace('{id}', sessionId))
+    }
+  }
+
+  // Fallback: agents like Codex provide a `resumeLastCommand` that
+  // resumes the most recent session in the current cwd without needing
+  // a captured id (e.g. `codex resume --last`). Useful when the agent's
+  // sessionStart hook requires manual trust before it can capture ids
+  // (Codex case — hook needs `/hooks` approval).
+  const lastCmd = agentCfg?.resumeLastCommand
+  if (lastCmd) return wrapFallback(lastCmd)
+
+  return startupCommand
 }
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
