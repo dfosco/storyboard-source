@@ -1,0 +1,44 @@
+{
+  "widgetProps": {
+    "prettyName": "moss-osprey"
+  },
+  "displayName": "moss-osprey",
+  "connectedWidgets": [],
+  "messaging": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_bca8f68a2a",
+      "role": "member",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_bca8f68a2a.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 6350,
+    "centerY": 3178,
+    "zoom": 20,
+    "topLeftX": 0,
+    "topLeftY": 0,
+    "width": 12700,
+    "height": 6355
+  },
+  "updatedAt": "2026-05-16T22:00:39.237Z",
+  "widgetId": "agent-aysx3y",
+  "canvasId": "storyboard-demo",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null,
+  "lastAgentSessionId": "59e5d4fa-80a3-4a4c-a785-64e386602067",
+  "lastAgentSessionAt": "2026-05-16T20:44:13.286Z",
+  "lastAgentId": "copilot"
+}

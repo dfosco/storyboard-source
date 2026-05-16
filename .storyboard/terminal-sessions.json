@@ -1,38 +1,38 @@
 [
   {
-    "tmuxName": "sb-3e61d279abea",
-    "name": "honey-dipper",
+    "tmuxName": "sb-2f2ae217d968",
+    "name": "moss-puffin",
     "branch": "0.6.0",
-    "canvasId": "storyboarding/terminal-widget-prompts",
-    "widgetId": "agent-hjrf9j",
-    "createdAt": "2026-05-16T20:09:44.724Z",
-    "lastConnectedAt": "2026-05-16T20:14:37.686Z",
+    "canvasId": "storyboard-demo",
+    "widgetId": "agent-if4f9l",
+    "createdAt": "2026-05-16T20:44:10.901Z",
+    "lastConnectedAt": "2026-05-16T22:00:39.065Z",
     "status": "background",
-    "expiresAt": 1778964298500,
-    "generation": 4
+    "expiresAt": 1778970647176,
+    "generation": 61
   },
   {
-    "tmuxName": "sb-2125f072c115",
-    "name": "crimson-puffin",
+    "tmuxName": "sb-3905150d85cb",
+    "name": "bronze-egret",
     "branch": "0.6.0",
     "canvasId": "storyboard-demo",
-    "widgetId": "agent-5dtly6",
-    "createdAt": "2026-05-16T20:11:16.907Z",
-    "lastConnectedAt": "2026-05-16T20:11:16.907Z",
-    "status": "archived",
-    "expiresAt": 1778963479573,
-    "generation": 2
+    "widgetId": "agent-q6b7m7",
+    "createdAt": "2026-05-16T20:44:10.985Z",
+    "lastConnectedAt": "2026-05-16T22:00:39.200Z",
+    "status": "background",
+    "expiresAt": 1778970647176,
+    "generation": 61
   },
   {
-    "tmuxName": "sb-14c8d24a2fa4",
-    "name": "ember-egret",
+    "tmuxName": "sb-64a301ecaa06",
+    "name": "moss-osprey",
     "branch": "0.6.0",
     "canvasId": "storyboard-demo",
-    "widgetId": "agent-tnb6py",
-    "createdAt": "2026-05-16T20:11:17.040Z",
-    "lastConnectedAt": "2026-05-16T20:11:17.040Z",
-    "status": "archived",
-    "expiresAt": 1778963479668,
-    "generation": 2
+    "widgetId": "agent-aysx3y",
+    "createdAt": "2026-05-16T20:44:11.036Z",
+    "lastConnectedAt": "2026-05-16T22:00:39.236Z",
+    "status": "background",
+    "expiresAt": 1778970647176,
+    "generation": 61
   }
 ]
