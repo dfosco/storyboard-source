@@ -50,13 +50,13 @@ function colorizeMascot(text) {
 }
 
 /**
- * Render the mascot statically (no animation) at the current cursor position.
- * Returns true on success, false if config/frames are missing or disabled.
+ * Render the mascot with an in-place loop animation, then settle on the
+ * configured final frame with the URL beside it.
  *
- * We render statically because once Vite's "ready in" line lands below the
- * mascot, any subsequent animation redraw via cursor-up writes to the wrong
- * lines — animation requires owning the cursor exclusively. The frame files
- * + config remain editable; only the settle frame is shown.
+ * Called AFTER Vite prints "ready in Xms" and the storyboard-server plugin
+ * has suppressed Vite's own URL block. From this moment, Vite is in idle
+ * watch mode and won't print again unless code changes — so our cursor-up
+ * redraws can safely own the bottom of the screen.
  */
 function renderMascot({ configPath, framesDir }, urlLine, stopLine) {
   if (!existsSync(configPath)) return false
@@ -65,15 +65,61 @@ function renderMascot({ configPath, framesDir }, urlLine, stopLine) {
   if (config.enabled === false) return false
   const frameNames = Array.isArray(config.frames) ? config.frames : []
   if (frameNames.length === 0) return false
+  const frameDurationMs = Number(config.frameDurationMs) || 180
+  const loops = Math.max(1, Number(config.loops) || 1)
   const settleName = config.settleFrame || frameNames[frameNames.length - 1]
 
+  let rawFrames
+  try { rawFrames = frameNames.map((n) => readFileSync(join(framesDir, n), 'utf8')) } catch { return false }
   let settleRaw
-  try { settleRaw = readFileSync(join(framesDir, settleName), 'utf8') } catch { return false }
+  try { settleRaw = readFileSync(join(framesDir, settleName), 'utf8') } catch { settleRaw = rawFrames[rawFrames.length - 1] }
 
-  const lines = colorizeMascot(settleRaw.replace(/\n+$/, '')).split('\n')
-  if (lines[1] != null) lines[1] = lines[1] + '  ' + urlLine
-  if (lines[2] != null) lines[2] = lines[2] + '  ' + stopLine
-  process.stdout.write(lines.join('\n') + '\n')
+  // Pad every frame to the same height/width so cursor-up redraws fully
+  // overwrite the previous frame.
+  const trim = (s) => s.replace(/\n+$/, '')
+  const split = [...rawFrames, settleRaw].map((f) => trim(f).split('\n'))
+  const maxLines = Math.max(...split.map((l) => l.length))
+  const maxCols = Math.max(...split.flatMap((lines) => lines.map((l) => l.length)))
+  const normalized = split.map((lines) => {
+    while (lines.length < maxLines) lines.push('')
+    return lines.map((l) => l.padEnd(maxCols, ' ')).join('\n')
+  })
+  const loopFrames = normalized.slice(0, -1)
+  const settleFrame = normalized[normalized.length - 1]
+  const lineCount = maxLines
+
+  const composeSettle = () => {
+    const lines = colorizeMascot(settleFrame).split('\n')
+    if (lines[1] != null) lines[1] = lines[1] + '  ' + urlLine
+    if (lines[2] != null) lines[2] = lines[2] + '  ' + stopLine
+    return lines.join('\n')
+  }
+
+  // Print the settle frame immediately so URL is visible without delay.
+  process.stdout.write(composeSettle() + '\n')
+
+  if (!process.stdout.isTTY) return true
+
+  const draw = (frame) => {
+    process.stdout.write(`\x1b[${lineCount}A`)
+    for (const line of frame.split('\n')) {
+      process.stdout.write('\x1b[2K' + line + '\n')
+    }
+  }
+
+  let loopIdx = 0
+  let frameIdx = 0
+  const timer = setInterval(() => {
+    if (loopIdx >= loops) {
+      clearInterval(timer)
+      draw(composeSettle())
+      return
+    }
+    draw(colorizeMascot(loopFrames[frameIdx]))
+    frameIdx++
+    if (frameIdx >= loopFrames.length) { frameIdx = 0; loopIdx++ }
+  }, frameDurationMs)
+  if (typeof timer.unref === 'function') timer.unref()
   return true
 }
 
@@ -188,7 +234,13 @@ async function main() {
   const child = spawn(npmBin, viteArgs, {
     cwd: targetCwd,
     stdio: verbose ? 'inherit' : ['inherit', 'pipe', 'pipe'],
-    env: { ...process.env, STORYBOARD_WORKTREE: worktreeName },
+    env: {
+      ...process.env,
+      STORYBOARD_WORKTREE: worktreeName,
+      // Tells the storyboard-server vite plugin to suppress its default
+      // "➜ Local:" URL block — we render our own URL beside the mascot.
+      ...(verbose ? {} : { STORYBOARD_QUIET_VITE: '1' }),
+    },
   })
 
   if (!verbose) {
@@ -223,11 +275,14 @@ async function main() {
             sink.write(line + '\n')
             continue
           }
-          // Vite prints something like "  ➜  ready in 412 ms" or
-          // "  VITE v7.3.1  ready in 2390 ms". Match on the literal phrase.
+          // Vite prints "  VITE v7.3.1  ready in 2390 ms" once ready.
+          // Print Vite's ready line FIRST, then render the mascot beneath
+          // it. After this point Vite output goes silent (watch mode idle)
+          // unless code changes, so the mascot is the last thing on screen
+          // and our animation has nothing racing it.
           if (/ready in \d/.test(line)) {
-            renderOnce()
             sink.write(line + '\n')
+            renderOnce()
           }
           // else: swallow pre-ready chatter
         }

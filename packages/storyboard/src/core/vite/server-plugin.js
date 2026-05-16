@@ -134,6 +134,20 @@ export default function storyboardServer() {
     },
 
     configureServer(server) {
+      // --- Custom URL printer ----------------------------------------------------
+      // Vite calls server.printUrls() after its "ready in Xms" banner.
+      // Override to suppress Vite's default "➜ Local:" block and let the
+      // CLI render our own URL (and mascot) instead. Suppression is opt-in
+      // via STORYBOARD_QUIET_VITE=1 — we set this from storyboard dev.js
+      // when --verbose is OFF.
+      if (process.env.STORYBOARD_QUIET_VITE === '1') {
+        const originalPrintUrls = server.printUrls?.bind(server)
+        server.printUrls = () => {
+          // No-op: caller renders its own URL + mascot.
+          void originalPrintUrls
+        }
+      }
+
       // --- Reload guard ----------------------------------------------------------
       // Suppress full-reloads and HMR updates for guarded clients.
       //
