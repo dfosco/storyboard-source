@@ -1251,9 +1251,11 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
           // the agent feel "stuck" for the first half-minute after launch.
           writeFileSync(envScriptPath, envParts.join('\n') + '\necho "Environment loaded:"\n')
         } catch { /* empty */ }
-        const envSourceCmd = startupCommand
-          ? `clear && source ${JSON.stringify(envScriptPath)} && clear`
-          : `source ${JSON.stringify(envScriptPath)}`
+        // Source env script; the trailing readiness echo MUST remain on
+        // the pane so the post-startup poller can match it. Don't append
+        // a `clear` here — the welcomeCmd that runs next clears the pane
+        // itself before launching the agent.
+        const envSourceCmd = `source ${JSON.stringify(envScriptPath)}`
 
         setTimeout(() => {
           try {
