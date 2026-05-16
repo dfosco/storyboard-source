@@ -23,6 +23,7 @@ import { compactAll } from '../canvas/compact.js'
 import { parseFlags } from './flags.js'
 import { setupNeeded, writeUserState, getInstalledStoryboardVersion } from './userState.js'
 import { dim, magenta, bold } from './intro.js'
+import { rmSync } from 'node:fs'
 
 /** Find the mascot directory shipped with the storyboard package. */
 function mascotPaths(targetCwd) {
@@ -193,6 +194,11 @@ async function main() {
         ? 'first run in this repo'
         : `version changed ${need.from} → ${need.to}`
       if (verbose) p.log.info(`Running setup (${why})…`)
+
+      // Invalidate Vite's optimize-deps cache when the storyboard version
+      // changes. Otherwise the browser hits 504 Outdated Optimize Dep
+      // because the dep graph IDs no longer match the cached chunks.
+      try { rmSync(join(targetCwd, 'node_modules', '.vite'), { recursive: true, force: true }) } catch { /* empty */ }
       await new Promise((resolveSetup) => {
         const setupChild = spawn(
           process.platform === 'win32' ? 'npx.cmd' : 'npx',

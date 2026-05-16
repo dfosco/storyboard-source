@@ -774,6 +774,54 @@ export default function storyboardServer() {
         })
       }
 
+      // Auto-reload on Vite's "outdated optimize dep" 504 errors.
+      // Happens when the dep graph IDs in cached chunks no longer match
+      // what Vite is serving (after upgrades, dep additions, etc).
+      // We catch failed fetches inside the page and trigger a full reload
+      // once — the second load will see the freshly-built optimize deps.
+      if (isDev) {
+        tags.push({
+          tag: 'script',
+          children: `
+(function(){
+  var reloaded = false;
+  function maybeReload(reason){
+    if (reloaded) return;
+    if (sessionStorage.getItem('__sb_outdated_reload__')) return;
+    reloaded = true;
+    sessionStorage.setItem('__sb_outdated_reload__', '1');
+    console.warn('[storyboard] Reloading: ' + reason);
+    setTimeout(function(){ sessionStorage.removeItem('__sb_outdated_reload__'); }, 5000);
+    location.reload();
+  }
+  // Clear stale guard from previous successful loads.
+  if (document.readyState === 'complete') {
+    sessionStorage.removeItem('__sb_outdated_reload__');
+  } else {
+    window.addEventListener('load', function(){
+      setTimeout(function(){ sessionStorage.removeItem('__sb_outdated_reload__'); }, 2000);
+    });
+  }
+  // Catch module load failures.
+  window.addEventListener('error', function(e){
+    var msg = (e && e.message) || '';
+    if (/Outdated Optimize Dep|Failed to fetch dynamically imported module|504/i.test(msg)) {
+      maybeReload('outdated dep / dynamic import failure');
+    }
+  }, true);
+  // Catch unhandled promise rejections from dynamic imports.
+  window.addEventListener('unhandledrejection', function(e){
+    var msg = (e && e.reason && (e.reason.message || String(e.reason))) || '';
+    if (/Outdated Optimize Dep|Failed to fetch dynamically imported module|504/i.test(msg)) {
+      maybeReload('outdated dep / dynamic import failure');
+    }
+  });
+})();
+`.trim(),
+          injectTo: 'head',
+        })
+      }
+
       // Inject base path so the inspector UI can resolve static assets
       // (e.g. inspector.json) when deployed under a subpath
       tags.push({
