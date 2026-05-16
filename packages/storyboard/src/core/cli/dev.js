@@ -96,14 +96,14 @@ function animateMascotAsync({ configPath, framesDir }, urlLine, stopLine) {
     return lines.join('\n')
   }
 
-  // Print the settle frame immediately on stderr so the URL is visible
-  // without waiting for animation to finish.
-  process.stderr.write(composeSettle(settleFrame) + '\n')
+  // Print the settle frame immediately so the URL is visible without
+  // waiting for animation to finish.
+  process.stdout.write(composeSettle(settleFrame) + '\n')
 
   const draw = (frame) => {
-    process.stderr.write(`\x1b[${lineCount}A`)
+    process.stdout.write(`\x1b[${lineCount}A`)
     for (const line of frame.split('\n')) {
-      process.stderr.write('\x1b[2K' + line + '\n')
+      process.stdout.write('\x1b[2K' + line + '\n')
     }
   }
 
@@ -126,6 +126,7 @@ function animateMascotAsync({ configPath, framesDir }, urlLine, stopLine) {
 const flagSchema = {
   port: { type: 'number', description: 'Override dev server port' },
   'no-buddy': { type: 'boolean', default: false, description: 'Omit the storyboard mascot' },
+  verbose: { type: 'boolean', default: false, description: 'Show full setup/Vite output' },
 }
 
 /** Read the fixed port from storyboard.config.json, if any. */
@@ -154,8 +155,17 @@ async function main() {
   const strictPort = flags.port == null && configuredPort != null
   const port = flags.port || configuredPort || getPort(worktreeName)
 
-  p.intro('storyboard dev')
-  p.log.info(`worktree: ${worktreeName}`)
+  const verbose = flags.verbose
+
+  // Quiet header: just `worktree: …` and `port: …`. Everything else
+  // (setup logs, compaction, "strict from storyboard.config.json",
+  // intro/outro frames) is hidden unless --verbose.
+  if (verbose) {
+    p.intro('storyboard dev')
+    p.log.info(`worktree: ${worktreeName}`)
+  } else {
+    console.log(`  ${dim('worktree:')} ${bold(worktreeName)}`)
+  }
 
   // Re-run setup automatically if it has never run here, or if the installed
   // @dfosco/storyboard version no longer matches the one setup was last run
@@ -167,25 +177,21 @@ async function main() {
       const why = need.reason === 'first-run'
         ? 'first run in this repo'
         : `version changed ${need.from} → ${need.to}`
-      p.log.info(`Running setup (${why})…`)
+      if (verbose) p.log.info(`Running setup (${why})…`)
       await new Promise((resolveSetup) => {
         const setupChild = spawn(
           process.platform === 'win32' ? 'npx.cmd' : 'npx',
           ['storyboard', 'setup', '--skip-branch', '--no-buddy'],
           {
             cwd: targetCwd,
-            stdio: 'inherit',
-            // Belt-and-suspenders: also pass the env var, since older
-            // installed storyboard versions on disk may not know the flag.
+            // In quiet mode swallow the spawned-setup output; verbose passes through.
+            stdio: verbose ? 'inherit' : 'ignore',
             env: { ...process.env, STORYBOARD_NO_BUDDY: '1' },
           }
         )
         setupChild.on('exit', () => resolveSetup())
         setupChild.on('error', () => resolveSetup())
       })
-      // Belt-and-suspenders: even if setup failed to write the marker,
-      // stamp the current version so dev doesn't loop forever asking to run
-      // setup on every boot.
       const version = getInstalledStoryboardVersion(targetCwd)
       if (version) writeUserState({ setupVersion: version, setupRanAt: new Date().toISOString() }, targetCwd)
     }
@@ -193,50 +199,92 @@ async function main() {
 
   // Compact bloated canvas JSONL files before booting Vite.
   const compacted = compactAll(targetCwd)
-  for (const r of compacted) {
-    p.log.info(`[compact] ${r.name}: ${(r.before / 1024).toFixed(0)}KB → ${(r.after / 1024).toFixed(0)}KB`)
+  if (verbose) {
+    for (const r of compacted) {
+      p.log.info(`[compact] ${r.name}: ${(r.before / 1024).toFixed(0)}KB → ${(r.after / 1024).toFixed(0)}KB`)
+    }
   }
 
   const renameWatcher = startRenameWatcher(targetCwd)
   const compactInterval = setInterval(() => {
     try {
       const r = compactAll(targetCwd)
-      for (const x of r) p.log.info(`[compact] ${x.name}: ${(x.before / 1024).toFixed(0)}KB → ${(x.after / 1024).toFixed(0)}KB`)
+      if (verbose) {
+        for (const x of r) p.log.info(`[compact] ${x.name}: ${(x.before / 1024).toFixed(0)}KB → ${(x.after / 1024).toFixed(0)}KB`)
+      }
     } catch { /* non-critical */ }
   }, 15 * 60 * 1000)
 
   const npmBin = process.platform === 'win32' ? 'npx.cmd' : 'npx'
-  // Without --strictPort: if the requested port is taken, Vite picks the next
-  // free one. The server-plugin captures the actual port via
-  // server.httpServer.address() and self-registers in .storyboard/servers.json.
-  // With --strictPort (config.port is set): Vite exits if the port is taken,
-  // honoring the user's intent that this instance owns that exact port.
   const viteArgs = ['vite', '--port', String(port)]
   if (strictPort) viteArgs.push('--strictPort')
-  if (strictPort) p.log.info(`port ${port} (strict — from storyboard.config.json)`)
-
-  // Render the storyboard mascot animation just before Vite takes over stdio.
-  // Non-blocking: the settle frame + URL render synchronously so the URL is
-  // visible immediately, and the animation runs in the background while
-  // Vite spins up.
-  const showBuddy = !flags['no-buddy'] && process.env.STORYBOARD_NO_BUDDY !== '1'
-  console.log()
-  const animated = showBuddy && animateMascotAsync(
-    mascotPaths(targetCwd),
-    bold(`http://localhost:${port}/storyboard/`),
-    dim('Stop with Ctrl+C'),
-  )
-  if (!animated) {
-    console.log(`  ${bold(`http://localhost:${port}/storyboard/`)}`)
-    console.log(`  ${dim('Stop with Ctrl+C')}`)
+  if (verbose) {
+    console.log(`  ${dim('port:')} ${bold(port)} ${strictPort ? dim('(strict — from storyboard.config.json)') : ''}`)
+  } else {
+    console.log(`  ${dim('port:')} ${bold(port)}`)
   }
-  console.log()
 
+  const showBuddy = !flags['no-buddy'] && process.env.STORYBOARD_NO_BUDDY !== '1'
+
+  // Spawn Vite with piped stdio so we can:
+  //   - In quiet mode: suppress noisy plugin chatter ([storyboard]/[generouted]/etc)
+  //     until Vite prints "ready in", then render the mascot + URL, then
+  //     stream the rest through unchanged.
+  //   - In verbose mode: stream everything through unchanged from the start.
   const child = spawn(npmBin, viteArgs, {
     cwd: targetCwd,
-    stdio: 'inherit',
+    stdio: verbose ? 'inherit' : ['inherit', 'pipe', 'pipe'],
     env: { ...process.env, STORYBOARD_WORKTREE: worktreeName },
   })
+
+  if (!verbose) {
+    let mascotShown = false
+    const renderOnce = () => {
+      if (mascotShown) return
+      mascotShown = true
+      console.log()
+      const animated = showBuddy && animateMascotAsync(
+        mascotPaths(targetCwd),
+        bold(`http://localhost:${port}/storyboard/`),
+        dim('Stop with Ctrl+C'),
+      )
+      if (!animated) {
+        console.log(`  ${bold(`http://localhost:${port}/storyboard/`)}`)
+        console.log(`  ${dim('Stop with Ctrl+C')}`)
+      }
+      console.log()
+    }
+
+    // Buffer per-stream so we can split on newlines and look for the
+    // "ready in" signal. Once seen, we render the mascot and then pass
+    // everything through unchanged.
+    const makeFilter = (sink) => {
+      let buf = ''
+      return (chunk) => {
+        buf += chunk.toString()
+        const lines = buf.split('\n')
+        buf = lines.pop() // keep trailing partial line
+        for (const line of lines) {
+          if (mascotShown) {
+            sink.write(line + '\n')
+            continue
+          }
+          // Vite prints something like "  ➜  ready in 412 ms" or
+          // "  VITE v7.3.1  ready in 2390 ms". Match on the literal phrase.
+          if (/ready in \d/.test(line)) {
+            renderOnce()
+            sink.write(line + '\n')
+          }
+          // else: swallow pre-ready chatter
+        }
+      }
+    }
+    child.stdout?.on('data', makeFilter(process.stdout))
+    child.stderr?.on('data', makeFilter(process.stderr))
+    // Safety net: if Vite never prints "ready in" within 8s, render anyway
+    // so the user isn't left staring at a blank screen.
+    setTimeout(renderOnce, 8000).unref?.()
+  }
 
   function shutdown() {
     clearInterval(compactInterval)
