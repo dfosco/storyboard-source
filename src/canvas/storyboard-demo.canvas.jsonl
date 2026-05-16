@@ -10,3 +10,5 @@
 {"event":"widgets_replaced","timestamp":"2026-05-16T19:34:04.493Z","widgets":[{"id":"agent-5dtly6","type":"agent","position":{"x":785,"y":246},"props":{"agentId":"copilot","alias":"","startupCommand":"copilot --agent terminal-agent","width":1000,"height":800,"prettyName":"crimson-puffin","role":"member"},"bounds":{"width":1000,"height":800,"startX":785,"startY":246,"endX":1785,"endY":1046}},{"id":"agent-tnb6py","type":"agent","position":{"x":2258,"y":190},"props":{"agentId":"codex","alias":"","startupCommand":"codex --dangerously-bypass-approvals-and-sandbox","width":1000,"height":800,"prettyName":"ember-egret"},"bounds":{"width":1000,"height":800,"startX":2258,"startY":190,"endX":3258,"endY":990}}]}
 {"event":"widget_updated","timestamp":"2026-05-16T19:34:04.619Z","widgetId":"agent-tnb6py","props":{"role":"member"}}
 {"event":"widget_updated","timestamp":"2026-05-16T19:34:04.654Z","widgetId":"agent-tnb6py","props":{"role":"member"}}
+{"event":"widget_removed","timestamp":"2026-05-16T20:11:19.473Z","widgetId":"agent-5dtly6"}
+{"event":"widget_removed","timestamp":"2026-05-16T20:11:19.572Z","widgetId":"agent-tnb6py"}

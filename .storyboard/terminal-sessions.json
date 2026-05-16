@@ -1,50 +1,38 @@
 [
   {
-    "tmuxName": "sb-4c55c50ebfce",
-    "name": "rose-gannet",
-    "branch": "0.6.0",
-    "canvasId": "storyboarding/terminal-widget-prompts",
-    "widgetId": "agent-snyfka",
-    "createdAt": "2026-05-16T20:07:20.805Z",
-    "lastConnectedAt": "2026-05-16T20:07:26.079Z",
-    "status": "archived",
-    "expiresAt": 1778962349089,
-    "generation": 4
-  },
-  {
-    "tmuxName": "sb-8f003e148c29",
-    "name": "ivory-harrier",
-    "branch": "0.6.0",
-    "canvasId": "storyboarding/terminal-widget-prompts",
-    "widgetId": "agent-z5qh6e",
-    "createdAt": "2026-05-16T20:07:22.635Z",
-    "lastConnectedAt": "2026-05-16T20:07:26.134Z",
-    "status": "archived",
-    "expiresAt": 1778962349245,
-    "generation": 4
-  },
-  {
-    "tmuxName": "sb-4b2f05f9728c",
-    "name": "indigo-harrier",
-    "branch": "0.6.0",
-    "canvasId": "storyboarding/terminal-widget-prompts",
-    "widgetId": "agent-830qdy",
-    "createdAt": "2026-05-16T20:07:26.220Z",
-    "lastConnectedAt": "2026-05-16T20:07:26.220Z",
-    "status": "archived",
-    "expiresAt": 1778962349433,
-    "generation": 2
-  },
-  {
     "tmuxName": "sb-3e61d279abea",
     "name": "honey-dipper",
     "branch": "0.6.0",
     "canvasId": "storyboarding/terminal-widget-prompts",
     "widgetId": "agent-hjrf9j",
-    "createdAt": "2026-05-16T20:07:32.560Z",
-    "lastConnectedAt": "2026-05-16T20:07:32.560Z",
-    "status": "live",
-    "expiresAt": null,
-    "generation": 1
+    "createdAt": "2026-05-16T20:09:44.724Z",
+    "lastConnectedAt": "2026-05-16T20:14:37.686Z",
+    "status": "background",
+    "expiresAt": 1778964298500,
+    "generation": 4
+  },
+  {
+    "tmuxName": "sb-2125f072c115",
+    "name": "crimson-puffin",
+    "branch": "0.6.0",
+    "canvasId": "storyboard-demo",
+    "widgetId": "agent-5dtly6",
+    "createdAt": "2026-05-16T20:11:16.907Z",
+    "lastConnectedAt": "2026-05-16T20:11:16.907Z",
+    "status": "archived",
+    "expiresAt": 1778963479573,
+    "generation": 2
+  },
+  {
+    "tmuxName": "sb-14c8d24a2fa4",
+    "name": "ember-egret",
+    "branch": "0.6.0",
+    "canvasId": "storyboard-demo",
+    "widgetId": "agent-tnb6py",
+    "createdAt": "2026-05-16T20:11:17.040Z",
+    "lastConnectedAt": "2026-05-16T20:11:17.040Z",
+    "status": "archived",
+    "expiresAt": 1778963479668,
+    "generation": 2
   }
 ]

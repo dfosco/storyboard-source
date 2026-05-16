@@ -1,6 +1,12 @@
 {
   "widgetProps": {
-    "prettyName": "ember-egret"
+    "agentId": "codex",
+    "alias": "",
+    "startupCommand": "codex --dangerously-bypass-approvals-and-sandbox",
+    "width": 1000,
+    "height": 800,
+    "prettyName": "ember-egret",
+    "role": "member"
   },
   "displayName": "ember-egret",
   "connectedWidgets": [],
@@ -19,15 +25,15 @@
     }
   ],
   "viewport": {
-    "centerX": 2735,
-    "centerY": 647,
-    "zoom": 100,
-    "topLeftX": 1455,
-    "topLeftY": 1,
-    "width": 2560,
-    "height": 1291
+    "centerX": 2286,
+    "centerY": 1153,
+    "zoom": 56,
+    "topLeftX": 0,
+    "topLeftY": 0,
+    "width": 4571,
+    "height": 2305
   },
-  "updatedAt": "2026-05-16T19:53:14.839Z",
+  "updatedAt": "2026-05-16T20:11:19.698Z",
   "widgetId": "agent-tnb6py",
   "canvasId": "storyboard-demo",
   "canvasFile": null,
