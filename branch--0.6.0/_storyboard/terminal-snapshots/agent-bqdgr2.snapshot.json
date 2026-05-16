@@ -1,0 +1,10 @@
+{
+  "widgetId": "agent-bqdgr2",
+  "canvasId": "storyboard-demo",
+  "prettyName": "sage-tanager",
+  "timestamp": "2026-05-16T22:27:04.370Z",
+  "cols": 115,
+  "rows": 41,
+  "paneContent": "\n● Acknowledged — broadcast two-way active with Leader, Form, Data, opal-warbler, Scaffold, Charts, Data. Standing\n  by.\n\n\n❯ Branding is a bit too... ligth and bubbly? Gradients a bit annoying if I'm honest, and you're lacking contrast on\n   the text at places\n\n\n● Edit Branding.jsx +17 -26\n  └ src/prototypes/main.folder/StartupSignup/Branding.jsx\n\n\n● update summary widget + save output (shell)\n  │ export STORYBOARD_SERVER_URL=http://localhost:1236 STORYBOARD_CANVAS_ID=storyboard-demo\n  │ STORYBOARD_WIDGET_ID=agent-bqdgr2\n  │ curl -s -m 5 -X PATCH \"$STORYBOARD_SERVER_URL/_storyboard/canvas/widget\" \\\n  │ -H \"Content-Type: application/json\" \\\n  │ -d '{\"name\":\"storyboard-demo\",\"widgetId\":\"markdown-xpnck7\",\"props\":{\"content\":\"### Branding.jsx …\n  └ 12 lines...\n\n\n● Toned it down. Changes:\n\n   - Removed all gradients (background + avatar) and the blurred orb decorations\n   - Solid indigo-950 background — flat, calm\n   - Body text is now white (was indigo-100/90 and indigo-50 — washed out)\n   - Indigo-500 used only as small accents (logo tile, check bullets, avatar) — no more translucent white/15\n  ring-on-glass stuff\n   - Testimonial is a quiet bordered card (border-indigo-800 on indigo-900/60) instead of glassmorphism\n\n  Same content and layout; just calmer and readable. Summary widget on canvas updated.\n\n ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                                @README.md\n───────────────────────────────────────────────────────────────────────────────────────────────────────────────────\n❯  \n\n\n───────────────────────────────────────────────────────────────────────────────────────────────────────────────────\n 1 background /tasks · / commands · ? help            terminal-agent · Claude Opus 4.7 (1M context)(Internal only)\n\n",
+  "scrollback": ""
+}
