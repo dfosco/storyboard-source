@@ -22,6 +22,20 @@ import { startRenameWatcher } from '../rename-watcher/watcher.js'
 import { compactAll } from '../canvas/compact.js'
 import { parseFlags } from './flags.js'
 import { setupNeeded, writeUserState, getInstalledStoryboardVersion } from './userState.js'
+import { dim, magenta, bold } from './intro.js'
+
+/** Render the storyboard mascot with two info lines beside it. */
+function mascotBanner(line1, line2) {
+  const d = dim('·')
+  const f = magenta
+  const b = dim
+  return [
+    `        ${b('╭─────────────────╮')}`,
+    `        ${b('│')}  ${d}  ${f('◠')}  ${f('◡')}  ${f('◠')}  ${d}  ${b('│')}  ${line1}`,
+    `        ${b('│')}  ${d}  ${d}  ${d}  ${d}  ${d}  ${b('│')}  ${line2}`,
+    `        ${b('╰─────────────────╯')}`,
+  ].join('\n')
+}
 
 const flagSchema = {
   port: { type: 'number', description: 'Override dev server port' },
@@ -107,14 +121,22 @@ async function main() {
   const viteArgs = ['vite', '--port', String(port)]
   if (strictPort) viteArgs.push('--strictPort')
   if (strictPort) p.log.info(`port ${port} (strict — from storyboard.config.json)`)
+
+  // Render the storyboard mascot just before Vite takes over stdio. The
+  // mascot acts as a visual anchor between our setup output and Vite's
+  // own "ready in Xms" banner.
+  console.log()
+  console.log(mascotBanner(
+    bold(`http://localhost:${port}/storyboard/`),
+    dim('Stop with Ctrl+C'),
+  ))
+  console.log()
+
   const child = spawn(npmBin, viteArgs, {
     cwd: targetCwd,
     stdio: 'inherit',
     env: { ...process.env, STORYBOARD_WORKTREE: worktreeName },
   })
-
-  p.log.success(`http://localhost:${port}/storyboard/`)
-  p.log.info('Stop with Ctrl+C')
 
   function shutdown() {
     clearInterval(compactInterval)
