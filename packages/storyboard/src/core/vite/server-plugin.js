@@ -155,7 +155,9 @@ export default function storyboardServer() {
       //   1. Canvas guard — canvas pages send heartbeats via storyboard:canvas-hmr-guard.
       //      Controlled by the "canvas-auto-reload" feature flag (default: false = guard ON).
       //   2. Prototype guard — all pages send heartbeats via storyboard:prototype-reload-guard.
-      //      Controlled by the "prototype-auto-reload" feature flag (default: true = guard OFF).
+      //      Controlled by the "prototype-auto-reload" feature flag (default: false = guard ON).
+      //      The prototype guard only drops `full-reload` payloads; `update` (HMR module /
+      //      React Fast Refresh) payloads still flow so component edits hot-update normally.
       //
       // Both guards auto-expire 5s after the last heartbeat so closed tabs never
       // leave them stuck. Custom storyboard events always pass through.
@@ -208,12 +210,14 @@ export default function storyboardServer() {
         server.httpServer?.on('close', () => clearInterval(cleanup))
         server.httpServer?.on('close', () => stopMaintenance())
 
-        function isClientGuarded(client) {
+        function isCanvasClientGuarded(client) {
           const cu = canvasGuardedClients.get(client)
-          if (cu != null && Date.now() < cu) return true
+          return cu != null && Date.now() < cu
+        }
+
+        function isPrototypeClientGuarded(client) {
           const pu = prototypeGuardedClients.get(client)
-          if (pu != null && Date.now() < pu) return true
-          return false
+          return pu != null && Date.now() < pu
         }
 
         const originalSend = server.ws.send.bind(server.ws)
@@ -232,10 +236,24 @@ export default function storyboardServer() {
             return originalSend(payload, ...rest)
           }
 
-          // For reload/update payloads, send only to unguarded clients
-          if (payload && (payload.type === 'full-reload' || payload.type === 'update')) {
+          // full-reload: drop for any guarded client (canvas OR prototype).
+          // Both guards exist to preserve in-page state across data file edits.
+          if (payload && payload.type === 'full-reload') {
             for (const client of server.ws.clients) {
-              if (!isClientGuarded(client)) {
+              if (!isCanvasClientGuarded(client) && !isPrototypeClientGuarded(client)) {
+                client.send(payload)
+              }
+            }
+            return
+          }
+
+          // update (HMR module updates / React Fast Refresh): only drop for
+          // CANVAS-guarded clients (canvas state must not be disturbed by
+          // unrelated module updates). Prototype-guarded clients still
+          // receive updates so React Fast Refresh works while developing.
+          if (payload && payload.type === 'update') {
+            for (const client of server.ws.clients) {
+              if (!isCanvasClientGuarded(client)) {
                 client.send(payload)
               }
             }
