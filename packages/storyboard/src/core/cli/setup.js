@@ -15,6 +15,7 @@ import path from 'path'
 import { execSync, spawn } from 'child_process'
 import { gettingStartedLines, dim, magenta, bold, yellow, green } from './intro.js'
 import { parseFlags } from './flags.js'
+import { readUserState, writeUserState, getInstalledStoryboardVersion } from './userState.js'
 
 const flagSchema = {
   'skip-branch': { type: 'boolean', default: false, description: 'Skip the branch prompt at the end' },
@@ -259,38 +260,102 @@ if (isInstalled('code')) {
   }
 }
 
-// 6a. Copilot CLI — install via the official script (no homebrew dependency).
-//     curl ships with macOS and all major Linux distros.
-//     Auth is separate from `gh`: copilot has its own credential store.
+// 6a. Coding agents (Copilot CLI / Claude Code / Codex CLI).
+//     On first-time setup, ask the user which agents they want installed.
+//     On subsequent runs, only install the previously-opted-in agents that
+//     went missing — never re-prompt to avoid being annoying after upgrades.
 {
-  let copilotNewlyInstalled = false
-  if (isInstalled('copilot')) {
-    p.log.success('Copilot CLI installed')
-  } else {
-    const spin = p.spinner()
-    spin.start('Installing Copilot CLI')
-    try {
-      await runAsync('bash', ['-c', 'curl -fsSL https://gh.io/copilot-install | bash'])
-      // Install script drops the binary in ~/.local/bin when run as
-      // non-root. Make sure the current process can find it for the
-      // remainder of setup, and warn the user to add it to their shell rc.
-      const localBin = `${process.env.HOME}/.local/bin`
-      if (!process.env.PATH.includes(localBin)) {
-        process.env.PATH = `${localBin}:${process.env.PATH}`
-      }
-      spin.stop('Copilot CLI installed')
-      copilotNewlyInstalled = true
-      if (!isInstalled('copilot')) {
-        p.log.warning(`copilot not on PATH — add ${yellow('export PATH="$HOME/.local/bin:$PATH"')} to your shell rc`)
-      }
-    } catch {
-      spin.stop('Failed to install Copilot CLI')
-      p.log.warning('Install manually: curl -fsSL https://gh.io/copilot-install | bash')
+  const priorState = readUserState()
+  const priorAgents = priorState.agents || null
+  const firstRun = !priorState.setupVersion
+
+  const ensureLocalBinOnPath = () => {
+    const localBin = `${process.env.HOME}/.local/bin`
+    if (!process.env.PATH.includes(localBin)) {
+      process.env.PATH = `${localBin}:${process.env.PATH}`
     }
   }
-  if (copilotNewlyInstalled || isInstalled('copilot')) {
-    p.log.info(`  Auth is separate from gh — run ${yellow('copilot')} then ${yellow('/login')}`)
+
+  const installers = {
+    copilot: {
+      label: 'Copilot CLI',
+      bin: 'copilot',
+      install: async () => {
+        await runAsync('bash', ['-c', 'curl -fsSL https://gh.io/copilot-install | bash'])
+        ensureLocalBinOnPath()
+      },
+      manualHint: 'curl -fsSL https://gh.io/copilot-install | bash',
+      authHint: `Auth is separate from gh — run ${yellow('copilot')} then ${yellow('/login')}`,
+    },
+    claude: {
+      label: 'Claude Code',
+      bin: 'claude',
+      install: async () => {
+        await runAsync('bash', ['-c', 'curl -fsSL https://claude.ai/install.sh | bash'])
+        ensureLocalBinOnPath()
+      },
+      manualHint: 'curl -fsSL https://claude.ai/install.sh | bash',
+      authHint: `Run ${yellow('claude')} once to authenticate`,
+    },
+    codex: {
+      label: 'Codex CLI',
+      bin: 'codex',
+      install: async () => {
+        await runAsync('npm', ['install', '-g', '@openai/codex'])
+      },
+      manualHint: 'npm i -g @openai/codex',
+      authHint: `Run ${yellow('codex login')} to authenticate`,
+    },
   }
+
+  let chosen
+  if (firstRun) {
+    const selection = await p.multiselect({
+      message: 'Which coding agents do you want installed?',
+      options: [
+        { value: 'copilot', label: 'Copilot CLI', hint: 'recommended' },
+        { value: 'claude', label: 'Claude Code' },
+        { value: 'codex', label: 'Codex CLI' },
+      ],
+      initialValues: ['copilot'],
+      required: false,
+    })
+    if (p.isCancel(selection)) {
+      chosen = { copilot: true, claude: false, codex: false }
+    } else {
+      chosen = Object.fromEntries(Object.keys(installers).map((k) => [k, selection.includes(k)]))
+    }
+  } else {
+    // Returning user — install only what they previously opted into and is
+    // currently missing. If we have no record (older setup), default to
+    // re-installing copilot only when missing.
+    chosen = priorAgents || { copilot: true, claude: false, codex: false }
+  }
+
+  for (const [key, agent] of Object.entries(installers)) {
+    if (!chosen[key]) continue
+    if (isInstalled(agent.bin)) {
+      p.log.success(`${agent.label} installed`)
+      p.log.info(`  ${agent.authHint}`)
+      continue
+    }
+    const spin = p.spinner()
+    spin.start(`Installing ${agent.label}`)
+    try {
+      await agent.install()
+      spin.stop(`${agent.label} installed`)
+      if (!isInstalled(agent.bin)) {
+        p.log.warning(`${agent.bin} not on PATH — add ${yellow('export PATH="$HOME/.local/bin:$PATH"')} to your shell rc`)
+      }
+      p.log.info(`  ${agent.authHint}`)
+    } catch {
+      spin.stop(`Failed to install ${agent.label}`)
+      p.log.warning(`Install manually: ${agent.manualHint}`)
+    }
+  }
+
+  // Persist the choice so future setups know what to keep installed.
+  writeUserState({ agents: chosen })
 }
 
 // 8. Git hooks
@@ -360,6 +425,8 @@ if (isInstalled('code')) {
     'src/canvas/~*/',
     'src/prototypes/~*/',
     'src/prototypes/**/~*.{flow,object,record,prototype,folder}.json',
+    // Per-user local state (setup version marker, agent prefs, future onboarding state)
+    '.storyboard/.user.json',
   ]
   if (existsSync(gitignorePath)) {
     try {
@@ -439,6 +506,14 @@ if (isInstalled('code')) {
     p.log.warning('Run it manually to see details:')
     p.log.info(`  ${dim('npm install')}`)
   }
+}
+
+// 11. Stamp the user-state marker so `npm run dev` knows setup is fresh
+//     and won't re-run it until the storyboard package version changes.
+{
+  const version = getInstalledStoryboardVersion() || 'unknown'
+  writeUserState({ setupVersion: version, setupRanAt: new Date().toISOString() })
+  p.log.success(`Setup marker written (.storyboard/.user.json @ ${version})`)
 }
 
 p.note(

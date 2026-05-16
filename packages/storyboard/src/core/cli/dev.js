@@ -21,6 +21,7 @@ import { detectWorktreeName, getPort, releasePort } from '../worktree/port.js'
 import { startRenameWatcher } from '../rename-watcher/watcher.js'
 import { compactAll } from '../canvas/compact.js'
 import { parseFlags } from './flags.js'
+import { setupNeeded, writeUserState, getInstalledStoryboardVersion } from './userState.js'
 
 const flagSchema = {
   port: { type: 'number', description: 'Override dev server port' },
@@ -54,6 +55,34 @@ async function main() {
 
   p.intro('storyboard dev')
   p.log.info(`worktree: ${worktreeName}`)
+
+  // Re-run setup automatically if it has never run here, or if the installed
+  // @dfosco/storyboard version no longer matches the one setup was last run
+  // against. This lets `npm install` upgrades trigger fresh scaffolding
+  // without requiring `npx storyboard update`.
+  {
+    const need = setupNeeded(targetCwd)
+    if (need) {
+      const why = need.reason === 'first-run'
+        ? 'first run in this repo'
+        : `version changed ${need.from} → ${need.to}`
+      p.log.info(`Running setup (${why})…`)
+      await new Promise((resolveSetup) => {
+        const setupChild = spawn(
+          process.platform === 'win32' ? 'npx.cmd' : 'npx',
+          ['storyboard', 'setup', '--skip-branch'],
+          { cwd: targetCwd, stdio: 'inherit' }
+        )
+        setupChild.on('exit', () => resolveSetup())
+        setupChild.on('error', () => resolveSetup())
+      })
+      // Belt-and-suspenders: even if setup failed to write the marker,
+      // stamp the current version so dev doesn't loop forever asking to run
+      // setup on every boot.
+      const version = getInstalledStoryboardVersion(targetCwd)
+      if (version) writeUserState({ setupVersion: version, setupRanAt: new Date().toISOString() }, targetCwd)
+    }
+  }
 
   // Compact bloated canvas JSONL files before booting Vite.
   const compacted = compactAll(targetCwd)
