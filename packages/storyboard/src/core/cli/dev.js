@@ -323,18 +323,30 @@ async function main() {
     setTimeout(() => { renderOnce() }, 8000).unref?.()
   }
 
+  let shuttingDown = false
   function shutdown() {
+    if (shuttingDown) {
+      // Second Ctrl+C → hard exit, kill child with SIGKILL.
+      try { child.kill('SIGKILL') } catch { /* empty */ }
+      process.exit(130)
+    }
+    shuttingDown = true
     clearInterval(compactInterval)
     renameWatcher.close()
     // Suppress Vite's shutdown-time esbuild noise ("Pre-transform error:
-    // The service was stopped" for every in-flight transform).
+    // The service was stopped" for every in-flight transform) AND the
+    // orphan-archive log spam from the storyboard-server plugin teardown.
     try { child.stdout?.removeAllListeners('data') } catch { /* empty */ }
     try { child.stderr?.removeAllListeners('data') } catch { /* empty */ }
     try { child.stdout?.destroy() } catch { /* empty */ }
     try { child.stderr?.destroy() } catch { /* empty */ }
-    // SIGINT lets Vite shut down esbuild and HMR cleanly; SIGTERM is harsher
-    // and tends to leave in-flight transforms aborting noisily.
+    // SIGINT first (clean esbuild shutdown), then SIGTERM after 2s if
+    // Vite is still alive (handles plugins that loop on session teardown),
+    // then SIGKILL after 5s as last resort.
     try { child.kill('SIGINT') } catch { /* already dead */ }
+    const term = setTimeout(() => { try { child.kill('SIGTERM') } catch { /* empty */ } }, 2000)
+    const kill = setTimeout(() => { try { child.kill('SIGKILL') } catch { /* empty */ } }, 5000)
+    term.unref?.(); kill.unref?.()
     releasePort(worktreeName)
   }
   process.on('SIGINT', shutdown)
