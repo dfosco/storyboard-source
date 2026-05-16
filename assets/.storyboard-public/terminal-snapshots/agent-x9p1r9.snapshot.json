@@ -1,0 +1,10 @@
+{
+  "widgetId": "agent-x9p1r9",
+  "canvasId": "storyboarding/terminal-widget-prompts",
+  "prettyName": "green-jay",
+  "timestamp": "2026-05-16T15:04:27.923Z",
+  "cols": 89,
+  "rows": 32,
+  "paneContent": "  ╭─╮╭─╮\n  ╰─╯╰─╯  Copilot v1.0.49-1 uses AI.\n  █ ▘▝ █  Check for mistakes.\n   ▔▔▔▔\n\n\n● Tip: /help\n  └ Show help for interactive commands\n\n\n! Failed to load 1 skill. Run /skills for more details.\n\n\n● Selected custom agent: terminal-agent\n\n\n● Remote control connected as dfosco (ctrl+e show QR code)\n  └ https://github.com/copilot/tasks/2dc84adc-b97c-46f1-b962-f310e47101a2\n\n\n\n\n\n\n ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]\n─────────────────────────────────────────────────────────────────────────────────────────\n❯  \n\n\n─────────────────────────────────────────────────────────────────────────────────────────\n / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)\n\n",
+  "scrollback": ""
+}

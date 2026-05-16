@@ -1,0 +1,41 @@
+{
+  "widgetProps": {
+    "prettyName": "green-jay"
+  },
+  "displayName": "green-jay",
+  "connectedWidgets": [],
+  "messaging": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_c9b19abdb2",
+      "role": "member",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboarding--terminal-widget-prompts--hub_c9b19abdb2.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 32237,
+    "centerY": 5238,
+    "zoom": 85,
+    "topLeftX": 30731,
+    "topLeftY": 4479,
+    "width": 3012,
+    "height": 1519
+  },
+  "updatedAt": "2026-05-16T15:00:39.822Z",
+  "widgetId": "agent-x9p1r9",
+  "canvasId": "storyboarding/terminal-widget-prompts",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null
+}
