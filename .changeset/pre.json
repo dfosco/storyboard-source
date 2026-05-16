@@ -1,11 +1,12 @@
 {
-  "mode": "exit",
+  "mode": "pre",
   "tag": "beta",
   "initialVersions": {
-    "@dfosco/storyboard": "0.6.0-beta.6"
+    "@dfosco/storyboard": "0.6.0-beta.7"
   },
   "changesets": [
     "changeset-beta7-mp88uazh",
+    "changeset-beta8-mp89ydws",
     "changeset-mp10nrwb",
     "changeset-mp10vbzb",
     "changeset-mp11j0hz",
