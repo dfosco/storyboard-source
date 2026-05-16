@@ -95,20 +95,34 @@ function renderMascot({ configPath, framesDir }, urlLine, stopLine) {
     return lines.join('\n')
   }
 
-  // Print the settle frame immediately so URL is visible without delay.
-  process.stdout.write(composeSettle() + '\n')
+  // If not a TTY (CI, piped), skip animation and just print settle.
+  if (!process.stdout.isTTY) {
+    process.stdout.write(composeSettle() + '\n')
+    return true
+  }
 
-  if (!process.stdout.isTTY) return true
-
+  // Lay down the first frame normally (no cursor up — there's nothing
+  // above to overwrite yet). Subsequent frames use cursor-up redraws.
+  // This avoids the duplicate-mascot bug from pre-animation settle writes.
+  let firstWritten = false
   const draw = (frame) => {
-    process.stdout.write(`\x1b[${lineCount}A`)
-    for (const line of frame.split('\n')) {
-      process.stdout.write('\x1b[2K' + line + '\n')
+    if (firstWritten) {
+      process.stdout.write(`\x1b[${lineCount}A`)
+      for (const line of frame.split('\n')) {
+        process.stdout.write('\x1b[2K' + line + '\n')
+      }
+    } else {
+      firstWritten = true
+      process.stdout.write(frame + '\n')
     }
   }
 
+  // Kick off the first frame synchronously so the mascot is visible
+  // immediately (with eyes from the first loop frame, not the settle).
+  draw(colorizeMascot(loopFrames[0]))
+
   let loopIdx = 0
-  let frameIdx = 0
+  let frameIdx = 1 // we already drew frameIdx 0
   const timer = setInterval(() => {
     if (loopIdx >= loops) {
       clearInterval(timer)
