@@ -1,0 +1,98 @@
+SESSION: agent-h3un5s | moss-starling
+CANVAS:  storyboarding/terminal-widget-prompts
+BRANCH:  0.6.0
+TIME:    2026-05-16T14:56:06.454Z
+
+================================================================================
+SCREEN
+================================================================================
+
+ ▐▛███▜▌   Claude Code v2.1.142
+▝▜█████▛▘  Opus 4.7 (1M context) · API Usage Billing
+  ▘▘ ▝▝    @terminal-agent · ~/workspace/storyboard-core/worktrees/0.6.0
+
+❯ [System] Your terminal identity has been set. widgetId=agent-h3un5s 
+  displayName=moss-starling canvasId=storyboarding/terminal-widget-prompts 
+  configFile=.storyboard/terminals/agent-h3un5s.json serverUrl=http://localhost:1236 — 
+  this is a configuration step, no response needed.
+
+✻ Brewed for 1s
+
+─────────────────────────────────────────────────────────────────────── terminal-agent ──
+❯  
+─────────────────────────────────────────────────────────────────────────────────────────
+  ⏵⏵ bypass permissions on (shift+tab to cycle)
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+[lost tty]
+[?996n[>c[>q  displayName=moss-starling canvasId=storyboarding/terminal-widget-prompts               
+  configFile=.storyboard/terminals/agent-h3un5s.json serverUrl=http://localhost:1236 —   
+  this is a configuration step, no response needed.                                      
+
+✻Brewedfor1s
+
+─────────────────────────────────────────────────────────────────────── terminal-agent ──
+❯ 
+─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson (shift+tabtocycle)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ▐▛███▜▌ClaudeCodev2.1.142
+▝▜█████▛▘Opus4.7(1Mcontext)·APIUsageBilling
+ ▘▘▝▝@terminal-agent·~/workspace/storyboard-core/worktrees/0.6.0
+
+❯ [System] Your terminal identity has been set. widgetId=agent-h3un5s                      displayName=moss-starling canvasId=storyboarding/terminal-widget-prompts                 configFile=.storyboard/terminals/agent-h3un5s.json serverUrl=http://localhost:1236 —     this is a configuration step, no response needed.                                      
+✻Brewedfor1s
+
+─────────────────────────────────────────────────────────────────────── terminal-agent ──❯  
+─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson (shift+tabtocycle)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ▐▛███▜▌ClaudeCodev2.1.142
+▝▜█████▛▘Opus4.7(1Mcontext)·APIUsageBilling
+ ▘▘▝▝@terminal-agent·~/workspace/storyboard-core/worktrees/0.6.0
+
+❯ [System] Your terminal identity has been set. widgetId=agent-h3un5s                      displayName=moss-starling canvasId=storyboarding/terminal-widget-prompts                 configFile=.storyboard/terminals/agent-h3un5s.json serverUrl=http://localhost:1236 —     this is a configuration step, no response needed.                                      
+✻Brewedfor1s
+
+─────────────────────────────────────────────────────────────────────── terminal-agent ──❯  
+─────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson (shift+tabtocycle)

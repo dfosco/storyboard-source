@@ -1,0 +1,116 @@
+SESSION: agent-u56lfh | ash-swift
+CANVAS:  storyboarding/terminal-widget-prompts
+BRANCH:  0.6.0
+TIME:    2026-05-16T14:56:06.423Z
+
+================================================================================
+SCREEN
+================================================================================
+
+●  Falling back to the welcome menu. You can retry from there.
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● > Start a new agent session
+│  ○ > Start a new terminal session
+│  ○ > Browse existing sessions
+└
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+[lost tty]
+[?996n[>c[>q┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● > Start a new agent session
+│  ○ > Start a new terminal session
+│  ○ > Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+●  Falling back to the welcome menu. You can retry from there.
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● > Start a new agent session
+│  ○ > Start a new terminal session
+│  ○ > Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+●  Falling back to the welcome menu. You can retry from there.
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● > Start a new agent session
+│  ○ > Start a new terminal session
+│  ○ > Browse existing sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+●  Falling back to the welcome menu. You can retry from there.
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● > Start a new agent session
+│  ○ > Start a new terminal session
+│  ○ > Browse existing sessions
+└
