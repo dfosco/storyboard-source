@@ -12,7 +12,7 @@
  *   - **prompt**   — bare tmux shell (prompt widgets)
  *   - **copilot**  — tmux + `copilot --agent terminal-agent` running & ready
  *   - **claude**   — tmux + `claude --agent terminal-agent ...` running & ready
- *   - **codex**    — tmux + `codex --full-auto` running & ready
+ *   - **codex**    — tmux + `codex --dangerously-bypass-approvals-and-sandbox` running & ready
  *
  * ## Load Balancer (per-pool)
  *

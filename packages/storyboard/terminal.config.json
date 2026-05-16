@@ -35,7 +35,7 @@
     "codex": {
       "label": "Codex CLI",
       "icon": "codex",
-      "startupCommand": "codex --ask-for-approval never",
+      "startupCommand": "codex --dangerously-bypass-approvals-and-sandbox",
       "resumeCommand": "codex resume {id}",
       "sessionIdEnv": "CODEX_SESSION_ID",
       "sessionStateGlob": "~/.codex/sessions/**/rollout-*-{id}.jsonl",
