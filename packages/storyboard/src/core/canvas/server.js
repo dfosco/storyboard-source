@@ -3148,7 +3148,8 @@ export function Default() {
           const poll = setInterval(() => {
             if (sent) { clearInterval(poll); return }
             try {
-              const pane = execSync(`tmux capture-pane -t "${tmuxName}" -p`, { encoding: 'utf8', timeout: 1000 })
+              // H1: include scrollback so the echo survives Copilot's TUI repaint.
+              const pane = execSync(`tmux capture-pane -t "${tmuxName}" -p -S -200`, { encoding: 'utf8', timeout: 1000 })
               if (pane.includes(readinessSignal)) {
                 sent = true
                 clearInterval(poll)

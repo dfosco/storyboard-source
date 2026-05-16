@@ -549,7 +549,9 @@ export class HotPool {
         const poll = setInterval(() => {
           try {
             const paneContent = execSync(
-              `tmux capture-pane -t "${tmuxName}" -p`,
+              // H1: include scrollback so the readiness echo can still be
+              // matched after the agent's TUI repaints over it.
+              `tmux capture-pane -t "${tmuxName}" -p -S -200`,
               { encoding: 'utf8', timeout: 1000 }
             )
             // Strip ANSI escape sequences — agent CLIs use heavy formatting

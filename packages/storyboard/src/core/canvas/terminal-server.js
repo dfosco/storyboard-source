@@ -23,7 +23,7 @@
  */
 
 import { execSync } from 'node:child_process'
-import { readFileSync, mkdirSync, writeFileSync, renameSync, existsSync, unlinkSync } from 'node:fs'
+import { readFileSync, mkdirSync, writeFileSync, renameSync, existsSync, unlinkSync, rmSync } from 'node:fs'
 import { resolve, join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { tmpdir } from 'node:os'
@@ -1164,7 +1164,15 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
         // pool-keyed for the life of the warm process, so the user-level
         // hook always writes there, not to the widget-keyed file.)
         const postStartup = resolvedAgentCfg?.postStartup || null
-        const readinessSignal = resolvedAgentCfg?.readinessSignal || null
+        // ── H2 fix: skip readiness re-poll on warm handoff.
+        // The hot pool already verified readiness when it warmed this session.
+        // Re-polling for a one-shot signal like Copilot's "Environment loaded:"
+        // against an already-running TUI always misses (the echo has long
+        // since scrolled off the visible pane, and `tmux capture-pane -p`
+        // returns only the visible region). Falling through to the 30s
+        // timeout fallback was delaying /allow-all, identity, role, and
+        // bindWidget by ~30s for every warm Copilot widget.
+        const readinessSignal = null
         setTimeout(() => {
           let completed = false
           const finalize = () => {
@@ -1244,12 +1252,20 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
         const envScriptDir = join(cwd, '.storyboard', 'terminals')
         try { mkdirSync(envScriptDir, { recursive: true }) } catch { /* empty */ }
         const envScriptPath = join(envScriptDir, `${widgetId}.env.sh`)
+        // ── H4: file marker for readiness. Terminal-state-independent —
+        // `existsSync` doesn't care if Copilot's TUI repainted the pane,
+        // entered alt-screen, or scrolled the echo away.
+        const readyFilePath = join(envScriptDir, `${widgetId}.ready`)
+        try { rmSync(readyFilePath, { force: true }) } catch { /* empty */ }
         try {
-          // Trailing echo is the readiness signal the post-startup poller
-          // looks for. Without it, the 30s timeout fallback fires before
-          // /allow-all, identity, role/broadcast bind are sent — making
-          // the agent feel "stuck" for the first half-minute after launch.
-          writeFileSync(envScriptPath, envParts.join('\n') + '\necho "Environment loaded:"\n')
+          // `touch` fires before the echo so the marker is set the instant
+          // the env script finishes exporting. Echo kept for backwards-
+          // compatible pane-scanning fallback (H1).
+          writeFileSync(
+            envScriptPath,
+            envParts.join('\n') +
+            `\ntouch ${JSON.stringify(readyFilePath)}\necho "Environment loaded:"\n`
+          )
         } catch { /* empty */ }
         // Source env script; the trailing readiness echo MUST remain on
         // the pane so the post-startup poller can match it. Don't append
@@ -1338,6 +1354,7 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
                   if (sent) return
                   sent = true
                   clearInterval(pollInterval)
+                  try { rmSync(readyFilePath, { force: true }) } catch { /* empty */ }
                   setTimeout(() => {
                     if (postStartup) {
                       try {
@@ -1366,14 +1383,21 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
                 }
                 const pollInterval = setInterval(() => {
                   if (sent) { clearInterval(pollInterval); return }
+                  // ── H4: marker file is set the instant env script finishes
+                  // exporting, before any TUI starts. Terminal-state-independent.
+                  if (existsSync(readyFilePath)) { finalize('file'); return }
                   try {
+                    // ── H1: include 200 lines of scrollback so the echo
+                    // can be matched after Copilot's full-screen TUI
+                    // repaints over it. `-p` alone returns only the
+                    // visible region.
                     const paneContent = execSync(
-                      `tmux capture-pane -t "${tmuxName}" -p`,
+                      `tmux capture-pane -t "${tmuxName}" -p -S -200`,
                       { encoding: 'utf8', timeout: 1000 }
                     )
                     if (paneContent.includes(readinessSignal)) finalize('signal')
                   } catch { /* empty */ }
-                }, 2000)
+                }, 1000)
                 // Fallback: if readiness signal never matches (e.g. resume mode
                 // doesn't print "Environment loaded:", or the agent shows a
                 // prompt we can't detect), bind anyway after 30s so the widget
