@@ -40,6 +40,7 @@
       "sessionIdEnv": "CODEX_SESSION_ID",
       "sessionStateGlob": "~/.codex/sessions/**/rollout-*-{id}.jsonl",
       "configFiles": [".codex/config.toml"],
+      "readinessSignal": "YOLO mode",
       "resizable": true
     }
   },
