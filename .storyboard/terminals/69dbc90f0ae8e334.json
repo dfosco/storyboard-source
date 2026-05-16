@@ -11,20 +11,6 @@
   "displayName": "Leader",
   "connectedWidgets": [
     {
-      "id": "image-fw2z1p",
-      "type": "image",
-      "props": {
-        "src": "storyboard-demo--2026-05-17--00-13-14-udx7.png",
-        "private": false,
-        "width": 600,
-        "height": 337
-      },
-      "position": {
-        "x": 3737,
-        "y": 5665
-      }
-    },
-    {
       "id": "agent-aiagsz",
       "type": "agent",
       "props": {
@@ -76,17 +62,32 @@
       }
     },
     {
-      "id": "image-ypp60u",
-      "type": "image",
+      "id": "prototype-2n9i5q",
+      "type": "prototype",
       "props": {
-        "src": "storyboard-demo--2026-05-17--00-33-34-oujl.png",
-        "private": false,
-        "width": 1271.4285714285716,
-        "height": 713
+        "src": "/SiloDashboard?flow=SiloDashboard%2Fdefault",
+        "originalSrc": "/SiloDashboard?flow=SiloDashboard%2Fdefault",
+        "label": "",
+        "width": 2053.0179933519325,
+        "height": 1216.4887707626128
       },
       "position": {
-        "x": 1013,
-        "y": 5989
+        "x": 1596,
+        "y": 6815
+      }
+    },
+    {
+      "id": "image-fw2z1p",
+      "type": "image",
+      "props": {
+        "src": "storyboard-demo--2026-05-17--00-13-14-udx7.png",
+        "private": false,
+        "width": 600,
+        "height": 337
+      },
+      "position": {
+        "x": 1778,
+        "y": 6024
       }
     }
   ],
@@ -124,7 +125,7 @@
   "role": "leader",
   "hubs": [
     {
-      "hubId": "hub_d5711386dd",
+      "hubId": "hub_251d40dfe4",
       "role": "leader",
       "goal": null,
       "peers": [
@@ -147,22 +148,22 @@
           "type": "agent"
         }
       ],
-      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_d5711386dd.jsonl",
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_251d40dfe4.jsonl",
       "activeConversationId": null,
       "hasHubToken": true,
       "pendingMessageToken": null
     }
   ],
   "viewport": {
-    "centerX": 2096,
-    "centerY": 7282,
-    "zoom": 112,
-    "topLeftX": 1293,
-    "topLeftY": 6832,
-    "width": 1607,
-    "height": 900
+    "centerX": 4540,
+    "centerY": 1926,
+    "zoom": 77,
+    "topLeftX": 3371,
+    "topLeftY": 1292,
+    "width": 2338,
+    "height": 1268
   },
-  "updatedAt": "2026-05-16T22:35:36.399Z",
+  "updatedAt": "2026-05-16T22:46:45.056Z",
   "widgetId": "agent-5unog9",
   "canvasId": "storyboard-demo",
   "canvasFile": null,

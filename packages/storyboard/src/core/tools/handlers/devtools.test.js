@@ -76,12 +76,12 @@ describe('devtools prototype auto-reload toggle', () => {
     window.history.replaceState({}, '', '/')
   })
 
-  it('shows the toggle as active by default (guard OFF, auto-reload ON)', async () => {
+  it('shows the toggle as inactive by default (guard ON, auto-reload OFF)', async () => {
     const devtools = await createDevtoolsHandler({})
     const item = getPrototypeAutoReloadItem(devtools.getChildren())
 
     expect(item).toBeTruthy()
     expect(item.type).toBe('toggle')
-    expect(item.active).toBe(true)
+    expect(item.active).toBe(false)
   })
 })

@@ -1,7 +1,12 @@
 /**
  * Prototype reload guard — suppresses Vite HMR full-reloads for non-canvas pages.
  *
- * Controlled by the "prototype-auto-reload" feature flag (default: true).
+ * Controlled by the "prototype-auto-reload" feature flag (default: false).
+ *
+ * The default is false (guard ON) because the dev server emits frequent
+ * full-reload broadcasts from data-plugin watchers; without the guard,
+ * prototype pages get stuck in a reload loop. Users can opt in via the
+ * devtools menu.
  * When the flag is false (user opted out), sends heartbeat messages to the
  * Vite dev server which suppresses full-reload and update payloads for this
  * client. Custom storyboard events (canvas file changes, story changes, etc.)

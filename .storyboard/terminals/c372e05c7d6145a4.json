@@ -1,8 +1,14 @@
 {
   "widgetProps": {
-    "prettyName": "iron-petrel"
+    "alias": "Charts",
+    "agentId": "copilot",
+    "startupCommand": "copilot --agent terminal-agent",
+    "prettyName": "iron-petrel",
+    "role": "member",
+    "status": "done",
+    "errorMessage": ""
   },
-  "displayName": "iron-petrel",
+  "displayName": "Charts",
   "connectedWidgets": [
     {
       "id": "agent-5unog9",
@@ -38,7 +44,7 @@
   "role": "member",
   "hubs": [
     {
-      "hubId": "hub_d5711386dd",
+      "hubId": "hub_251d40dfe4",
       "role": "member",
       "goal": null,
       "peers": [
@@ -61,22 +67,22 @@
           "type": "agent"
         }
       ],
-      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_d5711386dd.jsonl",
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_251d40dfe4.jsonl",
       "activeConversationId": null,
       "hasHubToken": false,
       "pendingMessageToken": null
     }
   ],
   "viewport": {
-    "centerX": 4189,
-    "centerY": 7299,
-    "zoom": 70,
-    "topLeftX": 2904,
-    "topLeftY": 6602,
-    "width": 2571,
-    "height": 1394
+    "centerX": 4540,
+    "centerY": 1926,
+    "zoom": 77,
+    "topLeftX": 3371,
+    "topLeftY": 1292,
+    "width": 2338,
+    "height": 1268
   },
-  "updatedAt": "2026-05-16T22:43:32.733Z",
+  "updatedAt": "2026-05-16T22:46:45.058Z",
   "widgetId": "agent-hrmw40",
   "canvasId": "storyboard-demo",
   "canvasFile": null,

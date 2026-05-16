@@ -84,15 +84,15 @@
     }
   ],
   "viewport": {
-    "centerX": 2096,
-    "centerY": 7282,
-    "zoom": 112,
-    "topLeftX": 1293,
-    "topLeftY": 6832,
-    "width": 1607,
-    "height": 900
+    "centerX": 4540,
+    "centerY": 1926,
+    "zoom": 77,
+    "topLeftX": 3371,
+    "topLeftY": 1292,
+    "width": 2338,
+    "height": 1268
   },
-  "updatedAt": "2026-05-16T22:35:36.398Z",
+  "updatedAt": "2026-05-16T22:46:45.056Z",
   "widgetId": "agent-2lkxmx",
   "canvasId": "storyboard-demo",
   "canvasFile": null,

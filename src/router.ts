@@ -12,6 +12,10 @@ export type Path =
     | `///src/prototypes/main/folder/Signup`
     | `///src/prototypes/main/folder/Signup/Dashboard`
     | `///src/prototypes/main/folder/Signup/templates/CloudApp/Application`
+    | `///src/prototypes/main/folder/SiloDashboard`
+    | `///src/prototypes/main/folder/StartupSignup`
+    | `///src/prototypes/main/folder/StartupSignup/Branding`
+    | `///src/prototypes/main/folder/StartupSignup/SignupForm`
     | `///src/prototypes/viewfinder`
     | `///src/prototypes/workspace`
 

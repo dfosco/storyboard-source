@@ -1,8 +1,14 @@
 {
   "widgetProps": {
-    "prettyName": "plum-egret"
+    "alias": "Data",
+    "agentId": "copilot",
+    "startupCommand": "copilot --agent terminal-agent",
+    "prettyName": "plum-egret",
+    "role": "member",
+    "status": "done",
+    "errorMessage": ""
   },
-  "displayName": "plum-egret",
+  "displayName": "Data",
   "connectedWidgets": [
     {
       "id": "agent-5unog9",
@@ -28,8 +34,8 @@
         "content": "# Data refreshed\n\n**New values, same shape.**\n\n- workspace: `nimbus-forge` / Acropolis\n- user: Idris Okafor (@idris)\n- summary: CPU 42.50% (17/40 vCPUs), Memory 71.25% (285/400 GiB), Storage 33.75% (2.7/8 TiB)\n- timeRange: 22:42 → 23:42\n- metrics: cpu ~380–460, memory 215→285, storage ~2.7 (30 samples, 22:44–23:42)\n\nSame useFlowData/useObject paths — Scaffold/Charts need no changes."
       },
       "position": {
-        "x": 5642,
-        "y": 7543
+        "x": 5515,
+        "y": 7688
       }
     }
   ],
@@ -49,7 +55,7 @@
   "role": "member",
   "hubs": [
     {
-      "hubId": "hub_d5711386dd",
+      "hubId": "hub_251d40dfe4",
       "role": "member",
       "goal": null,
       "peers": [
@@ -72,22 +78,22 @@
           "type": "agent"
         }
       ],
-      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_d5711386dd.jsonl",
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_251d40dfe4.jsonl",
       "activeConversationId": null,
       "hasHubToken": false,
       "pendingMessageToken": null
     }
   ],
   "viewport": {
-    "centerX": 4189,
-    "centerY": 7299,
-    "zoom": 70,
-    "topLeftX": 2904,
-    "topLeftY": 6602,
-    "width": 2571,
-    "height": 1394
+    "centerX": 4540,
+    "centerY": 1926,
+    "zoom": 77,
+    "topLeftX": 3371,
+    "topLeftY": 1292,
+    "width": 2338,
+    "height": 1268
   },
-  "updatedAt": "2026-05-16T22:43:34.203Z",
+  "updatedAt": "2026-05-16T22:46:45.059Z",
   "widgetId": "agent-wve8pt",
   "canvasId": "storyboard-demo",
   "canvasFile": null,
