@@ -12,7 +12,7 @@
 import * as p from '@clack/prompts'
 import { existsSync, writeFileSync, readFileSync, mkdirSync, readdirSync, symlinkSync } from 'fs'
 import path from 'path'
-import { execSync } from 'child_process'
+import { execSync, spawn } from 'child_process'
 import { isCaddyInstalled, isCaddyRunning, startCaddy } from './proxy.js'
 import { gettingStartedLines, dim, magenta, bold, yellow, green } from './intro.js'
 import { parseFlags } from './flags.js'
@@ -46,6 +46,8 @@ if (flags.nuke) {
 /**
  * Run a potentially slow task with a spinner that only appears after 500ms.
  * If the task completes quickly, shows the done message immediately.
+ * IMPORTANT: `fn` must be async (don't use execSync — it blocks the event loop
+ * and prevents the spinner from animating).
  */
 async function withSpin(label, doneMsg, fn) {
   const spin = p.spinner()
@@ -58,6 +60,37 @@ async function withSpin(label, doneMsg, fn) {
     clearTimeout(timer)
     spin.stop(`Failed: ${label}`)
     throw err
+  }
+}
+
+/**
+ * Async command runner — does NOT block the event loop, so spinners animate.
+ */
+function runAsync(cmd, args = [], opts = {}) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(cmd, args, { stdio: 'ignore', shell: typeof cmd === 'string' && args.length === 0, ...opts })
+    child.on('error', reject)
+    child.on('exit', (code) => {
+      if (code === 0) resolve()
+      else reject(new Error(`${cmd} exited with code ${code}`))
+    })
+  })
+}
+
+/**
+ * Install a brew package with a spinner that actually animates.
+ */
+async function brewInstall(pkg, label) {
+  const spin = p.spinner()
+  spin.start(`Installing ${label}`)
+  try {
+    await runAsync('brew', ['install', pkg])
+    spin.stop(`${label} installed`)
+    return true
+  } catch {
+    spin.stop(`Failed to install ${label}`)
+    p.log.warning(`Install manually: brew install ${pkg}`)
+    return false
   }
 }
 
@@ -123,15 +156,7 @@ if (hasBrew) {
   if (isInstalled('git')) {
     p.log.success('Git installed')
   } else {
-    const gitSpin = p.spinner()
-    gitSpin.start('Installing Git')
-    try {
-      run('brew install git')
-      gitSpin.stop('Git installed')
-    } catch {
-      gitSpin.stop('Failed to install Git')
-      p.log.warning('Install manually: brew install git')
-    }
+    await brewInstall('git', 'Git')
   }
 }
 
@@ -140,30 +165,21 @@ if (hasBrew) {
   if (isCaddyInstalled()) {
     p.log.success('Caddy proxy installed')
   } else {
-    const caddySpin = p.spinner()
-    caddySpin.start('Installing Caddy')
-    try {
-      run('brew install caddy')
-      caddySpin.stop('Caddy proxy installed')
-    } catch {
-      caddySpin.stop('Failed to install Caddy')
-      p.log.warning('Install manually: brew install caddy')
-    }
+    await brewInstall('caddy', 'Caddy proxy')
   }
 
   // 5. GitHub CLI
   if (isInstalled('gh')) {
     p.log.success('GitHub CLI installed')
   } else {
-    const ghSpin = p.spinner()
-    ghSpin.start('Installing GitHub CLI')
-    try {
-      run('brew install gh')
-      ghSpin.stop('GitHub CLI installed')
-    } catch {
-      ghSpin.stop('Failed to install GitHub CLI')
-      p.log.warning('Install manually: brew install gh')
-    }
+    await brewInstall('gh', 'GitHub CLI')
+  }
+
+  // 5a. tmux (required for headless agent sessions)
+  if (isInstalled('tmux')) {
+    p.log.success('tmux installed')
+  } else {
+    await brewInstall('tmux', 'tmux')
   }
 }
 
@@ -211,22 +227,10 @@ if (isInstalled('code')) {
 // 6a. Copilot CLI
 if (isInstalled('copilot')) {
   p.log.success('Copilot CLI installed')
+} else if (hasBrew) {
+  await brewInstall('copilot-cli', 'Copilot CLI')
 } else {
-  const copilotSpin = p.spinner()
-  copilotSpin.start('Installing Copilot CLI')
-  try {
-    run('curl -fsSL https://gh.io/copilot-install | bash')
-    // Add ~/.local/bin to PATH if not already there
-    const localBin = `${process.env.HOME}/.local/bin`
-    if (!process.env.PATH.includes(localBin)) {
-      process.env.PATH = `${localBin}:${process.env.PATH}`
-    }
-    copilotSpin.stop('Copilot CLI installed')
-    p.log.info(dim('  Note: You may need to restart your terminal or add ~/.local/bin to PATH'))
-  } catch {
-    copilotSpin.stop('Failed to install Copilot CLI')
-    p.log.warning('Install manually: curl -fsSL https://gh.io/copilot-install | bash')
-  }
+  p.log.warning('Install manually: brew install copilot-cli (or npm i -g @github/copilot)')
 }
 
 // 8. Git hooks
@@ -406,14 +410,14 @@ if (isCaddyInstalled()) {
     p.log.info(dim('Skipping npm install — dev server is running (would cause restart)'))
     p.log.info(dim('Run `npm install` manually after stopping the dev server if needed'))
   } else {
+    const installSpin = p.spinner()
+    installSpin.start('Installing dependencies')
     try {
-      await withSpin(
-        'Installing dependencies...',
-        'Dependencies installed',
-        () => { run('npm install', { stdio: 'ignore' }) }
-      )
+      await runAsync('npm', ['install'])
+      installSpin.stop('Dependencies installed')
     } catch {
-      p.log.warning('npm install failed — run it manually to see details')
+      installSpin.stop('npm install failed')
+      p.log.warning('Run it manually to see details:')
       p.log.info(`  ${dim('npm install')}`)
     }
   }
