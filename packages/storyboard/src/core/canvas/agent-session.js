@@ -221,16 +221,25 @@ export function buildResumeStartupCommand({ startupCommand, sessionId, agentCfg 
   if (!startupCommand) return startupCommand
 
   const notice = `printf '\\n\\033[33m[storyboard] resume failed; starting fresh session...\\033[0m\\n'`
-  const wrapFallback = (cmd) => agentCfg?.resumeFallback === false
-    ? cmd
-    : `${cmd} || { ${notice}; ${startupCommand}; }`
+  // perl-based timeout (works on macOS without coreutils): if `cmd` doesn't
+  // print/produce activity in N seconds, SIGTERM it. Used so a stuck
+  // `--resume <id>` (e.g. session no longer exists on remote, network hang)
+  // can't leave the widget frozen on "Starting …". 25s gives slow agents
+  // plenty of time to start while still bounded.
+  const TIMEOUT_S = Number(agentCfg?.resumeTimeoutSec) || 25
+  const withTimeout = (cmd) => `perl -e 'alarm ${TIMEOUT_S}; exec @ARGV' sh -c ${JSON.stringify(cmd)}`
+
+  const lastCmd = agentCfg?.resumeLastCommand
+  const wrapFallback = (cmd) => {
+    if (agentCfg?.resumeFallback === false) return cmd
+    // Chain: try resume (with timeout) → resumeLastCommand if configured →
+    // fresh startupCommand. Each step's failure (incl. timeout SIGTERM)
+    // exits non-zero and triggers the next.
+    const last = lastCmd ? `${lastCmd} || { ${notice}; ${startupCommand}; }` : `${notice}; ${startupCommand}`
+    return `${withTimeout(cmd)} || { ${last}; }`
+  }
 
   // Primary: per-widget captured sessionId → `resumeCommand` with {id}.
-  // We attempt resume whenever a UUID-shaped id is stored, even if the
-  // agent's local session-state directory has been GC'd / moved — the
-  // shell-level `|| <fresh fallback>` wrapper handles CLI rejection
-  // gracefully. This makes resume robust across `tmux kill-server`,
-  // disk cleanups, and machine moves.
   if (sessionId && UUID_RE.test(sessionId)) {
     const template = agentCfg?.resumeCommand
     if (template && template.includes('{id}')) {
@@ -238,11 +247,12 @@ export function buildResumeStartupCommand({ startupCommand, sessionId, agentCfg 
     }
   }
 
-  // Fallback: agents like Codex provide a `resumeLastCommand` that
-  // resumes the most recent session in the current cwd without needing
-  // a captured id (e.g. `codex resume --last`).
-  const lastCmd = agentCfg?.resumeLastCommand
-  if (lastCmd) return wrapFallback(lastCmd)
+  // No id stored — try resumeLastCommand (e.g. `--continue` / `resume --last`)
+  // with timeout, falling through to fresh startupCommand if it fails.
+  if (lastCmd) {
+    if (agentCfg?.resumeFallback === false) return withTimeout(lastCmd)
+    return `${withTimeout(lastCmd)} || { ${notice}; ${startupCommand}; }`
+  }
 
   return startupCommand
 }

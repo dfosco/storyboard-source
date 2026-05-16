@@ -18,6 +18,7 @@
       "icon": "primer/copilot",
       "startupCommand": "copilot --agent terminal-agent",
       "resumeCommand": "copilot --resume={id} --agent terminal-agent",
+      "resumeLastCommand": "copilot --continue --agent terminal-agent",
       "sessionIdEnv": "COPILOT_AGENT_SESSION_ID",
       "postStartup": "/allow-all on",
       "resizable": true
@@ -27,6 +28,7 @@
       "icon": "claude",
       "startupCommand": "claude --agent terminal-agent --dangerously-skip-permissions",
       "resumeCommand": "claude --resume {id} --agent terminal-agent --dangerously-skip-permissions",
+      "resumeLastCommand": "claude --continue --agent terminal-agent --dangerously-skip-permissions",
       "sessionIdEnv": "CLAUDE_SESSION_ID",
       "sessionStateGlob": "~/.claude/projects/*/{id}.jsonl",
       "readinessSignal": "bypass permissions",
