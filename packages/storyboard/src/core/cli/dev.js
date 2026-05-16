@@ -63,14 +63,21 @@ function renderMascot({ configPath, framesDir }, urlLine, stopLine) {
   let config
   try { config = JSON.parse(readFileSync(configPath, 'utf8')) } catch { return false }
   if (config.enabled === false) return false
-  const frameNames = Array.isArray(config.frames) ? config.frames : []
-  if (frameNames.length === 0) return false
-  const frameDurationMs = Number(config.frameDurationMs) || 180
+  const rawEntries = Array.isArray(config.frames) ? config.frames : []
+  if (rawEntries.length === 0) return false
+  const defaultDuration = Number(config.frameDurationMs) || 180
   const loops = Math.max(1, Number(config.loops) || 1)
-  const settleName = config.settleFrame || frameNames[frameNames.length - 1]
+
+  // Each entry is either a string filename or a [filename, delayMs] tuple.
+  // Per-frame delay falls back to frameDurationMs when missing.
+  const entries = rawEntries.map((e) => {
+    if (Array.isArray(e)) return { name: String(e[0]), delay: Number(e[1]) || defaultDuration }
+    return { name: String(e), delay: defaultDuration }
+  })
+  const settleName = config.settleFrame || entries[entries.length - 1].name
 
   let rawFrames
-  try { rawFrames = frameNames.map((n) => readFileSync(join(framesDir, n), 'utf8')) } catch { return false }
+  try { rawFrames = entries.map((e) => readFileSync(join(framesDir, e.name), 'utf8')) } catch { return false }
   let settleRaw
   try { settleRaw = readFileSync(join(framesDir, settleName), 'utf8') } catch { settleRaw = rawFrames[rawFrames.length - 1] }
 
@@ -100,12 +107,8 @@ function renderMascot({ configPath, framesDir }, urlLine, stopLine) {
     return true
   }
 
-  // Reserve vertical space with blank lines so the first cursor-up redraw
-  // has a stable region to overwrite. This avoids the "first frame
-  // duplicated above the rest" bug: previously we drew the first frame
-  // synchronously and then cursor-up'd from a possibly-shifted position
-  // on the next tick. Now every frame (including the first) goes through
-  // the same cursor-up + redraw path.
+  // Reserve vertical space with blank lines so cursor-up redraws have a
+  // stable region to overwrite.
   process.stdout.write('\n'.repeat(lineCount))
   const draw = (frame) => {
     process.stdout.write(`\x1b[${lineCount}A`)
@@ -117,21 +120,21 @@ function renderMascot({ configPath, framesDir }, urlLine, stopLine) {
   return new Promise((resolveAnim) => {
     let loopIdx = 0
     let frameIdx = 0
-    // Draw the first frame immediately (tick 0) so there's no blank window.
-    draw(colorizeMascot(loopFrames[0]))
-    frameIdx = 1
-    const timer = setInterval(() => {
+    // Recursive setTimeout so each frame can have its own delay.
+    const step = () => {
       if (loopIdx >= loops) {
-        clearInterval(timer)
         draw(composeSettle())
         resolveAnim(true)
         return
       }
       draw(colorizeMascot(loopFrames[frameIdx]))
+      const thisDelay = entries[frameIdx].delay
       frameIdx++
       if (frameIdx >= loopFrames.length) { frameIdx = 0; loopIdx++ }
-    }, frameDurationMs)
-    if (typeof timer.unref === 'function') timer.unref()
+      const t = setTimeout(step, thisDelay)
+      if (typeof t.unref === 'function') t.unref()
+    }
+    step()
   })
 }
 

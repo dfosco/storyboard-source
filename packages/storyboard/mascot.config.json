@@ -1,15 +1,15 @@
 {
-  "$comment": "Mascot animation rendered above the Vite dev banner. Frames are plain text files in the same directory; edit them freely. Total animation time = frames.length * loops * frameDurationMs. After loops finish, settleFrame is left on screen (with the dev URL beside it).",
+  "$comment": "Mascot animation rendered above the Vite dev banner. Each entry in `frames` is either a string (uses frameDurationMs as the default delay) or a [filename, delayMs] tuple for per-frame timing. After loops finish, settleFrame is left on screen with the dev URL beside it.",
   "frames": [
-    "frame-01-peek-left.txt",
-    "frame-02-peek-right.txt",
-    "frame-03-eyes-open.txt",
-    "frame-04-eyes-closed.txt",
-    "frame-03-eyes-open.txt",
-    "frame-04-eyes-closed.txt"
+    ["frame-01-peek-left.txt", 320],
+    ["frame-02-eyes-open.txt", 180],
+    ["frame-03-peek-right.txt", 320],
+    ["frame-04-eyes-open.txt", 220],
+    ["frame-05-eyes-closed.txt", 120],
+    ["frame-06-eyes-open.txt", 200]
   ],
   "frameDurationMs": 180,
   "loops": 1,
-  "settleFrame": "frame-03-eyes-open.txt",
+  "settleFrame": "frame-06-eyes-open.txt",
   "enabled": true
 }
