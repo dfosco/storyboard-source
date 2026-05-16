@@ -1,7 +1,7 @@
 SESSION: agent-2lkxmx | green-petrel
 CANVAS:  storyboard-demo
 BRANCH:  0.6.0
-TIME:    2026-05-16T22:40:01.322Z
+TIME:    2026-05-16T22:42:52.818Z
 
 ================================================================================
 SCREEN
@@ -47,9 +47,3 @@ SCREEN
 
 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
  1 background /tasks · / commands · ? help            terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-
-================================================================================
-SCROLLBACK (last 60s)
-================================================================================
-
- ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                            @index.jsx:153 ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                                @index.jsx
