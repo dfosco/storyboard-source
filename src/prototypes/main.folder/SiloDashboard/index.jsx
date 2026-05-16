@@ -147,8 +147,8 @@ export default function SiloDashboard() {
 
       {/* Main */}
       <main className="flex flex-1 flex-col w-4/5 overflow-y-auto">
-        <header className="flex h-24 items-center justify-between border-b border-neutral-800 px-5">
-          <div className="flex items-center gap-2 text-sm text-neutral-300">
+        <header className="flex min-h-16 items-center justify-between border-b border-neutral-800 px-5">
+          <div className="flex items-center gap-3 text-sm text-neutral-300">
             <span className="text-neutral-500">/</span>
             <span>Utilization</span>
           </div>

@@ -1,7 +1,7 @@
 /**
  * Prototype reload guard — suppresses Vite HMR full-reloads for non-canvas pages.
  *
- * Controlled by the "prototype-auto-reload" feature flag (default: false).
+ * Controlled by the "prototype-auto-reload" feature flag (default: true).
  * When the flag is false (user opted out), sends heartbeat messages to the
  * Vite dev server which suppresses full-reload and update payloads for this
  * client. Custom storyboard events (canvas file changes, story changes, etc.)
@@ -51,10 +51,9 @@ export default function usePrototypeReloadGuard() {
     // Initial sync
     sync()
 
-    // Re-sync when the flag changes in localStorage (e.g. toggled from devtools)
-    const unsub = subscribeToStorage((key) => {
-      if (key === 'flag.' + FLAG_KEY) sync()
-    })
+    // Re-sync when any storyboard storage entry changes (subscribeToStorage
+    // fires without a key arg, so we just re-read the flag every time).
+    const unsub = subscribeToStorage(() => sync())
 
     return () => {
       stop()

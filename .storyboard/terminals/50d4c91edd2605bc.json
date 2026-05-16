@@ -1,12 +1,8 @@
 {
   "widgetProps": {
-    "alias": "Form",
-    "agentId": "copilot",
-    "startupCommand": "copilot --agent terminal-agent",
-    "prettyName": "opal-osprey",
-    "role": "member"
+    "prettyName": "opal-osprey"
   },
-  "displayName": "Form",
+  "displayName": "opal-osprey",
   "connectedWidgets": [
     {
       "id": "agent-l3iu9a",
@@ -72,15 +68,15 @@
     }
   ],
   "viewport": {
-    "centerX": 2096,
-    "centerY": 7282,
-    "zoom": 112,
-    "topLeftX": 1293,
-    "topLeftY": 6832,
-    "width": 1607,
-    "height": 900
+    "centerX": 4189,
+    "centerY": 7299,
+    "zoom": 70,
+    "topLeftX": 2904,
+    "topLeftY": 6602,
+    "width": 2571,
+    "height": 1394
   },
-  "updatedAt": "2026-05-16T22:35:36.397Z",
+  "updatedAt": "2026-05-16T22:43:31.455Z",
   "widgetId": "agent-v2qu53",
   "canvasId": "storyboard-demo",
   "canvasFile": null,

@@ -1,13 +1,8 @@
 {
   "widgetProps": {
-    "alias": "Branding",
-    "agentId": "copilot",
-    "startupCommand": "copilot --agent terminal-agent",
-    "prettyName": "sage-tanager",
-    "role": "member",
-    "status": "running"
+    "prettyName": "sage-tanager"
   },
-  "displayName": "Branding",
+  "displayName": "sage-tanager",
   "connectedWidgets": [
     {
       "id": "agent-l3iu9a",
@@ -84,15 +79,15 @@
     }
   ],
   "viewport": {
-    "centerX": 2096,
-    "centerY": 7282,
-    "zoom": 112,
-    "topLeftX": 1293,
-    "topLeftY": 6832,
-    "width": 1607,
-    "height": 900
+    "centerX": 4189,
+    "centerY": 7299,
+    "zoom": 70,
+    "topLeftX": 2904,
+    "topLeftY": 6602,
+    "width": 2571,
+    "height": 1394
   },
-  "updatedAt": "2026-05-16T22:35:36.396Z",
+  "updatedAt": "2026-05-16T22:43:30.830Z",
   "widgetId": "agent-bqdgr2",
   "canvasId": "storyboard-demo",
   "canvasFile": null,

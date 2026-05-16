@@ -2145,9 +2145,7 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
 
     sync()
 
-    const unsub = subscribeToStorage((key) => {
-      if (key === 'flag.canvas-auto-reload') sync()
-    })
+    const unsub = subscribeToStorage(() => sync())
 
     return () => {
       stop()

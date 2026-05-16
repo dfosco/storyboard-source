@@ -1,14 +1,8 @@
 {
   "widgetProps": {
-    "agentId": "copilot",
-    "alias": "Leader",
-    "startupCommand": "copilot --agent terminal-agent",
-    "width": 1000,
-    "height": 800,
-    "prettyName": "jade-grouse",
-    "role": "leader"
+    "prettyName": "jade-grouse"
   },
-  "displayName": "Leader",
+  "displayName": "jade-grouse",
   "connectedWidgets": [
     {
       "id": "agent-bqdgr2",
@@ -137,15 +131,15 @@
     }
   ],
   "viewport": {
-    "centerX": 2096,
-    "centerY": 7282,
-    "zoom": 112,
-    "topLeftX": 1293,
-    "topLeftY": 6832,
-    "width": 1607,
-    "height": 900
+    "centerX": 4189,
+    "centerY": 7299,
+    "zoom": 70,
+    "topLeftX": 2904,
+    "topLeftY": 6602,
+    "width": 2571,
+    "height": 1394
   },
-  "updatedAt": "2026-05-16T22:35:36.395Z",
+  "updatedAt": "2026-05-16T22:43:30.797Z",
   "widgetId": "agent-l3iu9a",
   "canvasId": "storyboard-demo",
   "canvasFile": null,

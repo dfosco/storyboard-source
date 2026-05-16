@@ -1,7 +1,7 @@
 SESSION: agent-v2qu53 | opal-osprey
 CANVAS:  storyboard-demo
 BRANCH:  0.6.0
-TIME:    2026-05-16T22:40:00.870Z
+TIME:    2026-05-16T22:44:21.512Z
 
 ================================================================================
 SCREEN
@@ -40,7 +40,7 @@ SCREEN
 
   Canvas auto-refreshes since the prototype is visible. Leader notified.
 
- ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                                @index.jsx
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                   @storyboard.config.json
 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ❯  
 
@@ -52,4 +52,167 @@ SCREEN
 SCROLLBACK (last 60s)
 ================================================================================
 
- ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                            @index.jsx:153 ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                                @index.jsx
+[lost tty]
+[?996n[>c[>q
+● Save output + notify leader (shell)
+  │ export STORYBOARD_WIDGET_ID=agent-v2qu53
+  │ npx storyboard terminal output --summary "OAuth buttons now functional" --co  │ OAuth buttons in SignupForm.jsx. Clicking either: sets signup.oauthProvider,  │ (button shows 'Connecting…' + disables both), pre-fills signup.fullName/emai  │ with provider-specific mock values, then after 900ms sets signup.status='suc  └ 9 lines...
+
+
+● Done. Wired the OAuth buttons in SignupForm.jsx:
+
+   - Click Google or GitHub → button shows Connecting… and both disable
+   - Pre-fills the form via useOverride: signup.oauthProvider, signup.fullName,   signup.password, signup.agreedToTerms
+   - After ~900ms transitions signup.status from oauth → success, rendering the    - Provider-specific mock data (Gmail-style email for Google, users.noreply.gi   - Still Tailwind-only, no real OAuth
+
+  Canvas auto-refreshes since the prototype is visible. Leader notified.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                        ────────────────────────────────────────────────────────────────────────────────❯
+
+● Edit SignupForm.jsx +29
+  └ src/prototypes/main.folder/StartupSignup/SignupForm.jsx
+
+
+● Edit SignupForm.jsx +8 -4
+  └ src/prototypes/main.folder/StartupSignup/SignupForm.jsx
+
+
+● Edit SignupForm.jsx +4 -1
+  └ src/prototypes/main.folder/StartupSignup/SignupForm.jsx
+
+
+● Save output + notify leader (shell)
+  │ export STORYBOARD_WIDGET_ID=agent-v2qu53
+  │ npx storyboard terminal output --summary "OAuth buttons now functional" --content "Wired Google + GitHub
+  │ OAuth buttons in SignupForm.jsx. Clicking either: sets signup.oauthProvider, sets signup.status='oauth'
+  │ (button shows 'Connecting…' + disables both), pre-fills signup.fullName/email/company/password/agreedToTerms
+  │ with provider-specific mock values, then after 900ms sets signup.status='success' to render the success card.…
+  └ 9 lines...
+
+
+● Done. Wired the OAuth buttons in SignupForm.jsx:
+
+   - Click Google or GitHub → button shows Connecting… and both disable
+   - Pre-fills the form via useOverride: signup.oauthProvider, signup.fullName, signup.email, signup.company,
+  signup.password, signup.agreedToTerms
+   - After ~900ms transitions signup.status from oauth → success, rendering the success card with the provider name   - Provider-specific mock data (Gmail-style email for Google, users.noreply.github.com for GitHub)
+   - Still Tailwind-only, no real OAuth
+
+  Canvas auto-refreshes since the prototype is visible. Leader notified.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                   @storyboard.config.json
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+● Edit SignupForm.jsx +29
+  └ src/prototypes/main.folder/StartupSignup/SignupForm.jsx
+
+
+● Edit SignupForm.jsx +8 -4
+  └ src/prototypes/main.folder/StartupSignup/SignupForm.jsx
+
+
+● Edit SignupForm.jsx +4 -1
+  └ src/prototypes/main.folder/StartupSignup/SignupForm.jsx
+
+
+● Save output + notify leader (shell)
+  │ export STORYBOARD_WIDGET_ID=agent-v2qu53
+  │ npx storyboard terminal output --summary "OAuth buttons now functional" --content "Wired Google + GitHub
+  │ OAuth buttons in SignupForm.jsx. Clicking either: sets signup.oauthProvider, sets signup.status='oauth'
+  │ (button shows 'Connecting…' + disables both), pre-fills signup.fullName/email/company/password/agreedToTerms
+  │ with provider-specific mock values, then after 900ms sets signup.status='success' to render the success card.…
+  └ 9 lines...
+
+
+● Done. Wired the OAuth buttons in SignupForm.jsx:
+
+   - Click Google or GitHub → button shows Connecting… and both disable
+   - Pre-fills the form via useOverride: signup.oauthProvider, signup.fullName, signup.email, signup.company,
+  signup.password, signup.agreedToTerms
+   - After ~900ms transitions signup.status from oauth → success, rendering the success card with the provider name   - Provider-specific mock data (Gmail-style email for Google, users.noreply.github.com for GitHub)
+   - Still Tailwind-only, no real OAuth
+
+  Canvas auto-refreshes since the prototype is visible. Leader notified.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                   @storyboard.config.json
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+● Edit SignupForm.jsx +29
+  └ src/prototypes/main.folder/StartupSignup/SignupForm.jsx
+
+
+● Edit SignupForm.jsx +8 -4
+  └ src/prototypes/main.folder/StartupSignup/SignupForm.jsx
+
+
+● Edit SignupForm.jsx +4 -1
+  └ src/prototypes/main.folder/StartupSignup/SignupForm.jsx
+
+
+● Save output + notify leader (shell)
+  │ export STORYBOARD_WIDGET_ID=agent-v2qu53
+  │ npx storyboard terminal output --summary "OAuth buttons now functional" --content "Wired Google + GitHub
+  │ OAuth buttons in SignupForm.jsx. Clicking either: sets signup.oauthProvider, sets signup.status='oauth'
+  │ (button shows 'Connecting…' + disables both), pre-fills signup.fullName/email/company/password/agreedToTerms
+  │ with provider-specific mock values, then after 900ms sets signup.status='success' to render the success card.…
+  └ 9 lines...
+
+
+● Done. Wired the OAuth buttons in SignupForm.jsx:
+
+   - Click Google or GitHub → button shows Connecting… and both disable
+   - Pre-fills the form via useOverride: signup.oauthProvider, signup.fullName, signup.email, signup.company,
+  signup.password, signup.agreedToTerms
+   - After ~900ms transitions signup.status from oauth → success, rendering the success card with the provider name   - Provider-specific mock data (Gmail-style email for Google, users.noreply.github.com for GitHub)
+   - Still Tailwind-only, no real OAuth
+
+  Canvas auto-refreshes since the prototype is visible. Leader notified.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                   @storyboard.config.json
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+● Edit SignupForm.jsx +29
+  └ src/prototypes/main.folder/StartupSignup/SignupForm.jsx
+
+
+● Edit SignupForm.jsx +8 -4
+  └ src/prototypes/main.folder/StartupSignup/SignupForm.jsx
+
+
+● Edit SignupForm.jsx +4 -1
+  └ src/prototypes/main.folder/StartupSignup/SignupForm.jsx
+
+
+● Save output + notify leader (shell)
+  │ export STORYBOARD_WIDGET_ID=agent-v2qu53
+  │ npx storyboard terminal output --summary "OAuth buttons now functional" --content "Wired Google + GitHub
+  │ OAuth buttons in SignupForm.jsx. Clicking either: sets signup.oauthProvider, sets signup.status='oauth'
+  │ (button shows 'Connecting…' + disables both), pre-fills signup.fullName/email/company/password/agreedToTerms
+  │ with provider-specific mock values, then after 900ms sets signup.status='success' to render the success card.…
+  └ 9 lines...
+
+
+● Done. Wired the OAuth buttons in SignupForm.jsx:
+
+   - Click Google or GitHub → button shows Connecting… and both disable
+   - Pre-fills the form via useOverride: signup.oauthProvider, signup.fullName, signup.email, signup.company,
+  signup.password, signup.agreedToTerms
+   - After ~900ms transitions signup.status from oauth → success, rendering the success card with the provider name   - Provider-specific mock data (Gmail-style email for Google, users.noreply.github.com for GitHub)
+   - Still Tailwind-only, no real OAuth
+
+  Canvas auto-refreshes since the prototype is visible. Leader notified.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                   @storyboard.config.json
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)

@@ -1,14 +1,8 @@
 {
   "widgetProps": {
-    "alias": "Charts",
-    "agentId": "copilot",
-    "startupCommand": "copilot --agent terminal-agent",
-    "prettyName": "iron-petrel",
-    "role": "member",
-    "status": "done",
-    "errorMessage": ""
+    "prettyName": "iron-petrel"
   },
-  "displayName": "Charts",
+  "displayName": "iron-petrel",
   "connectedWidgets": [
     {
       "id": "agent-5unog9",
@@ -74,15 +68,15 @@
     }
   ],
   "viewport": {
-    "centerX": 2096,
-    "centerY": 7282,
-    "zoom": 112,
-    "topLeftX": 1293,
-    "topLeftY": 6832,
-    "width": 1607,
-    "height": 900
+    "centerX": 4189,
+    "centerY": 7299,
+    "zoom": 70,
+    "topLeftX": 2904,
+    "topLeftY": 6602,
+    "width": 2571,
+    "height": 1394
   },
-  "updatedAt": "2026-05-16T22:35:36.401Z",
+  "updatedAt": "2026-05-16T22:43:32.733Z",
   "widgetId": "agent-hrmw40",
   "canvasId": "storyboard-demo",
   "canvasFile": null,

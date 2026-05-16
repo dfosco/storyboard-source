@@ -19,7 +19,7 @@ const BODY_CLASS_PREFIX = 'sb-ff-'
 /** Built-in feature flag defaults — always available even if initFeatureFlags is never called. */
 const BUILTIN_DEFAULTS = {
   'canvas-auto-reload': false,
-  'prototype-auto-reload': false,
+  'prototype-auto-reload': true,
 }
 
 /** Module-level storage for config defaults */
