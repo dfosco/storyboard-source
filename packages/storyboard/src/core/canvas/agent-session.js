@@ -193,9 +193,13 @@ function buildCaptureBashScript() {
     'payload=$(cat)',
     'id=$(printf %s "$payload" | sed -n \'s/.*"sessionId"[[:space:]]*:[[:space:]]*"\\([^"]*\\)".*/\\1/p\' | head -n1)',
     '[ -z "$id" ] && id=$(printf %s "$payload" | sed -n \'s/.*"session_id"[[:space:]]*:[[:space:]]*"\\([^"]*\\)".*/\\1/p\' | head -n1)',
-    '[ -z "$id" ] && exit 0',
     'dir="$root/.storyboard/agent-sessions"',
     'mkdir -p "$dir" 2>/dev/null',
+    // Always touch the readiness marker — sessionStart fires only once
+    // the agent is fully loaded and the prompt input is interactive, so
+    // this is a much more reliable signal than the pre-agent shell echo.
+    'touch "$root/.storyboard/terminals/$wid.ready" 2>/dev/null',
+    '[ -z "$id" ] && exit 0',
     'printf %s "$id" > "$dir/$wid.session-id"',
   ].join('; ')
 }

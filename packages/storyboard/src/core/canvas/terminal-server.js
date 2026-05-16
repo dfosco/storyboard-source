@@ -1252,20 +1252,14 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
         const envScriptDir = join(cwd, '.storyboard', 'terminals')
         try { mkdirSync(envScriptDir, { recursive: true }) } catch { /* empty */ }
         const envScriptPath = join(envScriptDir, `${widgetId}.env.sh`)
-        // ── H4: file marker for readiness. Terminal-state-independent —
-        // `existsSync` doesn't care if Copilot's TUI repainted the pane,
-        // entered alt-screen, or scrolled the echo away.
+        // The Copilot/Claude/Codex sessionStart hooks touch this file once
+        // the agent is fully loaded with an interactive prompt — much more
+        // reliable than scanning the pane for a transient shell echo.
+        // See agent-session.js:buildCaptureBashScript.
         const readyFilePath = join(envScriptDir, `${widgetId}.ready`)
         try { rmSync(readyFilePath, { force: true }) } catch { /* empty */ }
         try {
-          // `touch` fires before the echo so the marker is set the instant
-          // the env script finishes exporting. Echo kept for backwards-
-          // compatible pane-scanning fallback (H1).
-          writeFileSync(
-            envScriptPath,
-            envParts.join('\n') +
-            `\ntouch ${JSON.stringify(readyFilePath)}\necho "Environment loaded:"\n`
-          )
+          writeFileSync(envScriptPath, envParts.join('\n') + '\n')
         } catch { /* empty */ }
         // Source env script; the trailing readiness echo MUST remain on
         // the pane so the post-startup poller can match it. Don't append
@@ -1301,6 +1295,12 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
             let cmd = agentCfg?.startupCommand || startupCommand
             const postStartup = agentCfg?.postStartup || null
             const readinessSignal = agentCfg?.readinessSignal || null
+            // Agents with a sessionStart hook (Copilot/Claude/Codex) touch
+            // the .ready marker once the agent is fully loaded with an
+            // interactive prompt. Wait for the marker even when no
+            // readinessSignal is configured — much more accurate than
+            // pane scanning.
+            const useReadyFile = !!agentCfg?.sessionIdEnv
 
             // ── Resume: if we previously captured a session id for this
             // widget and it's still resumable (UUID + session-state dir
@@ -1347,7 +1347,7 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
                 execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
               } catch { /* empty */ }
 
-              if (readinessSignal) {
+              if (readinessSignal || useReadyFile) {
                 // Poll for readiness, then send postStartup command and deliver messages
                 let sent = false
                 const finalize = (reason) => {
@@ -1383,14 +1383,13 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
                 }
                 const pollInterval = setInterval(() => {
                   if (sent) { clearInterval(pollInterval); return }
-                  // ── H4: marker file is set the instant env script finishes
-                  // exporting, before any TUI starts. Terminal-state-independent.
-                  if (existsSync(readyFilePath)) { finalize('file'); return }
+                  // Primary: sessionStart hook touches the marker once the
+                  // agent is fully loaded and interactive.
+                  if (useReadyFile && existsSync(readyFilePath)) { finalize('file'); return }
+                  if (!readinessSignal) return
                   try {
-                    // ── H1: include 200 lines of scrollback so the echo
-                    // can be matched after Copilot's full-screen TUI
-                    // repaints over it. `-p` alone returns only the
-                    // visible region.
+                    // Fallback for agents without a hook: scan pane + 200
+                    // lines of scrollback (so the signal survives a TUI repaint).
                     const paneContent = execSync(
                       `tmux capture-pane -t "${tmuxName}" -p -S -200`,
                       { encoding: 'utf8', timeout: 1000 }
