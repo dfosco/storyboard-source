@@ -1,16 +1,21 @@
-# Storyboard
+![Storyboard](.readme/header-2.png)
 
-> [!NOTE]  
-> This README is a work in progress 
+Storyboard is an experimental prototyping system with an interactive canvas that can render agents, prototypes, components, markdown and more.
 
-Storyboard is a design tool for prototyping that runs entirely on GitHub. It bundles four key capabilities in a single platform:
+<< Screenshot of storyboard with agents connected>>
+<< Screenshot of storyboard with multiple protypes>>
 
-1. A framework for building **stateful prototypes** in React
-2. An overlay of design tools for inspecting, documenting and interacting with your prototypes
-3. An interactive canvas where you can add components, prototypes, Figma files, and more
-4. The *viewfinder*, a homepage for every prototype created by your team.
+Storyboard is fully open-source, and can be deployed by your team with any static host (GitHub Page, Vercel, Netlify, etc). Some optional features require a GitHub account to be used.
 
-Storyboard is free and open-source, and can be deployed by forking the example repository and enabling GitHub Pages.
+### What can I do with it?
+
+Create react prototypes and make them discoverable on the workspace
+
+Create components and prototypes and document them on a canvas
+
+Run local agents and work across multiple sessions with the canvas in context
+
+Add GitHub issues, Figma files and other embeds next to your work 
 
 <!-- lots of medias -->
 

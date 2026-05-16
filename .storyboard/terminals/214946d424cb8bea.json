@@ -1,0 +1,66 @@
+{
+  "widgetId": "agent-xguros",
+  "displayName": "cobalt-magpie",
+  "canvasId": "storyboarding/terminal-widget-prompts",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "widgetProps": {
+    "agentId": "copilot",
+    "alias": "",
+    "startupCommand": "copilot --agent terminal-agent",
+    "width": 1000,
+    "height": 800,
+    "prettyName": "cobalt-magpie",
+    "role": "member"
+  },
+  "connectedWidgets": [
+    {
+      "id": "component-set-hy5at9",
+      "type": "component-set",
+      "props": {
+        "storyId": "radial-menu",
+        "layout": "auto",
+        "selected": "",
+        "width": 1526.3495878848132,
+        "height": 1401
+      },
+      "position": {
+        "x": 20636,
+        "y": 3292
+      }
+    }
+  ],
+  "agentStatus": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_fa19654feb",
+      "role": "member",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboarding--terminal-widget-prompts--hub_fa19654feb.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 28520,
+    "centerY": 2115,
+    "zoom": 40,
+    "topLeftX": 25320,
+    "topLeftY": 544,
+    "width": 6400,
+    "height": 3143
+  },
+  "updatedAt": "2026-05-15T19:32:55.411Z",
+  "messaging": null,
+  "lastAgentSessionId": "19c093e2-a325-45fe-9a8e-fc283a088942",
+  "lastAgentSessionAt": "2026-05-15T18:20:18.013Z",
+  "lastAgentId": "copilot"
+}

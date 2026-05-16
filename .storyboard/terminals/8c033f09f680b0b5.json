@@ -1,0 +1,41 @@
+{
+  "widgetId": "agent-8gnvas",
+  "displayName": "iron-oriole",
+  "canvasId": "storyboarding/terminal-widget-prompts",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "widgetProps": {
+    "prettyName": "iron-oriole"
+  },
+  "connectedWidgets": [],
+  "agentStatus": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_ad60f1f0dd",
+      "role": "member",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboarding--terminal-widget-prompts--hub_ad60f1f0dd.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 22650,
+    "centerY": 2291,
+    "zoom": 29,
+    "topLeftX": 18236,
+    "topLeftY": 66,
+    "width": 8828,
+    "height": 4452
+  },
+  "updatedAt": "2026-05-15T18:10:51.995Z",
+  "messaging": null
+}

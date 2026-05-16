@@ -1,0 +1,48 @@
+{
+  "widgetId": "agent-o97hg6",
+  "displayName": "cobalt-gannet",
+  "canvasId": "storyboarding/terminal-widget-prompts",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "widgetProps": {
+    "agentId": "claude",
+    "alias": "",
+    "startupCommand": "claude --agent terminal-agent --dangerously-skip-permissions",
+    "width": 1000,
+    "height": 800,
+    "prettyName": "cobalt-gannet",
+    "webglReady": true,
+    "role": "member"
+  },
+  "connectedWidgets": [],
+  "agentStatus": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_840ea9e3ec",
+      "role": "member",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboarding--terminal-widget-prompts--hub_840ea9e3ec.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 22650,
+    "centerY": 2291,
+    "zoom": 29,
+    "topLeftX": 18236,
+    "topLeftY": 66,
+    "width": 8828,
+    "height": 4452
+  },
+  "updatedAt": "2026-05-15T18:10:55.054Z",
+  "messaging": null
+}

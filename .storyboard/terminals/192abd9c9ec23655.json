@@ -1,0 +1,50 @@
+{
+  "widgetProps": {
+    "agentId": "claude",
+    "alias": "",
+    "startupCommand": "claude --agent terminal-agent --dangerously-skip-permissions",
+    "width": 1000,
+    "height": 800,
+    "prettyName": "iron-harrier",
+    "role": "member"
+  },
+  "displayName": "iron-harrier",
+  "connectedWidgets": [],
+  "messaging": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_c211bf6f04",
+      "role": "member",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboarding--terminal-widget-prompts--hub_c211bf6f04.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 25611,
+    "centerY": 1515,
+    "zoom": 71,
+    "topLeftX": 23808,
+    "topLeftY": 606,
+    "width": 3606,
+    "height": 1818
+  },
+  "updatedAt": "2026-05-15T18:16:57.985Z",
+  "widgetId": "agent-t916yd",
+  "canvasId": "storyboarding/terminal-widget-prompts",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null,
+  "lastAgentSessionId": "802f40d0-4612-4572-ab2b-bec3e6f7d172",
+  "lastAgentSessionAt": "2026-05-15T18:13:05.258Z",
+  "lastAgentId": "claude"
+}

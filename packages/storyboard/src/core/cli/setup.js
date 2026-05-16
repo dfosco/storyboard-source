@@ -12,7 +12,7 @@
 import * as p from '@clack/prompts'
 import { existsSync, writeFileSync, readFileSync, mkdirSync, readdirSync, symlinkSync } from 'fs'
 import path from 'path'
-import { execSync } from 'child_process'
+import { execSync, spawn } from 'child_process'
 import { gettingStartedLines, dim, magenta, bold, yellow, green } from './intro.js'
 import { parseFlags } from './flags.js'
 
@@ -43,7 +43,8 @@ if (flags.nuke) {
 
 /**
  * Run a potentially slow task with a spinner that only appears after 500ms.
- * If the task completes quickly, shows the done message immediately.
+ * IMPORTANT: `fn` must be async (don't use execSync — it blocks the event loop
+ * and prevents the spinner from animating).
  */
 async function withSpin(label, doneMsg, fn) {
   const spin = p.spinner()
@@ -57,6 +58,54 @@ async function withSpin(label, doneMsg, fn) {
     spin.stop(`Failed: ${label}`)
     throw err
   }
+}
+
+/**
+ * Async command runner — does NOT block the event loop, so spinners animate.
+ */
+function runAsync(cmd, args = [], opts = {}) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(cmd, args, { stdio: 'ignore', ...opts })
+    child.on('error', reject)
+    child.on('exit', (code) => {
+      if (code === 0) resolve()
+      else reject(new Error(`${cmd} exited with code ${code}`))
+    })
+  })
+}
+
+/**
+ * Install a brew package with an animated spinner.
+ */
+async function brewInstall(pkg, label) {
+  const spin = p.spinner()
+  spin.start(`Installing ${label}`)
+  try {
+    await runAsync('brew', ['install', pkg])
+    spin.stop(`${label} installed`)
+    return true
+  } catch {
+    spin.stop(`Failed to install ${label}`)
+    p.log.warning(`Install manually: brew install ${pkg}`)
+    return false
+  }
+}
+
+/**
+ * Quick network probe — alerts the user if GitHub looks unreachable.
+ * We don't block on failure; downstream installers will surface their own errors.
+ */
+async function checkNetwork() {
+  const http = await import('node:https')
+  return new Promise((resolve) => {
+    const req = http.request('https://api.github.com', { method: 'HEAD', timeout: 4000 }, (res) => {
+      resolve(res.statusCode != null && res.statusCode < 500)
+      res.resume()
+    })
+    req.on('error', () => resolve(false))
+    req.on('timeout', () => { req.destroy(); resolve(false) })
+    req.end()
+  })
 }
 
 function mascot() {
@@ -87,12 +136,19 @@ function isInstalled(cmd) {
 
 p.intro('storyboard setup')
 
-// 1. Check for node_modules (quick sanity check — full install runs at the end)
-if (!existsSync('node_modules')) {
-  p.log.info('node_modules not found — will install at end of setup')
-} else {
-  p.log.success('Dependencies present')
+// 0. Network probe — alert if GitHub is unreachable; don't block.
+{
+  const online = await checkNetwork()
+  if (!online) {
+    p.log.warning('Network looks offline — installers/downloads may fail')
+    p.log.info(dim('  Tried HEAD https://api.github.com; check VPN/proxy/DNS'))
+  } else {
+    p.log.success('Network reachable')
+  }
 }
+
+// Node is assumed to be present (you already ran `npx storyboard setup`).
+// node_modules will be installed at the end if missing.
 
 // 2. Homebrew
 let hasBrew = isInstalled('brew')
@@ -121,35 +177,43 @@ if (hasBrew) {
   if (isInstalled('git')) {
     p.log.success('Git installed')
   } else {
-    const gitSpin = p.spinner()
-    gitSpin.start('Installing Git')
-    try {
-      run('brew install git')
-      gitSpin.stop('Git installed')
-    } catch {
-      gitSpin.stop('Failed to install Git')
-      p.log.warning('Install manually: brew install git')
-    }
+    await brewInstall('git', 'Git')
   }
 }
 
 // 4. Caddy is no longer used. Worktrees run their own Vite directly on
-//    `http://localhost:<port>/storyboard/`. The block below intentionally
-//    skips the previous Caddy install + start steps.
+//    `http://localhost:<port>/storyboard/`.
 
 if (hasBrew) {
-  // 5. GitHub CLI
+  // 5. GitHub CLI — required for `gh auth`, `gh pr`, `gh issue` in agents.
+  let ghNewlyInstalled = false
   if (isInstalled('gh')) {
     p.log.success('GitHub CLI installed')
   } else {
-    const ghSpin = p.spinner()
-    ghSpin.start('Installing GitHub CLI')
+    ghNewlyInstalled = await brewInstall('gh', 'GitHub CLI')
+  }
+
+  // 5a. tmux (required for headless agent sessions)
+  if (isInstalled('tmux')) {
+    p.log.success('tmux installed')
+  } else {
+    await brewInstall('tmux', 'tmux')
+  }
+
+  // 5b. Surface gh auth status. Even if gh was already installed, we should
+  //     prompt the user to log in — agents that shell out to `gh` will fail
+  //     silently otherwise.
+  if (isInstalled('gh')) {
+    let authed = false
     try {
-      run('brew install gh')
-      ghSpin.stop('GitHub CLI installed')
-    } catch {
-      ghSpin.stop('Failed to install GitHub CLI')
-      p.log.warning('Install manually: brew install gh')
+      execSync('gh auth status', { stdio: 'ignore' })
+      authed = true
+    } catch { /* not authed */ }
+    if (authed) {
+      p.log.success('GitHub CLI authenticated')
+    } else {
+      p.log.warning(ghNewlyInstalled ? 'GitHub CLI installed but not logged in' : 'GitHub CLI is not logged in')
+      p.log.info(`  Run ${yellow('gh auth login')} to authenticate`)
     }
   }
 }
@@ -195,24 +259,20 @@ if (isInstalled('code')) {
   }
 }
 
-// 6a. Copilot CLI
-if (isInstalled('copilot')) {
-  p.log.success('Copilot CLI installed')
-} else {
-  const copilotSpin = p.spinner()
-  copilotSpin.start('Installing Copilot CLI')
-  try {
-    run('curl -fsSL https://gh.io/copilot-install | bash')
-    // Add ~/.local/bin to PATH if not already there
-    const localBin = `${process.env.HOME}/.local/bin`
-    if (!process.env.PATH.includes(localBin)) {
-      process.env.PATH = `${localBin}:${process.env.PATH}`
-    }
-    copilotSpin.stop('Copilot CLI installed')
-    p.log.info(dim('  Note: You may need to restart your terminal or add ~/.local/bin to PATH'))
-  } catch {
-    copilotSpin.stop('Failed to install Copilot CLI')
-    p.log.warning('Install manually: curl -fsSL https://gh.io/copilot-install | bash')
+// 6a. Copilot CLI — install via brew (lands on PATH, unlike the install script
+//     which drops to ~/.local/bin). Separate auth from `gh`: copilot has its
+//     own credential store. Tell the user to run `/login` inside copilot.
+{
+  let copilotNewlyInstalled = false
+  if (isInstalled('copilot')) {
+    p.log.success('Copilot CLI installed')
+  } else if (hasBrew) {
+    copilotNewlyInstalled = await brewInstall('copilot-cli', 'Copilot CLI')
+  } else {
+    p.log.warning('Install Copilot CLI manually: brew install copilot-cli')
+  }
+  if (copilotNewlyInstalled || isInstalled('copilot')) {
+    p.log.info(`  Auth is separate from gh — run ${yellow('copilot')} then ${yellow('/login')}`)
   }
 }
 
@@ -352,14 +412,14 @@ if (isInstalled('copilot')) {
 
 // 10. Install / sync dependencies
 {
+  const installSpin = p.spinner()
+  installSpin.start('Installing dependencies')
   try {
-    await withSpin(
-      'Installing dependencies...',
-      'Dependencies installed',
-      () => { run('npm install', { stdio: 'ignore' }) }
-    )
+    await runAsync('npm', ['install'])
+    installSpin.stop('Dependencies installed')
   } catch {
-    p.log.warning('npm install failed — run it manually to see details')
+    installSpin.stop('npm install failed')
+    p.log.warning('Run it manually to see details:')
     p.log.info(`  ${dim('npm install')}`)
   }
 }

@@ -1,0 +1,47 @@
+{
+  "widgetProps": {
+    "agentId": "codex",
+    "alias": "",
+    "startupCommand": "codex --ask-for-approval never",
+    "width": 1000,
+    "height": 800,
+    "prettyName": "onyx-dove",
+    "role": "member"
+  },
+  "displayName": "onyx-dove",
+  "connectedWidgets": [],
+  "messaging": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_472150a0f8",
+      "role": "member",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboarding--terminal-widget-prompts--hub_472150a0f8.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 25611,
+    "centerY": 1515,
+    "zoom": 71,
+    "topLeftX": 23808,
+    "topLeftY": 606,
+    "width": 3606,
+    "height": 1818
+  },
+  "updatedAt": "2026-05-15T18:16:58.125Z",
+  "widgetId": "agent-dffutp",
+  "canvasId": "storyboarding/terminal-widget-prompts",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null
+}

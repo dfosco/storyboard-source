@@ -1,0 +1,197 @@
+SESSION: agent-e1rbxg | onyx-tanager
+CANVAS:  storyboarding/terminal-widget-prompts
+BRANCH:  0.6.0
+TIME:    2026-05-15T19:30:50.763Z
+
+================================================================================
+SCREEN
+================================================================================
+
+[WARN] - (starship::utils): Executing command "/opt/homebrew/opt/node@22/bin/node" timed
+out.
+[WARN] - (starship::utils): You can set command_timeout in your config to a higher value
+to allow longer-running commands to keep executing.
+
+0.6.0 on  0.6.0 [$✘!?] via  
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/
+worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6
+.0" --canvas "storyboarding/terminal-widget-prompts" --name "onyx-tanager" --startup "cod
+ex --ask-for-approval never"
+│
+●  name: onyx-tanager  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+[System] Your terminal identity has been set. widgetId=agent-e1rbxg displayName=onyx-tana
+ger canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/terminals/agent
+-e1rbxg.json serverUrl=http://localhost:1236 — this is a configuration step, no response
+needed.
+Hello there
+^[
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+[?996n[>c[>q
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[sb-d38dcb0:zsh*                         "Daniels-MacBook-Pro.l" 21:30 15-May-26
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[sb-d38dcb0:zsh*                         "Daniels-MacBook-Pro.l" 21:30 15-May-26
+
+░▒▓   …/0.6.0   0.6.0 $✘!?   21:30  
+❯ clear && source "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/agent-e1rbxg.env.sh" && clear
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                         
+[WARN] - (starship::utils): Executing command "/opt/homebrew/opt/node@22/bin/node" timed out.
+[WARN] - (starship::utils): You can set command_timeout in your config to a higher value to allow longer-running commands to keep executing.
+
+0.6.0 on  0.6.0 [$✘!?] via  
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "onyx-tanager" --startup "codex --ask-for-approval never"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[WARN] - (starship::utils): Executing command "/opt/homebrew/opt/node@22/bin/node" timed out.
+[WARN] - (starship::utils): You can set command_timeout in your config to a higher value to allow longer-running commands to keep executing.
+
+0.6.0 on  0.6.0 [$✘!?] via  
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "onyx-tanager" --startup "codex --ask-for-approval never"
+│
+●  name: onyx-tanager  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+[System] Your terminal identity has been set. widgetId=agent-e1rbxg displayName=onyx-tanager canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/terminals/agent-e1rbxg.json serverUrl=http://localhost:1236 — this is a configuration step, no response needed.
+
+
+
+
+
+
+
+
+
+
+
+
+Hello there
+^[[WARN] - (starship::utils): Executing command "/opt/homebrew/opt/node@22/bin/node" t[0/5]out.
+[WARN] - (starship::utils): You can set command_timeout in your config to a higher value to allow longer-running commands to keep executing.
+
+0.6.0 on  0.6.0 [$✘!?] via  
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "onyx-tanager" --startup "codex --ask-for-approval never"
+│
+●  name: onyx-tanager branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+[System] Your terminalidentity has been set. widgetId=agent-e1rbxg displayName=onyx-tanager canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/terminals/agent-e1rbxg.json serverUrl=http://localhost:1236— this is a configuration step, no response needed.
+Hello there
+^[
+
+
+
+
+
+
+
+
+
+
+imed [0/5]✘
+❯│
+● 
+│
+└  —imed [0/5]✘
+❯│
+●
+│
+└—

@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+exec start claude --agent terminal-agent --dangerously-skip-permissions "$@"

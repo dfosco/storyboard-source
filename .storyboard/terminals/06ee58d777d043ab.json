@@ -1,0 +1,41 @@
+{
+  "widgetProps": {
+    "prettyName": "sand-dove"
+  },
+  "displayName": "sand-dove",
+  "connectedWidgets": [],
+  "messaging": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_ca52bd7215",
+      "role": "member",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboarding--terminal-widget-prompts--hub_ca52bd7215.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 19342,
+    "centerY": 4558,
+    "zoom": 18,
+    "topLeftX": 12231,
+    "topLeftY": 1067,
+    "width": 14222,
+    "height": 6983
+  },
+  "updatedAt": "2026-05-15T19:29:24.920Z",
+  "widgetId": "agent-iricfp",
+  "canvasId": "storyboarding/terminal-widget-prompts",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null
+}

@@ -1,0 +1,10 @@
+{
+  "widgetId": "agent-7i6wig",
+  "canvasId": "storyboarding/terminal-widget-prompts",
+  "prettyName": "amber-dove",
+  "timestamp": "2026-05-15T19:32:55.269Z",
+  "cols": 89,
+  "rows": 32,
+  "paneContent": "e canvasId=storyboarding/terminal-widget-prompts configFile=.storyboard/terminals/agent-7\ni6wig.json serverUrl=http://localhost:1236 — this is a configuration step, no response ne\neded.\n╭────────────────────────────────────────────────────────╮\n│ >_ OpenAI Codex (v0.130.0)                             │\n│                                                        │\n│ model:     o4-mini xhigh   /model to change            │\n│ directory: ~/workspace/storyboard-core/worktrees/0.6.0 │\n╰────────────────────────────────────────────────────────╯\n\n  Tip: Visit the Codex community forum: https://community.openai.com/c/codex/37\n\n⚠ 1 hook needs review before it can run. Open /hooks to review it.\n\n⚠ Skipped loading 1 skill(s) due to invalid SKILL.md files.\n\n⚠ /Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.agents/skills/create-hub/\n  SKILL.md: invalid YAML: mapping values are not allowed in this context at line 2 column\n  204\n\n⚠ Skipped loading 1 skill(s) due to invalid SKILL.md files.\n\n⚠ /Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.agents/skills/create-hub/\n  SKILL.md: invalid YAML: mapping values are not allowed in this context at line 2 column\n  204\n\n\n› Implement {feature}\n\n  o4-mini xhigh · ~/workspace/storyboard-core/worktrees/0.6.0\n\n\n",
+  "scrollback": "[lost tty]\r\n"
+}

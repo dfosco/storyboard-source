@@ -1,0 +1,47 @@
+{
+  "widgetProps": {
+    "agentId": "codex",
+    "alias": "",
+    "startupCommand": "codex --ask-for-approval never",
+    "width": 1000,
+    "height": 800,
+    "prettyName": "frost-petrel",
+    "role": "member"
+  },
+  "displayName": "frost-petrel",
+  "connectedWidgets": [],
+  "messaging": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_f9d029532e",
+      "role": "member",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboarding--terminal-widget-prompts--hub_f9d029532e.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 28520,
+    "centerY": 2115,
+    "zoom": 40,
+    "topLeftX": 25320,
+    "topLeftY": 544,
+    "width": 6400,
+    "height": 3143
+  },
+  "updatedAt": "2026-05-15T19:32:54.707Z",
+  "widgetId": "agent-847jsj",
+  "canvasId": "storyboarding/terminal-widget-prompts",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null
+}
