@@ -5,7 +5,7 @@
     "startupCommand": "copilot --agent terminal-agent",
     "prettyName": "plum-egret",
     "role": "member",
-    "status": "idle",
+    "status": "done",
     "errorMessage": ""
   },
   "displayName": "Data",
@@ -31,7 +31,7 @@
       "id": "markdown-fyzab2",
       "type": "markdown",
       "props": {
-        "content": "# Data layer ready\n\n`src/prototypes/main.folder/SiloDashboard/`\n\n- silo-dashboard.prototype.json\n- default.flow.json (workspace, user, nav, summary, timeRange)\n- metrics.object.json (cpu[30], memory[30], storage[30])\n\n**Scaffold:** useFlowData('summary'|'nav'|'user'|'workspace'|'timeRange')\n\n**Charts:** useObject('metrics','cpu'|'memory'|'storage') → Array<{t,v}>"
+        "content": "# Data refreshed\n\n**New values, same shape.**\n\n- workspace: `nimbus-forge` / Acropolis\n- user: Idris Okafor (@idris)\n- summary: CPU 42.50% (17/40 vCPUs), Memory 71.25% (285/400 GiB), Storage 33.75% (2.7/8 TiB)\n- timeRange: 22:42 → 23:42\n- metrics: cpu ~380–460, memory 215→285, storage ~2.7 (30 samples, 22:44–23:42)\n\nSame useFlowData/useObject paths — Scaffold/Charts need no changes."
       },
       "position": {
         "x": 5642,
@@ -55,7 +55,7 @@
   "role": "member",
   "hubs": [
     {
-      "hubId": "hub_0fc6fab42c",
+      "hubId": "hub_d5711386dd",
       "role": "member",
       "goal": null,
       "peers": [
@@ -78,22 +78,22 @@
           "type": "agent"
         }
       ],
-      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_0fc6fab42c.jsonl",
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_d5711386dd.jsonl",
       "activeConversationId": null,
       "hasHubToken": false,
       "pendingMessageToken": null
     }
   ],
   "viewport": {
-    "centerX": 3078,
-    "centerY": 2179,
-    "zoom": 130,
-    "topLeftX": 2386,
-    "topLeftY": 1792,
-    "width": 1385,
-    "height": 775
+    "centerX": 2096,
+    "centerY": 7282,
+    "zoom": 112,
+    "topLeftX": 1293,
+    "topLeftY": 6832,
+    "width": 1607,
+    "height": 900
   },
-  "updatedAt": "2026-05-16T22:27:01.980Z",
+  "updatedAt": "2026-05-16T22:35:36.401Z",
   "widgetId": "agent-wve8pt",
   "canvasId": "storyboard-demo",
   "canvasFile": null,
@@ -103,8 +103,13 @@
   "serverUrl": "http://localhost:1236",
   "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
   "deleted": false,
-  "agentStatus": null,
+  "agentStatus": {
+    "status": "done",
+    "message": "Data refreshed with new values",
+    "data": null,
+    "updatedAt": "2026-05-16T22:35:34.075Z"
+  },
   "lastAgentSessionId": "d8fbb60d-99c4-4237-9f11-931751521051",
-  "lastAgentSessionAt": "2026-05-16T22:15:43.137Z",
+  "lastAgentSessionAt": "2026-05-16T22:34:03.508Z",
   "lastAgentId": "copilot"
 }

@@ -10,7 +10,7 @@ import { getFeatures, isResizable, isExpandable, getAnchorState, canAcceptConnec
 import { createPasteContext, resolvePaste } from './widgets/pasteRules.js'
 import { getPasteRules } from '../../core/index.js'
 import { isTerminalResizable, getTerminalDimensions } from '../../core/index.js'
-import { getFlag } from '../../core/index.js'
+import { getFlag, subscribeToStorage } from '../../core/index.js'
 import { getCanvasZoom } from '../../core/index.js'
 import { registerSmoothCorners } from '../../core/utils/smoothCorners.js'
 import { registerHotPoolDevLogs } from './hotPoolDevLogs.js'
@@ -2115,20 +2115,43 @@ export default function CanvasPage({ canvasId: canvasIdProp, name, siblingPages 
   // Controlled by the "canvas-auto-reload" feature flag (default: false = guard ON).
   // When the flag is true, the guard is skipped so canvas pages receive HMR updates.
   // Sends a heartbeat every 3s so the guard auto-expires if the tab closes.
+  // Re-syncs when the flag is toggled at runtime (e.g. from devtools menu).
   useEffect(() => {
     if (!import.meta.hot) return
-    const autoReload = getFlag('canvas-auto-reload')
-    if (autoReload) return
 
-    const msg = { active: true }
-    import.meta.hot.send('storyboard:canvas-hmr-guard', msg)
-    const interval = setInterval(() => {
+    let interval = null
+
+    function start() {
+      if (interval) return
+      const msg = { active: true }
       import.meta.hot.send('storyboard:canvas-hmr-guard', msg)
-    }, 3000)
+      interval = setInterval(() => {
+        import.meta.hot.send('storyboard:canvas-hmr-guard', msg)
+      }, 3000)
+    }
+
+    function stop() {
+      if (interval) {
+        clearInterval(interval)
+        interval = null
+      }
+      import.meta.hot.send('storyboard:canvas-hmr-guard', { active: false })
+    }
+
+    function sync() {
+      if (getFlag('canvas-auto-reload')) stop()
+      else start()
+    }
+
+    sync()
+
+    const unsub = subscribeToStorage((key) => {
+      if (key === 'flag.canvas-auto-reload') sync()
+    })
 
     return () => {
-      clearInterval(interval)
-      import.meta.hot.send('storyboard:canvas-hmr-guard', { active: false })
+      stop()
+      unsub()
     }
   }, [canvasId])
 

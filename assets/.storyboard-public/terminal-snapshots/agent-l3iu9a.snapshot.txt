@@ -1,46 +1,46 @@
 SESSION: agent-l3iu9a | jade-grouse
 CANVAS:  storyboard-demo
 BRANCH:  0.6.0
-TIME:    2026-05-16T22:27:00.248Z
+TIME:    2026-05-16T22:40:01.457Z
 
 ================================================================================
 SCREEN
 ================================================================================
 
-● Find widget type docs/schema (shell)
-  │ grep -rn "prototype-embed\|'prototype'" .agents/skills/canvas/ .agents/architecture/ 2>/dev/null | head -10
-  │ echo "---"
-  │ ls .agents/data/ 2>/dev/null
-  │ echo "---widget types in code---"
-  │ grep -rh "type === ['\"]prototype" packages/storyboard/src/internals/canvas/widgets/ 2>/dev/null | head -5…
-  └ 20 lines...
 
+● Short answer: partially yes, but not entirely.
 
-● Honest answer: I guessed. The file PrototypeEmbed.jsx in packages/storyboard/src/internals/canvas/widgets/ made
-  me assume the widget type string was "prototype-embed". It's actually "prototype" — the component name and the
-  type identifier don't match.
+  What you're reinventing (and shouldn't):
 
-  The real problem: there is no schema for widget types anywhere agents can find.
+   - Tool/API schemas — the canvas HTTP endpoints + CLI flags + widget type/props shapes are exactly what OpenAPI
+  describes. You're hand-rolling AGENTS.md prose where a spec would auto-generate docs, validate inputs, and give
+  agents a discoverable surface.
+   - Tool catalogs for LLMs — MCP exists precisely so agents can ask "what tools/resources are available?" and get
+  typed answers. Your cat .storyboard/terminals/*.json + "read AGENTS.md" pattern is a bespoke version of MCP's
+  tools/list + resources/list.
+   - Discriminated-union schemas for widgets — type: "sticky-note" | "markdown" | "prototype" | ... with per-type
+  props is a textbook JSON Schema oneOf + discriminator. Right now it lives only in renderer code.
 
-   - .agents/skills/canvas/SKILL.md shows examples (sticky-note, markdown, agent) but doesn't enumerate the full
-  set or document each type's props shape.
-   - .agents/data/ only has primer-octicons.json.
-   - The server accepts any string as type without validation, so unknown types create "ghost" widgets that persist
-   in JSONL but render nothing — silent failure.
+  What is not reinventing those, and is actually yours:
 
-  What would fix this (analogous to the octicons list):
+   - Spatial semantics (--near, --direction, collision resolution, gap units) — not in OpenAPI/MCP. This is
+  canvas-domain.
+   - The agent-as-widget-on-canvas model, messaging, hubs, broadcast, terminal buffers — also genuinely novel; MCP
+  has no concept of "agents sit at coordinates and talk through connectors."
+   - The HMR/WebSocket-driven live canvas — orthogonal to API specs.
 
-   1. A generated .agents/data/canvas-widgets.json listing every widget type + required/optional props, derived
-  from the renderer registry in packages/storyboard/src/internals/canvas/widgets/.
-   2. A scripts/gen-widget-types.mjs to regenerate it.
-   3. A note in AGENTS.md / canvas SKILL: "Before creating a widget, verify the type exists in
-  .agents/data/canvas-widgets.json."
-   4. Bonus: server-side validation that rejects unknown types with a clear error instead of silently creating
-  ghost widgets.
+  Pragmatic path:
 
-  Want me to ship that?
+   1. Use MCP for the canvas API. Wrap the existing HTTP endpoints as an MCP server. Agents get typed tool
+  discovery for free; you stop writing prose schemas.
+   2. Add an OpenAPI (or JSON Schema) for widget type + props, generated from the renderer registry. Same file
+  feeds: server-side validation, CLI --help, agent docs, and TypeScript types.
+   3. Keep your domain layer (spatial ops, hubs, messaging, canvas state) — that's the actual product.
 
- ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                                @README.md
+  So: the transport and tool catalog should be MCP/OpenAPI. The canvas semantics are yours to design. The current
+  pain (guessing prototype-embed, silent ghost widgets) is exactly the gap a schema would close.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                                @index.jsx
 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ❯  
 
@@ -52,147 +52,4 @@ SCREEN
 SCROLLBACK (last 60s)
 ================================================================================
 
- ◉ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◎ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ○ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◎ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◉ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ● Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◉ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◎ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ○ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◎ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◉ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ● Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◉ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◎ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ○ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◎ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◉ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ● Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◉ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only)  │ ty","width":1440,"height":900,"zoom":50,"label":"Loopline Signup"}},
-  │ {"op":"delete-widget","widgetId":"prototype-embed-lnzgd1"},…
-  └ 5 lines...
-
-
-● Connect new prototype widget (shell)
-  │ export STORYBOARD_CANVAS_ID=storyboard-demo STORYBOARD_WIDGET_ID=agent-l3iu9a
-  │ npx storyboard canvas batch --canvas "$STORYBOARD_CANVAS_ID" --ops '[
-  │ {"op":"create-connector","startWidgetId":"'"$STORYBOARD_WIDGET_ID"'","startAnchor":"bottom","endWidgetId":"prot  │ otype-fgokz2","endAnchor":"top"}
-  │ ]' 2>&1 | tail -2
-  └ 2 lines...
-
-
-● Fixed — that one was the wrong widget type (prototype-embed doesn't render anything). Replaced it with a proper
-  prototype widget pointing at /StartupSignup?flow=StartupSignup%2Fempty (prototype-fgokz2), 1440×900 at 50% zoom,
-  connected to my terminal. The Loopline signup should render live now.
-
-
-❯ What made you try `prototype-embed`? Are you missing a schema for the widget types to refer?● Find widget type docs/schema (shell)
-  │ grep -rn "prototype-embed\|'prototype'" .agents/skills/canvas/ .agents/architecture/ 2>/dev/null | head -10
-  │ echo "---"
-  │ ls .agents/data/ 2>/dev/null
-  │ echo "---widget types in code---"
-  │ grep -rh "type === ['\"]prototype" packages/storyboard/src/internals/canvas/widgets/ 2>/dev/null | head -5…
-  └ 20 lines...
-
-
-● Honest answer: I guessed. The file PrototypeEmbed.jsx in `packages/storyboard/src● Honest answer: I guessed. The file PrototypeEmbed.jsx in packages/storyboard/src/internals/canvas/widgets/ made m ◎ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only)  │ {"op":"delete-widget","widgetId":"prototype-embed-lnzgd1"},…
-  └ 5 lines...
-● Connect new prototype widget (shell)
-  │ export STORYBOARD_CANVAS_ID=storyboard-demo STORYBOARD_WIDGET_ID=agent-l3iu9a
-  │ npx storyboard canvas batch --canvas "$STORYBOARD_CANVAS_ID" --ops '[
-  │ {"op":"create-connector","startWidgetId":"'"$STORYBOARD_WIDGET_ID"'","startAnchor":"bottom","endWidgetId":"prot  │ otype-fgokz2","endAnchor":"top"}
-  │ ]' 2>&1 | tail -2
-  └ 2 lines...
-● Fixed — that one was the wrong widget type (prototype-embed doesn't render anything). Replaced it with a proper
-  prototype widget pointing at /StartupSignup?flow=StartupSignup%2Fempty (prototype-fgokz2), 1440×900 at 50% zoom,
-  connected to my terminal. The Loopline signup should render live now.
-❯ What made you try `prototype-embed`? Are you missing a schema for the widget types to refer?
-● Find widget type docs/schema (shell)
-  │ grep -rn "prototype-embed\|'prototype'" .agents/skills/canvas/ .agents/architecture/ 2>/dev/null | head -10
-  │ echo "---"
-  │ ls .agents/data/ 2>/dev/null
-  │ echo "---widget types in code---"
-  │ grep -rh "type === ['\"]prototype" packages/storyboard/src/internals/canvas/widgets/ 2>/dev/null | head -5…
-  └ 20 lines...
-● Honest answer: I guessed. The file PrototypeEmbed.jsx in packages/storyboard/src/internals/canvas/widgets/ made
-  me assume the widget type str  me assume the widget type string was `"prototype-embed" ◎ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only)  me assume the widget type string was "prototype-embed". It's actually `"prot  me assume the widget type string was "prototype-embed". It's actually "prototype" — the compon  └ 5 lines...
-● Connect new prototype widget (shell)
-  │ export STORYBOARD_CANVAS_ID=storyboard-demo STORYBOARD_WIDGET_ID=agent-l3iu9a
-  │ npx storyboard canvas batch --canvas "$STORYBOARD_CANVAS_ID" --ops '[
-  │ {"op":"create-connector","startWidgetId":"'"$STORYBOARD_WIDGET_ID"'","startAnchor":"bottom","endWidgetId":"prot  │ otype-fgokz2","endAnchor":"top"}
-  │ ]' 2>&1 | tail -2
-  └ 2 lines...
-● Fixed — that one was the wrong widget type (prototype-embed doesn't render anything). Replaced it with a proper
-  prototype widget pointing at /StartupSignup?flow=StartupSignup%2Fempty (prototype-fgokz2), 1440×900 at 50% zoom,
-  connected to my terminal. The Loopline signup should render live now.
-❯ What made you try `prototype-embed`? Are you missing a schema for the widget types to refer?
-● Find widget type docs/schema (shell)
-  │ grep -rn "prototype-embed\|'prototype'" .agents/skills/canvas/ .agents/architecture/ 2>/dev/null | head -10
-  │ echo "---"
-  │ ls .agents/data/ 2>/dev/null
-  │ echo "---widget types in code---"
-  │ grep -rh "type === ['\"]prototype" packages/storyboard/src/internals/canvas/widgets/ 2>/dev/null | head -5…
-  └ 20 lines...
-● Honest answer: I guessed. The file PrototypeEmbed.jsx in packages/storyboard/src/internals/canvas/widgets/ made
-  me assume the widget type string was "prototype-embed". It's actually "prototype" — the component name and the
-  type identifier d ◉ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-● Connect new prototype widget (shell)
-  │ export STORYBOARD_CANVAS_ID=storyboard-demo STORYBOARD_WIDGET_ID=agent-l3iu9a
-  │ npx storyboard canvas batch --canvas "$STORYBOARD_CANVAS_ID" --ops '[
-  │ {"op":"create-connector","startWidgetId":"'"$STORYBOARD_WIDGET_ID"'","startAnchor":"bottom","endWidgetId":"prot  │ otype-fgokz2","endAnchor":"top"}
-  │ ]' 2>&1 | tail -2
-  └ 2 lines...
-
-
-● Fixed — that one was the wrong widget type (prototype-embed doesn't render anything). Replaced it with a proper
-  prototype widget pointing at /StartupSignup?flow=StartupSignup%2Fempty (prototype-fgokz2), 1440×900 at 50% zoom,
-  connected to my terminal. The Loopline signup should render live now.
-
-
-❯ What made you try `prototype-embed`? Are you missing a schema for the widget types to refer?
-● Find widget type docs/schema (shell)
-  │ grep -rn "prototype-embed\|'prototype'" .agents/skills/canvas/ .agents/architecture/ 2>/dev/null | head -10
-  │ echo "---"
-  │ ls .agents/data/ 2>/dev/null
-  │ echo "---widget types in code---"
-  │ grep -rh "type === ['\"]prototype" packages/storyboard/src/internals/canvas/widgets/ 2>/dev/null | head -5…
-  └ 20 lines...
-
-
-● Honest answer: I guessed. The file PrototypeEmbed.jsx in packages/storyboard/src/internals/canvas/widgets/ made
-  me assume the widget type string was "prototype-embed". It's actually "prototype" — the component name and the
-  type identifier don't match.
-
-  **The real p ● Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only)  The real problem: there is  The real problem: there is no schem  The real problem: there is no schema for w ◉ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only)  The real problem: there is no schema for widget  The real problem: there is no schema for widget types  The real problem: there is no schema for widget types any ◎ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only)  The real problem: there is no schema for widget types anywher  The real problem: there is no schema for widget types anywhere ag  The real problem: there is no schema for widget types anywhere agents ○ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only)  The real problem: there is no schema for widget types anywhere agents can  The real problem: there is no schema for widget types anywhere agents can fin  The real problem: there is no schema for widget types anywhere agents can find. ◎ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only)  │ export STORYBOARD_CANVAS_ID=storyboard-demo STORYBOARD_WIDGET_ID=agent-l3iu9a
-  │ npx storyboard canvas batch --canvas "$STORYBOARD_CANVAS_ID" --ops '[
-  │ {"op":"create-connector","startWidgetId":"'"$STORYBOARD_WIDGET_ID"'","startAnchor":"bottom","endWidgetId":"prot  │ otype-fgokz2","endAnchor":"top"}
-  │ ]' 2>&1 | tail -2
-  └ 2 lines...
-
-
-● Fixed — that one was the wrong widget type (prototype-embed doesn't render anything). Replaced it with a proper
-  prototype widget pointing at /StartupSignup?flow=StartupSignup%2Fempty (prototype-fgokz2), 1440×900 at 50% zoom,
-  connected to my terminal. The Loopline signup should render live now.
-
-
-❯ What made you try `prototype-embed`? Are you missing a schema for the widget types to refer?
-● Find widget type docs/schema (shell)
-  │ grep -rn "prototype-embed\|'prototype'" .agents/skills/canvas/ .agents/architecture/ 2>/dev/null | head -10
-  │ echo "---"
-  │ ls .agents/data/ 2>/dev/null
-  │ echo "---widget types in code---"
-  │ grep -rh "type === ['\"]prototype" packages/storyboard/src/internals/canvas/widgets/ 2>/dev/null | head -5…
-  └ 20 lines...
-
-
-● Honest answer: I guessed. The file PrototypeEmbed.jsx in packages/storyboard/src/internals/canvas/widgets/ made
-  me assume the widget type string was "prototype-embed". It's actually "prototype" — the component name and the
-  type identifier don't match.
-
-  The real problem: there is no schema for widget types anywhere agents can find.   -   - ` ◉ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only)   - `. ● Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◉ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◎ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ○ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◎ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◉ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ● Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◉ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◎ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ○ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◎ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◉ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ● Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◉ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◎ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ○ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◎ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◉ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ● Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◉ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◎ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ○ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◎ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◉ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ● Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) ◎ Thinking esc cancel                                terminal-agent · Claude Opus 4.7 (1M context)(Internal only) / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)● Find widget type docs/schema (shell)
-  │ grep -rn "prototype-embed\|'prototype'" .agents/skills/canvas/ .agents/architecture/ 2>/dev/null | head -10
-  │ echo "---"
-  │ ls .agents/data/ 2>/dev/null
-  │ echo "---widget types in code---"
-  │ grep -rh "type === ['\"]prototype" packages/storyboard/src/internals/canvas/widgets/ 2>/dev/null | head -5…
-  └ 20 lines...
-● Honest answer: I guessed. The file PrototypeEmbed.jsx in packages/storyboard/src/internals/canvas/widgets/ made
-  me assume the widget type string was "prototype-embed". It's actually "prototype" — the component name and the
-  type identifier don't match.  The real problem: there is no schema for widget types anywhere agents can find.   - .agents/skills/canvas/SKILL.md shows examples (sticky-note, markdown, agent) but doesn't enumerate the full
-  set or document each type's props shape.
-   - .agents/data/ only has primer-octicons.json.
-   - The server accepts any string as type without validation, so unknown types create "ghost" widgets that persist   in JSONL but render nothing — silent failure.
-
-  What would fix this (analogous to the octicons list):
-
-   1. A generated .agents/data/canvas-widgets.json listing every widget type + required/optional props, derived
-  from the renderer registry in packages/storyboard/src/internals/canvas/widgets/.
-   2. A scripts/gen-widget-types.mjs to regenerate it.
-   3. A note in AGENTS.md / canvas SKILL: "Before creating a widget, verify the type exists in
-  .agents/data/canvas-widgets.json."
-   4. Bonus: server-side validation that rejects unknown types with a clear error instead of silently creating
-  ghost widgets.  Want me to ship that?
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                            @index.jsx:153 ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                                @index.jsx

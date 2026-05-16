@@ -98,9 +98,9 @@ export default function SiloDashboard() {
   const storageSeries = useObject('metrics', 'storage') ?? []
 
   return (
-    <div className="flex min-h-screen bg-neutral-950 font-mono text-neutral-200">
+    <div className="flex h-screen overflow-hidden bg-neutral-950 font-mono text-neutral-200">
       {/* Sidebar */}
-      <aside className="flex w-56 flex-col gap-5 border-r border-neutral-800 p-4">
+      <aside className="flex w-1/5 flex-col gap-4 border-r border-neutral-800 p-4">
         <div className="flex items-center gap-2.5">
           <div className="grid h-7 w-7 place-items-center rounded-sm bg-emerald-400 text-neutral-950">
             <ZapIcon size={14} />
@@ -117,10 +117,6 @@ export default function SiloDashboard() {
             ⌘K
           </span>
         </button>
-
-        <a className="text-xs text-neutral-400 hover:text-neutral-200" href="#docs">
-          Docs
-        </a>
 
         {(nav?.sections ?? []).map((section, si) => (
           <div key={si} className="flex flex-col gap-1">
@@ -150,8 +146,8 @@ export default function SiloDashboard() {
       </aside>
 
       {/* Main */}
-      <main className="flex flex-1 flex-col">
-        <header className="flex h-12 items-center justify-between border-b border-neutral-800 px-5">
+      <main className="flex flex-1 flex-col w-4/5 overflow-y-auto">
+        <header className="flex h-24 items-center justify-between border-b border-neutral-800 px-5">
           <div className="flex items-center gap-2 text-sm text-neutral-300">
             <span className="text-neutral-500">/</span>
             <span>Utilization</span>
@@ -168,11 +164,13 @@ export default function SiloDashboard() {
           </div>
         </header>
 
-        <div className="flex flex-col gap-6 p-8">
+        <div className="flex flex-col gap-5 px-8 py-6">
           {/* Title */}
-          <div className="flex items-center gap-3">
-            <GraphIcon size={22} className="text-emerald-400" />
-            <h1 className="text-3xl font-semibold text-neutral-100">Utilization</h1>
+          <div className="flex items-center gap-2.5">
+            <GraphIcon size={20} className="text-emerald-400" />
+            <h1 className="m-0 text-2xl font-semibold leading-none text-neutral-100">
+              Utilization
+            </h1>
           </div>
 
           {/* Summary */}
@@ -203,7 +201,7 @@ export default function SiloDashboard() {
           </div>
 
           {/* Charts */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3">
             <ChartPanel title="CPU" data={cpuSeries} unit="Count" />
             <ChartPanel title="Memory" data={memSeries} unit="GiB" />
             <ChartPanel title="Storage" data={storageSeries} unit="TiB" />

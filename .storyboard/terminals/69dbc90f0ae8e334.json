@@ -33,7 +33,7 @@
         "startupCommand": "copilot --agent terminal-agent",
         "prettyName": "storm-sparrow",
         "role": "member",
-        "status": "idle",
+        "status": "done",
         "errorMessage": ""
       },
       "position": {
@@ -50,7 +50,7 @@
         "startupCommand": "copilot --agent terminal-agent",
         "prettyName": "iron-petrel",
         "role": "member",
-        "status": "idle",
+        "status": "done",
         "errorMessage": ""
       },
       "position": {
@@ -67,7 +67,7 @@
         "startupCommand": "copilot --agent terminal-agent",
         "prettyName": "plum-egret",
         "role": "member",
-        "status": "idle",
+        "status": "done",
         "errorMessage": ""
       },
       "position": {
@@ -76,16 +76,17 @@
       }
     },
     {
-      "id": "prototype-embed-6662qx",
-      "type": "prototype-embed",
+      "id": "image-ypp60u",
+      "type": "image",
       "props": {
-        "src": "main.folder/SiloDashboard",
-        "width": 1200,
-        "height": 820
+        "src": "storyboard-demo--2026-05-17--00-33-34-oujl.png",
+        "private": false,
+        "width": 1271.4285714285716,
+        "height": 713
       },
       "position": {
-        "x": 2592,
-        "y": 6960
+        "x": 1013,
+        "y": 5989
       }
     }
   ],
@@ -123,7 +124,7 @@
   "role": "leader",
   "hubs": [
     {
-      "hubId": "hub_0fc6fab42c",
+      "hubId": "hub_d5711386dd",
       "role": "leader",
       "goal": null,
       "peers": [
@@ -146,22 +147,22 @@
           "type": "agent"
         }
       ],
-      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_0fc6fab42c.jsonl",
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_d5711386dd.jsonl",
       "activeConversationId": null,
       "hasHubToken": true,
       "pendingMessageToken": null
     }
   ],
   "viewport": {
-    "centerX": 3078,
-    "centerY": 2179,
-    "zoom": 130,
-    "topLeftX": 2386,
-    "topLeftY": 1792,
-    "width": 1385,
-    "height": 775
+    "centerX": 2096,
+    "centerY": 7282,
+    "zoom": 112,
+    "topLeftX": 1293,
+    "topLeftY": 6832,
+    "width": 1607,
+    "height": 900
   },
-  "updatedAt": "2026-05-16T22:27:01.970Z",
+  "updatedAt": "2026-05-16T22:35:36.399Z",
   "widgetId": "agent-5unog9",
   "canvasId": "storyboard-demo",
   "canvasFile": null,

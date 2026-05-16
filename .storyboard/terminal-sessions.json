@@ -104,7 +104,43 @@
     "createdAt": "2026-05-16T22:17:58.991Z",
     "lastConnectedAt": "2026-05-16T22:18:40.930Z",
     "status": "archived",
-    "expiresAt": 1778970525517,
+    "expiresAt": 1778971425807,
     "generation": 3
+  },
+  {
+    "tmuxName": "sb-63df82fabb56",
+    "name": "plum-egret",
+    "branch": "0.6.0",
+    "canvasId": "storyboard-demo",
+    "widgetId": "agent-wve8pt",
+    "createdAt": "2026-05-16T22:33:28.005Z",
+    "lastConnectedAt": "2026-05-16T22:33:28.005Z",
+    "status": "live",
+    "expiresAt": null,
+    "generation": 1
+  },
+  {
+    "tmuxName": "sb-f02bae855ad5",
+    "name": "storm-sparrow",
+    "branch": "0.6.0",
+    "canvasId": "storyboard-demo",
+    "widgetId": "agent-aiagsz",
+    "createdAt": "2026-05-16T22:33:28.381Z",
+    "lastConnectedAt": "2026-05-16T22:33:28.381Z",
+    "status": "live",
+    "expiresAt": null,
+    "generation": 1
+  },
+  {
+    "tmuxName": "sb-c372e05c7d61",
+    "name": "iron-petrel",
+    "branch": "0.6.0",
+    "canvasId": "storyboard-demo",
+    "widgetId": "agent-hrmw40",
+    "createdAt": "2026-05-16T22:33:32.704Z",
+    "lastConnectedAt": "2026-05-16T22:33:32.704Z",
+    "status": "live",
+    "expiresAt": null,
+    "generation": 1
   }
 ]

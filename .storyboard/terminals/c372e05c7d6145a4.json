@@ -5,7 +5,7 @@
     "startupCommand": "copilot --agent terminal-agent",
     "prettyName": "iron-petrel",
     "role": "member",
-    "status": "idle",
+    "status": "done",
     "errorMessage": ""
   },
   "displayName": "Charts",
@@ -44,7 +44,7 @@
   "role": "member",
   "hubs": [
     {
-      "hubId": "hub_0fc6fab42c",
+      "hubId": "hub_d5711386dd",
       "role": "member",
       "goal": null,
       "peers": [
@@ -67,22 +67,22 @@
           "type": "agent"
         }
       ],
-      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_0fc6fab42c.jsonl",
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_d5711386dd.jsonl",
       "activeConversationId": null,
       "hasHubToken": false,
       "pendingMessageToken": null
     }
   ],
   "viewport": {
-    "centerX": 3078,
-    "centerY": 2179,
-    "zoom": 130,
-    "topLeftX": 2386,
-    "topLeftY": 1792,
-    "width": 1385,
-    "height": 775
+    "centerX": 2096,
+    "centerY": 7282,
+    "zoom": 112,
+    "topLeftX": 1293,
+    "topLeftY": 6832,
+    "width": 1607,
+    "height": 900
   },
-  "updatedAt": "2026-05-16T22:27:01.974Z",
+  "updatedAt": "2026-05-16T22:35:36.401Z",
   "widgetId": "agent-hrmw40",
   "canvasId": "storyboard-demo",
   "canvasFile": null,
@@ -92,8 +92,18 @@
   "serverUrl": "http://localhost:1236",
   "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
   "deleted": false,
-  "agentStatus": null,
+  "agentStatus": {
+    "status": "done",
+    "message": "Charts wired: SiloChart component + CPU/Memory/Storage panels live in SiloDashboard.",
+    "data": null,
+    "updatedAt": "2026-05-16T22:34:37.325Z"
+  },
   "lastAgentSessionId": "7e722d02-fb5b-48bf-a33b-668f52ad3e74",
-  "lastAgentSessionAt": "2026-05-16T22:15:40.003Z",
-  "lastAgentId": "copilot"
+  "lastAgentSessionAt": "2026-05-16T22:34:04.747Z",
+  "lastAgentId": "copilot",
+  "latestOutput": {
+    "content": "Refreshed data (same shape, new values):\n\nworkspace: nimbus-forge / Acropolis\nuser: Idris Okafor (@idris)\nsummary:\n  cpu     42.50%  17/40  vCPUs\n  memory  71.25%  285/400 GiB\n  storage 33.75%  2.7/8  TiB\ntimeRange: Last hour, 22:42 → 23:42\n\nmetrics.object.json regenerated:\n  cpu     ~380–460 count (wobble)\n  memory  215 → 285 GiB (monotonic rise)\n  storage ~2.7 TiB flat (tiny wobble)\nTimestamps: 22:44 → 23:42, 2-min step, 30 samples.\n\nSame useFlowData/useObject paths as before — no changes for Scaffold or Charts.",
+    "summary": "Data refreshed (new values, same shape)",
+    "updatedAt": "2026-05-16T22:35:32.493Z"
+  }
 }
