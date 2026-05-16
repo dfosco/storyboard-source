@@ -50,76 +50,30 @@ function colorizeMascot(text) {
 }
 
 /**
- * Play the mascot animation in the background (non-blocking).
- * Renders to **stderr** to isolate the cursor-up writes from Vite's
- * stdout — otherwise concurrent Vite output races our redraws and the
- * mascot ends up duplicated at the wrong lines.
+ * Render the mascot statically (no animation) at the current cursor position.
+ * Returns true on success, false if config/frames are missing or disabled.
+ *
+ * We render statically because once Vite's "ready in" line lands below the
+ * mascot, any subsequent animation redraw via cursor-up writes to the wrong
+ * lines — animation requires owning the cursor exclusively. The frame files
+ * + config remain editable; only the settle frame is shown.
  */
-function animateMascotAsync({ configPath, framesDir }, urlLine, stopLine) {
+function renderMascot({ configPath, framesDir }, urlLine, stopLine) {
   if (!existsSync(configPath)) return false
   let config
   try { config = JSON.parse(readFileSync(configPath, 'utf8')) } catch { return false }
   if (config.enabled === false) return false
   const frameNames = Array.isArray(config.frames) ? config.frames : []
   if (frameNames.length === 0) return false
-  const frameDurationMs = Number(config.frameDurationMs) || 180
-  const loops = Math.max(1, Number(config.loops) || 1)
   const settleName = config.settleFrame || frameNames[frameNames.length - 1]
 
-  let rawFrames
-  try {
-    rawFrames = frameNames.map((name) => readFileSync(join(framesDir, name), 'utf8'))
-  } catch { return false }
   let settleRaw
-  try { settleRaw = readFileSync(join(framesDir, settleName), 'utf8') } catch { settleRaw = rawFrames[rawFrames.length - 1] }
+  try { settleRaw = readFileSync(join(framesDir, settleName), 'utf8') } catch { return false }
 
-  // Strip trailing blank lines so the frame block is tight.
-  const trim = (s) => s.replace(/\n+$/, '')
-  const normalize = (frames) => {
-    const split = frames.map((f) => trim(f).split('\n'))
-    const maxLines = Math.max(...split.map((l) => l.length))
-    const maxCols = Math.max(...split.flatMap((lines) => lines.map((l) => l.length)))
-    return split.map((lines) => {
-      while (lines.length < maxLines) lines.push('')
-      return lines.map((l) => l.padEnd(maxCols, ' ')).join('\n')
-    })
-  }
-  const normalized = normalize([...rawFrames, settleRaw])
-  const loopFrames = normalized.slice(0, -1)
-  const settleFrame = normalized[normalized.length - 1]
-  const lineCount = normalized[0].split('\n').length
-
-  const composeSettle = (raw) => {
-    const lines = colorizeMascot(raw).split('\n')
-    if (lines[1] != null) lines[1] = lines[1] + '  ' + urlLine
-    if (lines[2] != null) lines[2] = lines[2] + '  ' + stopLine
-    return lines.join('\n')
-  }
-
-  // Print the settle frame immediately so the URL is visible without
-  // waiting for animation to finish.
-  process.stdout.write(composeSettle(settleFrame) + '\n')
-
-  const draw = (frame) => {
-    process.stdout.write(`\x1b[${lineCount}A`)
-    for (const line of frame.split('\n')) {
-      process.stdout.write('\x1b[2K' + line + '\n')
-    }
-  }
-
-  let loopIdx = 0
-  let frameIdx = 0
-  const timer = setInterval(() => {
-    if (loopIdx >= loops) {
-      clearInterval(timer)
-      draw(composeSettle(settleFrame))
-      return
-    }
-    draw(colorizeMascot(loopFrames[frameIdx]))
-    frameIdx++
-    if (frameIdx >= loopFrames.length) { frameIdx = 0; loopIdx++ }
-  }, frameDurationMs)
-  if (typeof timer.unref === 'function') timer.unref()
+  const lines = colorizeMascot(settleRaw.replace(/\n+$/, '')).split('\n')
+  if (lines[1] != null) lines[1] = lines[1] + '  ' + urlLine
+  if (lines[2] != null) lines[2] = lines[2] + '  ' + stopLine
+  process.stdout.write(lines.join('\n') + '\n')
   return true
 }
 
@@ -243,7 +197,7 @@ async function main() {
       if (mascotShown) return
       mascotShown = true
       console.log()
-      const animated = showBuddy && animateMascotAsync(
+      const animated = showBuddy && renderMascot(
         mascotPaths(targetCwd),
         bold(`http://localhost:${port}/storyboard/`),
         dim('Stop with Ctrl+C'),
