@@ -259,17 +259,34 @@ if (isInstalled('code')) {
   }
 }
 
-// 6a. Copilot CLI — install via brew (lands on PATH, unlike the install script
-//     which drops to ~/.local/bin). Separate auth from `gh`: copilot has its
-//     own credential store. Tell the user to run `/login` inside copilot.
+// 6a. Copilot CLI — install via the official script (no homebrew dependency).
+//     curl ships with macOS and all major Linux distros.
+//     Auth is separate from `gh`: copilot has its own credential store.
 {
   let copilotNewlyInstalled = false
   if (isInstalled('copilot')) {
     p.log.success('Copilot CLI installed')
-  } else if (hasBrew) {
-    copilotNewlyInstalled = await brewInstall('copilot-cli', 'Copilot CLI')
   } else {
-    p.log.warning('Install Copilot CLI manually: brew install copilot-cli')
+    const spin = p.spinner()
+    spin.start('Installing Copilot CLI')
+    try {
+      await runAsync('bash', ['-c', 'curl -fsSL https://gh.io/copilot-install | bash'])
+      // Install script drops the binary in ~/.local/bin when run as
+      // non-root. Make sure the current process can find it for the
+      // remainder of setup, and warn the user to add it to their shell rc.
+      const localBin = `${process.env.HOME}/.local/bin`
+      if (!process.env.PATH.includes(localBin)) {
+        process.env.PATH = `${localBin}:${process.env.PATH}`
+      }
+      spin.stop('Copilot CLI installed')
+      copilotNewlyInstalled = true
+      if (!isInstalled('copilot')) {
+        p.log.warning(`copilot not on PATH — add ${yellow('export PATH="$HOME/.local/bin:$PATH"')} to your shell rc`)
+      }
+    } catch {
+      spin.stop('Failed to install Copilot CLI')
+      p.log.warning('Install manually: curl -fsSL https://gh.io/copilot-install | bash')
+    }
   }
   if (copilotNewlyInstalled || isInstalled('copilot')) {
     p.log.info(`  Auth is separate from gh — run ${yellow('copilot')} then ${yellow('/login')}`)
