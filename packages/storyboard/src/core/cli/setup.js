@@ -20,10 +20,16 @@ import { readUserState, writeUserState, getInstalledStoryboardVersion } from './
 const flagSchema = {
   'skip-branch': { type: 'boolean', default: false, description: 'Skip the branch prompt at the end' },
   branch: { type: 'string', description: 'Switch to a branch after setup (non-interactive)' },
+  'no-buddy': { type: 'boolean', default: false, description: 'Omit the storyboard mascot from setup output' },
   'nuke': { type: 'boolean', default: false }, // undocumented: output uninstall command
 }
 
 const { flags } = parseFlags(process.argv.slice(3), flagSchema)
+
+// Suppress the mascot when piped into another storyboard command that
+// renders its own mascot (e.g. `storyboard dev` auto-runs setup first).
+// Respects either the --no-buddy flag or the STORYBOARD_NO_BUDDY env var.
+const showMascot = !flags['no-buddy'] && process.env.STORYBOARD_NO_BUDDY !== '1'
 
 // Hidden: output uninstall command for testing fresh setups
 if (flags.nuke) {
@@ -532,8 +538,10 @@ p.note(
     const { runBranchGuide } = await import('./branch.js')
     await runBranchGuide(flags.branch)
   } else if (flags['skip-branch']) {
-    console.log()
-    console.log(mascot())
+    if (showMascot) {
+      console.log()
+      console.log(mascot())
+    }
     p.outro('')
   } else {
     // Interactive: ask the user
@@ -555,8 +563,10 @@ p.note(
       const { runBranchGuide } = await import('./branch.js')
       await runBranchGuide()
     } else {
-      console.log()
-      console.log(mascot())
+      if (showMascot) {
+        console.log()
+        console.log(mascot())
+      }
       p.log.info(`${dim('Non-interactive:')} ${green('npx sb setup --skip-branch')}`)
       p.outro('')
     }

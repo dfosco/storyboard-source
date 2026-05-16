@@ -121,6 +121,7 @@ async function animateMascot({ configPath, framesDir }, urlLine, stopLine) {
 
 const flagSchema = {
   port: { type: 'number', description: 'Override dev server port' },
+  'no-buddy': { type: 'boolean', default: false, description: 'Omit the storyboard mascot' },
 }
 
 /** Read the fixed port from storyboard.config.json, if any. */
@@ -166,8 +167,14 @@ async function main() {
       await new Promise((resolveSetup) => {
         const setupChild = spawn(
           process.platform === 'win32' ? 'npx.cmd' : 'npx',
-          ['storyboard', 'setup', '--skip-branch'],
-          { cwd: targetCwd, stdio: 'inherit' }
+          ['storyboard', 'setup', '--skip-branch', '--no-buddy'],
+          {
+            cwd: targetCwd,
+            stdio: 'inherit',
+            // Belt-and-suspenders: also pass the env var, since older
+            // installed storyboard versions on disk may not know the flag.
+            env: { ...process.env, STORYBOARD_NO_BUDDY: '1' },
+          }
         )
         setupChild.on('exit', () => resolveSetup())
         setupChild.on('error', () => resolveSetup())
@@ -206,9 +213,10 @@ async function main() {
 
   // Render the storyboard mascot animation just before Vite takes over stdio.
   // The animation settles on a final frame with the dev URL beside it; if
-  // disabled or missing, we fall back to a single line of output.
+  // disabled, missing, or --no-buddy is set, we fall back to a single line.
+  const showBuddy = !flags['no-buddy'] && process.env.STORYBOARD_NO_BUDDY !== '1'
   console.log()
-  const animated = await animateMascot(
+  const animated = showBuddy && await animateMascot(
     mascotPaths(targetCwd),
     bold(`http://localhost:${port}/storyboard/`),
     dim('Stop with Ctrl+C'),
