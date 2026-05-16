@@ -91,8 +91,8 @@
     "widgetId": "agent-wgowun",
     "createdAt": "2026-05-16T14:59:51.442Z",
     "lastConnectedAt": "2026-05-16T14:59:51.442Z",
-    "status": "live",
-    "expiresAt": null,
-    "generation": 1
+    "status": "archived",
+    "expiresAt": 1778943913620,
+    "generation": 2
   }
 ]

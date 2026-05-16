@@ -40,3 +40,4 @@
 {"event":"widget_removed","timestamp":"2026-05-16T14:58:54.376Z","widgetId":"agent-jatjxz"}
 {"event":"widget_added","timestamp":"2026-05-16T14:59:51.351Z","widget":{"id":"agent-wgowun","type":"agent","position":{"x":31353,"y":4846},"props":{"agentId":"copilot","alias":"","startupCommand":"copilot --remote --agent terminal-agent","width":1000,"height":800,"prettyName":"opal-tern"},"bounds":{"width":1000,"height":800,"startX":31353,"startY":4846,"endX":32353,"endY":5646}}}
 {"event":"widget_updated","timestamp":"2026-05-16T14:59:51.437Z","widgetId":"agent-wgowun","props":{"role":"member"}}
+{"event":"widget_removed","timestamp":"2026-05-16T15:00:13.619Z","widgetId":"agent-wgowun"}

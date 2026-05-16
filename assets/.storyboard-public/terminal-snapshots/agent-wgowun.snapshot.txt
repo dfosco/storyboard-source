@@ -1,43 +1,13 @@
 SESSION: agent-wgowun | opal-tern
 CANVAS:  storyboarding/terminal-widget-prompts
 BRANCH:  0.6.0
-TIME:    2026-05-16T15:00:06.558Z
+TIME:    2026-05-16T15:00:10.756Z
 
 ================================================================================
 SCREEN
 ================================================================================
 
-  ╭─╮╭─╮
-  ╰─╯╰─╯  Copilot v1.0.49-1 uses AI.
-  █ ▘▝ █  Check for mistakes.
-   ▔▔▔▔
-
-
-● Tip: /cwd
-  └ Change working directory or show current directory
-
-
-! Failed to load 1 skill. Run /skills for more details.
-
-
-● Selected custom agent: terminal-agent
-
-
-● Remote control connected as dfosco (ctrl+e show QR code)
-  └ https://github.com/copilot/tasks/74749cea-22bc-4d0a-b42f-ed7e8ad31179
-
-
-
-
-
-
- ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
-─────────────────────────────────────────────────────────────────────────────────────────
-❯  
-
-
-─────────────────────────────────────────────────────────────────────────────────────────
- / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+(empty)
 
 ================================================================================
 SCROLLBACK (last 60s)
@@ -336,4 +306,4 @@ Environment loaded:
 
 
 ───────────────────────────────────────────────────────────────────────────────────────── / commands · ? help  terminal-agent · Claude Opus 4.7 (1M context)(Internal only) · low
-  █ ▘▝ █  Check for mistakes. / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+  █ ▘▝ █  Check for mistakes. / commands · ? help        terminal-agent · Claude Opus 4.7 (1M context)(Internal only)[server exited]
