@@ -2,9 +2,9 @@
   "widgetId": "agent-wve8pt",
   "canvasId": "storyboard-demo",
   "prettyName": "plum-egret",
-  "timestamp": "2026-05-16T22:26:48.784Z",
+  "timestamp": "2026-05-16T22:40:00.904Z",
   "cols": 115,
   "rows": 41,
-  "paneContent": "",
-  "scrollback": "[lost tty]\r\n"
+  "paneContent": "● Replace flow + regenerate metrics (shell)\n  │ mv src/prototypes/main.folder/SiloDashboard/default.flow.json.new\n  │ src/prototypes/main.folder/SiloDashboard/default.flow.json\n  │ node -e '\n  │ function pad(n){return String(n).padStart(2,\"0\");}\n  │ function ts(i){…\n  └ 22 lines...\n\n\n● Now update the canvas summary widget, save output, and signal done.\n\n\n● Save output, update widget, signal done (shell)\n  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source \"$ENV_FILE\"\n  │ SUMMARY='Refreshed data (same shape, new values):\n  │\n  │ workspace: nimbus-forge / Acropolis\n  │ user: Idris Okafor (@idris)…\n  └ 33 lines...\n\n\n● Done. Regenerated all data with new values while keeping the exact same schema (so Scaffold/Charts work\n  unchanged):\n\n   - workspace: nimbus-forge / Acropolis\n   - user: Idris Okafor (@idris)\n   - summary: CPU\n    42.50% (17/40 vCPUs), Memory 71.25% (285/400 GiB), Storage 33.75% (2.7/8 TiB)\n   - timeRange: 22:42 → 23:42\n   - metrics: cpu ~380–460, memory 215→285 rising, storage ~2.7 flat (30 samples, 22:44–23:42)\n\n  Canvas markdown widget updated, output saved for peers, agent signaled done.\n\n ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                                @index.jsx\n───────────────────────────────────────────────────────────────────────────────────────────────────────────────────\n❯  \n\n\n───────────────────────────────────────────────────────────────────────────────────────────────────────────────────\n / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)\n\n",
+  "scrollback": "\r ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                            @index.jsx:153\r ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                                @index.jsx"
 }
