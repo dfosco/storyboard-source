@@ -95,46 +95,44 @@ function renderMascot({ configPath, framesDir }, urlLine, stopLine) {
     return lines.join('\n')
   }
 
-  // If not a TTY (CI, piped), skip animation and just print settle.
   if (!process.stdout.isTTY) {
     process.stdout.write(composeSettle() + '\n')
     return true
   }
 
-  // Lay down the first frame normally (no cursor up — there's nothing
-  // above to overwrite yet). Subsequent frames use cursor-up redraws.
-  // This avoids the duplicate-mascot bug from pre-animation settle writes.
-  let firstWritten = false
+  // Reserve vertical space with blank lines so the first cursor-up redraw
+  // has a stable region to overwrite. This avoids the "first frame
+  // duplicated above the rest" bug: previously we drew the first frame
+  // synchronously and then cursor-up'd from a possibly-shifted position
+  // on the next tick. Now every frame (including the first) goes through
+  // the same cursor-up + redraw path.
+  process.stdout.write('\n'.repeat(lineCount))
   const draw = (frame) => {
-    if (firstWritten) {
-      process.stdout.write(`\x1b[${lineCount}A`)
-      for (const line of frame.split('\n')) {
-        process.stdout.write('\x1b[2K' + line + '\n')
-      }
-    } else {
-      firstWritten = true
-      process.stdout.write(frame + '\n')
+    process.stdout.write(`\x1b[${lineCount}A`)
+    for (const line of frame.split('\n')) {
+      process.stdout.write('\x1b[2K' + line + '\n')
     }
   }
 
-  // Kick off the first frame synchronously so the mascot is visible
-  // immediately (with eyes from the first loop frame, not the settle).
-  draw(colorizeMascot(loopFrames[0]))
-
-  let loopIdx = 0
-  let frameIdx = 1 // we already drew frameIdx 0
-  const timer = setInterval(() => {
-    if (loopIdx >= loops) {
-      clearInterval(timer)
-      draw(composeSettle())
-      return
-    }
-    draw(colorizeMascot(loopFrames[frameIdx]))
-    frameIdx++
-    if (frameIdx >= loopFrames.length) { frameIdx = 0; loopIdx++ }
-  }, frameDurationMs)
-  if (typeof timer.unref === 'function') timer.unref()
-  return true
+  return new Promise((resolveAnim) => {
+    let loopIdx = 0
+    let frameIdx = 0
+    // Draw the first frame immediately (tick 0) so there's no blank window.
+    draw(colorizeMascot(loopFrames[0]))
+    frameIdx = 1
+    const timer = setInterval(() => {
+      if (loopIdx >= loops) {
+        clearInterval(timer)
+        draw(composeSettle())
+        resolveAnim(true)
+        return
+      }
+      draw(colorizeMascot(loopFrames[frameIdx]))
+      frameIdx++
+      if (frameIdx >= loopFrames.length) { frameIdx = 0; loopIdx++ }
+    }, frameDurationMs)
+    if (typeof timer.unref === 'function') timer.unref()
+  })
 }
 
 const flagSchema = {
@@ -259,7 +257,15 @@ async function main() {
 
   if (!verbose) {
     let mascotShown = false
-    const renderOnce = () => {
+    let mascotDone = false
+    const queued = [] // [sink, line] pairs queued during animation
+    const flushQueue = () => {
+      while (queued.length) {
+        const [s, l] = queued.shift()
+        s.write(l + '\n')
+      }
+    }
+    const renderOnce = async () => {
       if (mascotShown) return
       mascotShown = true
       console.log()
@@ -272,28 +278,34 @@ async function main() {
         console.log(`  ${bold(`http://localhost:${port}/storyboard/`)}`)
         console.log(`  ${dim('Stop with Ctrl+C')}`)
       }
+      // Wait for animation to settle, then flush anything Vite emitted
+      // during the animation window so it doesn't shift the cursor mid-frame.
+      const isPromise = animated && typeof animated.then === 'function'
+      if (isPromise) await animated
+      mascotDone = true
       console.log()
+      flushQueue()
     }
 
-    // Buffer per-stream so we can split on newlines and look for the
-    // "ready in" signal. Once seen, we render the mascot and then pass
-    // everything through unchanged.
     const makeFilter = (sink) => {
       let buf = ''
       return (chunk) => {
         buf += chunk.toString()
         const lines = buf.split('\n')
-        buf = lines.pop() // keep trailing partial line
+        buf = lines.pop()
         for (const line of lines) {
-          if (mascotShown) {
+          if (mascotDone) {
             sink.write(line + '\n')
             continue
           }
-          // Vite prints "  VITE v7.3.1  ready in 2390 ms" once ready.
-          // Print Vite's ready line FIRST, then render the mascot beneath
-          // it. After this point Vite output goes silent (watch mode idle)
-          // unless code changes, so the mascot is the last thing on screen
-          // and our animation has nothing racing it.
+          if (mascotShown) {
+            // Animation in flight — buffer subsequent Vite output so it
+            // can't shift our cursor mid-redraw.
+            queued.push([sink, line])
+            continue
+          }
+          // Pre-ready: only let the "ready in" line through, then start
+          // the mascot animation.
           if (/ready in \d/.test(line)) {
             sink.write(line + '\n')
             renderOnce()
@@ -304,9 +316,8 @@ async function main() {
     }
     child.stdout?.on('data', makeFilter(process.stdout))
     child.stderr?.on('data', makeFilter(process.stderr))
-    // Safety net: if Vite never prints "ready in" within 8s, render anyway
-    // so the user isn't left staring at a blank screen.
-    setTimeout(renderOnce, 8000).unref?.()
+    // Safety net: if Vite never prints "ready in" within 8s, render anyway.
+    setTimeout(() => { renderOnce() }, 8000).unref?.()
   }
 
   function shutdown() {
