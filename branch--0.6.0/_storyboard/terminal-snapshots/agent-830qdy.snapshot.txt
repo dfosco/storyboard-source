@@ -1,0 +1,245 @@
+SESSION: agent-830qdy | indigo-harrier
+CANVAS:  storyboarding/terminal-widget-prompts
+BRANCH:  0.6.0
+TIME:    2026-05-16T20:07:29.135Z
+
+================================================================================
+SCREEN
+================================================================================
+
+
+░▒▓   …/0.6.0   0.6.0 $✘!?   22:07  
+❯ source "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/agent-830qdy.env.sh"
+/opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/sto
+ryboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" -
+-name "indigo-harrier" --startup "codex --dangerously-bypass-approvals-and-sandbox"
+
+0.6.0 on  0.6.0 [$✘!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/s
+toryboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts"
+ --name "indigo-harrier" --startup "codex --dangerously-bypass-approvals-and-sandbox"
+│
+●  name: indigo-harrier  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+[?996n[>c[>q
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[sb-4b2f050:zsh*                                                            "Daniels-MacBook-Pro.l" 22:07 16-May-26
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[sb-4b2f050:zsh*                                                            "Daniels-MacBook-Pro.l" 22:07 16-May-26
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[sb-4b2f050:zsh*                                                            "Daniels-MacBook-Pro.l" 22:07 16-May-26
+
+░▒▓   …/0.6.0   0.6.0 $✘!?   22:07  
+❯ source "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/agent-830qdy.env.sh"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                   /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "indigo-harrier" --startup "codex --dangerously-bypass-approvals-and-sandbox"
+
+
+0.6.0 on  0.6.0 [$✘!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/sttoryboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts"  --name "indigo-harrier" --startup "codex --dangerously-bypass-approvals-and-sandbox"
+│
+●  name: indigo-harrier  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+░▒▓   …/0.6.0   0.6.0 $✘!?   22:07  
+❯ source "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/agent-830qdy.env.sh"
+/opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "indigo-harrier" --startup "codex --dangerously-bypass-approvals-and-sandbox"
+
+0.6.0 on  0.6.0 [$✘!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "indigo-harrier" --startup "codex --dangerously-bypass-approvals-and-sandbox"
+│
+●  name: indigo-harrier  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+░▒▓   …/0.6.0   0.6.0 $✘!?   22:07  
+❯ source "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/agent-830qdy.env.sh"
+/opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "indigo-harrier" --startup "codex --dangerously-bypass-approvals-and-sandbox"
+
+0.6.0 on  0.6.0 [$✘!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "indigo-harrier" --startup "codex --dangerously-bypass-approvals-and-sandbox"
+│
+●  name: indigo-harrier  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...

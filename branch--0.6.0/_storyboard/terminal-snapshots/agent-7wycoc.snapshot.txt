@@ -1,0 +1,521 @@
+SESSION: agent-7wycoc | peach-jay
+CANVAS:  storyboarding/terminal-widget-prompts
+BRANCH:  0.6.0
+TIME:    2026-05-16T19:24:56.278Z
+
+================================================================================
+SCREEN
+================================================================================
+
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● > Start a new agent session
+│  ○ > Start a new terminal session
+│  ○ > Browse existing sessions
+└
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+[?996n[>c[>q
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[sb-6a0d3b0:zsh*                                  "Daniels-MacBook-Pro.l" 21:24 16-May-26
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[sb-6a0d3b0:zsh*                                  "Daniels-MacBook-Pro.l" 21:24 16-May-26
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                         
+
+░▒▓   …/0.6.0   0.6.0 $!?   21:24  
+❯ source "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/agent-7wycoc.env.sh"
+                                                                                         
+
+0.6.0 on  0.6.0 [$!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6..0" --canvas "storyboarding/terminal-widget-prompts" --name "peach-jay" --startup "codex --full-auto"
+│
+●  name: peach-jay  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+░▒▓   …/0.6.0   0.6.0 $!?   21:24  
+❯ source "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/agent-7wycoc.env.sh"
+
+0.6.0 on  0.6.0 [$!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "peach-jay" --startup "codex --full-auto"
+│
+●  name: peach-jay  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+░▒▓   …/0.6.0   0.6.0 $!?   21:24  
+❯ source "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/agent-7wycoc.env.sh"
+
+0.6.0 on  0.6.0 [$!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "peach-jay" --startup "codex --full-auto"
+│
+●  name: peach-jay  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+error: unexpected argument '--full-auto' found  tip: to pass '--full-auto' as a value, use '-- --full-auto'Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]For more information, try '--help'.
+
+░▒▓   …/0.6.0   0.6.0 $!?   21:24  
+❯ source "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/agent-7wycoc.env.sh"
+
+0.6.0 on  0.6.0 [$!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "peach-jay" --startup "codex --full-auto"
+│
+●  name: peach-jay  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+
+
+
+
+
+
+
+
+
+░▒▓   …/0.6.0   0.6.0 $!?   21:24  
+❯ source "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/agent-7wycoc.env.sh"
+
+0.6.0 on  0.6.0 [$!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "peach-jay" --startup "codex --full-auto"
+│
+●  name: peach-jay  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+
+
+
+
+
+
+
+
+│
+▲  Codex CLI exited unexpectedly (exit code 2). Retrying...
+
+░▒▓   …/0.6.0   0.6.0 $!?   21:24  
+❯ source "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/agent-7wycoc.env.sh"
+
+0.6.0 on  0.6.0 [$!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "peach-jay" --startup "codex --full-auto"
+│
+●  name: peach-jay  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+│
+▲  Codex CLI exited unexpectedly (exit code 2). Retrying...
+
+
+
+
+
+
+│
+●  name: peach-jay  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+░▒▓   …/0.6.0   0.6.0 $!?   21:24  
+❯ source "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/agent-7wycoc.env.sh"
+
+0.6.0 on  0.6.0 [$!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "peach-jay" --startup "codex --full-auto"
+│
+●  name: peach-jay  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+│
+▲  Codex CLI exited unexpectedly (exit code 2). Retrying...
+│
+●  name: peach-jay  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+
+
+░▒▓   …/0.6.0   0.6.0 $!?   21:24  
+❯ source "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/agent-7wycoc.env.sh"
+
+0.6.0 on  0.6.0 [$!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "peach-jay" --startup "codex --full-auto"
+│
+●  name: peach-jay  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+│
+▲  Codex CLI exited unexpectedly (exit code 2). Retrying...
+│
+●  name: peach-jay  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+
+error: unexpected argument '--full-auto' found  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "peach-jay" --startup "codex --full-auto"
+│
+●  name: peach-jay  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+│
+▲  Codex CLI exited unexpectedly (exit code 2). Retrying...
+│
+●  name: peach-jay  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "peach-jay" --startup "codex --full-auto"
+│
+●  name: peach-jay  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+│
+▲  Codex CLI exited unexpectedly (exit code 2). Retrying...
+│
+●  name: peach-jay  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+│
+▲
+  Codex CLI failed to start (exit code 2).
+│
+●
+  Falling back to the welcome menu. You can retry from there.
+●  name: peach-jay  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+│
+▲  Codex CLI exited unexpectedly (exit code 2). Retrying...
+│
+●  name: peach-jay  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+│
+▲  Codex CLI failed to start (exit code 2).
+│
+●  Falling back to the welcome menu. You can retry from there.
+●  name: peach-jay  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+│
+▲  Codex CLI exited unexpectedly (exit code 2). Retrying...
+│
+●  name: peach-jay  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+│
+▲  Codex CLI failed to start (exit code 2).
+│
+●  Falling back to the welcome menu. You can retry from there.
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● > Start a new agent session
+│  ○ > Start a new terminal session
+│  ○ > Browse existing sessions
+└
