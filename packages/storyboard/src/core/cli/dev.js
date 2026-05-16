@@ -50,30 +50,10 @@ function colorizeMascot(text) {
 }
 
 /**
- * Pad every frame to the same line count + same line width so cursor-up
- * redraws fully overwrite the previous frame.
- */
-function normalizeFrames(frames) {
-  const split = frames.map((f) => f.replace(/\n+$/, '').split('\n'))
-  const maxLines = Math.max(...split.map((l) => l.length))
-  const maxCols = Math.max(...split.flatMap((lines) => lines.map((l) => l.length)))
-  return split.map((lines) => {
-    while (lines.length < maxLines) lines.push('')
-    return lines.map((l) => l.padEnd(maxCols, ' ')).join('\n')
-  })
-}
-
-/**
  * Play the mascot animation in the background (non-blocking).
- * Renders the settle frame + URL immediately so the dev URL is visible
- * right away, then plays the loop frames in-place via setInterval and
- * settles back on the final frame.
- *
- * Caveat: uses cursor-up writes that assume the mascot region hasn't
- * scrolled. If Vite output races us, the animation will draw at the
- * wrong line — that's the cost of being truly non-blocking. The total
- * animation runs for `loops * frames.length * frameDurationMs` ms which
- * should fit comfortably inside Vite's cold-start window.
+ * Renders to **stderr** to isolate the cursor-up writes from Vite's
+ * stdout — otherwise concurrent Vite output races our redraws and the
+ * mascot ends up duplicated at the wrong lines.
  */
 function animateMascotAsync({ configPath, framesDir }, urlLine, stopLine) {
   if (!existsSync(configPath)) return false
@@ -93,12 +73,22 @@ function animateMascotAsync({ configPath, framesDir }, urlLine, stopLine) {
   let settleRaw
   try { settleRaw = readFileSync(join(framesDir, settleName), 'utf8') } catch { settleRaw = rawFrames[rawFrames.length - 1] }
 
-  const normalized = normalizeFrames([...rawFrames, settleRaw])
+  // Strip trailing blank lines so the frame block is tight.
+  const trim = (s) => s.replace(/\n+$/, '')
+  const normalize = (frames) => {
+    const split = frames.map((f) => trim(f).split('\n'))
+    const maxLines = Math.max(...split.map((l) => l.length))
+    const maxCols = Math.max(...split.flatMap((lines) => lines.map((l) => l.length)))
+    return split.map((lines) => {
+      while (lines.length < maxLines) lines.push('')
+      return lines.map((l) => l.padEnd(maxCols, ' ')).join('\n')
+    })
+  }
+  const normalized = normalize([...rawFrames, settleRaw])
   const loopFrames = normalized.slice(0, -1)
   const settleFrame = normalized[normalized.length - 1]
   const lineCount = normalized[0].split('\n').length
 
-  // Compose the settle frame with URL pinned to the right of the eye/dot rows.
   const composeSettle = (raw) => {
     const lines = colorizeMascot(raw).split('\n')
     if (lines[1] != null) lines[1] = lines[1] + '  ' + urlLine
@@ -106,14 +96,14 @@ function animateMascotAsync({ configPath, framesDir }, urlLine, stopLine) {
     return lines.join('\n')
   }
 
-  // Print settled mascot immediately so the URL is visible without delay.
-  process.stdout.write(composeSettle(settleFrame) + '\n')
+  // Print the settle frame immediately on stderr so the URL is visible
+  // without waiting for animation to finish.
+  process.stderr.write(composeSettle(settleFrame) + '\n')
 
-  // In-place redraw helper: cursor up to top of mascot region, rewrite lines.
   const draw = (frame) => {
-    process.stdout.write(`\x1b[${lineCount}A`)
+    process.stderr.write(`\x1b[${lineCount}A`)
     for (const line of frame.split('\n')) {
-      process.stdout.write('\x1b[2K' + line + '\n')
+      process.stderr.write('\x1b[2K' + line + '\n')
     }
   }
 
@@ -122,7 +112,6 @@ function animateMascotAsync({ configPath, framesDir }, urlLine, stopLine) {
   const timer = setInterval(() => {
     if (loopIdx >= loops) {
       clearInterval(timer)
-      // Settle back on the final composed frame (with URL).
       draw(composeSettle(settleFrame))
       return
     }
@@ -130,8 +119,6 @@ function animateMascotAsync({ configPath, framesDir }, urlLine, stopLine) {
     frameIdx++
     if (frameIdx >= loopFrames.length) { frameIdx = 0; loopIdx++ }
   }, frameDurationMs)
-  // Don't keep the event loop alive just for the animation — Vite owns
-  // the process lifetime.
   if (typeof timer.unref === 'function') timer.unref()
   return true
 }
