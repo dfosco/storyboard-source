@@ -1,0 +1,41 @@
+{
+  "widgetProps": {
+    "prettyName": "copper-owl"
+  },
+  "displayName": "copper-owl",
+  "connectedWidgets": [],
+  "messaging": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_79e7f30eba",
+      "role": "member",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboarding--terminal-widget-prompts--hub_79e7f30eba.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 31757,
+    "centerY": 5275,
+    "zoom": 81,
+    "topLeftX": 30177,
+    "topLeftY": 4478,
+    "width": 3160,
+    "height": 1594
+  },
+  "updatedAt": "2026-05-16T19:19:47.714Z",
+  "widgetId": "agent-5rojap",
+  "canvasId": "storyboarding/terminal-widget-prompts",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null
+}

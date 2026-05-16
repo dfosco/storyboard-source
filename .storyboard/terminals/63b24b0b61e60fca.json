@@ -1,0 +1,41 @@
+{
+  "widgetProps": {
+    "prettyName": "maple-dove"
+  },
+  "displayName": "maple-dove",
+  "connectedWidgets": [],
+  "messaging": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_0f55fd85e8",
+      "role": "member",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboarding--terminal-widget-prompts--hub_0f55fd85e8.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 1280,
+    "centerY": 646,
+    "zoom": 100,
+    "topLeftX": 0,
+    "topLeftY": 0,
+    "width": 2560,
+    "height": 1291
+  },
+  "updatedAt": "2026-05-16T19:20:08.525Z",
+  "widgetId": "agent-u6xv58",
+  "canvasId": "storyboarding/terminal-widget-prompts",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null
+}

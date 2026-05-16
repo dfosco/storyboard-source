@@ -1,0 +1,44 @@
+{
+  "widgetProps": {
+    "prettyName": "rose-gannet"
+  },
+  "displayName": "rose-gannet",
+  "connectedWidgets": [],
+  "messaging": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_51ff18ac46",
+      "role": "member",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboarding--terminal-widget-prompts--hub_51ff18ac46.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 31757,
+    "centerY": 4586,
+    "zoom": 81,
+    "topLeftX": 30177,
+    "topLeftY": 3790,
+    "width": 3160,
+    "height": 1594
+  },
+  "updatedAt": "2026-05-16T19:21:55.356Z",
+  "widgetId": "agent-snyfka",
+  "canvasId": "storyboarding/terminal-widget-prompts",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null,
+  "lastAgentSessionId": "a3d05369-3822-47b3-8d63-80ce8c7b58a4",
+  "lastAgentSessionAt": "2026-05-16T19:19:01.302Z",
+  "lastAgentId": "copilot"
+}

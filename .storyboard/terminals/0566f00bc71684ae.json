@@ -1,0 +1,32 @@
+{
+  "widgetId": "agent-e77h2p",
+  "displayName": "rust-raven",
+  "canvasId": "examples/new",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "widgetProps": {
+    "prettyName": "rust-raven"
+  },
+  "connectedWidgets": [],
+  "agentStatus": null,
+  "role": null,
+  "hubs": [],
+  "viewport": {
+    "centerX": 3079,
+    "centerY": 1218,
+    "zoom": 53,
+    "topLeftX": 664,
+    "topLeftY": 0,
+    "width": 4830,
+    "height": 2436
+  },
+  "updatedAt": "2026-05-16T19:18:20.419Z",
+  "lastAgentSessionId": "0212ce6e-65b2-49a3-bdad-b95bad47aae8",
+  "lastAgentSessionAt": "2026-05-16T19:18:20.419Z",
+  "lastAgentId": "copilot"
+}

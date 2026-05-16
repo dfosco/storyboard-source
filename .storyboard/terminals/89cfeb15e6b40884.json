@@ -10,13 +10,7 @@
   "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
   "deleted": false,
   "widgetProps": {
-    "agentId": "copilot",
-    "alias": "",
-    "startupCommand": "copilot --remote --agent terminal-agent",
-    "width": 1000,
-    "height": 800,
-    "prettyName": "silver-thrush",
-    "role": "member"
+    "prettyName": "silver-thrush"
   },
   "connectedWidgets": [],
   "agentStatus": null,
@@ -33,8 +27,16 @@
       "pendingMessageToken": null
     }
   ],
-  "viewport": null,
-  "updatedAt": "2026-05-16T19:16:03.025Z",
+  "viewport": {
+    "centerX": 32256,
+    "centerY": 5275,
+    "zoom": 81,
+    "topLeftX": 30675,
+    "topLeftY": 4478,
+    "width": 3160,
+    "height": 1594
+  },
+  "updatedAt": "2026-05-16T19:18:46.202Z",
   "messaging": null,
   "lastAgentSessionId": "734f245a-4f9e-40d9-a171-833523026f13",
   "lastAgentSessionAt": "2026-05-16T19:16:03.025Z",

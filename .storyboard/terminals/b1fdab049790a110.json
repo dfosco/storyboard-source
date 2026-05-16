@@ -1,0 +1,32 @@
+{
+  "widgetId": "agent-ab47on",
+  "displayName": "rust-dipper",
+  "canvasId": "examples/new",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "widgetProps": {
+    "prettyName": "rust-dipper"
+  },
+  "connectedWidgets": [],
+  "agentStatus": null,
+  "role": null,
+  "hubs": [],
+  "viewport": {
+    "centerX": 3079,
+    "centerY": 1218,
+    "zoom": 53,
+    "topLeftX": 664,
+    "topLeftY": 0,
+    "width": 4830,
+    "height": 2436
+  },
+  "updatedAt": "2026-05-16T19:18:18.472Z",
+  "lastAgentSessionId": "4167b3c2-cb38-4514-b513-333ee2509d6a",
+  "lastAgentSessionAt": "2026-05-16T19:18:18.472Z",
+  "lastAgentId": "claude"
+}
