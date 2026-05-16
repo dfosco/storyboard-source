@@ -158,6 +158,28 @@ function readConfiguredPort(cwd) {
   }
 }
 
+/**
+ * Resolve the Vite base path for URL display. Priority:
+ *   1. `VITE_BASE_PATH` env var (matches vite.config.js convention)
+ *   2. `basePath` key in storyboard.config.json (if user wants to override)
+ *   3. `/` (Vite default)
+ *
+ * Trailing slash is normalized so the rendered URL never double-slashes.
+ */
+function resolveBasePath(cwd) {
+  let base = process.env.VITE_BASE_PATH || null
+  if (!base) {
+    try {
+      const cfg = JSON.parse(readFileSync(resolve(cwd, 'storyboard.config.json'), 'utf8'))
+      if (typeof cfg.basePath === 'string' && cfg.basePath) base = cfg.basePath
+    } catch { /* empty */ }
+  }
+  base = base || '/'
+  if (!base.startsWith('/')) base = '/' + base
+  if (!base.endsWith('/')) base = base + '/'
+  return base
+}
+
 async function main() {
   const { flags } = parseFlags(process.argv.slice(3), flagSchema)
   const worktreeName = detectWorktreeName()
@@ -170,6 +192,8 @@ async function main() {
   const configuredPort = readConfiguredPort(targetCwd)
   const strictPort = flags.port == null && configuredPort != null
   const port = flags.port || configuredPort || getPort(worktreeName)
+  const basePath = resolveBasePath(targetCwd)
+  const devUrl = `http://localhost:${port}${basePath}`
 
   const verbose = flags.verbose
 
@@ -280,11 +304,11 @@ async function main() {
       console.log()
       const animated = showBuddy && renderMascot(
         mascotPaths(targetCwd),
-        bold(`http://localhost:${port}/storyboard/`),
+        bold(devUrl),
         dim('Stop with Ctrl+C'),
       )
       if (!animated) {
-        console.log(`  ${bold(`http://localhost:${port}/storyboard/`)}`)
+        console.log(`  ${bold(devUrl)}`)
         console.log(`  ${dim('Stop with Ctrl+C')}`)
       }
       // Wait for animation to settle, then flush anything Vite emitted
