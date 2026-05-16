@@ -55,10 +55,10 @@
     "load_balancer_cooldown_mins": 10,
     "pools": {
       "terminal": { "pool_size": 1 },
-      "copilot": { "pool_size": 1, "webgl_ready_slots": 1 },
-      "claude": { "pool_size": 1, "webgl_ready_slots": 1 },
+      "copilot": { "pool_size": 1 },
+      "claude": { "pool_size": 1 },
       "codex": { "pool_size": 0 },
-      "prompt": { "pool_size": 1, "webgl_ready_slots": 1 }
+      "prompt": { "pool_size": 1 }
     }
   }
 }
