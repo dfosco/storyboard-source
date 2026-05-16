@@ -1,2 +1,2 @@
 #!/usr/bin/env sh
-exec start codex --full-auto "$@"
+exec start codex --dangerously-bypass-approvals-and-sandbox "$@"

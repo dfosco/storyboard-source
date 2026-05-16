@@ -1,6 +1,12 @@
 {
   "widgetProps": {
-    "prettyName": "ivory-harrier"
+    "agentId": "claude",
+    "alias": "",
+    "startupCommand": "claude --agent terminal-agent --dangerously-skip-permissions",
+    "width": 1000,
+    "height": 800,
+    "prettyName": "ivory-harrier",
+    "role": "member"
   },
   "displayName": "ivory-harrier",
   "connectedWidgets": [],
@@ -19,15 +25,15 @@
     }
   ],
   "viewport": {
-    "centerX": 31757,
-    "centerY": 4586,
-    "zoom": 81,
-    "topLeftX": 30177,
-    "topLeftY": 3790,
-    "width": 3160,
-    "height": 1594
+    "centerX": 32862,
+    "centerY": 5536,
+    "zoom": 55,
+    "topLeftX": 30535,
+    "topLeftY": 4363,
+    "width": 4655,
+    "height": 2347
   },
-  "updatedAt": "2026-05-16T19:21:55.396Z",
+  "updatedAt": "2026-05-16T20:07:29.368Z",
   "widgetId": "agent-z5qh6e",
   "canvasId": "storyboarding/terminal-widget-prompts",
   "canvasFile": null,
@@ -39,6 +45,6 @@
   "deleted": false,
   "agentStatus": null,
   "lastAgentSessionId": "70b64147-c79d-4452-aa2c-c1df7b699bf7",
-  "lastAgentSessionAt": "2026-05-16T19:19:05.682Z",
+  "lastAgentSessionAt": "2026-05-16T20:07:27.068Z",
   "lastAgentId": "claude"
 }

@@ -1,0 +1,41 @@
+{
+  "widgetProps": {
+    "prettyName": "honey-dipper"
+  },
+  "displayName": "honey-dipper",
+  "connectedWidgets": [],
+  "messaging": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_85c57f35c4",
+      "role": "member",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboarding--terminal-widget-prompts--hub_85c57f35c4.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 32862,
+    "centerY": 5536,
+    "zoom": 55,
+    "topLeftX": 30535,
+    "topLeftY": 4363,
+    "width": 4655,
+    "height": 2347
+  },
+  "updatedAt": "2026-05-16T20:07:32.568Z",
+  "widgetId": "agent-hjrf9j",
+  "canvasId": "storyboarding/terminal-widget-prompts",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null
+}

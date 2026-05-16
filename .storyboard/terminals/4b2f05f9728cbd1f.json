@@ -1,0 +1,47 @@
+{
+  "widgetProps": {
+    "agentId": "codex",
+    "alias": "",
+    "startupCommand": "codex --full-auto",
+    "width": 1000,
+    "height": 800,
+    "prettyName": "indigo-harrier",
+    "role": "member"
+  },
+  "displayName": "indigo-harrier",
+  "connectedWidgets": [],
+  "messaging": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_b3305acd3e",
+      "role": "member",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboarding--terminal-widget-prompts--hub_b3305acd3e.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 32862,
+    "centerY": 5536,
+    "zoom": 55,
+    "topLeftX": 30535,
+    "topLeftY": 4363,
+    "width": 4655,
+    "height": 2347
+  },
+  "updatedAt": "2026-05-16T20:07:29.394Z",
+  "widgetId": "agent-830qdy",
+  "canvasId": "storyboarding/terminal-widget-prompts",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null
+}

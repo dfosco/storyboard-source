@@ -1,2 +1,2 @@
 #!/usr/bin/env sh
-exec start copilot --remote --agent terminal-agent "$@"
+exec start copilot --agent terminal-agent "$@"

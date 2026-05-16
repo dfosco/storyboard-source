@@ -1,0 +1,10 @@
+{
+  "widgetId": "agent-p0kz37",
+  "canvasId": "storyboard-demo",
+  "prettyName": "amber-tanager",
+  "timestamp": "2026-05-16T19:33:55.352Z",
+  "cols": 115,
+  "rows": 41,
+  "paneContent": "●  Falling back to the welcome menu. You can retry from there.\n┌  storyboard terminal\n│\n◇  How would you like to start?\n│  > Browse existing sessions\n│\n●  name: amber-tanager  branch: 0.6.0  canvas: storyboard-demo\n│\n◆  Browse sessions\n│  ● > Copilot CLI sessions\n│  ○ > Claude Code sessions\n│  ○ > Codex CLI sessions\n│  ○ > Terminal sessions\n└\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+  "scrollback": ""
+}

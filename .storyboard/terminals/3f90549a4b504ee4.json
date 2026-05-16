@@ -1,0 +1,41 @@
+{
+  "widgetProps": {
+    "prettyName": "cyan-finch"
+  },
+  "displayName": "cyan-finch",
+  "connectedWidgets": [],
+  "messaging": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_48691a5faf",
+      "role": "member",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboarding--terminal-widget-prompts--hub_48691a5faf.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 34208,
+    "centerY": 5161,
+    "zoom": 110,
+    "topLeftX": 33044,
+    "topLeftY": 4575,
+    "width": 2327,
+    "height": 1174
+  },
+  "updatedAt": "2026-05-16T19:28:18.539Z",
+  "widgetId": "agent-prqoe6",
+  "canvasId": "storyboarding/terminal-widget-prompts",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null
+}

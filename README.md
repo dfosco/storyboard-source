@@ -9,13 +9,11 @@ Storyboard is fully open-source, and can be deployed by your team with any stati
 
 ### What can I do with it?
 
-Create react prototypes and make them discoverable on the workspace
+Create components and prototypes on a canvas
 
-Create components and prototypes and document them on a canvas
+Run agents and work across windows with the canvas as context
 
-Run local agents and work across multiple sessions with the canvas in context
-
-Create hubs of agents that communicate and collaborate autonomously
+Connect agents to communicate and collaborate autonomously
 
 Add GitHub issues, Figma files and other embeds next to your work 
 

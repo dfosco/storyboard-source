@@ -1,0 +1,41 @@
+{
+  "widgetProps": {
+    "prettyName": "ember-tern"
+  },
+  "displayName": "ember-tern",
+  "connectedWidgets": [],
+  "messaging": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_424ae5544e",
+      "role": "member",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboarding--terminal-widget-prompts--hub_424ae5544e.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 2735,
+    "centerY": 647,
+    "zoom": 100,
+    "topLeftX": 1455,
+    "topLeftY": 1,
+    "width": 2560,
+    "height": 1291
+  },
+  "updatedAt": "2026-05-16T19:54:08.647Z",
+  "widgetId": "agent-q72ipv",
+  "canvasId": "storyboarding/terminal-widget-prompts",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null
+}

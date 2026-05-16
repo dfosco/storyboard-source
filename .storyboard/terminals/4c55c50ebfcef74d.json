@@ -19,15 +19,15 @@
     }
   ],
   "viewport": {
-    "centerX": 31757,
-    "centerY": 4586,
-    "zoom": 81,
-    "topLeftX": 30177,
-    "topLeftY": 3790,
-    "width": 3160,
-    "height": 1594
+    "centerX": 32862,
+    "centerY": 5536,
+    "zoom": 55,
+    "topLeftX": 30535,
+    "topLeftY": 4363,
+    "width": 4655,
+    "height": 2347
   },
-  "updatedAt": "2026-05-16T19:21:55.356Z",
+  "updatedAt": "2026-05-16T20:07:26.088Z",
   "widgetId": "agent-snyfka",
   "canvasId": "storyboarding/terminal-widget-prompts",
   "canvasFile": null,

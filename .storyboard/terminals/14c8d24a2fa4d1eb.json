@@ -1,0 +1,41 @@
+{
+  "widgetProps": {
+    "prettyName": "ember-egret"
+  },
+  "displayName": "ember-egret",
+  "connectedWidgets": [],
+  "messaging": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_92ed05e2c6",
+      "role": "member",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_92ed05e2c6.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 2735,
+    "centerY": 647,
+    "zoom": 100,
+    "topLeftX": 1455,
+    "topLeftY": 1,
+    "width": 2560,
+    "height": 1291
+  },
+  "updatedAt": "2026-05-16T19:53:14.839Z",
+  "widgetId": "agent-tnb6py",
+  "canvasId": "storyboard-demo",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null
+}

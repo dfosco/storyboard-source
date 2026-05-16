@@ -1,0 +1,23 @@
+SESSION: agent-p0kz37 | amber-tanager
+CANVAS:  storyboard-demo
+BRANCH:  0.6.0
+TIME:    2026-05-16T19:33:55.352Z
+
+================================================================================
+SCREEN
+================================================================================
+
+●  Falling back to the welcome menu. You can retry from there.
+┌  storyboard terminal
+│
+◇  How would you like to start?
+│  > Browse existing sessions
+│
+●  name: amber-tanager  branch: 0.6.0  canvas: storyboard-demo
+│
+◆  Browse sessions
+│  ● > Copilot CLI sessions
+│  ○ > Claude Code sessions
+│  ○ > Codex CLI sessions
+│  ○ > Terminal sessions
+└
