@@ -16,9 +16,10 @@
       "label": "Copilot CLI",
       "default": true,
       "icon": "primer/copilot",
-      "startupCommand": "copilot --agent terminal-agent --allow-all",
-      "resumeCommand": "copilot --resume={id} --agent terminal-agent --allow-all",
+      "startupCommand": "copilot --agent terminal-agent",
+      "resumeCommand": "copilot --resume={id} --agent terminal-agent",
       "sessionIdEnv": "COPILOT_AGENT_SESSION_ID",
+      "postStartup": "/allow-all on",
       "resizable": true
     },
     "claude": {
