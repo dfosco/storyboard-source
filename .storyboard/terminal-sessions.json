@@ -7,8 +7,8 @@
     "widgetId": "agent-if4f9l",
     "createdAt": "2026-05-16T20:44:10.901Z",
     "lastConnectedAt": "2026-05-16T22:02:59.701Z",
-    "status": "live",
-    "expiresAt": null,
+    "status": "background",
+    "expiresAt": 1778970852199,
     "generation": 63
   },
   {
@@ -19,8 +19,8 @@
     "widgetId": "agent-q6b7m7",
     "createdAt": "2026-05-16T20:44:10.985Z",
     "lastConnectedAt": "2026-05-16T22:02:59.750Z",
-    "status": "live",
-    "expiresAt": null,
+    "status": "background",
+    "expiresAt": 1778970852175,
     "generation": 63
   },
   {
@@ -31,8 +31,8 @@
     "widgetId": "agent-aysx3y",
     "createdAt": "2026-05-16T20:44:11.036Z",
     "lastConnectedAt": "2026-05-16T22:02:59.776Z",
-    "status": "live",
-    "expiresAt": null,
+    "status": "background",
+    "expiresAt": 1778970852155,
     "generation": 63
   }
 ]
