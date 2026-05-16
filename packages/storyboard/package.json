@@ -18,11 +18,13 @@
     "src",
     "dist",
     "scaffold",
+    "mascot",
     "toolbar.config.json",
     "widgets.config.json",
     "paste.config.json",
     "commandpalette.config.json",
-    "terminal.config.json"
+    "terminal.config.json",
+    "mascot.config.json"
   ],
   "scripts": {
     "build:css": "tailwindcss -i src/core/styles/tailwind.css -o dist/tailwind.css --minify",

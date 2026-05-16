@@ -15,7 +15,7 @@
 
 import * as p from '@clack/prompts'
 import { spawn } from 'node:child_process'
-import { resolve } from 'node:path'
+import { resolve, join } from 'node:path'
 import { readFileSync, existsSync } from 'node:fs'
 import { detectWorktreeName, getPort, releasePort } from '../worktree/port.js'
 import { startRenameWatcher } from '../rename-watcher/watcher.js'
@@ -24,17 +24,99 @@ import { parseFlags } from './flags.js'
 import { setupNeeded, writeUserState, getInstalledStoryboardVersion } from './userState.js'
 import { dim, magenta, bold } from './intro.js'
 
-/** Render the storyboard mascot with two info lines beside it. */
-function mascotBanner(line1, line2) {
-  const d = dim('·')
-  const f = magenta
-  const b = dim
-  return [
-    `        ${b('╭─────────────────╮')}`,
-    `        ${b('│')}  ${d}  ${f('◠')}  ${f('◡')}  ${f('◠')}  ${d}  ${b('│')}  ${line1}`,
-    `        ${b('│')}  ${d}  ${d}  ${d}  ${d}  ${d}  ${b('│')}  ${line2}`,
-    `        ${b('╰─────────────────╯')}`,
-  ].join('\n')
+/** Find the mascot directory shipped with the storyboard package. */
+function mascotPaths(targetCwd) {
+  // Prefer a user override at project root, fall back to the library dir.
+  const userConfig = join(targetCwd, 'mascot.config.json')
+  const userDir = join(targetCwd, 'mascot')
+  if (existsSync(userConfig) && existsSync(userDir)) {
+    return { configPath: userConfig, framesDir: userDir }
+  }
+  // dev.js → src/core/cli/dev.js → package root is 3 dirs up.
+  const libRoot = resolve(import.meta.dirname, '..', '..', '..')
+  return {
+    configPath: join(libRoot, 'mascot.config.json'),
+    framesDir: join(libRoot, 'mascot'),
+  }
+}
+
+/** Apply magenta to the mascot's eye glyphs, dim to the dots/frame. */
+function colorizeMascot(text) {
+  const eyes = /[●◠◡]/g
+  return text
+    .split('\n')
+    .map((line) => line.replace(eyes, (m) => magenta(m)).replace(/[·│╭╮╰╯─]/g, (m) => dim(m)))
+    .join('\n')
+}
+
+/**
+ * Pad every frame to the same line count + same line width so cursor-up
+ * redraws fully overwrite the previous frame.
+ */
+function normalizeFrames(frames) {
+  const split = frames.map((f) => f.replace(/\n+$/, '').split('\n'))
+  const maxLines = Math.max(...split.map((l) => l.length))
+  const maxCols = Math.max(...split.flatMap((lines) => lines.map((l) => l.length)))
+  return split.map((lines) => {
+    while (lines.length < maxLines) lines.push('')
+    return lines.map((l) => l.padEnd(maxCols, ' ')).join('\n')
+  })
+}
+
+/** Play the mascot animation, leaving `settleText` rendered on exit. */
+async function animateMascot({ configPath, framesDir }, urlLine, stopLine) {
+  if (!existsSync(configPath)) return false
+  let config
+  try { config = JSON.parse(readFileSync(configPath, 'utf8')) } catch { return false }
+  if (config.enabled === false) return false
+  const frameNames = Array.isArray(config.frames) ? config.frames : []
+  if (frameNames.length === 0) return false
+  const frameDurationMs = Number(config.frameDurationMs) || 180
+  const loops = Math.max(1, Number(config.loops) || 1)
+  const settleName = config.settleFrame || frameNames[frameNames.length - 1]
+
+  let rawFrames
+  try {
+    rawFrames = frameNames.map((name) => readFileSync(join(framesDir, name), 'utf8'))
+  } catch { return false }
+  // Append the settle frame at the end so it's part of the normalize pass too.
+  let settleRaw
+  try { settleRaw = readFileSync(join(framesDir, settleName), 'utf8') } catch { settleRaw = rawFrames[rawFrames.length - 1] }
+
+  const normalized = normalizeFrames([...rawFrames, settleRaw])
+  const loopFrames = normalized.slice(0, -1)
+  let settleFrame = normalized[normalized.length - 1]
+
+  // Pin URL/stop hint to the right of the eye row (line 1) and dot row (line 2)
+  // of the settle frame, after colorization.
+  const composeSettle = () => {
+    const lines = colorizeMascot(settleFrame).split('\n')
+    if (lines[1] != null) lines[1] = lines[1] + '  ' + urlLine
+    if (lines[2] != null) lines[2] = lines[2] + '  ' + stopLine
+    return lines.join('\n')
+  }
+
+  const lineCount = normalized[0].split('\n').length
+
+  // Anchor: reserve the frame's worth of vertical space.
+  process.stdout.write('\n'.repeat(lineCount))
+
+  const draw = (frame) => {
+    // Move cursor up to the top of the reserved region, then rewrite each line.
+    process.stdout.write(`\x1b[${lineCount}A`)
+    for (const line of frame.split('\n')) {
+      process.stdout.write('\x1b[2K' + line + '\n')
+    }
+  }
+
+  for (let l = 0; l < loops; l++) {
+    for (const frame of loopFrames) {
+      draw(colorizeMascot(frame))
+      await new Promise((r) => setTimeout(r, frameDurationMs))
+    }
+  }
+  draw(composeSettle())
+  return true
 }
 
 const flagSchema = {
@@ -122,14 +204,19 @@ async function main() {
   if (strictPort) viteArgs.push('--strictPort')
   if (strictPort) p.log.info(`port ${port} (strict — from storyboard.config.json)`)
 
-  // Render the storyboard mascot just before Vite takes over stdio. The
-  // mascot acts as a visual anchor between our setup output and Vite's
-  // own "ready in Xms" banner.
+  // Render the storyboard mascot animation just before Vite takes over stdio.
+  // The animation settles on a final frame with the dev URL beside it; if
+  // disabled or missing, we fall back to a single line of output.
   console.log()
-  console.log(mascotBanner(
+  const animated = await animateMascot(
+    mascotPaths(targetCwd),
     bold(`http://localhost:${port}/storyboard/`),
     dim('Stop with Ctrl+C'),
-  ))
+  )
+  if (!animated) {
+    console.log(`  ${bold(`http://localhost:${port}/storyboard/`)}`)
+    console.log(`  ${dim('Stop with Ctrl+C')}`)
+  }
   console.log()
 
   const child = spawn(npmBin, viteArgs, {
