@@ -1,0 +1,41 @@
+{
+  "widgetProps": {
+    "prettyName": "opal-tern"
+  },
+  "displayName": "opal-tern",
+  "connectedWidgets": [],
+  "messaging": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_1ca8993822",
+      "role": "member",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboarding--terminal-widget-prompts--hub_1ca8993822.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 31853,
+    "centerY": 5246,
+    "zoom": 96,
+    "topLeftX": 30520,
+    "topLeftY": 4573,
+    "width": 2667,
+    "height": 1345
+  },
+  "updatedAt": "2026-05-16T14:59:51.455Z",
+  "widgetId": "agent-wgowun",
+  "canvasId": "storyboarding/terminal-widget-prompts",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null
+}

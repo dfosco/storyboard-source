@@ -1,0 +1,10 @@
+{
+  "widgetId": "agent-u56lfh",
+  "canvasId": "storyboarding/terminal-widget-prompts",
+  "prettyName": "ash-swift",
+  "timestamp": "2026-05-16T14:56:06.423Z",
+  "cols": 89,
+  "rows": 32,
+  "paneContent": "●  Falling back to the welcome menu. You can retry from there.\n┌  storyboard terminal\n│\n◆  How would you like to start?\n│  ● > Start a new agent session\n│  ○ > Start a new terminal session\n│  ○ > Browse existing sessions\n└\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+  "scrollback": "[lost tty]\r\n\u001b[?996n\u001b[>c\u001b[>q┌  storyboard terminal\r\n│\r\n◆  How would you like to start?\r\n│  ● > Start a new agent session\r\n│  ○ > Start a new terminal session\r\n│  ○ > Browse existing sessions\r\n└\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n●  Falling back to the welcome menu. You can retry from there.\r\n┌  storyboard terminal\r\n│\r\n◆  How would you like to start?\r\n│  ● > Start a new agent session\r\n│  ○ > Start a new terminal session\r\n│  ○ > Browse existing sessions\r\n└\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n●  Falling back to the welcome menu. You can retry from there.\r\n┌  storyboard terminal\r\n│\r\n◆  How would you like to start?\r\n│  ● > Start a new agent session\r\n│  ○ > Start a new terminal session\r\n│  ○ > Browse existing sessions\r\n└\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n●  Falling back to the welcome menu. You can retry from there.\r\n┌  storyboard terminal\r\n│\r\n◆  How would you like to start?\r\n│  ● > Start a new agent session\r\n│  ○ > Start a new terminal session\r\n│  ○ > Browse existing sessions\r\n└\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n"
+}

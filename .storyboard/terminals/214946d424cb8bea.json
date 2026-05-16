@@ -18,49 +18,33 @@
     "prettyName": "cobalt-magpie",
     "role": "member"
   },
-  "connectedWidgets": [
-    {
-      "id": "component-set-hy5at9",
-      "type": "component-set",
-      "props": {
-        "storyId": "radial-menu",
-        "layout": "auto",
-        "selected": "",
-        "width": 1526.3495878848132,
-        "height": 1401
-      },
-      "position": {
-        "x": 20636,
-        "y": 3292
-      }
-    }
-  ],
+  "connectedWidgets": [],
   "agentStatus": null,
   "role": "member",
   "hubs": [
     {
-      "hubId": "hub_fa19654feb",
+      "hubId": "hub_d65f2df827",
       "role": "member",
       "goal": null,
       "peers": [],
-      "messageLogPath": ".storyboard/messages/channels/hub--storyboarding--terminal-widget-prompts--hub_fa19654feb.jsonl",
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboarding--terminal-widget-prompts--hub_d65f2df827.jsonl",
       "activeConversationId": null,
       "hasHubToken": false,
       "pendingMessageToken": null
     }
   ],
   "viewport": {
-    "centerX": 28520,
-    "centerY": 2115,
-    "zoom": 40,
-    "topLeftX": 25320,
-    "topLeftY": 544,
-    "width": 6400,
-    "height": 3143
+    "centerX": 30638,
+    "centerY": 1717,
+    "zoom": 81,
+    "topLeftX": 29058,
+    "topLeftY": 920,
+    "width": 3160,
+    "height": 1594
   },
-  "updatedAt": "2026-05-15T19:32:55.411Z",
+  "updatedAt": "2026-05-16T14:56:06.987Z",
   "messaging": null,
   "lastAgentSessionId": "19c093e2-a325-45fe-9a8e-fc283a088942",
-  "lastAgentSessionAt": "2026-05-15T18:20:18.013Z",
+  "lastAgentSessionAt": "2026-05-16T14:17:13.694Z",
   "lastAgentId": "copilot"
 }

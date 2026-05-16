@@ -75,3 +75,10 @@ assets/.storyboard-public/terminal-snapshots/~*
 
 # Integration test results (ephemeral local artifacts)
 test-results/
+
+# Private canvas images (tilde prefix = not committed)
+src/canvas/**/~*.canvas.jsonl
+src/canvas/~*/
+src/prototypes/~*/
+src/prototypes/**/~*.{flow,object,record,prototype,folder}.json
+.storyboard/.user.json

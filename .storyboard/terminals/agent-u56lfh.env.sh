@@ -1,4 +1,4 @@
-export STORYBOARD_WIDGET_ID="agent-xguros"
+export STORYBOARD_WIDGET_ID="agent-u56lfh"
 export STORYBOARD_CANVAS_ID="storyboarding/terminal-widget-prompts"
 export STORYBOARD_BRANCH="0.6.0"
 export STORYBOARD_SERVER_URL="http://localhost:1236"

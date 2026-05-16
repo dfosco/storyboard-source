@@ -1,2 +1,2 @@
 #!/usr/bin/env sh
-exec start codex --ask-for-approval never "$@"
+exec start codex --full-auto "$@"
