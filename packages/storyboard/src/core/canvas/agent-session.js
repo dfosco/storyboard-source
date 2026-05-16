@@ -226,7 +226,12 @@ export function buildResumeStartupCommand({ startupCommand, sessionId, agentCfg 
     : `${cmd} || { ${notice}; ${startupCommand}; }`
 
   // Primary: per-widget captured sessionId → `resumeCommand` with {id}.
-  if (sessionId && isResumableSessionId(sessionId, agentCfg)) {
+  // We attempt resume whenever a UUID-shaped id is stored, even if the
+  // agent's local session-state directory has been GC'd / moved — the
+  // shell-level `|| <fresh fallback>` wrapper handles CLI rejection
+  // gracefully. This makes resume robust across `tmux kill-server`,
+  // disk cleanups, and machine moves.
+  if (sessionId && UUID_RE.test(sessionId)) {
     const template = agentCfg?.resumeCommand
     if (template && template.includes('{id}')) {
       return wrapFallback(template.replace('{id}', sessionId))
@@ -235,9 +240,7 @@ export function buildResumeStartupCommand({ startupCommand, sessionId, agentCfg 
 
   // Fallback: agents like Codex provide a `resumeLastCommand` that
   // resumes the most recent session in the current cwd without needing
-  // a captured id (e.g. `codex resume --last`). Useful when the agent's
-  // sessionStart hook requires manual trust before it can capture ids
-  // (Codex case — hook needs `/hooks` approval).
+  // a captured id (e.g. `codex resume --last`).
   const lastCmd = agentCfg?.resumeLastCommand
   if (lastCmd) return wrapFallback(lastCmd)
 
