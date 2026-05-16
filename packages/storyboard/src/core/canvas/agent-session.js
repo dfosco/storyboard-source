@@ -221,22 +221,17 @@ export function buildResumeStartupCommand({ startupCommand, sessionId, agentCfg 
   if (!startupCommand) return startupCommand
 
   const notice = `printf '\\n\\033[33m[storyboard] resume failed; starting fresh session...\\033[0m\\n'`
-  // perl-based timeout (works on macOS without coreutils): if `cmd` doesn't
-  // print/produce activity in N seconds, SIGTERM it. Used so a stuck
-  // `--resume <id>` (e.g. session no longer exists on remote, network hang)
-  // can't leave the widget frozen on "Starting …". 25s gives slow agents
-  // plenty of time to start while still bounded.
-  const TIMEOUT_S = Number(agentCfg?.resumeTimeoutSec) || 25
-  const withTimeout = (cmd) => `perl -e 'alarm ${TIMEOUT_S}; exec @ARGV' sh -c ${JSON.stringify(cmd)}`
-
   const lastCmd = agentCfg?.resumeLastCommand
+
+  // Chain: stored-id resume → resumeLastCommand (if any) → fresh startupCommand.
+  // Each step's non-zero exit cascades to the next via shell `||`. Note: if a
+  // resume hangs (vs. exits non-zero), the chain won't progress — users
+  // should use the widget's restart button. We deliberately don't wrap in a
+  // timeout to avoid killing slow-starting agents on flaky networks.
   const wrapFallback = (cmd) => {
     if (agentCfg?.resumeFallback === false) return cmd
-    // Chain: try resume (with timeout) → resumeLastCommand if configured →
-    // fresh startupCommand. Each step's failure (incl. timeout SIGTERM)
-    // exits non-zero and triggers the next.
     const last = lastCmd ? `${lastCmd} || { ${notice}; ${startupCommand}; }` : `${notice}; ${startupCommand}`
-    return `${withTimeout(cmd)} || { ${last}; }`
+    return `${cmd} || { ${last}; }`
   }
 
   // Primary: per-widget captured sessionId → `resumeCommand` with {id}.
@@ -247,11 +242,11 @@ export function buildResumeStartupCommand({ startupCommand, sessionId, agentCfg 
     }
   }
 
-  // No id stored — try resumeLastCommand (e.g. `--continue` / `resume --last`)
-  // with timeout, falling through to fresh startupCommand if it fails.
+  // No id stored — try resumeLastCommand (e.g. `--continue` / `resume --last`),
+  // falling through to fresh startupCommand if it exits non-zero.
   if (lastCmd) {
-    if (agentCfg?.resumeFallback === false) return withTimeout(lastCmd)
-    return `${withTimeout(lastCmd)} || { ${notice}; ${startupCommand}; }`
+    if (agentCfg?.resumeFallback === false) return lastCmd
+    return `${lastCmd} || { ${notice}; ${startupCommand}; }`
   }
 
   return startupCommand
