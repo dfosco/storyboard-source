@@ -3103,7 +3103,10 @@ export function Default() {
         // Write env file for this terminal session — sourced before copilot launch
         // This avoids race conditions with tmux send-keys export
         const envFile = path.join(root, '.storyboard', 'terminals', `${tmuxName}.env`)
-        const envContent = Object.entries(envMap).map(([k, v]) => `export ${k}=${JSON.stringify(v)}`).join('\n') + '\n'
+        // Trailing echo is the readiness signal the post-startup poller
+        // matches against. Don't drop it — without it /allow-all and the
+        // identity/role/broadcast bind wait the full 30s timeout fallback.
+        const envContent = Object.entries(envMap).map(([k, v]) => `export ${k}=${JSON.stringify(v)}`).join('\n') + '\necho "Environment loaded:"\n'
         fsModule.writeFileSync(envFile, envContent)
 
         // Resolve agent config from storyboard.config.json

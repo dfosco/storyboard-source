@@ -1245,7 +1245,11 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
         try { mkdirSync(envScriptDir, { recursive: true }) } catch { /* empty */ }
         const envScriptPath = join(envScriptDir, `${widgetId}.env.sh`)
         try {
-          writeFileSync(envScriptPath, envParts.join('\n') + '\n')
+          // Trailing echo is the readiness signal the post-startup poller
+          // looks for. Without it, the 30s timeout fallback fires before
+          // /allow-all, identity, role/broadcast bind are sent — making
+          // the agent feel "stuck" for the first half-minute after launch.
+          writeFileSync(envScriptPath, envParts.join('\n') + '\necho "Environment loaded:"\n')
         } catch { /* empty */ }
         const envSourceCmd = startupCommand
           ? `clear && source ${JSON.stringify(envScriptPath)} && clear`
