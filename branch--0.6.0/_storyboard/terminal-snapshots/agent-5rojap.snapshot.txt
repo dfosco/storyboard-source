@@ -1,0 +1,227 @@
+SESSION: agent-5rojap | copper-owl
+CANVAS:  storyboarding/terminal-widget-prompts
+BRANCH:  0.6.0
+TIME:    2026-05-16T19:20:00.817Z
+
+================================================================================
+SCREEN
+================================================================================
+
+┌  storyboard terminal
+│
+◇  How would you like to start?
+│  > Browse existing sessions
+│
+●  name: copper-owl  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+◆  Browse sessions
+│  ● > Copilot CLI sessions
+│  ○ > Claude Code sessions
+│  ○ > Codex CLI sessions
+│  ○ > Terminal sessions
+└
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+[lost tty]
+[?996n[>c[>q┌  storyboard terminal
+│
+◇  How would you like to start?
+│  > Browse existing sessions
+│
+●  name: copper-owl  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+◆  Browse sessions
+│  ● > Copilot CLI sessions
+│  ○ > Claude Code sessions
+│  ○ > Codex CLI sessions
+│  ○ > Terminal sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+┌  storyboard terminal
+│
+◇  How would you like to start?
+│  > Browse existing sessions
+│
+●  name: copper-owl  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+◆  Browse sessions
+│  ● > Copilot CLI sessions
+│  ○ > Claude Code sessions
+│  ○ > Codex CLI sessions
+│  ○ > Terminal sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+┌  storyboard terminal
+│
+◇  How would you like to start?
+│  > Browse existing sessions
+│
+●  name: copper-owl  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+◆  Browse sessions
+│  ● > Copilot CLI sessions
+│  ○ > Claude Code sessions
+│  ○ > Codex CLI sessions
+│  ○ > Terminal sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+┌  storyboard terminal
+│
+◇  How would you like to start?
+│  > Browse existing sessions
+│
+●  name: copper-owl  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+◆  Browse sessions
+│  ● > Copilot CLI sessions
+│  ○ > Claude Code sessions
+│  ○ > Codex CLI sessions
+│  ○ > Terminal sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+┌  storyboard terminal
+│
+◇  How would you like to start?
+│  > Browse existing sessions
+│
+●  name: copper-owl  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+◆  Browse sessions
+│  ● > Copilot CLI sessions
+│  ○ > Claude Code sessions
+│  ○ > Codex CLI sessions
+│  ○ > Terminal sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+┌  storyboard terminal
+│
+◇  How would you like to start?
+│  > Browse existing sessions
+│
+●  name: copper-owl  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+◆  Browse sessions
+│  ● > Copilot CLI sessions
+│  ○ > Claude Code sessions
+│  ○ > Codex CLI sessions
+│  ○ > Terminal sessions
+└
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+┌  storyboard terminal
+│
+◇  How would you like to start?
+│  > Browse existing sessions
+│
+●  name: copper-owl  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+◆  Browse sessions
+│  ● > Copilot CLI sessions
+│  ○ > Claude Code sessions
+│  ○ > Codex CLI sessions
+│  ○ > Terminal sessions
+└

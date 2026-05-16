@@ -1,0 +1,744 @@
+SESSION: agent-u6xv58 | maple-dove
+CANVAS:  storyboarding/terminal-widget-prompts
+BRANCH:  0.6.0
+TIME:    2026-05-16T19:20:53.440Z
+
+================================================================================
+SCREEN
+================================================================================
+
+
+░▒▓   …/0.6.0   0.6.0 $✘!?   21:20  
+❯
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+[?996n[>c[>q
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[sb-63b24b0:zsh*                                  "Daniels-MacBook-Pro.l" 21:20 16-May-26
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[sb-63b24b0:zsh*                                  "Daniels-MacBook-Pro.l" 21:20 16-May-26
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+source "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/agent-u6xv58.env.sh"
+%                                                                                         /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+
+
+░▒▓   …/0.6.0   0.6.0 $✘!?   21:20  
+❯ source "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/aggent-u6xv58.env.sh"
+/opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+
+
+0.6.0 on  0.6.0 [$✘!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6..0" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+│
+●  name: maple-dove  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...source "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/agent-u6xv58.env.sh"
+/opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+
+░▒▓   …/0.6.0   0.6.0 $✘!?   21:20  
+❯ source "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/agent-u6xv58.env.sh"
+/opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+
+0.6.0 on  0.6.0 [$✘!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+│
+●  name: maple-dove  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+
+
+
+
+
+
+source "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/agent-u6xv58.env.sh"
+/opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+
+░▒▓   …/0.6.0   0.6.0 $✘!?   21:20  
+❯ source "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/agent-u6xv58.env.sh"
+/opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+
+0.6.0 on  0.6.0 [$✘!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+│
+●  name: maple-dove  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+
+
+
+
+
+
+error: unexpected argument '--full-auto' found  tip: to pass '--full-auto' as a value, use '-- --full-auto'Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]For more information, try '--help'.
+/opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+
+░▒▓   …/0.6.0   0.6.0 $✘!?   21:20  
+❯ source "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/agent-u6xv58.env.sh"
+/opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+
+0.6.0 on  0.6.0 [$✘!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+│
+●  name: maple-dove  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+/opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+
+░▒▓   …/0.6.0   0.6.0 $✘!?   21:20  
+❯ source "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/agent-u6xv58.env.sh"
+/opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+
+0.6.0 on  0.6.0 [$✘!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+│
+●  name: maple-dove  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+│
+▲
+  Codex CLI exited unexpectedly (exit code 2). Retrying...
+" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+
+░▒▓   …/0.6.0   0.6.0 $✘!?   21:20  
+❯ source "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/agent-u6xv58.env.sh"
+/opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+
+0.6.0 on  0.6.0 [$✘!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+│
+●  name: maple-dove  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+│
+▲  Codex CLI exited unexpectedly (exit code 2). Retrying...
+│
+●
+  name: maple-dove  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+gent-u6xv58.env.sh"
+/opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+
+0.6.0 on  0.6.0 [$✘!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+│
+●  name: maple-dove  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+│
+▲  Codex CLI exited unexpectedly (exit code 2). Retrying...
+│
+●  name: maple-dove  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+gent-u6xv58.env.sh"
+/opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+
+0.6.0 on  0.6.0 [$✘!?] via  v22.22.0 
+❯ /opt/homebrew/Cellar/node@22/22.22.0/bin/node "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+│
+●  name: maple-dove  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+│
+▲  Codex CLI exited unexpectedly (exit code 2). Retrying...
+│
+●  name: maple-dove  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+│
+●  name: maple-dove  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+│
+▲  Codex CLI exited unexpectedly (exit code 2). Retrying...
+│
+●  name: maple-dove  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+worktrees/0.6.0/packages/storyboard/src/core/cli/index.js" terminal-welcome --branch "0.6.0" --canvas "storyboarding/terminal-widget-prompts" --name "maple-dove" --startup "codex --full-auto"
+│
+●  name: maple-dove  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+│
+▲  Codex CLI exited unexpectedly (exit code 2). Retrying...
+│
+●  name: maple-dove  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+│
+▲
+  Codex CLI failed to start (exit code 2).
+│
+●
+  Falling back to the welcome menu. You can retry from there.
+●  name: maple-dove  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+│
+▲  Codex CLI exited unexpectedly (exit code 2). Retrying...
+│
+●  name: maple-dove  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+│
+▲  Codex CLI failed to start (exit code 2).
+│
+●  Falling back to the welcome menu. You can retry from there.
+●  name: maple-dove  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+│
+▲  Codex CLI exited unexpectedly (exit code 2). Retrying...
+│
+●  name: maple-dove  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Starting Codex CLI...
+
+error: unexpected argument '--full-auto' found
+
+  tip: to pass '--full-auto' as a value, use '-- --full-auto'
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
+│
+▲  Codex CLI failed to start (exit code 2).
+│
+●  Falling back to the welcome menu. You can retry from there.
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● > Start a new agent session
+│  ○ > Start a new terminal session
+│  ○ > Browse existing sessions
+└
+│  ○ > Start a new agent session
+│  ● > Start a new terminal session
+│  ○ > Browse existing sessions
+└
+│  ● > Start a new agent session
+│  ○ > Start a new terminal session
+│  ○ > Browse existing sessions
+└
+◇  How would you like to start?
+│  > Start a new agent session
+│
+◆  Which agent?
+│  ● > Start a new Copilot CLI session
+│  ○ > Start a new Claude Code session
+│  ○ > Start a new Codex CLI session
+└
+│  ○ > Start a new Copilot CLI session
+│  ● > Start a new Claude Code session
+│  ○ > Start a new Codex CLI session
+└
+│  ○ > Start a new Claude Code session
+│  ● > Start a new Codex CLI session
+└
+│  ● > Start a new Claude Code session
+│  ○ > Start a new Codex CLI session
+└
+■  Which agent?
+│  > Start a new Claude Code session
+│
+┌  storyboard terminal
+│
+◇  How would you like to start?
+│  > Start a new agent session
+│
+■  Which agent?
+│  > Start a new Claude Code session
+│
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+┌  storyboard terminal
+│
+◇  How would you like to start?
+│  > Start a new agent session
+│
+■  Which agent?
+│  > Start a new Claude Code session
+│
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+┌  storyboard terminal
+│
+◆  How would you like to start?
+│  ● > Start a new agent session
+│  ○ > Start a new terminal session
+│  ○ > Browse existing sessions
+└
+│  ○ > Start a new agent session
+│  ● > Start a new terminal session
+│  ○ > Browse existing sessions
+└
+│  ○ > Start a new terminal session
+│  ● > Browse existing sessions
+└
+│  ● > Start a new terminal session
+│  ○ > Browse existing sessions
+└
+│  ○ > Start a new terminal session
+│  ● > Browse existing sessions
+└
+│  ● > Start a new agent session
+│  ○ > Start a new terminal session
+│  ○ > Browse existing sessions
+└
+│  ○ > Start a new agent session
+│  ● > Start a new terminal session
+│  ○ > Browse existing sessions
+└
+│  ○ > Start a new terminal session
+│  ● > Browse existing sessions
+└
+│  ● > Start a new agent session
+│  ○ > Start a new terminal session
+│  ○ > Browse existing sessions
+└
+│  ○ > Start a new agent session
+│  ● > Start a new terminal session
+│  ○ > Browse existing sessions
+└
+│  ○ > Start a new terminal session
+│  ● > Browse existing sessions
+└
+│  ● > Start a new terminal session
+│  ○ > Browse existing sessions
+└
+│  ○ > Start a new terminal session
+│  ● > Browse existing sessions
+└
+│  ● > Start a new agent session
+│  ○ > Start a new terminal session
+│  ○ > Browse existing sessions
+└
+│  ○ > Start a new agent session
+│  ○ > Start a new terminal session
+│  ● > Browse existing sessions
+└
+│  ● > Start a new terminal session
+│  ○ > Browse existing sessions
+└
+◇  How would you like to start?
+│  > Start a new terminal session
+│
+●  name: maple-dove  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Opening shell... Enter any command below.
+┌  storyboard terminal
+│
+◇  How would you like to start?
+│  > Start a new terminal session
+│
+●  name: maple-dove  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Opening shell... Enter any command below.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+┌  storyboard terminal
+│
+◇  How would you like to start?
+│  > Start a new terminal session
+│
+●  name: maple-dove  branch: 0.6.0  canvas: terminal-widget-prompts
+│
+└  Opening shell... Enter any command below.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export PATH="/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/bin:/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/bin:/Users/dfosco/.local/bin:/Users/dfosco/.bun/bin:/usr/local/opt/python/libexec/bin:/opt/homebrew/opt/node@22/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/opt/pkg/env/active/bin:/opt/pmk/env/global/bin:/Applications/VMware Fusion.app/Contents/Public:/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/node_modules/.bin:/Users/dfosco/workspace/storyboard-core/worktrees/node_modules/.bin:/Users/dfosco/workspace/storyboard-core/node_modules/.bin:/Users/dfosco/workspace/node_modules/.bin:/Users/dfosco/node_modules/.bin:/Users/node_modules/.bin:/%                                                                                         
+
+░▒▓   …/0.6.0   0.6.0 $✘!?   21:20  
+❯ 
+export PATH="/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/bin:/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/bin:/Users/dfosco/.local/bin:/Users/dfosco/.bun/bin:/usr/local/opt/python/libexec/bin:/opt/homebrew/opt/node@22/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/opt/pkg/env/active/bin:/opt/pmk/env/global/bin:/Applications/VMware Fusion.app/Contents/Public:/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/node_modules/.bin:/Users/dfosco/workspace/storyboard-core/worktrees/node_modules/.bin:/Users/dfosco/workspace/storyboard-core/node_mod
+░▒▓   …/0.6.0   0.6.0 $✘!?   21:20 
+ 
+❯ export PATH="/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/termi
+naals/bin:/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/.storyboard/terminals/bi
+n:/Users/dfosco/.local/bin:/Users/dfosco/.bun/bin:/usr/local/opt/python/libexec/bin:/opt/
+hoomebrew/opt/node@22/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cry
+ptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/code
+x..system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/boots
+trap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/
+usr/appleinternal/bin:/opt/pkg/env/active/bin:/opt/pmk/env/global/bin:/Applications/VMware Fusion.app/Cont
+ennts/Public:/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0/node_modules/.bin:/Us
+errs/dfosco/workspace/storyboard-core/worktrees/node_modules/.bin:/Users/dfosco/workspace/
+sttoryboard-core/node_modules/.bin:/Users/dfosco/workspace/node_modules/.bin:/Users/dfosc
+o/node_modules/.bin:/Users/node_modules/.bin:/nod
+∙ 
+                                                                                         
+░▒▓   …/0.6.0   0.6.0 $✘!?   21:20 
+ 
+❯ kklk/  k  ccleare
+
+zsh: command not found: cleare
+                                                                                         
+░▒▓   …/0.6.0   0.6.0 $✘!?   21:20 
+ 
+❯ cleare 
+                                                                                         
+
+░▒▓   …/0.6.0   0.6.0 $✘!?   21:20  
+❯ 
