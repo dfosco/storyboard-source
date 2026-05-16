@@ -1,7 +1,7 @@
 SESSION: agent-wve8pt | plum-egret
 CANVAS:  storyboard-demo
 BRANCH:  0.6.0
-TIME:    2026-05-16T22:44:21.447Z
+TIME:    2026-05-16T22:46:57.810Z
 
 ================================================================================
 SCREEN
@@ -52,8 +52,7 @@ SCREEN
 SCROLLBACK (last 60s)
 ================================================================================
 
-[lost tty]
-[?996n[>c[>q● Replace flow + regenerate metrics (shell)
+● Replace flow + regenerate metrics (shell)
   │ mv src/prototypes/main.folder/SiloDashboard/default.flow.json.new
   │ src/prototypes/main.folder/SiloDashboard/default.flow.json
   │ node -e '
@@ -87,7 +86,45 @@ SCROLLBACK (last 60s)
   Canvas markdown widget updated, output saved for peers, agent signaled done.
 
  ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                   @storyboard.config.json
-───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+● Replace flow + regenerate metrics (shell)
+  │ mv src/prototypes/main.folder/SiloDashboard/default.flow.json.new
+  │ src/prototypes/main.folder/SiloDashboard/default.flow.json
+  │ node -e '
+  │ function pad(n){return String(n).padStart(2,"0");}
+  │ function ts(i){…
+  └ 22 lines...
+
+
+● Now update the canvas summary widget, save output, and signal done.
+
+
+● Save output, update widget, signal done (shell)
+  │ ENV_FILE=$(ls -t .storyboard/terminals/*.env 2>/dev/null | head -1); source "$ENV_FILE"
+  │ SUMMARY='Refreshed data (same shape, new values):
+  │
+  │ workspace: nimbus-forge / Acropolis
+  │ user: Idris Okafor (@idris)…
+  └ 33 lines...
+
+
+● Done. Regenerated all data with new values while keeping the exact same schema (so Scaffold/Charts work
+  unchanged):
+
+   - workspace: nimbus-forge / Acropolis
+   - user: Idris Okafor (@idris)
+   - summary: CPU
+    42.50% (17/40 vCPUs), Memory 71.25% (285/400 GiB), Storage 33.75% (2.7/8 TiB)
+   - timeRange: 22:42 → 23:42
+   - metrics: cpu ~380–460, memory 215→285 rising, storage ~2.7 flat (30 samples, 22:44–23:42)
+
+  Canvas markdown widget updated, output saved for peers, agent signaled done.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                   @storyboard.config.json
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
 
 
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)

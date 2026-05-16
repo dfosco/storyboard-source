@@ -1,7 +1,7 @@
 SESSION: agent-5unog9 | opal-warbler
 CANVAS:  storyboard-demo
 BRANCH:  0.6.0
-TIME:    2026-05-16T22:42:52.796Z
+TIME:    2026-05-16T22:46:58.114Z
 
 ================================================================================
 SCREEN
@@ -40,10 +40,167 @@ SCREEN
   main scrolls internally, h1 has m-0 to kill browser default top/bottom margin, padding reduced to px-8 py-6,
   section gap gap-5, chart stack gap-3. The huge gaps should be gone — HMR will refresh the prototype widget.
 
- ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                                @index.jsx
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                   @storyboard.config.json
 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ❯  
 
 
 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
  / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+  │ assets/canvas/images/storyboard-demo--2026-05-17--00-33-34-oujl.png
+  └ 1 line read
+
+
+● Check _app wrapper (shell)
+  │ cat src/prototypes/_app.jsx | head -50; echo "---"; cat src/prototypes/_app.module.css | head -30
+  └ 60 lines...
+
+
+● I can see the issue — way too much vertical air between title, cards, toolbar, and charts. The gap-6 p-8 plus
+  default h1 margin is stretching things out. Tightening up.
+
+
+● Edit index.jsx +1 -1
+  └ src/prototypes/main.folder/SiloDashboard/index.jsx
+
+
+● Edit index.jsx +1 -1
+  └ src/prototypes/main.folder/SiloDashboard/index.jsx
+
+
+● Edit index.jsx +6 -4
+  └ src/prototypes/main.folder/SiloDashboard/index.jsx
+
+
+● Edit index.jsx +1 -1
+  └ src/prototypes/main.folder/SiloDashboard/index.jsx
+
+
+● Tightened: outer is now h-screen overflow-hidden (prevents the page from stretching to a huge canvas height),
+  main scrolls internally, h1 has m-0 to kill browser default top/bottom margin, padding reduced to px-8 py-6,
+  section gap gap-5, chart stack gap-3. The huge gaps should be gone — HMR will refresh the prototype widget.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                   @storyboard.config.json
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+  │ assets/canvas/images/storyboard-demo--2026-05-17--00-33-34-oujl.png
+  └ 1 line read
+
+
+● Check _app wrapper (shell)
+  │ cat src/prototypes/_app.jsx | head -50; echo "---"; cat src/prototypes/_app.module.css | head -30
+  └ 60 lines...
+
+
+● I can see the issue — way too much vertical air between title, cards, toolbar, and charts. The gap-6 p-8 plus
+  default h1 margin is stretching things out. Tightening up.
+
+
+● Edit index.jsx +1 -1
+  └ src/prototypes/main.folder/SiloDashboard/index.jsx
+
+
+● Edit index.jsx +1 -1
+  └ src/prototypes/main.folder/SiloDashboard/index.jsx
+
+
+● Edit index.jsx +6 -4
+  └ src/prototypes/main.folder/SiloDashboard/index.jsx
+
+
+● Edit index.jsx +1 -1
+  └ src/prototypes/main.folder/SiloDashboard/index.jsx
+
+
+● Tightened: outer is now h-screen overflow-hidden (prevents the page from stretching to a huge canvas height),
+  main scrolls internally, h1 has m-0 to kill browser default top/bottom margin, padding reduced to px-8 py-6,
+  section gap gap-5, chart stack gap-3. The huge gaps should be gone — HMR will refresh the prototype widget.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                   @storyboard.config.json
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+  │ assets/canvas/images/storyboard-demo--2026-05-17--00-33-34-oujl.png
+  └ 1 line read
+
+
+● Check _app wrapper (shell)
+  │ cat src/prototypes/_app.jsx | head -50; echo "---"; cat src/prototypes/_app.module.css | head -30
+  └ 60 lines...
+
+
+● I can see the issue — way too much vertical air between title, cards, toolbar, and charts. The gap-6 p-8 plus
+  default h1 margin is stretching things out. Tightening up.
+
+
+● Edit index.jsx +1 -1
+  └ src/prototypes/main.folder/SiloDashboard/index.jsx
+
+
+● Edit index.jsx +1 -1
+  └ src/prototypes/main.folder/SiloDashboard/index.jsx
+
+
+● Edit index.jsx +6 -4
+  └ src/prototypes/main.folder/SiloDashboard/index.jsx
+
+
+● Edit index.jsx +1 -1
+  └ src/prototypes/main.folder/SiloDashboard/index.jsx
+
+
+● Tightened: outer is now h-screen overflow-hidden (prevents the page from stretching to a huge canvas height),
+  main scrolls internally, h1 has m-0 to kill browser default top/bottom margin, padding reduced to px-8 py-6,
+  section gap gap-5, chart stack gap-3. The huge gaps should be gone — HMR will refresh the prototype widget.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                   @storyboard.config.json
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+  │ assets/canvas/images/storyboard-demo--2026-05-17--00-33-34-oujl.png
+  └ 1 line read
+
+
+● Check _app wrapper (shell)
+  │ cat src/prototypes/_app.jsx | head -50; echo "---"; cat src/prototypes/_app.module.css | head -30
+  └ 60 lines...
+
+
+● I can see the issue — way too much vertical air between title, cards, toolbar, and charts. The gap-6 p-8 plus
+  default h1 margin is stretching things out. Tightening up.
+
+
+● Edit index.jsx +1 -1
+  └ src/prototypes/main.folder/SiloDashboard/index.jsx
+
+
+● Edit index.jsx +1 -1
+  └ src/prototypes/main.folder/SiloDashboard/index.jsx
+
+
+● Edit index.jsx +6 -4
+  └ src/prototypes/main.folder/SiloDashboard/index.jsx
+
+
+● Edit index.jsx +1 -1
+  └ src/prototypes/main.folder/SiloDashboard/index.jsx
+
+
+● Tightened: outer is now h-screen overflow-hidden (prevents the page from stretching to a huge canvas height),
+  main scrolls internally, h1 has m-0 to kill browser default top/bottom margin, padding reduced to px-8 py-6,
+  section gap gap-5, chart stack gap-3. The huge gaps should be gone — HMR will refresh the prototype widget.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                   @storyboard.config.json
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)

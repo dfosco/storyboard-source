@@ -1,7 +1,7 @@
 SESSION: agent-aiagsz | storm-sparrow
 CANVAS:  storyboard-demo
 BRANCH:  0.6.0
-TIME:    2026-05-16T22:44:21.534Z
+TIME:    2026-05-16T22:46:58.167Z
 
 ================================================================================
 SCREEN
@@ -52,8 +52,7 @@ SCREEN
 SCROLLBACK (last 60s)
 ================================================================================
 
-[lost tty]
-[?996n[>c[>q  │ wc -l src/prototypes/main.folder/SiloDashboard/index.jsx
+  │ wc -l src/prototypes/main.folder/SiloDashboard/index.jsx
   │ echo "---data-chart-slot---"
   │ grep -n data-chart-slot src/prototypes/main.folder/SiloDashboard/index.jsx…
   └ 39 lines...
@@ -87,7 +86,7 @@ SCROLLBACK (last 60s)
   null-safe fallbacks. Output saved for the leader, signaled done.
 
  ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                   @storyboard.config.json
-───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
 
 
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)

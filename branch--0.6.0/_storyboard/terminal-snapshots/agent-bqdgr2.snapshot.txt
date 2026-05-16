@@ -1,7 +1,7 @@
 SESSION: agent-bqdgr2 | sage-tanager
 CANVAS:  storyboard-demo
 BRANCH:  0.6.0
-TIME:    2026-05-16T22:44:21.491Z
+TIME:    2026-05-16T22:46:58.331Z
 
 ================================================================================
 SCREEN
@@ -52,7 +52,6 @@ SCREEN
 SCROLLBACK (last 60s)
 ================================================================================
 
-[lost tty]
 [?996n[>c[>q
 ● Acknowledged — broadcast two-way active with Leader, Form, Data, opal-warbler, Scaffold, Charts, Data. Standing
   by.
