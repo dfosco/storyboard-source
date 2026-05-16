@@ -6,10 +6,10 @@
     "canvasId": "storyboard-demo",
     "widgetId": "agent-if4f9l",
     "createdAt": "2026-05-16T20:44:10.901Z",
-    "lastConnectedAt": "2026-05-16T22:00:39.065Z",
-    "status": "background",
-    "expiresAt": 1778970647176,
-    "generation": 61
+    "lastConnectedAt": "2026-05-16T22:02:59.701Z",
+    "status": "live",
+    "expiresAt": null,
+    "generation": 63
   },
   {
     "tmuxName": "sb-3905150d85cb",
@@ -18,10 +18,10 @@
     "canvasId": "storyboard-demo",
     "widgetId": "agent-q6b7m7",
     "createdAt": "2026-05-16T20:44:10.985Z",
-    "lastConnectedAt": "2026-05-16T22:00:39.200Z",
-    "status": "background",
-    "expiresAt": 1778970647176,
-    "generation": 61
+    "lastConnectedAt": "2026-05-16T22:02:59.750Z",
+    "status": "live",
+    "expiresAt": null,
+    "generation": 63
   },
   {
     "tmuxName": "sb-64a301ecaa06",
@@ -30,9 +30,9 @@
     "canvasId": "storyboard-demo",
     "widgetId": "agent-aysx3y",
     "createdAt": "2026-05-16T20:44:11.036Z",
-    "lastConnectedAt": "2026-05-16T22:00:39.236Z",
-    "status": "background",
-    "expiresAt": 1778970647176,
-    "generation": 61
+    "lastConnectedAt": "2026-05-16T22:02:59.776Z",
+    "status": "live",
+    "expiresAt": null,
+    "generation": 63
   }
 ]

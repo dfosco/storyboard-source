@@ -1,7 +1,7 @@
 SESSION: agent-if4f9l | moss-puffin
 CANVAS:  storyboard-demo
 BRANCH:  0.6.0
-TIME:    2026-05-16T22:00:01.561Z
+TIME:    2026-05-16T22:04:04.825Z
 
 ================================================================================
 SCREEN
@@ -42,150 +42,8 @@ SCREEN
 
  ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-❯
+❯  
 
 
 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
  / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-
-================================================================================
-SCROLLBACK (last 60s)
-================================================================================
-
-[?996n[>c[>q● Understood — identity set, standing by.
-
-
-❯ Hello there!
-
-
-● Hi! 👋 I'm moss-puffin, ready to help. What would you like to do on the canvas?
-
-
-● Tip: /model
-  └ Select AI model to use
-
-
-! Failed to load 1 skill. Run /skills for more details.
-
-
-● Selected custom agent: terminal-agent
-
-
-● IDE auto-connect skipped: session is already in use by another client
-
-
-❯ [System] Your terminal identity has been set. widgetId=agent-if4f9l displayName=moss-puffin                        canvasId=storyboard-demo configFile=.storyboard/terminals/agent-if4f9l.json serverUrl=http://localhost:1236 —      this is a configuration step, no response needed.                                                                
-
-! This session may already be in use by another CLI or application. Changes made here could conflict with the other   instance.
-
-
-● Acknowledged.
-
- ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
-───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯
-
-
-─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-● Understood — identity set, standing by.
-
-
-❯ Hello there!
-
-
-● Hi! 👋 I'm moss-puffin, ready to help. What would you like to do on the canvas?
-
-
-● Tip: /model
-  └ Select AI model to use
-
-
-! Failed to load 1 skill. Run /skills for more details.
-
-
-● Selected custom agent: terminal-agent
-
-
-● IDE auto-connect skipped: session is already in use by another client
-
-
-❯ [System] Your terminal identity has been set. widgetId=agent-if4f9l displayName=moss-puffin                        canvasId=storyboard-demo configFile=.storyboard/terminals/agent-if4f9l.json serverUrl=http://localhost:1236 —      this is a configuration step, no response needed.                                                                
-
-! This session may already be in use by another CLI or application. Changes made here could conflict with the other   instance.
-
-
-● Acknowledged.
-
- ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
-───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
-
-
-─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-● Understood — identity set, standing by.
-
-
-❯ Hello there!
-
-
-● Hi! 👋 I'm moss-puffin, ready to help. What would you like to do on the canvas?
-
-
-● Tip: /model
-  └ Select AI model to use
-
-
-! Failed to load 1 skill. Run /skills for more details.
-
-
-● Selected custom agent: terminal-agent
-
-
-● IDE auto-connect skipped: session is already in use by another client
-
-
-❯ [System] Your terminal identity has been set. widgetId=agent-if4f9l displayName=moss-puffin                        canvasId=storyboard-demo configFile=.storyboard/terminals/agent-if4f9l.json serverUrl=http://localhost:1236 —      this is a configuration step, no response needed.                                                                
-
-! This session may already be in use by another CLI or application. Changes made here could conflict with the other   instance.
-
-
-● Acknowledged.
-
- ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
-───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
-
-
-─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-● Understood — identity set, standing by.
-
-
-❯ Hello there!
-
-
-● Hi! 👋 I'm moss-puffin, ready to help. What would you like to do on the canvas?
-
-
-● Tip: /model
-  └ Select AI model to use
-
-
-! Failed to load 1 skill. Run /skills for more details.
-
-
-● Selected custom agent: terminal-agent
-
-
-● IDE auto-connect skipped: session is already in use by another client
-
-
-❯ [System] Your terminal identity has been set. widgetId=agent-if4f9l displayName=moss-puffin                        canvasId=storyboard-demo configFile=.storyboard/terminals/agent-if4f9l.json serverUrl=http://localhost:1236 —      this is a configuration step, no response needed.                                                                
-
-! This session may already be in use by another CLI or application. Changes made here could conflict with the other   instance.
-
-
-● Acknowledged.
-
- ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
-───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
-
-
-─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-[lost tty]

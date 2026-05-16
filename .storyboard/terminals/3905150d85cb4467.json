@@ -19,15 +19,15 @@
     }
   ],
   "viewport": {
-    "centerX": 6350,
-    "centerY": 3178,
+    "centerX": 4500,
+    "centerY": 2440,
     "zoom": 20,
     "topLeftX": 0,
     "topLeftY": 0,
-    "width": 12700,
-    "height": 6355
+    "width": 9000,
+    "height": 4880
   },
-  "updatedAt": "2026-05-16T22:00:39.207Z",
+  "updatedAt": "2026-05-16T22:02:59.755Z",
   "widgetId": "agent-q6b7m7",
   "canvasId": "storyboard-demo",
   "canvasFile": null,

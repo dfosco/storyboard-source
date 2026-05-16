@@ -1,7 +1,7 @@
 SESSION: agent-q6b7m7 | bronze-egret
 CANVAS:  storyboard-demo
 BRANCH:  0.6.0
-TIME:    2026-05-16T22:00:01.544Z
+TIME:    2026-05-16T22:04:05.195Z
 
 ================================================================================
 SCREEN
@@ -42,124 +42,6 @@ SCREEN
 ✻ Cooked for 1s
 
 ───────────────────────────────────────────────────────────────────────────────────────────────── terminal-agent ──
-❯ 
+❯  
 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
   ⏵⏵ bypass permissions on (shift+tab to cycle)
-
-================================================================================
-SCROLLBACK (last 60s)
-================================================================================
-
-[?996n[>c[>q
-⏺Acknowledged.
-
-✻Cogitatedfor1s
-
-❯ [System] Your terminal identity has been set. widgetId=agent-q6b7m7 displayName=bronze-egret                     
-  canvasId=storyboard-demo configFile=.storyboard/terminals/agent-q6b7m7.json serverUrl=http://localhost:1236 —    
-  this is a configuration step, no response needed.                                                                
-
-                                 
-⏺ Acknowledged.
-                                   
-
-                                 
-✻ Cooked for 1s
-                                   
-
-───────────────────────────────────────────────────────────────────────────────────────────────── terminal-agent ──
-❯ 
-                                  ▐▛███▜▌ClaudeCodev2.1.143
-▝▜█████▛▘Opus4.7(1Mcontext)·APIUsageBilling
- ▘▘▝▝@terminal-agent·~/workspace/storyboard-core/worktrees/0.6.0
-
-❯ [System] Your terminal identity has been set. widgetId=agent-q6b7m7           
-  displayName=bronze-egret canvasId=storyboard-demo                             
-  configFile=.storyboard/terminals/agent-q6b7m7.json                            
-  serverUrl=http://localhost:1236 — this is a configuration step, no response   
-  needed.                                                                       
-
-✻Sautéedfor2s
-
-❯ Hello there!                                                                  
-
-⏺Hello!👋I'mbronze-egret,readytohelp.Whatwouldyouliketoworkon?
-
-✻Brewedfor2s
-
-❯ [System] Your terminal identity has been set. widgetId=agent-q6b7m7 displayName=bronze-egret                       canvasId=storyboard-demo configFile=.storyboard/terminals/agent-q6b7m7.json serverUrl=http://localhost:1236 —      this is a configuration step, no response needed.                                                                
-⏺Acknowledged.
-
-✻Cogitatedfor1s
-
-❯ [System] Your terminal identity has been set. widgetId=agent-q6b7m7 displayName=bronze-egret                       canvasId=storyboard-demo configFile=.storyboard/terminals/agent-q6b7m7.json serverUrl=http://localhost:1236 —      this is a configuration step, no response needed.                                                                
-⏺Acknowledged.
-
-✻Cookedfor1s
-
-───────────────────────────────────────────────────────────────────────────────────────────────── terminal-agent ──❯  
-───────────────────────────────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson (shift+tabtocycle)
-
-
- ▐▛███▜▌ClaudeCodev2.1.143
-▝▜█████▛▘Opus4.7(1Mcontext)·APIUsageBilling
- ▘▘▝▝@terminal-agent·~/workspace/storyboard-core/worktrees/0.6.0
-
-❯ [System] Your terminal identity has been set. widgetId=agent-q6b7m7           
-  displayName=bronze-egret canvasId=storyboard-demo                             
-  configFile=.storyboard/terminals/agent-q6b7m7.json                            
-  serverUrl=http://localhost:1236 — this is a configuration step, no response   
-  needed.                                                                       
-
-✻Sautéedfor2s
-
-❯ Hello there!                                                                  
-
-⏺Hello!👋I'mbronze-egret,readytohelp.Whatwouldyouliketoworkon?
-
-✻Brewedfor2s
-
-❯ [System] Your terminal identity has been set. widgetId=agent-q6b7m7 displayName=bronze-egret                       canvasId=storyboard-demo configFile=.storyboard/terminals/agent-q6b7m7.json serverUrl=http://localhost:1236 —      this is a configuration step, no response needed.                                                                
-⏺Acknowledged.
-
-✻Cogitatedfor1s
-
-❯ [System] Your terminal identity has been set. widgetId=agent-q6b7m7 displayName=bronze-egret                       canvasId=storyboard-demo configFile=.storyboard/terminals/agent-q6b7m7.json serverUrl=http://localhost:1236 —      this is a configuration step, no response needed.                                                                
-⏺Acknowledged.
-
-✻Cookedfor1s
-
-───────────────────────────────────────────────────────────────────────────────────────────────── terminal-agent ──❯  
-───────────────────────────────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson (shift+tabtocycle)
-
-
- ▐▛███▜▌ClaudeCodev2.1.143
-▝▜█████▛▘Opus4.7(1Mcontext)·APIUsageBilling
- ▘▘▝▝@terminal-agent·~/workspace/storyboard-core/worktrees/0.6.0
-
-❯ [System] Your terminal identity has been set. widgetId=agent-q6b7m7           
-  displayName=bronze-egret canvasId=storyboard-demo                             
-  configFile=.storyboard/terminals/agent-q6b7m7.json                            
-  serverUrl=http://localhost:1236 — this is a configuration step, no response   
-  needed.                                                                       
-
-✻Sautéedfor2s
-
-❯ Hello there!                                                                  
-
-⏺Hello!👋I'mbronze-egret,readytohelp.Whatwouldyouliketoworkon?
-
-✻Brewedfor2s
-
-❯ [System] Your terminal identity has been set. widgetId=agent-q6b7m7 displayName=bronze-egret                       canvasId=storyboard-demo configFile=.storyboard/terminals/agent-q6b7m7.json serverUrl=http://localhost:1236 —      this is a configuration step, no response needed.                                                                
-⏺Acknowledged.
-
-✻Cogitatedfor1s
-
-❯ [System] Your terminal identity has been set. widgetId=agent-q6b7m7 displayName=bronze-egret                       canvasId=storyboard-demo configFile=.storyboard/terminals/agent-q6b7m7.json serverUrl=http://localhost:1236 —      this is a configuration step, no response needed.                                                                
-⏺Acknowledged.
-
-✻Cookedfor1s
-
-───────────────────────────────────────────────────────────────────────────────────────────────── terminal-agent ──❯  
-───────────────────────────────────────────────────────────────────────────────────────────────────────────────────⏵⏵bypasspermissionson (shift+tabtocycle)
