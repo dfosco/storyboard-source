@@ -49,25 +49,6 @@ if (flags.nuke) {
 }
 
 /**
- * Run a potentially slow task with a spinner that only appears after 500ms.
- * IMPORTANT: `fn` must be async (don't use execSync — it blocks the event loop
- * and prevents the spinner from animating).
- */
-async function withSpin(label, doneMsg, fn) {
-  const spin = p.spinner()
-  const timer = setTimeout(() => spin.start(label), 500)
-  try {
-    await fn()
-    clearTimeout(timer)
-    spin.stop(doneMsg)
-  } catch (err) {
-    clearTimeout(timer)
-    spin.stop(`Failed: ${label}`)
-    throw err
-  }
-}
-
-/**
  * Async command runner — does NOT block the event loop, so spinners animate.
  */
 function runAsync(cmd, args = [], opts = {}) {
