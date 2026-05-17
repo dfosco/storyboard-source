@@ -215,14 +215,13 @@ export function useWebGLSlot(widgetId, initialPriority) {
     [pool, widgetId],
   )
 
-  // When there's no pool provider (e.g. standalone usage), always be live
-  if (!pool || !slot) {
-    return { isLive: true, generation: 0, setPriority: () => {} }
-  }
-
+  // Gating disabled — every widget is always live. The pool still tracks
+  // priority/registration for any future consumer (and so setPriority calls
+  // remain valid), but isLive ignores the cap and viewport demotion entirely.
+  void slot
   return {
-    isLive: slot.live,
-    generation: slot.generation,
+    isLive: true,
+    generation: 0,
     setPriority,
   }
 }
