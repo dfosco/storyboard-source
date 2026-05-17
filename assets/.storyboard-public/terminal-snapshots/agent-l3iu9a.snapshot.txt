@@ -1,7 +1,7 @@
 SESSION: agent-l3iu9a | jade-grouse
 CANVAS:  storyboard-demo
 BRANCH:  0.6.0
-TIME:    2026-05-17T10:24:11.378Z
+TIME:    2026-05-17T11:06:15.508Z
 
 ================================================================================
 SCREEN
@@ -47,3 +47,207 @@ SCREEN
 
 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
  / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+[lost tty]
+[?996n[>c[>q
+❯ 📩 Form: Update: OAuth buttons in SignupForm.jsx are now functional. Click Google or GitHub → button shows 
+  'Connecting…', form fields pre-fill with mock provider data via useOverride (signup.oauthProvider, sig…    
+
+
+● Got it — Form agent reported OAuth buttons are now functional with mock provider data filling via useOverride. No   action needed from me unless you want me to do something with that update.
+
+
+● Tip: /cwd
+  └ Change working directory or show current directory
+
+
+● Selected custom agent: terminal-agent
+
+
+! Failed to load 2 skills. Run /skills for more details.
+
+
+● IDE auto-connect skipped: session is already in use by another client
+
+
+! This session may already be in use by another CLI or application. Changes made here could conflict with the other   instance.
+
+
+❯ [System] Your terminal identity has been set. widgetId=agent-l3iu9a displayName=jade-grouse                        canvasId=storyboard-demo configFile=.storyboard/terminals/agent-l3iu9a.json serverUrl=http://localhost:1236 —      this is a configuration step, no response needed.                                                                
+
+● Acknowledged.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+❯ 📩 Form: Update: OAuth buttons in SignupForm.jsx are now functional. Click Google or GitHub → button shows 
+  'Connecting…', form fields pre-fill with mock provider data via useOverride (signup.oauthProvider, sig…    
+
+
+● Got it — Form agent reported OAuth buttons are now functional with mock provider data filling via useOverride. No   action needed from me unless you want me to do something with that update.
+
+
+● Tip: /cwd
+  └ Change working directory or show current directory
+
+
+● Selected custom agent: terminal-agent
+
+
+! Failed to load 2 skills. Run /skills for more details.
+
+
+● IDE auto-connect skipped: session is already in use by another client
+
+
+! This session may already be in use by another CLI or application. Changes made here could conflict with the other   instance.
+
+
+❯ [System] Your terminal identity has been set. widgetId=agent-l3iu9a displayName=jade-grouse                        canvasId=storyboard-demo configFile=.storyboard/terminals/agent-l3iu9a.json serverUrl=http://localhost:1236 —      this is a configuration step, no response needed.                                                                
+
+● Acknowledged.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+❯ 📩 Form: Update: OAuth buttons in SignupForm.jsx are now functional. Click Google or GitHub → button shows 
+  'Connecting…', form fields pre-fill with mock provider data via useOverride (signup.oauthProvider, sig…    
+
+
+● Got it — Form agent reported OAuth buttons are now functional with mock provider data filling via useOverride. No   action needed from me unless you want me to do something with that update.
+
+
+● Tip: /cwd
+  └ Change working directory or show current directory
+
+
+● Selected custom agent: terminal-agent
+
+
+! Failed to load 2 skills. Run /skills for more details.
+
+
+● IDE auto-connect skipped: session is already in use by another client
+
+
+! This session may already be in use by another CLI or application. Changes made here could conflict with the other   instance.
+
+
+❯ [System] Your terminal identity has been set. widgetId=agent-l3iu9a displayName=jade-grouse                        canvasId=storyboard-demo configFile=.storyboard/terminals/agent-l3iu9a.json serverUrl=http://localhost:1236 —      this is a configuration step, no response needed.                                                                
+
+● Acknowledged.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+❯ 📩 Form: Update: OAuth buttons in SignupForm.jsx are now functional. Click Google or GitHub → button shows 
+  'Connecting…', form fields pre-fill with mock provider data via useOverride (signup.oauthProvider, sig…    
+
+
+● Got it — Form agent reported OAuth buttons are now functional with mock provider data filling via useOverride. No   action needed from me unless you want me to do something with that update.
+
+
+● Tip: /cwd
+  └ Change working directory or show current directory
+
+
+● Selected custom agent: terminal-agent
+
+
+! Failed to load 2 skills. Run /skills for more details.
+
+
+● IDE auto-connect skipped: session is already in use by another client
+
+
+! This session may already be in use by another CLI or application. Changes made here could conflict with the other   instance.
+
+
+❯ [System] Your terminal identity has been set. widgetId=agent-l3iu9a displayName=jade-grouse                        canvasId=storyboard-demo configFile=.storyboard/terminals/agent-l3iu9a.json serverUrl=http://localhost:1236 —      this is a configuration step, no response needed.                                                                
+
+● Acknowledged.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+❯ 📩 Form: Update: OAuth buttons in SignupForm.jsx are now functional. Click Google or GitHub → button shows 
+  'Connecting…', form fields pre-fill with mock provider data via useOverride (signup.oauthProvider, sig…    
+
+
+● Got it — Form agent reported OAuth buttons are now functional with mock provider data filling via useOverride. No   action needed from me unless you want me to do something with that update.
+
+
+● Tip: /cwd
+  └ Change working directory or show current directory
+
+
+● Selected custom agent: terminal-agent
+
+
+! Failed to load 2 skills. Run /skills for more details.
+
+
+● IDE auto-connect skipped: session is already in use by another client
+
+
+! This session may already be in use by another CLI or application. Changes made here could conflict with the other   instance.
+
+
+❯ [System] Your terminal identity has been set. widgetId=agent-l3iu9a displayName=jade-grouse                        canvasId=storyboard-demo configFile=.storyboard/terminals/agent-l3iu9a.json serverUrl=http://localhost:1236 —      this is a configuration step, no response needed.                                                                
+
+● Acknowledged.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+❯ 📩 Form: Update: OAuth buttons in SignupForm.jsx are now functional. Click Google or GitHub → button shows 
+  'Connecting…', form fields pre-fill with mock provider data via useOverride (signup.oauthProvider, sig…    
+
+
+● Got it — Form agent reported OAuth buttons are now functional with mock provider data filling via useOverride. No   action needed from me unless you want me to do something with that update.
+
+
+● Tip: /cwd
+  └ Change working directory or show current directory
+
+
+● Selected custom agent: terminal-agent
+
+
+! Failed to load 2 skills. Run /skills for more details.
+
+
+● IDE auto-connect skipped: session is already in use by another client
+
+
+! This session may already be in use by another CLI or application. Changes made here could conflict with the other   instance.
+
+
+❯ [System] Your terminal identity has been set. widgetId=agent-l3iu9a displayName=jade-grouse                        canvasId=storyboard-demo configFile=.storyboard/terminals/agent-l3iu9a.json serverUrl=http://localhost:1236 —      this is a configuration step, no response needed.                                                                
+
+● Acknowledged.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)

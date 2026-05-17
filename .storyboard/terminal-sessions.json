@@ -6,10 +6,10 @@
     "canvasId": "storyboard-demo",
     "widgetId": "agent-l3iu9a",
     "createdAt": "2026-05-17T08:43:07.709Z",
-    "lastConnectedAt": "2026-05-17T10:23:04.169Z",
+    "lastConnectedAt": "2026-05-17T11:05:34.053Z",
     "status": "live",
     "expiresAt": null,
-    "generation": 3
+    "generation": 4
   },
   {
     "tmuxName": "sb-e90aafa0af9a",
@@ -18,10 +18,10 @@
     "canvasId": "storyboard-demo",
     "widgetId": "agent-bqdgr2",
     "createdAt": "2026-05-17T08:43:07.918Z",
-    "lastConnectedAt": "2026-05-17T10:23:04.296Z",
+    "lastConnectedAt": "2026-05-17T11:05:35.216Z",
     "status": "live",
     "expiresAt": null,
-    "generation": 3
+    "generation": 4
   },
   {
     "tmuxName": "sb-50d4c91edd26",
@@ -30,10 +30,10 @@
     "canvasId": "storyboard-demo",
     "widgetId": "agent-v2qu53",
     "createdAt": "2026-05-17T08:43:09.799Z",
-    "lastConnectedAt": "2026-05-17T10:23:05.056Z",
+    "lastConnectedAt": "2026-05-17T11:05:35.387Z",
     "status": "live",
     "expiresAt": null,
-    "generation": 3
+    "generation": 4
   },
   {
     "tmuxName": "sb-f3d5b3588da8",
@@ -42,10 +42,10 @@
     "canvasId": "storyboard-demo",
     "widgetId": "agent-2lkxmx",
     "createdAt": "2026-05-17T08:43:10.009Z",
-    "lastConnectedAt": "2026-05-17T10:23:06.417Z",
+    "lastConnectedAt": "2026-05-17T11:05:36.161Z",
     "status": "live",
     "expiresAt": null,
-    "generation": 3
+    "generation": 4
   },
   {
     "tmuxName": "sb-69dbc90f0ae8",
@@ -54,10 +54,10 @@
     "canvasId": "storyboard-demo",
     "widgetId": "agent-5unog9",
     "createdAt": "2026-05-17T08:43:11.048Z",
-    "lastConnectedAt": "2026-05-17T10:23:06.452Z",
+    "lastConnectedAt": "2026-05-17T11:05:37.350Z",
     "status": "live",
     "expiresAt": null,
-    "generation": 3
+    "generation": 4
   },
   {
     "tmuxName": "sb-f02bae855ad5",
@@ -66,10 +66,10 @@
     "canvasId": "storyboard-demo",
     "widgetId": "agent-aiagsz",
     "createdAt": "2026-05-17T08:43:11.193Z",
-    "lastConnectedAt": "2026-05-17T10:23:06.493Z",
+    "lastConnectedAt": "2026-05-17T11:05:37.384Z",
     "status": "live",
     "expiresAt": null,
-    "generation": 3
+    "generation": 4
   },
   {
     "tmuxName": "sb-c372e05c7d61",
@@ -78,10 +78,10 @@
     "canvasId": "storyboard-demo",
     "widgetId": "agent-hrmw40",
     "createdAt": "2026-05-17T08:43:11.284Z",
-    "lastConnectedAt": "2026-05-17T10:23:06.527Z",
+    "lastConnectedAt": "2026-05-17T11:05:37.432Z",
     "status": "live",
     "expiresAt": null,
-    "generation": 3
+    "generation": 4
   },
   {
     "tmuxName": "sb-63df82fabb56",
@@ -90,10 +90,10 @@
     "canvasId": "storyboard-demo",
     "widgetId": "agent-wve8pt",
     "createdAt": "2026-05-17T08:43:15.243Z",
-    "lastConnectedAt": "2026-05-17T10:23:06.563Z",
+    "lastConnectedAt": "2026-05-17T11:05:37.464Z",
     "status": "live",
     "expiresAt": null,
-    "generation": 3
+    "generation": 4
   },
   {
     "tmuxName": "sb-016139e8b631",
@@ -102,10 +102,10 @@
     "canvasId": "storyboard-demo",
     "widgetId": "agent-1ultxz",
     "createdAt": "2026-05-17T08:43:16.394Z",
-    "lastConnectedAt": "2026-05-17T10:23:06.601Z",
+    "lastConnectedAt": "2026-05-17T11:05:37.492Z",
     "status": "live",
     "expiresAt": null,
-    "generation": 3
+    "generation": 4
   },
   {
     "tmuxName": "sb-9f61025b875c",
@@ -116,7 +116,7 @@
     "createdAt": "2026-05-17T08:43:17.530Z",
     "lastConnectedAt": "2026-05-17T10:23:06.641Z",
     "status": "archived",
-    "expiresAt": 1779013748441,
+    "expiresAt": 1779016148905,
     "generation": 4
   }
 ]
