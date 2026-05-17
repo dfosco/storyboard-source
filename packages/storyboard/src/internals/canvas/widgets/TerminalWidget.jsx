@@ -184,10 +184,25 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
   const dragHintTimer = useRef(null)
 
   // ── WebGL context pool integration ──
-  // webglReady: PINNED (bypass cap, guaranteed live — no frozen flash)
-  // All others: VISIBLE (auto-requests a live slot — no manual click needed)
-  const initialPriority = props?.webglReady ? Priority.PINNED : Priority.VISIBLE
-  const { isLive, generation, setPriority } = useWebGLSlot(id, initialPriority)
+  // All freshly-mounted terminals start at PINNED so they bypass the pool
+  // cap and come up live immediately — otherwise a new spawn loses the
+  // tiebreak against existing live widgets (stable sort, equal lastVisible)
+  // and renders the frozen "Click to resume" overlay even though tmux is
+  // running. After SPAWN_GRACE_MS the priority is handed back to
+  // usePoolVisibilityUpdater (CanvasPage) which manages VISIBLE/NEAR/OFFSCREEN
+  // based on viewport overlap.
+  const SPAWN_GRACE_MS = 5000
+  const { isLive, generation, setPriority } = useWebGLSlot(id, Priority.PINNED)
+
+  // Release the spawn-grace pin after the window expires, unless the
+  // widget is currently expanded/interactive (those keep it PINNED).
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (!expanded && !interactive) setPriority(Priority.VISIBLE)
+    }, SPAWN_GRACE_MS)
+    return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Update pool priority based on widget state
   useEffect(() => {
