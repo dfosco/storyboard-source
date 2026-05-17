@@ -1,13 +1,8 @@
 {
   "widgetProps": {
-    "alias": "Data",
-    "agentId": "copilot",
-    "startupCommand": "copilot --agent terminal-agent",
-    "prettyName": "green-petrel",
-    "role": "member",
-    "status": "running"
+    "prettyName": "green-petrel"
   },
-  "displayName": "Data",
+  "displayName": "green-petrel",
   "connectedWidgets": [
     {
       "id": "agent-l3iu9a",
@@ -84,15 +79,15 @@
     }
   ],
   "viewport": {
-    "centerX": 4540,
-    "centerY": 1926,
-    "zoom": 77,
-    "topLeftX": 3371,
-    "topLeftY": 1292,
-    "width": 2338,
-    "height": 1268
+    "centerX": 3255,
+    "centerY": 6769,
+    "zoom": 42,
+    "topLeftX": 1112,
+    "topLeftY": 5607,
+    "width": 4286,
+    "height": 2324
   },
-  "updatedAt": "2026-05-16T22:46:45.056Z",
+  "updatedAt": "2026-05-17T07:02:40.803Z",
   "widgetId": "agent-2lkxmx",
   "canvasId": "storyboard-demo",
   "canvasFile": null,

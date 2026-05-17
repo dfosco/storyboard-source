@@ -1,14 +1,8 @@
 {
   "widgetProps": {
-    "agentId": "copilot",
-    "alias": "Leader",
-    "startupCommand": "copilot --agent terminal-agent",
-    "width": 1000,
-    "height": 800,
-    "prettyName": "opal-warbler",
-    "role": "leader"
+    "prettyName": "opal-warbler"
   },
-  "displayName": "Leader",
+  "displayName": "opal-warbler",
   "connectedWidgets": [
     {
       "id": "agent-aiagsz",
@@ -19,7 +13,7 @@
         "startupCommand": "copilot --agent terminal-agent",
         "prettyName": "storm-sparrow",
         "role": "member",
-        "status": "done",
+        "status": "running",
         "errorMessage": ""
       },
       "position": {
@@ -36,12 +30,12 @@
         "startupCommand": "copilot --agent terminal-agent",
         "prettyName": "iron-petrel",
         "role": "member",
-        "status": "done",
+        "status": "running",
         "errorMessage": ""
       },
       "position": {
-        "x": 4505,
-        "y": 5759
+        "x": 4501,
+        "y": 5602
       }
     },
     {
@@ -53,7 +47,7 @@
         "startupCommand": "copilot --agent terminal-agent",
         "prettyName": "plum-egret",
         "role": "member",
-        "status": "done",
+        "status": "running",
         "errorMessage": ""
       },
       "position": {
@@ -155,15 +149,15 @@
     }
   ],
   "viewport": {
-    "centerX": 4540,
-    "centerY": 1926,
-    "zoom": 77,
-    "topLeftX": 3371,
-    "topLeftY": 1292,
-    "width": 2338,
-    "height": 1268
+    "centerX": 3255,
+    "centerY": 6769,
+    "zoom": 42,
+    "topLeftX": 1112,
+    "topLeftY": 5607,
+    "width": 4286,
+    "height": 2324
   },
-  "updatedAt": "2026-05-16T22:46:45.056Z",
+  "updatedAt": "2026-05-17T07:02:41.054Z",
   "widgetId": "agent-5unog9",
   "canvasId": "storyboard-demo",
   "canvasFile": null,

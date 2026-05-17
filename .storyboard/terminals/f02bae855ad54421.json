@@ -1,14 +1,8 @@
 {
   "widgetProps": {
-    "alias": "Scaffold",
-    "agentId": "copilot",
-    "startupCommand": "copilot --agent terminal-agent",
-    "prettyName": "storm-sparrow",
-    "role": "member",
-    "status": "done",
-    "errorMessage": ""
+    "prettyName": "storm-sparrow"
   },
-  "displayName": "Scaffold",
+  "displayName": "storm-sparrow",
   "connectedWidgets": [
     {
       "id": "agent-5unog9",
@@ -74,15 +68,15 @@
     }
   ],
   "viewport": {
-    "centerX": 4540,
-    "centerY": 1926,
-    "zoom": 77,
-    "topLeftX": 3371,
-    "topLeftY": 1292,
-    "width": 2338,
-    "height": 1268
+    "centerX": 3088,
+    "centerY": 6538,
+    "zoom": 42,
+    "topLeftX": 945,
+    "topLeftY": 5376,
+    "width": 4286,
+    "height": 2324
   },
-  "updatedAt": "2026-05-16T22:46:45.057Z",
+  "updatedAt": "2026-05-17T07:01:33.145Z",
   "widgetId": "agent-aiagsz",
   "canvasId": "storyboard-demo",
   "canvasFile": null,

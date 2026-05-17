@@ -1,14 +1,8 @@
 {
   "widgetProps": {
-    "alias": "Data",
-    "agentId": "copilot",
-    "startupCommand": "copilot --agent terminal-agent",
-    "prettyName": "plum-egret",
-    "role": "member",
-    "status": "done",
-    "errorMessage": ""
+    "prettyName": "plum-egret"
   },
-  "displayName": "Data",
+  "displayName": "plum-egret",
   "connectedWidgets": [
     {
       "id": "agent-5unog9",
@@ -85,15 +79,15 @@
     }
   ],
   "viewport": {
-    "centerX": 4540,
-    "centerY": 1926,
-    "zoom": 77,
-    "topLeftX": 3371,
-    "topLeftY": 1292,
-    "width": 2338,
-    "height": 1268
+    "centerX": 3255,
+    "centerY": 6769,
+    "zoom": 42,
+    "topLeftX": 1112,
+    "topLeftY": 5607,
+    "width": 4286,
+    "height": 2324
   },
-  "updatedAt": "2026-05-16T22:46:45.059Z",
+  "updatedAt": "2026-05-17T07:02:42.401Z",
   "widgetId": "agent-wve8pt",
   "canvasId": "storyboard-demo",
   "canvasFile": null,

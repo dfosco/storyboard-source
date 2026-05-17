@@ -123,6 +123,22 @@ export default function storyboardServer() {
             'highlight.js/lib/languages/xml',
           ],
         },
+        server: {
+          watch: {
+            // Never feed runtime-state directories to Vite's file watcher.
+            // These dirs are written to on sub-second cadence by terminals,
+            // canvas snapshots, agent state, etc. Letting them reach the
+            // watcher produces full-reload loops on any unguarded route.
+            // (server.watcher.unwatch() after the fact isn't enough — new
+            // files inside the dirs can still be re-added by chokidar.)
+            ignored: [
+              '**/.storyboard/**',
+              '**/assets/canvas/images/**',
+              '**/assets/canvas/snapshots/**',
+              '**/assets/.storyboard-public/**',
+            ],
+          },
+        },
       }
     },
 
