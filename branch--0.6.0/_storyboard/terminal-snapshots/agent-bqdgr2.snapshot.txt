@@ -1,7 +1,7 @@
 SESSION: agent-bqdgr2 | sage-tanager
 CANVAS:  storyboard-demo
 BRANCH:  0.6.0
-TIME:    2026-05-16T22:49:11.576Z
+TIME:    2026-05-17T07:02:54.504Z
 
 ================================================================================
 SCREEN
@@ -40,10 +40,216 @@ SCREEN
 
   Same content and layout; just calmer and readable. Summary widget on canvas updated.
 
- ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                   @storyboard.config.json
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                                @index.jsx
 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ❯  
 
 
 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
  1 background /tasks · / commands · ? help            terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+[?996n[>c[>q[lost tty]
+[?996n[>c[>q
+
+● Toned it down. Changes:
+
+   - Removed all gradients (background + avatar) and the blurred orb decorations   - Solid indigo-950 background — flat, calm
+   - Body text is now white (was indigo-100/90 and indigo-50 — washed out)
+   - Indigo-500 used only as small accents (logo tile, check bullets, avatar) —
+  no more translucent white/15 ring-on-glass stuff
+   - Testimonial is a quiet bordered card (border-indigo-800 on indigo-900/60)
+  instead of glassmorphism
+
+  Same content and layout; just calmer and readable. Summary widget on canvas
+  updated.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]             @index.jsx
+────────────────────────────────────────────────────────────────────────────────❯  
+
+
+──────────────────────────────────────────────────────────────────────────────── 1 background /tasks · / commands · ? help
+ terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+● Acknowledged — broadcast two-way active with Leader, Form, Data, opal-warbler, Scaffold, Charts, Data. Standing
+  by.
+
+
+❯ Branding is a bit too... ligth and bubbly? Gradients a bit annoying if I'm honest, and you're lacking contrast on   the text at places                                                                                              
+
+● Edit Branding.jsx +17 -26
+  └ src/prototypes/main.folder/StartupSignup/Branding.jsx
+
+
+● update summary widget + save output (shell)
+  │ export STORYBOARD_SERVER_URL=http://localhost:1236 STORYBOARD_CANVAS_ID=storyboard-demo
+  │ STORYBOARD_WIDGET_ID=agent-bqdgr2
+  │ curl -s -m 5 -X PATCH "$STORYBOARD_SERVER_URL/_storyboard/canvas/widget" \
+  │ -H "Content-Type: application/json" \
+  │ -d '{"name":"storyboard-demo","widgetId":"markdown-xpnck7","props":{"content":"### Branding.jsx …
+  └ 12 lines...
+
+
+● Toned it down. Changes:
+
+   - Removed all gradients (background + avatar) and the blurred orb decorations
+   - Solid indigo-950 background — flat, calm
+   - Body text is now white (was indigo-100/90 and indigo-50 — washed out)
+   - Indigo-500 used only as small accents (logo tile, check bullets, avatar) — no more translucent white/15
+  ring-on-glass stuff
+   - Testimonial is a quiet bordered card (border-indigo-800 on indigo-900/60) instead of glassmorphism
+
+  Same content and layout; just calmer and readable. Summary widget on canvas updated.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                                @index.jsx
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 1 background /tasks · / commands · ? help            terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+● Acknowledged — broadcast two-way active with Leader, Form, Data, opal-warbler, Scaffold, Charts, Data. Standing
+  by.
+
+
+❯ Branding is a bit too... ligth and bubbly? Gradients a bit annoying if I'm honest, and you're lacking contrast on   the text at places                                                                                              
+
+● Edit Branding.jsx +17 -26
+  └ src/prototypes/main.folder/StartupSignup/Branding.jsx
+
+
+● update summary widget + save output (shell)
+  │ export STORYBOARD_SERVER_URL=http://localhost:1236 STORYBOARD_CANVAS_ID=storyboard-demo
+  │ STORYBOARD_WIDGET_ID=agent-bqdgr2
+  │ curl -s -m 5 -X PATCH "$STORYBOARD_SERVER_URL/_storyboard/canvas/widget" \
+  │ -H "Content-Type: application/json" \
+  │ -d '{"name":"storyboard-demo","widgetId":"markdown-xpnck7","props":{"content":"### Branding.jsx …
+  └ 12 lines...
+
+
+● Toned it down. Changes:
+
+   - Removed all gradients (background + avatar) and the blurred orb decorations
+   - Solid indigo-950 background — flat, calm
+   - Body text is now white (was indigo-100/90 and indigo-50 — washed out)
+   - Indigo-500 used only as small accents (logo tile, check bullets, avatar) — no more translucent white/15
+  ring-on-glass stuff
+   - Testimonial is a quiet bordered card (border-indigo-800 on indigo-900/60) instead of glassmorphism
+
+  Same content and layout; just calmer and readable. Summary widget on canvas updated.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                                @index.jsx
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 1 background /tasks · / commands · ? help            terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+● Acknowledged — broadcast two-way active with Leader, Form, Data, opal-warbler, Scaffold, Charts, Data. Standing
+  by.
+
+
+❯ Branding is a bit too... ligth and bubbly? Gradients a bit annoying if I'm honest, and you're lacking contrast on   the text at places                                                                                              
+
+● Edit Branding.jsx +17 -26
+  └ src/prototypes/main.folder/StartupSignup/Branding.jsx
+
+
+● update summary widget + save output (shell)
+  │ export STORYBOARD_SERVER_URL=http://localhost:1236 STORYBOARD_CANVAS_ID=storyboard-demo
+  │ STORYBOARD_WIDGET_ID=agent-bqdgr2
+  │ curl -s -m 5 -X PATCH "$STORYBOARD_SERVER_URL/_storyboard/canvas/widget" \
+  │ -H "Content-Type: application/json" \
+  │ -d '{"name":"storyboard-demo","widgetId":"markdown-xpnck7","props":{"content":"### Branding.jsx …
+  └ 12 lines...
+
+
+● Toned it down. Changes:
+
+   - Removed all gradients (background + avatar) and the blurred orb decorations
+   - Solid indigo-950 background — flat, calm
+   - Body text is now white (was indigo-100/90 and indigo-50 — washed out)
+   - Indigo-500 used only as small accents (logo tile, check bullets, avatar) — no more translucent white/15
+  ring-on-glass stuff
+   - Testimonial is a quiet bordered card (border-indigo-800 on indigo-900/60) instead of glassmorphism
+
+  Same content and layout; just calmer and readable. Summary widget on canvas updated.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                                @index.jsx
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 1 background /tasks · / commands · ? help            terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+● Acknowledged — broadcast two-way active with Leader, Form, Data, opal-warbler, Scaffold, Charts, Data. Standing
+  by.
+
+
+❯ Branding is a bit too... ligth and bubbly? Gradients a bit annoying if I'm honest, and you're lacking contrast on   the text at places                                                                                              
+
+● Edit Branding.jsx +17 -26
+  └ src/prototypes/main.folder/StartupSignup/Branding.jsx
+
+
+● update summary widget + save output (shell)
+  │ export STORYBOARD_SERVER_URL=http://localhost:1236 STORYBOARD_CANVAS_ID=storyboard-demo
+  │ STORYBOARD_WIDGET_ID=agent-bqdgr2
+  │ curl -s -m 5 -X PATCH "$STORYBOARD_SERVER_URL/_storyboard/canvas/widget" \
+  │ -H "Content-Type: application/json" \
+  │ -d '{"name":"storyboard-demo","widgetId":"markdown-xpnck7","props":{"content":"### Branding.jsx …
+  └ 12 lines...
+
+
+● Toned it down. Changes:
+
+   - Removed all gradients (background + avatar) and the blurred orb decorations
+   - Solid indigo-950 background — flat, calm
+   - Body text is now white (was indigo-100/90 and indigo-50 — washed out)
+   - Indigo-500 used only as small accents (logo tile, check bullets, avatar) — no more translucent white/15
+  ring-on-glass stuff
+   - Testimonial is a quiet bordered card (border-indigo-800 on indigo-900/60) instead of glassmorphism
+
+  Same content and layout; just calmer and readable. Summary widget on canvas updated.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                                @index.jsx
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 1 background /tasks · / commands · ? help            terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+
+● Acknowledged — broadcast two-way active with Leader, Form, Data, opal-warbler, Scaffold, Charts, Data. Standing
+  by.
+
+
+❯ Branding is a bit too... ligth and bubbly? Gradients a bit annoying if I'm honest, and you're lacking contrast on   the text at places                                                                                              
+
+● Edit Branding.jsx +17 -26
+  └ src/prototypes/main.folder/StartupSignup/Branding.jsx
+
+
+● update summary widget + save output (shell)
+  │ export STORYBOARD_SERVER_URL=http://localhost:1236 STORYBOARD_CANVAS_ID=storyboard-demo
+  │ STORYBOARD_WIDGET_ID=agent-bqdgr2
+  │ curl -s -m 5 -X PATCH "$STORYBOARD_SERVER_URL/_storyboard/canvas/widget" \
+  │ -H "Content-Type: application/json" \
+  │ -d '{"name":"storyboard-demo","widgetId":"markdown-xpnck7","props":{"content":"### Branding.jsx …
+  └ 12 lines...
+
+
+● Toned it down. Changes:
+
+   - Removed all gradients (background + avatar) and the blurred orb decorations
+   - Solid indigo-950 background — flat, calm
+   - Body text is now white (was indigo-100/90 and indigo-50 — washed out)
+   - Indigo-500 used only as small accents (logo tile, check bullets, avatar) — no more translucent white/15
+  ring-on-glass stuff
+   - Testimonial is a quiet bordered card (border-indigo-800 on indigo-900/60) instead of glassmorphism
+
+  Same content and layout; just calmer and readable. Summary widget on canvas updated.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                                @index.jsx
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 1 background /tasks · / commands · ? help            terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
