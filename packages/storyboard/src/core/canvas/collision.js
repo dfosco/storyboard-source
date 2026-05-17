@@ -280,6 +280,7 @@ export function resolvePosition({
   widgets,
   excludeId = null,
   gridSize = 24,
+  gap = null,
   preferAxis = 'horizontal',
 }) {
   const defaults = getDefaultSize(type)
@@ -294,6 +295,7 @@ export function resolvePosition({
     widgets,
     excludeId,
     gridSize,
+    gap,
     preferAxis,
   })
 }

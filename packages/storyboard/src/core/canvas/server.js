@@ -1114,10 +1114,15 @@ export function createCanvasHandler(ctx) {
         }
 
         if (near || resolve || needsAutoPosition) {
+          const gs = (canvasData && canvasData.gridSize) || 24
           const resolved = resolvePosition({
             x: position.x, y: position.y, type, props,
             widgets: canvasWidgets,
-            gridSize: (canvasData && canvasData.gridSize) || 24,
+            gridSize: gs,
+            // When the user supplied --gap (grid spaces), use the same spacing
+            // for collision cascades so cascaded widgets keep the gap, not just
+            // sit one gridSize apart.
+            gap: near && typeof gap === 'number' ? gap * gs : null,
             preferAxis: near ? directionPreferAxis(direction) : 'horizontal',
           })
           position = { x: resolved.x, y: resolved.y }
@@ -1873,10 +1878,12 @@ export function createCanvasHandler(ctx) {
 
                 // Collision resolution: uses live widgetMap (includes earlier batch creates)
                 if (near || doResolve || needsAuto) {
+                  const gs = canvasData.gridSize || 24
                   const resolved = resolvePosition({
                     x: position.x, y: position.y, type, props,
                     widgets: Array.from(widgetMap.values()),
-                    gridSize: canvasData.gridSize || 24,
+                    gridSize: gs,
+                    gap: near && typeof opGap === 'number' ? opGap * gs : null,
                     preferAxis: near ? directionPreferAxis(direction) : 'horizontal',
                   })
                   position = { x: resolved.x, y: resolved.y }
