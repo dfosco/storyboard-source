@@ -1,7 +1,7 @@
 SESSION: agent-v2qu53 | opal-osprey
 CANVAS:  storyboard-demo
 BRANCH:  0.6.0
-TIME:    2026-05-17T07:02:54.472Z
+TIME:    2026-05-17T07:32:27.236Z
 
 ================================================================================
 SCREEN
@@ -52,83 +52,6 @@ SCREEN
 SCROLLBACK (last 60s)
 ================================================================================
 
-[lost tty]
-[?996n[>c[>q● Retry output save (shell)
-  │ sleep 3; export STORYBOARD_WIDGET_ID=agent-v2qu53
-  │ npx storyboard terminal output --summary "Proper OAuth modal flows added" --content "Replaced auto-fill stub
-  │ with full provider-styled OAuth modals in SignupForm.jsx. Google: email → password → consent. GitHub:
-  │ credentials → authorize. State via useOverride
-  │ (signup.oauthProvider/oauthStep/oauthIdentifier/oauthPassword). On authorize, derives signup fields from the …
-  └ 3 lines...
-
-
-● Code is saved either way — the prototype is visible on the canvas so it auto-refreshes via HMR.
-
-  Done. SignupForm.jsx now has proper OAuth flows:
-
-  Google modal (white card, Google wordmark, accounts.google.com chrome):
-
-   1. Email/phone input → Next
-   2. Password screen with account chip + back arrow → Next
-   3. Consent screen "Loopline wants to access your Google Account" → Allow / Cancel
-
-  GitHub modal (#f6f8fa bg, green #2da44e buttons, github.com/login chrome):
-
-   1. Username/email + password form → Sign in
-   2. "Authorize Loopline" screen with permissions list → Authorize loopline-hq / Cancel
-
-  State wired via useOverride:
-
-   - signup.oauthProvider ('google'|'github')
-   - signup.oauthStep ('idle'|'account'|'password'|'credentials'|'consent')
-   - signup.oauthIdentifier, signup.oauthPassword
-
-  On authorize: derives signup.fullName from the handle local-part, sets signup.email / signup.company
-  appropriately per provider, sets agreedToTerms=true, transitions to success. Cancel ✕ closes and resets cleanly.
-
- ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0]                                                  @index.jsx
-───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯
-
-
-─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
-● Retry output save (shell)
-  │ sleep 3; export STORYBOARD_WIDGET_ID=agent-v2qu53
-  │ npx storyboard terminal output --summary "Proper OAuth modal flows added" --content "Replaced auto-fill stub
-  │ with full provider-styled OAuth modals in SignupForm.jsx. Google: email → password → consent. GitHub:
-  │ credentials → authorize. State via useOverride
-  │ (signup.oauthProvider/oauthStep/oauthIdentifier/oauthPassword). On authorize, derives signup fields from the …
-  └ 3 lines...
-
-
-● Code is saved either way — the prototype is visible on the canvas so it auto-refreshes via HMR.
-
-  Done. SignupForm.jsx now has proper OAuth flows:
-
-  Google modal (white card, Google wordmark, accounts.google.com chrome):
-
-   1. Email/phone input → Next
-   2. Password screen with account chip + back arrow → Next
-   3. Consent screen "Loopline wants to access your Google Account" → Allow / Cancel
-
-  GitHub modal (#f6f8fa bg, green #2da44e buttons, github.com/login chrome):
-
-   1. Username/email + password form → Sign in
-   2. "Authorize Loopline" screen with permissions list → Authorize loopline-hq / Cancel
-
-  State wired via useOverride:
-
-   - signup.oauthProvider ('google'|'github')
-   - signup.oauthStep ('idle'|'account'|'password'|'credentials'|'consent')
-   - signup.oauthIdentifier, signup.oauthPassword
-
-  On authorize: derives signup.fullName from the handle local-part, sets signup.email / signup.company
-  appropriately per provider, sets agreedToTerms=true, transitions to success. Cancel ✕ closes and resets cleanly.
-
- ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0]                                                  @index.jsx
-───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
-
-
-─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
 ● Retry output save (shell)
   │ sleep 3; export STORYBOARD_WIDGET_ID=agent-v2qu53
   │ npx storyboard terminal output --summary "Proper OAuth modal flows added" --content "Replaced auto-fill stub

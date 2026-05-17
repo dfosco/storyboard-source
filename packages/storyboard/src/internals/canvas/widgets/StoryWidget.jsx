@@ -10,6 +10,7 @@
  */
 import { forwardRef, useImperativeHandle, useRef, useCallback, useState, useEffect, useMemo } from 'react'
 import { getStoryData } from '../../../core/index.js'
+import { useThemeState, useThemeSyncTargets } from '../../hooks/useThemeState.js'
 import { getConfig } from '../../../core/stores/configStore.js'
 import { createInspectorHighlighter } from '../../../core/inspector/highlighter.js'
 import Icon from '../../Icon.jsx'
@@ -42,13 +43,14 @@ function isInlineStoriesEnabled() {
   } catch { return false }
 }
 
-function resolveStoryUrl(storyId, exportName) {
+function resolveStoryUrl(storyId, exportName, theme) {
   const story = getStoryData(storyId)
   if (!story?._storyModule) return ''
   const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '')
   const params = new URLSearchParams()
   params.set('module', story._storyModule)
   if (exportName) params.set('export', exportName)
+  if (theme) params.set('theme', theme)
   return `${base}/_storyboard/canvas/isolate?${params}`
 }
 
@@ -194,9 +196,13 @@ export default forwardRef(function StoryWidget({ id: widgetId, props, onUpdate, 
     },
   }), [storyId, showCode, toggleShowCode, copyCode, setExpandMode])
 
+  const { resolved: resolvedTheme } = useThemeState() || {}
+  const { prototype: prototypeSync } = useThemeSyncTargets() || {}
+  const effectiveTheme = prototypeSync ? (resolvedTheme || 'light') : 'light'
+
   const iframeSrc = useMemo(
-    () => resolveStoryUrl(storyId, exportName),
-    [storyId, exportName, storyIndexKey],
+    () => resolveStoryUrl(storyId, exportName, effectiveTheme),
+    [storyId, exportName, storyIndexKey, effectiveTheme],
   )
 
   const inlineEnabled = isInlineStoriesEnabled()

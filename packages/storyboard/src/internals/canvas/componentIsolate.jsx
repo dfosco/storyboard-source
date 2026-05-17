@@ -68,6 +68,7 @@ const colorMode = theme.startsWith('dark') ? 'night' : 'day'
 document.documentElement.setAttribute('data-color-mode', theme.startsWith('dark') ? 'dark' : 'light')
 document.documentElement.setAttribute('data-dark-theme', theme.startsWith('dark') ? theme : '')
 document.documentElement.setAttribute('data-light-theme', theme.startsWith('dark') ? '' : theme || 'light')
+document.documentElement.setAttribute('data-sb-theme', theme || 'light')
 
 // Suppress HMR full-reloads — this iframe is embedded inside a canvas page
 // that manages its own reload lifecycle. Without this guard, every file change

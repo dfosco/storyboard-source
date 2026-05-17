@@ -76,20 +76,44 @@ const { x, y, adjusted } = findFreePosition({
 
 ## Reference: Widget Types and Default Sizes
 
-| Type | Default W×H | Content Prop | Other Props |
-|------|------------|-------------|-------------|
-| `sticky-note` | 270×170 | `text` | `color` (yellow, blue, green, pink, purple, orange), `width`, `height` |
-| `markdown` | 530×240 | `content` (markdown) | `width` |
-| `prototype` | 800×600 | `src` (URL/path) | `label`, `zoom` (10–250), `width`, `height` |
-| `figma-embed` | 800×450 | `url` | `width`, `height` |
-| `codepen-embed` | 800×450 | `url` | `width`, `height` |
-| `story` | 780×420 | `storyId` + `exportName` | `width`, `height`, `showCode` |
-| `component-set` | 780×420 | `storyId` | `layout` (horizontal/vertical), `selected`, `width`, `height` |
-| `image` | 400×300 | `src` (filename) | `width`, `height`, `private` |
-| `link-preview` | 320×200 | `url` | `title` |
-| `component` | 300×200 | — | `width`, `height` |
-| `terminal` | 650×500 | — | `prettyName`, `alias` |
-| `agent` | 650×500 | — | `prettyName`, `alias`, `agentId` (key from `canvas.agents` config) |
+> **Authoritative list:** `.agents/data/widget-types.json` (generated from the widget registry — never invent type strings). Regenerate via `node scripts/gen-widget-types.mjs`.
+
+| Type | Default W×H | Content Prop | Other Props | When to use |
+|------|------------|-------------|-------------|-------------|
+| `sticky-note` | 270×170 | `text` | `color` (yellow, blue, green, pink, purple, orange), `width`, `height` | Short notes, todos, ideation |
+| `markdown` | 530×240 | `content` (markdown) | `width` | Prose, specs, summaries |
+| `prototype` | 800×600 | `src` (URL/path) | `label`, `zoom` (10–250), `width`, `height` | Embed a prototype page |
+| `figma-embed` | 800×450 | `url` | `width`, `height` | Embed a Figma file/frame |
+| `codepen-embed` | 800×450 | `url` | `width`, `height` | Embed a CodePen |
+| `story` | 780×420 | `storyId` + `exportName` | `width`, `height`, `showCode` | Render **ONE** named export of a story file |
+| `component-set` | 780×420 (auto-sized) | `storyId` | `layout` (`auto`\|`wide`\|`tall`), `selected`, `density`, `width`, `height` | Render **ALL** exports of a story file in one grid iframe |
+| `image` | 400×300 | `src` (filename) | `width`, `height`, `private` | Screenshots, references, mockups |
+| `link-preview` | 320×200 | `url` | `title` | External URL preview card |
+| `terminal` | 650×500 | — | `prettyName`, `alias` | Live terminal session |
+| `terminal-read` | 650×500 | — | `width`, `height` | Read-only view of another terminal |
+| `agent` | 650×500 | — | `prettyName`, `alias`, `agentId` (key from `canvas.agents` config) | Agent session (Copilot/Codex/etc.) |
+| `prompt` | 400×200 | `text` | `agentId`, `autoRun` | Canned prompt that spawns an agent |
+| `tiles` | 600×400 | — | `tiles[]`, `columns`, `width`, `height` | Small content tile grid |
+
+### ⚠️ `story` vs `component-set` — read this before creating story widgets
+
+| You want to… | Use | Don't |
+|--------------|-----|-------|
+| Show ONE specific variant of a component | `story` (with `exportName`) | — |
+| Show ALL variants of a story file (a "component set", "showcase", "every variant") | **`component-set`** (one widget, N cells) | ❌ DO NOT create N `story` widgets — wasteful, slow, ugly |
+| Compare 2+ exports of the **same** story file side by side | **`component-set`** | ❌ Same reason |
+| Compare components from **different** story files | Multiple `story` widgets, or several `component-set` widgets | — |
+
+**Hard rule:** If you are about to create 2+ `story` widgets sharing the same `storyId`, stop and use a single `component-set` widget instead. The user almost certainly meant "component set" even if they didn't say it literally.
+
+**Trigger phrases** that almost always mean `component-set`:
+- "variants of X"
+- "component set for X"
+- "showcase for X"
+- "every variant of X"
+- "all exports of X"
+- "one variant for each type"
+
 
 ## Reference: Widget Content, URLs, and File Paths
 

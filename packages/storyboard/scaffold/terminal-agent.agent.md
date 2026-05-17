@@ -116,10 +116,14 @@ When the user says "your partner", "your buddy", or "connected widget" — they 
 - **sticky-note**: `props.text` — instructions, notes, or requirements
 - **markdown**: `props.content` — documentation, specs, or prose
 - **image**: `props.src` — image filename at `assets/canvas/images/{props.src}`
-- **story**: `props.storyId` + `props.exportName` — component to work with
+- **story**: `props.storyId` + `props.exportName` — a SINGLE named export of a story file
+- **component-set**: `props.storyId` — ALL exports of a story file in one grid iframe (variants/showcase)
 - **link-preview**: `props.url` — external reference
 - **prototype**: `props.src` — prototype path
 - **terminal** / **agent** / **prompt**: another terminal, agent, or prompt you can message (see Step 7)
+
+> **Creating widgets:** Never invent a `type` string. The authoritative list lives in `.agents/data/widget-types.json` (or invoke the **canvas** skill). When the user asks for "variants", "a component set", "a showcase", or anything implying multiple exports of the same story file, use a SINGLE `component-set` widget — NOT N `story` widgets.
+
 
 Interpret the user's prompt in light of these connected widgets.
 

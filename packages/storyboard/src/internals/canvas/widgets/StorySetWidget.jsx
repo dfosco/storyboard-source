@@ -12,6 +12,7 @@
  */
 import { forwardRef, useImperativeHandle, useRef, useCallback, useState, useEffect, useMemo } from 'react'
 import { getStoryData } from '../../../core/index.js'
+import { useThemeState, useThemeSyncTargets } from '../../hooks/useThemeState.js'
 import Icon from '../../Icon.jsx'
 import WidgetWrapper from './WidgetWrapper.jsx'
 import ResizeHandle from './ResizeHandle.jsx'
@@ -26,7 +27,7 @@ function GridIcon({ size = 16 }) {
   return <Icon name="iconoir/view-grid" size={size} />
 }
 
-function resolveStorySetUrl(storyId, layout, selected, density) {
+function resolveStorySetUrl(storyId, layout, selected, density, theme) {
   const story = getStoryData(storyId)
   if (!story?._storyModule) return ''
   const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '')
@@ -35,6 +36,7 @@ function resolveStorySetUrl(storyId, layout, selected, density) {
   if (layout) params.set('layout', layout)
   if (selected) params.set('selected', selected)
   if (density) params.set('density', density)
+  if (theme) params.set('theme', theme)
   return `${base}/_storyboard/canvas/isolate-set?${params}`
 }
 
@@ -163,11 +165,15 @@ export default forwardRef(function StorySetWidget({ id: widgetId, props, onUpdat
     },
   }), [storyId, layout, onUpdate, setExpanded])
 
+  const { resolved: resolvedTheme } = useThemeState() || {}
+  const { prototype: prototypeSync } = useThemeSyncTargets() || {}
+  const effectiveTheme = prototypeSync ? (resolvedTheme || 'light') : 'light'
+
   const iframeSrc = useMemo(
-    () => resolveStorySetUrl(storyId, layout, selected, density),
+    () => resolveStorySetUrl(storyId, layout, selected, density, effectiveTheme),
     // storyIndexKey forces re-evaluation when HMR mutates the story index
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [storyId, layout, selected, density, storyIndexKey],
+    [storyId, layout, selected, density, storyIndexKey, effectiveTheme],
   )
 
   useIframeDevLogs({

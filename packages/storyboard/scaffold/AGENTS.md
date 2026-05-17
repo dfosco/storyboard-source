@@ -233,6 +233,7 @@ The fix was a one-line compaction (4MB → 9KB). Everything the user reported �
 - Use **Primer Octicons** from `@primer/octicons-react` for icons
   - **Before importing any icon, verify it exists in `.agents/data/primer-octicons.json`** (the authoritative export list, generated from the installed package). Agents frequently invent icon names like `ScissorsIcon` that do not exist and break the page at runtime. If the icon you want is not in that list, pick the closest available name from the list — never guess.
   - Regenerate the list after bumping `@primer/octicons-react`: `node scripts/gen-octicons-list.mjs`
+- Use the **canvas widget type registry** at `.agents/data/widget-types.json` as the authoritative list of valid canvas widget `type` strings, their props, default sizes, and when-to-use guidance. Never invent widget types. In particular: when showing multiple variants of a single story file, use ONE `component-set` widget — not N `story` widgets. Regenerate after changing the widget registry: `node scripts/gen-widget-types.mjs`.
 - Use **CSS Modules** (`*.module.css`) for component-specific styles
   - If you find any `sx` styled-components styling, migrate them to CSS Modules
 - **Components must live in their own directory:** `src/components/Name/Name.jsx`, `Name.module.css`, `name.story.jsx`. Never place component files flat in `src/components/`.

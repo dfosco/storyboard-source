@@ -1,0 +1,181 @@
+{
+  "source": "packages/storyboard/src/internals/canvas/widgets/index.js",
+  "generatedAt": "2026-05-17T07:31:41.586Z",
+  "count": 14,
+  "note": "Authoritative list of canvas widget types. ONLY use type strings present in this list. Regenerate via: node scripts/gen-widget-types.mjs",
+  "decisionRules": [
+    "If you are about to create 2+ `story` widgets that share the same `storyId`, STOP and use a single `component-set` widget instead.",
+    "If the user says \"variants\", \"component set\", \"showcase\", \"all exports of X\", or \"every variant\" → use `component-set`, NOT multiple `story` widgets.",
+    "If the user wants to show a single specific component variant → use `story` with both `storyId` and `exportName`.",
+    "If you do not know the exact `type` string for what you are creating, look it up in this file. Never invent type strings.",
+    "Always pass props matching `contentProp` (and any required props) when creating a widget — empty widgets are useless on the canvas."
+  ],
+  "widgets": [
+    {
+      "type": "sticky-note",
+      "component": "StickyNote",
+      "contentProp": "text",
+      "otherProps": [
+        "color",
+        "width",
+        "height"
+      ],
+      "defaultSize": "270×170",
+      "description": "Short note or label. Use for instructions, todos, or ideation."
+    },
+    {
+      "type": "markdown",
+      "component": "MarkdownBlock",
+      "contentProp": "content",
+      "otherProps": [
+        "width"
+      ],
+      "defaultSize": "530×240",
+      "description": "Rich text block. Use for prose, specs, documentation, or summaries."
+    },
+    {
+      "type": "prototype",
+      "component": "PrototypeEmbed",
+      "contentProp": "src",
+      "otherProps": [
+        "label",
+        "zoom",
+        "width",
+        "height"
+      ],
+      "defaultSize": "800×600",
+      "description": "Embeds a prototype page from src/prototypes via iframe."
+    },
+    {
+      "type": "link-preview",
+      "component": "LinkPreview",
+      "contentProp": "url",
+      "otherProps": [
+        "title"
+      ],
+      "defaultSize": "320×200",
+      "description": "OG-style preview card for an external URL."
+    },
+    {
+      "type": "image",
+      "component": "ImageWidget",
+      "contentProp": "src (filename)",
+      "otherProps": [
+        "width",
+        "height",
+        "private"
+      ],
+      "defaultSize": "400×300",
+      "description": "Renders an image from /assets/canvas/images/{src}. Use for screenshots, references, mockups."
+    },
+    {
+      "type": "figma-embed",
+      "component": "FigmaEmbed",
+      "contentProp": "url",
+      "otherProps": [
+        "width",
+        "height"
+      ],
+      "defaultSize": "800×450",
+      "description": "Embeds a Figma file/frame URL."
+    },
+    {
+      "type": "codepen-embed",
+      "component": "CodePenEmbed",
+      "contentProp": "url",
+      "otherProps": [
+        "width",
+        "height"
+      ],
+      "defaultSize": "800×450",
+      "description": "Embeds a CodePen URL."
+    },
+    {
+      "type": "story",
+      "component": "StoryWidget",
+      "contentProp": "storyId + exportName",
+      "otherProps": [
+        "width",
+        "height",
+        "showCode"
+      ],
+      "defaultSize": "780×420",
+      "description": "Renders ONE named export from a .story.jsx file. Use for showing a single component variant.",
+      "preferOver": null,
+      "avoidWhen": "You want to show MULTIPLE variants/exports of the same story file — use `component-set` instead to render all exports in a single grid iframe."
+    },
+    {
+      "type": "component-set",
+      "component": "StorySetWidget",
+      "contentProp": "storyId",
+      "otherProps": [
+        "layout (auto|wide|tall)",
+        "selected",
+        "density",
+        "width",
+        "height"
+      ],
+      "defaultSize": "780×420 (auto-sized from content)",
+      "description": "Renders ALL named exports of a .story.jsx file in a single grid iframe. The user can select a cell to inspect it. ONE widget shows N variants.",
+      "preferOver": "PREFER this over N `story` widgets when the user asks for \"variants\", \"a component set\", \"all variants of X\", \"a showcase\", or anything implying multiple exports of the same story file. Faster (one iframe vs N), tidier on canvas, and supports selection."
+    },
+    {
+      "type": "terminal",
+      "component": "TerminalWidget",
+      "contentProp": "—",
+      "otherProps": [
+        "prettyName",
+        "alias"
+      ],
+      "defaultSize": "650×500",
+      "description": "Live terminal session (xterm). Created by user via canvas UI."
+    },
+    {
+      "type": "terminal-read",
+      "component": "TerminalReadWidget",
+      "contentProp": "—",
+      "otherProps": [
+        "width",
+        "height"
+      ],
+      "defaultSize": "650×500",
+      "description": "Read-only view of another terminal's buffer."
+    },
+    {
+      "type": "agent",
+      "component": "TerminalWidget",
+      "contentProp": "—",
+      "otherProps": [
+        "prettyName",
+        "alias",
+        "agentId"
+      ],
+      "defaultSize": "650×500",
+      "description": "Agent session (Copilot/Codex/etc.) — same widget as terminal, configured as an agent."
+    },
+    {
+      "type": "prompt",
+      "component": "PromptWidget",
+      "contentProp": "text",
+      "otherProps": [
+        "agentId",
+        "autoRun"
+      ],
+      "defaultSize": "400×200",
+      "description": "A reusable prompt that can spawn an agent session. Use for canned actions or task templates."
+    },
+    {
+      "type": "tiles",
+      "component": "TilesWidget",
+      "contentProp": "—",
+      "otherProps": [
+        "tiles[]",
+        "columns",
+        "width",
+        "height"
+      ],
+      "defaultSize": "600×400",
+      "description": "Grid of small content tiles. Use for dashboards or option grids."
+    }
+  ]
+}

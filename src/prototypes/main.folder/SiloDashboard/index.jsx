@@ -150,7 +150,7 @@ export default function SiloDashboard() {
         <header className="flex min-h-16 items-center justify-between border-b border-neutral-800 px-5">
           <div className="flex items-center gap-3 text-sm text-neutral-300">
             <span className="text-neutral-500">/</span>
-            <span>Utilization</span>
+            <span>Utilization Rates</span>
           </div>
           <div className="flex items-center gap-2">
             <Pill>
