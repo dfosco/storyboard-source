@@ -93,7 +93,7 @@ function GoogleOAuthModal({ step, identifier, password, onIdentifier, onPassword
                     <button
                       type="submit"
                       disabled={!identifier.trim()}
-                      className="rounded bg-[#1a73e8] px-6 py-2 text-sm font-medium text-white hover:bg-[#1765cc] disabled:bg-muted disabled:text-muted-foreground"
+                      className="rounded bg-[var(--bgColor-accent-emphasis)] px-6 py-2 text-sm font-medium text-[var(--fgColor-onEmphasis)] hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       Next
                     </button>
@@ -136,7 +136,7 @@ function GoogleOAuthModal({ step, identifier, password, onIdentifier, onPassword
                     <button
                       type="submit"
                       disabled={!password.trim()}
-                      className="rounded bg-[#1a73e8] px-6 py-2 text-sm font-medium text-white hover:bg-[#1765cc] disabled:bg-muted disabled:text-muted-foreground"
+                      className="rounded bg-[var(--bgColor-accent-emphasis)] px-6 py-2 text-sm font-medium text-[var(--fgColor-onEmphasis)] hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       Next
                     </button>
@@ -187,7 +187,7 @@ function GoogleOAuthModal({ step, identifier, password, onIdentifier, onPassword
                 <button
                   type="button"
                   onClick={onAuthorize}
-                  className="rounded bg-[#1a73e8] px-5 py-2 text-sm font-medium text-white hover:bg-[#1765cc]"
+                  className="rounded bg-[var(--bgColor-accent-emphasis)] px-5 py-2 text-sm font-medium text-[var(--fgColor-onEmphasis)] hover:brightness-110"
                 >
                   Allow
                 </button>
@@ -251,7 +251,7 @@ function GitHubOAuthModal({ step, identifier, password, onIdentifier, onPassword
                 <button
                   type="submit"
                   disabled={!identifier.trim() || !password.trim()}
-                  className="block w-full rounded-md bg-[#2da44e] px-4 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-[#2c974b] disabled:cursor-not-allowed disabled:bg-[#94d3a2]"
+                  className="block w-full rounded-md bg-[var(--bgColor-success-emphasis)] px-4 py-1.5 text-sm font-semibold text-[var(--fgColor-onEmphasis)] shadow-sm hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   Sign in
                 </button>
@@ -299,7 +299,7 @@ function GitHubOAuthModal({ step, identifier, password, onIdentifier, onPassword
                 <button
                   type="button"
                   onClick={onAuthorize}
-                  className="block w-full rounded-md bg-[#2da44e] px-4 py-1.5 text-sm font-semibold text-white hover:bg-[#2c974b]"
+                  className="block w-full rounded-md bg-[var(--bgColor-success-emphasis)] px-4 py-1.5 text-sm font-semibold text-[var(--fgColor-onEmphasis)] hover:brightness-110"
                 >
                   Authorize loopline-hq
                 </button>
@@ -562,7 +562,11 @@ export default function SignupForm() {
               <button
                 type="submit"
                 disabled={!canSubmit}
-                className="inline-flex w-full items-center justify-center rounded-md bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-background disabled:cursor-not-allowed disabled:bg-indigo-300"
+                className={`inline-flex w-full items-center justify-center rounded-md px-4 py-2.5 text-sm font-semibold shadow-sm transition focus:outline-none focus:ring-2 focus:ring-[var(--borderColor-accent-emphasis)] focus:ring-offset-2 focus:ring-offset-background ${
+                  canSubmit
+                    ? 'bg-[var(--bgColor-accent-emphasis)] text-[var(--fgColor-onEmphasis)] hover:brightness-110'
+                    : 'cursor-not-allowed bg-muted text-muted-foreground'
+                }`}
               >
                 {isSubmitting ? 'Creating account…' : 'Create account'}
               </button>
