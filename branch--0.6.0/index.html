@@ -32,15 +32,33 @@
     </script>
     <!-- End Single Page Apps for GitHub Pages -->
     <script>
-      // Set theme from localStorage before first paint to avoid flash
+      // Set theme from localStorage before first paint to avoid flash.
+      // Must set ALL four attributes (data-sb-theme + data-color-mode +
+      // data-light-theme + data-dark-theme) so Primer's CSS variables
+      // resolve correctly on the very first paint — Tailwind utilities
+      // mapped to Primer vars (via tailwind-primer-adapter.css) depend on
+      // data-color-mode being correct from the start.
       (function() {
-        var t = localStorage.getItem('sb-color-scheme');
-        if (t && t !== 'system') {
-          document.documentElement.setAttribute('data-sb-theme', t);
+        var stored = localStorage.getItem('sb-color-scheme');
+        var theme = stored || 'system';
+        var resolved = theme;
+        if (theme === 'system') {
+          resolved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        var el = document.documentElement;
+        el.setAttribute('data-sb-theme', resolved);
+        if (theme === 'system') {
+          el.setAttribute('data-color-mode', 'auto');
+          el.setAttribute('data-light-theme', 'light');
+          el.setAttribute('data-dark-theme', 'dark');
+        } else if (resolved.indexOf('dark') === 0) {
+          el.setAttribute('data-color-mode', 'dark');
+          el.setAttribute('data-dark-theme', resolved);
+          el.setAttribute('data-light-theme', 'light');
         } else {
-          // System mode or no stored value — use OS preference
-          var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          document.documentElement.setAttribute('data-sb-theme', dark ? 'dark' : 'light');
+          el.setAttribute('data-color-mode', 'light');
+          el.setAttribute('data-light-theme', resolved);
+          el.setAttribute('data-dark-theme', 'dark');
         }
       })();
     </script>
