@@ -114,6 +114,32 @@ const { x, y, adjusted } = findFreePosition({
 - "all exports of X"
 - "one variant for each type"
 
+### ⚠️ `component-set.props.selected` — the user's focused variant
+
+A `component-set` widget's iframe lets the user click a cell to inspect a single variant. The clicked export name is persisted to **`props.selected`** on the widget (and forwarded to the iframe URL as `?selected=…`). This is the canvas equivalent of "cursor position" — it tells you *which variant the user is looking at right now*.
+
+**You MUST read `props.selected` before acting on any prompt that references a `component-set` widget.** It is the highest-signal indicator of user intent.
+
+| User says | If `props.selected` is `"BubbleChart"` → interpret as |
+|-----------|------|
+| "this variant", "the selected one", "this chart", "this component" | The `BubbleChart` export specifically — modify only that code path |
+| "make it red", "fix this", "improve this" | Scope changes to the `BubbleChart` export |
+| "all variants", "every variant", "the whole set" | Apply to all exports |
+| Explicit name (e.g. "the line chart") | Use the named one, NOT `selected` |
+
+**Resolution order when a `component-set` is in scope:**
+1. If the user names a specific variant → use that name
+2. Else if `props.selected` is non-empty → use `props.selected`
+3. Else (no selection) → ask the user which variant, OR (if the change is truly global) apply to all
+
+**Anti-pattern:** Editing every variant when only one is selected. If the user picked a variant, they care about that one — scope edits accordingly. Don't restyle the whole set when they asked you to tweak "this one".
+
+**Trigger phrases that mean "use props.selected"** (not the whole set):
+- "this variant" / "this one"
+- "the selected one"
+- "this chart" / "this component" / "this card"
+- "make it ..." / "fix it" / "tweak it" (singular pronoun)
+
 
 ## Reference: Widget Content, URLs, and File Paths
 

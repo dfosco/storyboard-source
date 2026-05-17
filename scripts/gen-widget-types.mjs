@@ -73,6 +73,8 @@ const META = {
       'Renders ALL named exports of a .story.jsx file in a single grid iframe. The user can select a cell to inspect it. ONE widget shows N variants.',
     preferOver:
       'PREFER this over N `story` widgets when the user asks for "variants", "a component set", "all variants of X", "a showcase", or anything implying multiple exports of the same story file. Faster (one iframe vs N), tidier on canvas, and supports selection.',
+    selectedSemantics:
+      'props.selected is the export name the user has clicked on inside the grid. When the user says "this variant", "the selected one", "this chart", "make it ...", or any singular reference — scope edits to ONLY that export. Apply to all exports only if props.selected is empty OR the user explicitly says "all variants". Never restyle the whole set when one variant is selected.',
   },
   'image': {
     contentProp: 'src (filename)',
@@ -138,6 +140,7 @@ const decisionRules = [
   'If the user wants to show a single specific component variant → use `story` with both `storyId` and `exportName`.',
   'If you do not know the exact `type` string for what you are creating, look it up in this file. Never invent type strings.',
   'Always pass props matching `contentProp` (and any required props) when creating a widget — empty widgets are useless on the canvas.',
+  'For `component-set` widgets in your connected widgets: ALWAYS read `props.selected` before acting. If non-empty, the user has focused on that variant — scope edits to that export only unless they explicitly say "all variants". Never restyle the whole set when one variant is selected.',
 ]
 
 const out = {
