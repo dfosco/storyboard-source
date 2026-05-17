@@ -180,6 +180,11 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
   const [waking, setWaking] = useState(false)
   const [resourceLimited, setResourceLimited] = useState(null)
   const [showDragHint, setShowDragHint] = useState(false)
+  // Set when the browser refuses to grant a WebGL context (hard limit ~8–16
+  // contexts depending on browser) or when an existing context is lost.
+  // Flips the widget back to the frozen overlay so it degrades gracefully
+  // instead of rendering as a broken/blank canvas.
+  const [webglUnavailable, setWebglUnavailable] = useState(false)
   const expandContainerRef = useRef(null)
   const dragHintTimer = useRef(null)
 
@@ -214,6 +219,10 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
 
   // Request activation when user clicks a frozen terminal
   const handleFrozenActivate = useCallback(() => {
+    // Clear any prior browser-WebGL-exhaustion flag and retry — the user
+    // may have closed other widgets/tabs since the original failure.
+    setWebglUnavailable(false)
+    setConnectAttempt((n) => n + 1)
     setPriority(Priority.PINNED)
   }, [setPriority])
 
@@ -284,6 +293,7 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
   // Connect terminal + WebSocket (only when pool grants a live slot)
   useEffect(() => {
     if (!isLive) return
+    if (webglUnavailable) return
     if (!containerRef.current) return
 
     let disposed = false
@@ -324,7 +334,43 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
           theme: { ...DEFAULT_THEME, ...cfg.theme },
         })
 
-        term.open(containerRef.current)
+        try {
+          term.open(containerRef.current)
+        } catch (openErr) {
+          // Most commonly the browser refusing to allocate yet another
+          // WebGL context (hard cap ~8–16). Degrade to the frozen overlay
+          // instead of leaving a blank canvas behind.
+          console.warn('[TerminalWidget] ghostty.open failed — falling back to frozen overlay:', openErr)
+          try { term.dispose?.() } catch { /* empty */ }
+          term = null
+          termRef.current = null
+          if (!disposed) setWebglUnavailable(true)
+          return
+        }
+
+        // If ghostty silently failed to obtain a WebGL renderer, treat
+        // the same as a browser-cap miss and show the frozen overlay.
+        if (!term.renderer) {
+          console.warn('[TerminalWidget] ghostty has no renderer (likely WebGL exhausted) — frozen fallback')
+          try { term.dispose?.() } catch { /* empty */ }
+          term = null
+          termRef.current = null
+          if (!disposed) setWebglUnavailable(true)
+          return
+        }
+
+        // Listen for the browser killing this WebGL context later (it
+        // does this LRU-style when other tabs/widgets need a slot).
+        const canvas = containerRef.current?.querySelector('canvas')
+        if (canvas) {
+          const onLost = (e) => {
+            e.preventDefault?.()
+            console.warn('[TerminalWidget] WebGL context lost — frozen fallback')
+            if (!disposed) setWebglUnavailable(true)
+          }
+          canvas.addEventListener('webglcontextlost', onLost, { once: true })
+        }
+
         termRef.current = term
 
         // Expose ghostty's actual computed cell metrics as CSS variables
@@ -426,7 +472,7 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
       setReady(false)
       setRevealed(false)
     }
-  }, [id, isLive, generation, connectAttempt])
+  }, [id, isLive, generation, connectAttempt, webglUnavailable])
 
   // Resize terminal on dimension changes
   useEffect(() => {
@@ -619,19 +665,19 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
         ref={terminalRef}
         className={styles.terminal}
         style={{
-          ...(typeof (isLive ? (snappedWidth ?? width) : width) === 'number'
-            ? { width: `${isLive ? (snappedWidth ?? width) : width}px` }
+          ...(typeof ((isLive && !webglUnavailable) ? (snappedWidth ?? width) : width) === 'number'
+            ? { width: `${(isLive && !webglUnavailable) ? (snappedWidth ?? width) : width}px` }
             : undefined),
-          ...(typeof (isLive ? (snappedHeight ?? height) : height) === 'number'
-            ? { height: `${isLive ? (snappedHeight ?? height) : height}px` }
+          ...(typeof ((isLive && !webglUnavailable) ? (snappedHeight ?? height) : height) === 'number'
+            ? { height: `${(isLive && !webglUnavailable) ? (snappedHeight ?? height) : height}px` }
             : undefined),
         }}
         onClick={handleClick}
         onPointerDown={handleTerminalPointerDown}
         onKeyDown={interactive ? (e) => e.stopPropagation() : undefined}
       >
-        {/* ── Frozen state: WebGL context released, show snapshot ── */}
-        {!isLive && (
+        {/* ── Frozen state: WebGL context released or unavailable ── */}
+        {(!isLive || webglUnavailable) && (
           <FrozenTerminalOverlay
             widgetId={id}
             onActivate={handleFrozenActivate}
@@ -639,7 +685,7 @@ export default forwardRef(function TerminalWidget({ id, props, onUpdate, multiSe
         )}
 
         {/* ── Live state: ghostty WebGL terminal ── */}
-        {isLive && (
+        {isLive && !webglUnavailable && (
           <>
             {showDragHint && (
               <div className={styles.dragHint}>
