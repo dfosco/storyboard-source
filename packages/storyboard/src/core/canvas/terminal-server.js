@@ -1376,41 +1376,53 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
               } catch { /* empty */ }
 
               if (readinessSignal || useReadyFile) {
-                // Poll for readiness, then send postStartup command and deliver messages
-                let sent = false
-                const finalize = (reason) => {
-                  if (sent) return
-                  sent = true
+                // Poll for readiness, then send postStartup command and deliver messages.
+                // The .ready marker is the accurate signal (Copilot/Claude/Codex
+                // sessionStart hook touches it once the TUI is interactive). On
+                // consumer repos with cold caches + resume mode, that can easily
+                // take 30–60s — well past any reasonable hard timeout. So we:
+                //   1. Keep polling indefinitely at 3s intervals for .ready.
+                //   2. At 30s, do a "soft commit": inject identity and bind to
+                //      the messaging bus so the widget is at least addressable
+                //      for hub broadcast and live messages.
+                //   3. When .ready finally appears, run the real postStartup.
+                let softBound = false
+                let postStartupSent = false
+                const softBind = () => {
+                  if (softBound) return
+                  softBound = true
+                  injectIdentityMessage(tmuxName, { widgetId, displayName: prettyName, canvasId, branch, serverUrl })
+                  injectRoleMessageForWidget(tmuxName, widgetId)
+                  setTimeout(() => {
+                    migratePendingMessages(widgetId, branch, canvasId).then(() => {
+                      bindWidget({ widgetId, tmuxName, branch, canvasId, displayName: prettyName }).catch(() => {})
+                    }).catch(() => {
+                      bindWidget({ widgetId, tmuxName, branch, canvasId, displayName: prettyName }).catch(() => {})
+                    })
+                    joinPresence({ widgetId, senderName: prettyName || widgetId, branch, canvasId }).catch(() => {})
+                  }, 2000)
+                }
+                const runPostStartup = (reason) => {
+                  if (postStartupSent) return
+                  postStartupSent = true
                   clearInterval(pollInterval)
                   try { rmSync(readyFilePath, { force: true }) } catch { /* empty */ }
                   setTimeout(() => {
                     if (postStartup) {
                       tmuxSubmit(tmuxName, postStartup)
                     }
-                    // Inject identity, then bind to messaging bus. This restores
-                    // hub/role/broadcast context after a tmux restart — the
-                    // widget's terminal-config preserves hubs/role/connectedWidgets,
-                    // and bindWidget reattaches live message delivery + backfill.
-                    injectIdentityMessage(tmuxName, { widgetId, displayName: prettyName, canvasId, branch, serverUrl })
-                    injectRoleMessageForWidget(tmuxName, widgetId)
-                    setTimeout(() => {
-                      migratePendingMessages(widgetId, branch, canvasId).then(() => {
-                        bindWidget({ widgetId, tmuxName, branch, canvasId, displayName: prettyName }).catch(() => {})
-                      }).catch(() => {
-                        bindWidget({ widgetId, tmuxName, branch, canvasId, displayName: prettyName }).catch(() => {})
-                      })
-                      joinPresence({ widgetId, senderName: prettyName || widgetId, branch, canvasId }).catch(() => {})
-                    }, 2000)
+                    // Ensure identity/bind happened (no-op if already soft-bound)
+                    softBind()
                   }, 500)
-                  if (reason === 'timeout') {
-                    devLog(`[terminal-server] readiness timeout for ${widgetId} (${tmuxName}); proceeding with bind anyway (likely resume mode)`)
+                  if (reason === 'soft-bind-timeout') {
+                    devLog(`[terminal-server] readiness slow for ${widgetId} (${tmuxName}); soft-binding now, will run postStartup when .ready arrives`)
                   }
                 }
                 const pollInterval = setInterval(() => {
-                  if (sent) { clearInterval(pollInterval); return }
+                  if (postStartupSent) { clearInterval(pollInterval); return }
                   // Primary: sessionStart hook touches the marker once the
                   // agent is fully loaded and interactive.
-                  if (useReadyFile && existsSync(readyFilePath)) { finalize('file'); return }
+                  if (useReadyFile && existsSync(readyFilePath)) { runPostStartup('file'); return }
                   if (!readinessSignal) return
                   try {
                     // Fallback for agents without a hook: scan pane + 200
@@ -1419,14 +1431,13 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
                       `tmux capture-pane -t "${tmuxName}" -p -S -200`,
                       { encoding: 'utf8', timeout: 1000 }
                     )
-                    if (paneContent.includes(readinessSignal)) finalize('signal')
+                    if (paneContent.includes(readinessSignal)) runPostStartup('signal')
                   } catch { /* empty */ }
-                }, 1000)
-                // Fallback: if readiness signal never matches (e.g. resume mode
-                // doesn't print "Environment loaded:", or the agent shows a
-                // prompt we can't detect), bind anyway after 30s so the widget
-                // is at least addressable for live messages and hub broadcast.
-                setTimeout(() => finalize('timeout'), 30000)
+                }, 3000)
+                // Soft-bind at 30s so the widget is addressable for hub/live
+                // messages even if Copilot's TUI is still warming up. The poller
+                // keeps running and will fire postStartup once .ready appears.
+                setTimeout(softBind, 30000)
               } else {
                 // No readiness signal — inject identity and bind to bus after a delay
                 setTimeout(() => {
