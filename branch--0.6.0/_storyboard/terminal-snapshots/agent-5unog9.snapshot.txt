@@ -1,46 +1,46 @@
 SESSION: agent-5unog9 | opal-warbler
 CANVAS:  storyboard-demo
 BRANCH:  0.6.0
-TIME:    2026-05-17T07:32:32.150Z
+TIME:    2026-05-17T10:24:12.127Z
 
 ================================================================================
 SCREEN
 ================================================================================
 
-● Read leader.role.md
-  │ .agents/roles/leader.role.md
-  └ 38 lines read
+
+❯ [System] Your terminal identity has been set. widgetId=agent-5unog9 displayName=opal-warbler
+  canvasId=storyboard-demo configFile=.storyboard/terminals/agent-5unog9.json serverUrl=http://localhost:1236 —
+  this is a configuration step, no response needed.
 
 
-● Inspect hub peers (shell)
-  │ export STORYBOARD_WIDGET_ID=agent-5unog9 STORYBOARD_CANVAS_ID=storyboard-demo
-  │ cat .storyboard/terminals/${STORYBOARD_WIDGET_ID}.json | jq '.hubs[0] | {hubId, channel, holdsToken:
-  │ .holdsToken, peers: [.peers[] | {widgetId, displayName, alias: .props.alias}]}'
-  └ 23 lines...
+● Acknowledged. Ready.
 
 
-● Start conversation + set goal (shell)
-  │ export STORYBOARD_WIDGET_ID=agent-5unog9 STORYBOARD_CANVAS_ID=storyboard-demo
-  │ HUB_ID=hub_1cfd5e6970
-  │ CHANNEL=$(npx storyboard hub state --canvas "$STORYBOARD_CANVAS_ID" 2>/dev/null | jq -r '.hubs[0].channel //
-  │ empty')
-  │ echo "CHANNEL=$CHANNEL"…
-  └ 13 lines...
+● Tip: /remote
+  └ Toggle remote control from GitHub web and mobile
 
 
-● List all hubs (shell)
-  │ export STORYBOARD_CANVAS_ID=storyboard-demo
-  │ npx storyboard hub state --canvas "$STORYBOARD_CANVAS_ID" 2>/dev/null | jq '.hubs[] | {hubId, channel, leader,
-  │ members: [.members[].widgetId]}'
-  └ 2 lines...
+! Failed to load 2 skills. Run /skills for more details.
 
 
-● Dump hubs (shell)
-  │ export STORYBOARD_CANVAS_ID=storyboard-demo STORYBOARD_WIDGET_ID=agent-5unog9
-  │ npx storyboard hub state --canvas "$STORYBOARD_CANVAS_ID" 2>/dev/null | jq '.hubs'
-  └ 107 lines...
+● Selected custom agent: terminal-agent
 
- ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                                @index.jsx
+
+● IDE auto-connect skipped: session is already in use by another client
+
+
+! This session may already be in use by another CLI or application. Changes made here could conflict with the other
+   instance.
+
+
+❯ [System] Your terminal identity has been set. widgetId=agent-5unog9 displayName=opal-warbler
+  canvasId=storyboard-demo configFile=.storyboard/terminals/agent-5unog9.json serverUrl=http://localhost:1236 —
+  this is a configuration step, no response needed.
+
+
+● Acknowledged.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ❯  
 
