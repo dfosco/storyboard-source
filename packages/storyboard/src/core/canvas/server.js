@@ -264,6 +264,17 @@ export function createCanvasHandler(ctx) {
    * @param {number} gridSize — pixel size of one grid unit (default 24)
    * @returns {{ x: number, y: number }}
    */
+  /**
+   * Map a `--direction` value to the preferred collision-resolution axis.
+   * Side placements (left/right/diagonals) cascade vertically so a fan of
+   * widgets stacks into a clean column instead of getting shoved further
+   * away from the reference widget. Above/below cascade horizontally.
+   */
+  function directionPreferAxis(direction) {
+    if (direction === 'above' || direction === 'below') return 'horizontal'
+    return 'vertical'
+  }
+
   function computeNearPosition(refWidget, direction = 'right', newType = 'sticky-note', newProps = {}, gap = 1, gridSize = 24) {
     gap = gap * gridSize
     const refBounds = getWidgetBounds(refWidget)
@@ -1107,6 +1118,7 @@ export function createCanvasHandler(ctx) {
             x: position.x, y: position.y, type, props,
             widgets: canvasWidgets,
             gridSize: (canvasData && canvasData.gridSize) || 24,
+            preferAxis: near ? directionPreferAxis(direction) : 'horizontal',
           })
           position = { x: resolved.x, y: resolved.y }
         }
@@ -1865,6 +1877,7 @@ export function createCanvasHandler(ctx) {
                     x: position.x, y: position.y, type, props,
                     widgets: Array.from(widgetMap.values()),
                     gridSize: canvasData.gridSize || 24,
+                    preferAxis: near ? directionPreferAxis(direction) : 'horizontal',
                   })
                   position = { x: resolved.x, y: resolved.y }
                 }

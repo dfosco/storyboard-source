@@ -271,6 +271,45 @@ describe('findFreePosition', () => {
     expect(result.x).toBeGreaterThan(294 + 270)
     expect(result.adjusted).toBe(true)
   })
+
+  it('preferAxis: "vertical" cascades down past colliders instead of right', () => {
+    // Simulates a hub fan-out: a leader on the left, two peers already placed
+    // above-right and below-right, then trying to place a third peer at the
+    // `right` direction (same column as the existing peers, leader-top y).
+    const widgets = [
+      { id: 'leader',      type: 'sticky-note', position: { x: 0,   y: 0 },   props: { width: 200, height: 200 } },
+      { id: 'above-right', type: 'sticky-note', position: { x: 240, y: -100 }, props: { width: 200, height: 200 } },
+      { id: 'below-right', type: 'sticky-note', position: { x: 240, y: 200 },  props: { width: 200, height: 200 } },
+    ]
+    const result = findFreePosition({
+      x: 240,
+      y: 0,
+      width: 200,
+      height: 200,
+      widgets,
+      gridSize: 24,
+      preferAxis: 'vertical',
+    })
+    // Should cascade DOWN past the above-right and below-right widgets,
+    // staying in the same X column as the fan, NOT jump far to the right.
+    expect(result.x).toBe(240)
+    expect(result.y).toBeGreaterThanOrEqual(200 + 200) // past below-right's endY
+    expect(result.adjusted).toBe(true)
+  })
+
+  it('preferAxis: "horizontal" (default) still resolves rightward', () => {
+    const widgets = [
+      { id: 'w1', type: 'sticky-note', position: { x: 0, y: 0 }, props: { width: 200, height: 200 } },
+    ]
+    const result = findFreePosition({
+      x: 50, y: 50,
+      width: 200, height: 200,
+      widgets,
+      gridSize: 24,
+    })
+    expect(result.x).toBeGreaterThanOrEqual(200)
+    expect(result.y).toBe(48) // snapped from 50
+  })
 })
 
 describe('resolvePosition', () => {

@@ -162,10 +162,14 @@ export function snapToGrid(value, gridSize) {
  *
  * Strategy:
  * 1. Try the initial position
- * 2. If collision, find the max endX among all colliders and move past it
- * 3. Repeat until no collisions or maxIterations exhausted
- * 4. If horizontal resolution exhausted, fall back to moving down
- * 5. Snap final position to grid
+ * 2. Phase 1 — move along the primary axis (default horizontal) past colliders
+ * 3. Phase 2 — fall back to the orthogonal axis (default vertical) past colliders
+ * 4. Snap final position to grid
+ *
+ * Use `preferAxis: 'vertical'` to swap the phase order — useful when widgets
+ * are being fanned out around a reference widget (e.g. hub layouts) where
+ * moving horizontally further away from the reference defeats the placement
+ * intent. Examples: 'right' / 'left' / 'above-right' / 'below-right'.
  *
  * @param {object} options
  * @param {number} options.x - Initial X position
@@ -177,6 +181,7 @@ export function snapToGrid(value, gridSize) {
  * @param {number} [options.gridSize=24] - Grid size for snapping
  * @param {number} [options.gap] - Gap between widgets (defaults to gridSize)
  * @param {number} [options.maxIterations=50] - Max collision resolution attempts
+ * @param {'horizontal'|'vertical'} [options.preferAxis='horizontal'] - Which axis to try first
  * @returns {{ x: number, y: number, adjusted: boolean }}
  */
 export function findFreePosition({
@@ -189,63 +194,63 @@ export function findFreePosition({
   gridSize = 24,
   gap = null,
   maxIterations = 50,
+  preferAxis = 'horizontal',
 }) {
   const spacing = gap ?? gridSize
   let currentX = x
   let currentY = y
   let adjusted = false
 
-  // Phase 1: Try moving right past all colliders
-  for (let i = 0; i < maxIterations; i++) {
-    const rect = { x: currentX, y: currentY, width, height }
-    const colliders = findCollisions(rect, widgets, excludeId)
-
-    if (colliders.length === 0) {
-      return {
-        x: snapToGrid(currentX, gridSize),
-        y: snapToGrid(currentY, gridSize),
-        adjusted,
+  const horizontalPhase = () => {
+    for (let i = 0; i < maxIterations; i++) {
+      const rect = { x: currentX, y: currentY, width, height }
+      const colliders = findCollisions(rect, widgets, excludeId)
+      if (colliders.length === 0) return true
+      let maxEndX = 0
+      for (const c of colliders) {
+        const b = getWidgetBounds(c)
+        const endX = b.x + b.width
+        if (endX > maxEndX) maxEndX = endX
       }
+      currentX = maxEndX + spacing
+      adjusted = true
     }
-
-    // Jump past the rightmost edge of all colliders
-    let maxEndX = 0
-    for (const c of colliders) {
-      const b = getWidgetBounds(c)
-      const endX = b.x + b.width
-      if (endX > maxEndX) maxEndX = endX
-    }
-    currentX = maxEndX + spacing
-    adjusted = true
+    return false
   }
 
-  // Phase 2: Reset X, try moving down
-  currentX = x
-
-  for (let i = 0; i < maxIterations; i++) {
-    const rect = { x: currentX, y: currentY, width, height }
-    const colliders = findCollisions(rect, widgets, excludeId)
-
-    if (colliders.length === 0) {
-      return {
-        x: snapToGrid(currentX, gridSize),
-        y: snapToGrid(currentY, gridSize),
-        adjusted,
+  const verticalPhase = () => {
+    for (let i = 0; i < maxIterations; i++) {
+      const rect = { x: currentX, y: currentY, width, height }
+      const colliders = findCollisions(rect, widgets, excludeId)
+      if (colliders.length === 0) return true
+      let maxEndY = 0
+      for (const c of colliders) {
+        const b = getWidgetBounds(c)
+        const endY = b.y + b.height
+        if (endY > maxEndY) maxEndY = endY
       }
+      currentY = maxEndY + spacing
+      adjusted = true
     }
-
-    // Jump past the bottommost edge of all colliders
-    let maxEndY = 0
-    for (const c of colliders) {
-      const b = getWidgetBounds(c)
-      const endY = b.y + b.height
-      if (endY > maxEndY) maxEndY = endY
-    }
-    currentY = maxEndY + spacing
-    adjusted = true
+    return false
   }
 
-  // Fallback: return the last attempted position (snapped)
+  if (preferAxis === 'vertical') {
+    if (verticalPhase()) {
+      return { x: snapToGrid(currentX, gridSize), y: snapToGrid(currentY, gridSize), adjusted }
+    }
+    // Reset Y, try horizontal
+    currentY = y
+    horizontalPhase()
+  } else {
+    if (horizontalPhase()) {
+      return { x: snapToGrid(currentX, gridSize), y: snapToGrid(currentY, gridSize), adjusted }
+    }
+    // Reset X, try vertical
+    currentX = x
+    verticalPhase()
+  }
+
   return {
     x: snapToGrid(currentX, gridSize),
     y: snapToGrid(currentY, gridSize),
@@ -275,6 +280,7 @@ export function resolvePosition({
   widgets,
   excludeId = null,
   gridSize = 24,
+  preferAxis = 'horizontal',
 }) {
   const defaults = getDefaultSize(type)
   const width = props.width ?? defaults.width
@@ -288,6 +294,7 @@ export function resolvePosition({
     widgets,
     excludeId,
     gridSize,
+    preferAxis,
   })
 }
 
