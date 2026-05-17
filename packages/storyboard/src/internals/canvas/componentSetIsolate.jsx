@@ -242,14 +242,12 @@ document.documentElement.setAttribute('data-dark-theme', theme.startsWith('dark'
 document.documentElement.setAttribute('data-light-theme', theme.startsWith('dark') ? '' : theme || 'light')
 document.documentElement.setAttribute('data-sb-theme', theme || 'light')
 
-// Suppress HMR full-reloads — this iframe is embedded inside a canvas page
-// that manages its own reload lifecycle. Without this guard, every file change
-// causes the iframe to flash/reload.
-if (import.meta.hot) {
-  const msg = { active: true }
-  import.meta.hot.send('storyboard:canvas-hmr-guard', msg)
-  setInterval(() => import.meta.hot.send('storyboard:canvas-hmr-guard', msg), 3000)
-}
+// Note: we deliberately do NOT install the canvas-hmr-guard here. The guard
+// drops BOTH `full-reload` and `update` payloads server-side, which means
+// edits to the story source file never reach this iframe — no Fast Refresh,
+// no reload, nothing. Story/component-set widgets are expected to refresh
+// when the underlying .story.jsx is edited, so we let HMR through.
+void import.meta.hot
 
 const root = createRoot(document.getElementById('root'))
 
