@@ -38,9 +38,25 @@ function buildDataset({ type, data, unit }) {
   if (!data) return { labels: [], datasets: [] }
   if (data.datasets) return data
 
+  const cycle = (n, arr) => Array.from({ length: n }, (_, i) => arr[i % arr.length])
+
   if (Array.isArray(data) && data.length && data[0] && 't' in data[0]) {
     const labels = data.map((p) => p?.t ?? '')
     const values = data.map((p) => p?.v ?? 0)
+    if (type === 'bar') {
+      return {
+        labels,
+        datasets: [
+          {
+            label: unit ?? '',
+            data: values,
+            backgroundColor: cycle(values.length, PALETTE),
+            borderColor: cycle(values.length, PALETTE),
+            borderWidth: 1,
+          },
+        ],
+      }
+    }
     return {
       labels,
       datasets: [
@@ -48,9 +64,9 @@ function buildDataset({ type, data, unit }) {
           label: unit ?? '',
           data: values,
           borderColor: PALETTE[0],
-          backgroundColor: type === 'bar' ? PALETTE[0] : 'rgba(52,211,153,0.18)',
+          backgroundColor: 'rgba(52,211,153,0.18)',
           borderWidth: 1.5,
-          fill: type === 'line',
+          fill: true,
           pointRadius: 0,
           tension: 0.3,
         },
@@ -67,8 +83,8 @@ function buildDataset({ type, data, unit }) {
         {
           label: unit ?? '',
           data: values,
-          backgroundColor: TRANSPARENT_PALETTE.slice(0, values.length),
-          borderColor: PALETTE.slice(0, values.length),
+          backgroundColor: cycle(values.length, TRANSPARENT_PALETTE),
+          borderColor: cycle(values.length, PALETTE),
           borderWidth: 1.5,
         },
       ],
@@ -81,8 +97,8 @@ function buildDataset({ type, data, unit }) {
         {
           label: unit ?? '',
           data,
-          backgroundColor: TRANSPARENT_PALETTE[0],
-          borderColor: PALETTE[0],
+          backgroundColor: cycle(data.length, TRANSPARENT_PALETTE),
+          borderColor: cycle(data.length, PALETTE),
           borderWidth: 1.5,
         },
       ],
