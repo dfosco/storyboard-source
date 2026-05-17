@@ -422,12 +422,12 @@ export default function SignupForm() {
     <div className="relative flex min-h-screen w-full items-center justify-center bg-background px-6 py-12 text-foreground">
       <div className="w-full max-w-md">
         {isSuccess ? (
-          <div className="rounded-xl border border-green-200 bg-green-50 p-6 text-center">
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-2xl">
+          <div className="rounded-xl border border-green-200 bg-green-50 p-6 text-center text-green-900">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-2xl text-green-700">
               ✓
             </div>
-            <h2 className="text-xl font-semibold text-foreground">You're in!</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <h2 className="text-xl font-semibold text-green-900">You're in!</h2>
+            <p className="mt-1 text-sm text-green-700">
               Welcome aboard, {safeName || 'friend'}.{' '}
               {oauthProvider
                 ? `Signed in with ${oauthProvider === 'google' ? 'Google' : 'GitHub'}.`
