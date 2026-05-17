@@ -1,8 +1,8 @@
 {
-  "mode": "exit",
+  "mode": "pre",
   "tag": "beta",
   "initialVersions": {
-    "@dfosco/storyboard": "0.6.0-beta.15"
+    "@dfosco/storyboard": "0.6.0-beta.16"
   },
   "changesets": [
     "changeset-beta10-allow-all-hook",
@@ -12,6 +12,7 @@
     "changeset-beta14-resume-shutdown",
     "changeset-beta15-resume-shutdown-baseurl",
     "changeset-beta16-lint-fix",
+    "changeset-beta17-theming-canvas",
     "changeset-beta7-mp88uazh",
     "changeset-beta8-mp89ydws",
     "changeset-beta9-context-fix",
