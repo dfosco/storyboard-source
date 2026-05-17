@@ -114,31 +114,31 @@ const { x, y, adjusted } = findFreePosition({
 - "all exports of X"
 - "one variant for each type"
 
-### ⚠️ `component-set.props.selected` — the user's focused variant
+### ⚠️ `component-set.props.selected` — a hint, not a hard scope
 
-A `component-set` widget's iframe lets the user click a cell to inspect a single variant. The clicked export name is persisted to **`props.selected`** on the widget (and forwarded to the iframe URL as `?selected=…`). This is the canvas equivalent of "cursor position" — it tells you *which variant the user is looking at right now*.
+A `component-set` widget's iframe lets the user click a cell to inspect a single variant. The clicked export name is persisted to **`props.selected`** on the widget (and forwarded to the iframe URL as `?selected=…`). Think of it as "where the user's eye is right now" — useful context, **not a fence**.
 
-**You MUST read `props.selected` before acting on any prompt that references a `component-set` widget.** It is the highest-signal indicator of user intent.
+**Always read `props.selected` before acting on a `component-set`**, but treat it as one signal among several. Combine it with the literal prompt to decide scope.
 
-| User says | If `props.selected` is `"BubbleChart"` → interpret as |
-|-----------|------|
-| "this variant", "the selected one", "this chart", "this component" | The `BubbleChart` export specifically — modify only that code path |
-| "make it red", "fix this", "improve this" | Scope changes to the `BubbleChart` export |
-| "all variants", "every variant", "the whole set" | Apply to all exports |
-| Explicit name (e.g. "the line chart") | Use the named one, NOT `selected` |
+**Scope decision — read the prompt's language first, then fall back to `selected`:**
 
-**Resolution order when a `component-set` is in scope:**
-1. If the user names a specific variant → use that name
-2. Else if `props.selected` is non-empty → use `props.selected`
-3. Else (no selection) → ask the user which variant, OR (if the change is truly global) apply to all
+| Prompt language | Scope |
+|----------------|-------|
+| Singular / demonstrative ("this", "this one", "this variant", "the selected one", "make IT red") | The variant in `props.selected` (or ask if empty) |
+| Plural / collective ("all variants", "every chart", "the whole set", "across variants", "the component set") | All exports — ignore `selected` |
+| Explicit name ("the line chart", "BarChart") | The named export — ignore `selected` |
+| Ambiguous, no demonstrative, no plural ("add a legend", "improve the styling", "fix the colors") | Ask which scope, OR pick the most useful default for the change and say so. Lean toward `selected` for tweaks, lean toward the whole set for cross-cutting changes (theming, shared layout, shared deps). |
 
-**Anti-pattern:** Editing every variant when only one is selected. If the user picked a variant, they care about that one — scope edits accordingly. Don't restyle the whole set when they asked you to tweak "this one".
+**Examples:**
+- `selected="BubbleChart"` + prompt "make it more colorful" → singular pronoun → just BubbleChart
+- `selected="BubbleChart"` + prompt "make the charts more colorful" → plural → all variants
+- `selected="BubbleChart"` + prompt "switch all charts to Primer tokens" → explicit "all" → all variants
+- `selected=""` + prompt "fix the legend" → no selection, ambiguous → ask or pick a sensible default
 
-**Trigger phrases that mean "use props.selected"** (not the whole set):
-- "this variant" / "this one"
-- "the selected one"
-- "this chart" / "this component" / "this card"
-- "make it ..." / "fix it" / "tweak it" (singular pronoun)
+**Anti-patterns:**
+- ❌ Restyling the whole set when the user pointed at one variant ("this") and `selected` is set.
+- ❌ Restyling only the selected variant when the user said "all" or used a plural.
+- ❌ Silently picking a scope without saying which — when in doubt, mention "I'm applying this to *X* — say 'all variants' to broaden" so the user can redirect.
 
 
 ## Reference: Widget Content, URLs, and File Paths
