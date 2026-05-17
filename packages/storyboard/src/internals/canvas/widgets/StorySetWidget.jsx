@@ -103,7 +103,7 @@ export default forwardRef(function StorySetWidget({ id: widgetId, props, onUpdat
         if (typeof width === 'number' && typeof height === 'number') return
         const headerH = 37
         const newW = typeof width === 'number' ? width : Math.max(200, Math.ceil(e.data.width))
-        const newH = typeof height === 'number' ? height : Math.max(120, Math.ceil(e.data.height) + headerH)
+        const newH = typeof height === 'number' ? height : Math.max(120, Math.ceil(e.data.height) + headerH + 8)
         onUpdate?.({ width: newW, height: newH })
       } else if (e.data?.type === 'storyboard:component-set:content-size') {
         contentSizeRef.current = {
@@ -128,7 +128,7 @@ export default forwardRef(function StorySetWidget({ id: widgetId, props, onUpdat
     const contentH = contentSizeRef.current.height
     const contentW = contentSizeRef.current.width
     if (!contentH && !contentW) return
-    const fitH = contentH ? contentH + headerH : h
+    const fitH = contentH ? contentH + headerH + 8 : h
     const fitW = contentW || w
     const shouldSnapH = contentH && h > fitH + 2
     const shouldSnapW = contentW && w > fitW + 2
