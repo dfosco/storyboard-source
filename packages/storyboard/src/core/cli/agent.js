@@ -14,6 +14,71 @@
 
 import { parseFlags } from './flags.js'
 import { dim, bold, cyan, yellow } from './intro.js'
+import { getServerUrl } from './serverUrl.js'
+
+/**
+ * Resolve a list of candidate server URLs to try, in priority order:
+ *   1. Live server registry / worktree port (getServerUrl)
+ *   2. STORYBOARD_SERVER_URL env (set when terminal was spawned — may be stale)
+ *   3. Terminal config file (`.storyboard/terminals/<widgetId>.json`)
+ *
+ * Registry-first because the env var can be stale if the dev server was
+ * restarted on a new port since the agent was spawned.
+ */
+async function resolveServerUrlCandidates(widgetId) {
+  const urls = []
+  const add = (u) => {
+    if (!u) return
+    const norm = String(u).replace(/\/$/, '')
+    if (!urls.includes(norm)) urls.push(norm)
+  }
+  try { add(getServerUrl()) } catch { /* ignore */ }
+  add(process.env.STORYBOARD_SERVER_URL)
+  if (widgetId) {
+    try {
+      const { readFileSync, existsSync } = await import('node:fs')
+      const path = await import('node:path')
+      const cfgPath = path.join(process.cwd(), '.storyboard', 'terminals', `${widgetId}.json`)
+      if (existsSync(cfgPath)) {
+        const cfg = JSON.parse(readFileSync(cfgPath, 'utf8'))
+        add(cfg.serverUrl)
+      }
+    } catch { /* ignore */ }
+  }
+  return urls
+}
+
+/**
+ * POST to the first reachable candidate. Returns { url, res } on a server
+ * response (caller checks res.ok). Returns null if every candidate failed
+ * at the network layer.
+ */
+async function postWithFallback(candidates, pathSuffix, body, headers) {
+  let lastErr = null
+  for (const base of candidates) {
+    const url = `${base}${pathSuffix}`
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers,
+          body,
+          signal: AbortSignal.timeout(5000),
+        })
+        if (res.ok || (res.status >= 400 && res.status < 500 && res.status !== 404)) {
+          return { url, res }
+        }
+        if (attempt === 1) break
+        await new Promise((r) => setTimeout(r, 200))
+      } catch (err) {
+        lastErr = err
+        break
+      }
+    }
+  }
+  if (lastErr) throw lastErr
+  return null
+}
 
 const subcommand = process.argv[3]
 
@@ -31,7 +96,6 @@ if (subcommand === 'signal') {
   const canvasId = flags.canvas || process.env.STORYBOARD_CANVAS_ID
   const status = flags.status
   const message = flags.message || null
-  const serverUrl = process.env.STORYBOARD_SERVER_URL || 'http://localhost:1234'
   const branch = process.env.STORYBOARD_BRANCH || 'unknown'
 
   if (!widgetId || !canvasId || !status) {
@@ -46,37 +110,26 @@ if (subcommand === 'signal') {
     process.exit(1)
   }
 
+  const candidates = await resolveServerUrlCandidates(widgetId)
+  const body = JSON.stringify({ widgetId, canvasId, branch, status, message })
+  const headers = { 'Content-Type': 'application/json' }
+
   try {
-    const url = `${serverUrl}/_storyboard/canvas/agent/signal`
-    const body = JSON.stringify({ widgetId, canvasId, branch, status, message })
-    const headers = { 'Content-Type': 'application/json' }
-
-    // Retry transient failures (404/5xx) once with a short backoff — the dev
-    // proxy can briefly route to a stale port during reloads.
-    let res = null
-    let lastErr = null
-    for (let attempt = 0; attempt < 3; attempt++) {
-      try {
-        res = await fetch(url, { method: 'POST', headers, body })
-        if (res.ok) break
-        if (res.status >= 400 && res.status < 500 && res.status !== 404) break
-      } catch (err) {
-        lastErr = err
-      }
-      if (attempt < 2) await new Promise((r) => setTimeout(r, 250 * (attempt + 1)))
-    }
-
-    if (res && res.ok) {
-      console.log(`${cyan('✓')} Agent status: ${bold(status)}${message ? ` — ${message}` : ''}`)
-    } else if (res) {
-      const data = await res.json().catch(() => ({}))
-      console.error(`${yellow('⚠')} Server returned ${res.status}: ${data.error || 'unknown error'}`)
+    const result = candidates.length > 0
+      ? await postWithFallback(candidates, '/_storyboard/canvas/agent/signal', body, headers)
+      : null
+    if (result && result.res.ok) {
+      console.log(`${cyan('✓')} Agent status: ${bold(status)}${message ? ` — ${message}` : ''} ${dim(`(${result.url})`)}`)
+    } else if (result) {
+      const data = await result.res.json().catch(() => ({}))
+      console.error(`${yellow('⚠')} Server returned ${result.res.status}: ${data.error || 'unknown error'} ${dim(`(${result.url})`)}`)
       await fallbackWrite({ branch, canvasId, widgetId, status, message })
     } else {
-      throw lastErr || new Error('signal request failed')
+      console.error(`${yellow('⚠')} No reachable server. Tried: ${candidates.join(', ') || '(none resolved)'}`)
+      await fallbackWrite({ branch, canvasId, widgetId, status, message })
     }
-  } catch {
-    // Server not reachable — write directly to terminal config file
+  } catch (err) {
+    console.error(`${yellow('⚠')} Signal failed (${err.message}). Tried: ${candidates.join(', ')}`)
     await fallbackWrite({ branch, canvasId, widgetId, status, message })
   }
 } else if (subcommand === 'spawn') {
@@ -96,7 +149,7 @@ if (subcommand === 'signal') {
   const agentId = spawnFlags['agent-id'] || undefined
   const autopilot = spawnFlags.autopilot !== false
   const branchOverride = spawnFlags.branch || undefined
-  const serverUrl = process.env.STORYBOARD_SERVER_URL || 'http://localhost:1234'
+  const serverUrl = getServerUrl()
 
   if (!canvasId || !widgetId || !prompt) {
     console.error(`${bold('Usage:')} npx storyboard agent spawn --prompt "task description"`)
@@ -133,7 +186,7 @@ if (subcommand === 'signal') {
   const widgetId = statusFlags.widget || process.env.STORYBOARD_WIDGET_ID
   const canvasId = statusFlags.canvas || process.env.STORYBOARD_CANVAS_ID || 'unknown'
   const branch = statusFlags.branch || process.env.STORYBOARD_BRANCH || 'unknown'
-  const serverUrl = process.env.STORYBOARD_SERVER_URL || 'http://localhost:1234'
+  const serverUrl = getServerUrl()
 
   if (!widgetId) {
     console.error(`${bold('Usage:')} npx storyboard agent status --widget <id>`)
@@ -165,7 +218,7 @@ if (subcommand === 'signal') {
 
   const widgetId = peekFlags.widget || process.env.STORYBOARD_WIDGET_ID
   const canvasId = peekFlags.canvas || process.env.STORYBOARD_CANVAS_ID
-  const serverUrl = process.env.STORYBOARD_SERVER_URL || 'http://localhost:1234'
+  const serverUrl = getServerUrl()
 
   if (!widgetId) {
     console.error(`${bold('Usage:')} npx storyboard agent peek --widget <id>`)
@@ -200,7 +253,7 @@ if (subcommand === 'signal') {
 
   const canvasId = listFlags.canvas || process.env.STORYBOARD_CANVAS_ID
   const branch = listFlags.branch || process.env.STORYBOARD_BRANCH || null
-  const serverUrl = process.env.STORYBOARD_SERVER_URL || 'http://localhost:1234'
+  const serverUrl = getServerUrl()
 
   if (!canvasId) {
     console.error(`${bold('Usage:')} npx storyboard agent list --canvas <id> [--branch <name>] [--json]`)
@@ -251,7 +304,7 @@ async function fallbackWrite({ branch, canvasId, widgetId, status, message }) {
     const { updateAgentStatus, initTerminalConfig } = await import('../canvas/terminal-config.js')
     initTerminalConfig(process.cwd())
     updateAgentStatus({ branch, canvasId, widgetId, status, message })
-    console.log(`${cyan('✓')} Agent status written to config file (server offline): ${bold(status)}`)
+    console.error(`${yellow('⚠')} Agent status persisted to config file only — UI will NOT update until server reconnects: ${bold(status)}`)
   } catch (err) {
     console.error(`Failed to write agent status: ${err.message}`)
     process.exit(1)
