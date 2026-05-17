@@ -309,6 +309,46 @@ function stripAnsi(str) {
 }
 
 /**
+ * Send text into a tmux pane and confirm it submitted.
+ *
+ * The naive `send-keys -l <text>; send-keys Enter` pattern is racy against
+ * TUI agents (Copilot, Claude) that are still initializing their input
+ * widget when we fire — the text lands in the prompt box but the Enter
+ * is eaten before submit. We work around it by capturing the pane after
+ * each send and re-sending Enter (up to N times) until the unique tail
+ * of our text is no longer visible (= input was cleared = submitted).
+ *
+ * Synchronous on purpose (matches existing send-keys helpers).
+ */
+function tmuxSubmit(tmuxName, text, { retries = 5, delayMs = 250 } = {}) {
+  if (!hasTmux || !text) return
+  // Pick a needle that's unique enough to detect in the pane but short
+  // enough to survive wrapping. Last 40 chars of the message works well
+  // and avoids matching the original injected echo from earlier sends.
+  const needle = text.slice(-40)
+  const sleep = (ms) => {
+    try { execSync(`sleep ${(ms / 1000).toFixed(3)}`, { stdio: 'ignore' }) } catch { /* empty */ }
+  }
+  try {
+    execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(text)}`, { stdio: 'ignore' })
+  } catch { return }
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    sleep(delayMs)
+    try {
+      execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
+    } catch { return }
+    sleep(delayMs)
+    let pane = ''
+    try {
+      pane = execSync(`tmux capture-pane -t "${tmuxName}" -p -J`, { encoding: 'utf8', timeout: 1000 })
+    } catch { return }
+    // If the tail of our text is no longer in the visible pane, the input
+    // was consumed (submitted). Done.
+    if (!pane.includes(needle)) return
+  }
+}
+
+/**
  * Inject a [System] identity message into a running agent's stdin via tmux send-keys.
  * Called from BOTH hot and cold paths after the tmux session is bound and config is written.
  * Uses the same pattern as messaging (📩) and skill injection (📡).
@@ -321,19 +361,13 @@ function injectIdentityMessage(tmuxName, { widgetId, displayName, canvasId, bran
   if (!hasTmux) return
   const configFile = `.storyboard/terminals/${widgetId}.json`
   const msg = `[System] Your terminal identity has been set. widgetId=${widgetId} displayName=${displayName} canvasId=${canvasId} configFile=${configFile} serverUrl=${serverUrl} — this is a configuration step, no response needed.`
-  try {
-    execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(msg)}`, { stdio: 'ignore' })
-    execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
-  } catch { /* best effort */ }
+  tmuxSubmit(tmuxName, msg)
 }
 
 function injectRoleMessage(tmuxName, role) {
   if (!hasTmux || !role) return
   const msg = `Your role in the hub is ${role}, read .agents/roles/${role}.role.md to follow additional instructions`
-  try {
-    execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(msg)}`, { stdio: 'ignore' })
-    execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
-  } catch { /* best effort */ }
+  tmuxSubmit(tmuxName, msg)
 }
 
 function injectHubTokenMessage(tmuxName, hasToken) {
@@ -341,10 +375,7 @@ function injectHubTokenMessage(tmuxName, hasToken) {
   const msg = hasToken
     ? 'You hold the hub token (speaking rights). Read .agents/roles/cluster-token.md for instructions.'
     : 'You do not hold the hub token. Wait for a message token before acting in the hub.'
-  try {
-    execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(msg)}`, { stdio: 'ignore' })
-    execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
-  } catch { /* best effort */ }
+  tmuxSubmit(tmuxName, msg)
 }
 
 function injectRoleMessageForWidget(tmuxName, widgetId) {
@@ -1179,10 +1210,7 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
             if (completed) return
             completed = true
             if (postStartup) {
-              try {
-                execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(postStartup)}`, { stdio: 'ignore' })
-                execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
-              } catch { /* empty */ }
+              tmuxSubmit(tmuxName, postStartup)
             }
             injectIdentityMessage(tmuxName, { widgetId, displayName: prettyName, canvasId, branch, serverUrl })
             injectRoleMessageForWidget(tmuxName, widgetId)
@@ -1357,10 +1385,7 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
                   try { rmSync(readyFilePath, { force: true }) } catch { /* empty */ }
                   setTimeout(() => {
                     if (postStartup) {
-                      try {
-                        execSync(`tmux send-keys -t "${tmuxName}" -l ${JSON.stringify(postStartup)}`, { stdio: 'ignore' })
-                        execSync(`tmux send-keys -t "${tmuxName}" Enter`, { stdio: 'ignore' })
-                      } catch { /* empty */ }
+                      tmuxSubmit(tmuxName, postStartup)
                     }
                     // Inject identity, then bind to messaging bus. This restores
                     // hub/role/broadcast context after a tmux restart — the
