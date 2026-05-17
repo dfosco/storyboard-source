@@ -43,6 +43,8 @@ function resolveCanvasThemeFromStorage() {
     window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
+const HEADER_HEIGHT = 37
+
 export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdate, resizable }, ref) {
   const src = readProp(props, 'src', prototypeEmbedSchema)
   const width = readProp(props, 'width', prototypeEmbedSchema) || 800
@@ -412,7 +414,7 @@ export default forwardRef(function PrototypeEmbed({ id: widgetId, props, onUpdat
                 className={styles.iframe}
                 style={{
                   width: width / scale,
-                  height: height / scale,
+                  height: (height - HEADER_HEIGHT) / scale,
                   transform: `scale(${scale})`,
                   transformOrigin: '0 0',
                 }}
