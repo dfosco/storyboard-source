@@ -218,6 +218,30 @@ if (typeof window !== 'undefined') {
       _applyToDOM('system', state.resolved)
       _dispatchEvent('system', state.resolved)
     })
+
+  // Cross-frame sync: the native `storage` event fires in OTHER windows
+  // when localStorage is mutated. Prototype iframes embed the same app on
+  // the same origin, so when the parent toolbar flips the theme we must
+  // pick that up here and re-apply the DOM attributes / dispatch the
+  // theme-changed event. Without this, Tailwind utilities (and Primer
+  // CSS vars) inside the iframe stay stuck on the load-time theme.
+  window.addEventListener('storage', (e) => {
+    if (e.storageArea !== localStorage) return
+    if (e.key === STORAGE_KEY || e.key === null) {
+      const next = readStoredTheme()
+      _current = next
+      const state = snapshot(next)
+      _store.set(state)
+      _applyToDOM(next, state.resolved)
+      _dispatchEvent(next, state.resolved)
+    } else if (e.key === SYNC_STORAGE_KEY) {
+      _syncTargets = readStoredSync()
+      _syncStore.set(_syncTargets)
+      const state = snapshot(_current)
+      _applyToDOM(_current, state.resolved)
+      _dispatchEvent(_current, state.resolved)
+    }
+  })
 }
 
 // ---------------------------------------------------------------------------
