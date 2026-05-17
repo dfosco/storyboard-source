@@ -1,0 +1,47 @@
+{
+  "widgetProps": {
+    "agentId": "copilot",
+    "alias": "",
+    "startupCommand": "copilot --agent terminal-agent",
+    "width": 1000,
+    "height": 800,
+    "prettyName": "coral-sparrow",
+    "role": "member"
+  },
+  "displayName": "coral-sparrow",
+  "connectedWidgets": [],
+  "messaging": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_7552795db4",
+      "role": "member",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_7552795db4.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 8012,
+    "centerY": 8712,
+    "zoom": 65,
+    "topLeftX": 6628,
+    "topLeftY": 7962,
+    "width": 2769,
+    "height": 1502
+  },
+  "updatedAt": "2026-05-17T07:08:58.353Z",
+  "widgetId": "agent-8gh0bs",
+  "canvasId": "storyboard-demo",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null
+}

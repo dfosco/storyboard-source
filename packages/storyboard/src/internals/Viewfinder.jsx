@@ -471,7 +471,7 @@ function ArtifactCard({ item, basePath, starred, onToggleStar, onItemDeleted }) 
           <span className={css.cardBadge}>{getTypeLabel(item.type)}</span>
           <div className={css.cardActions}>
             <StarBtn active={starred} onClick={() => onToggleStar(item.id)} inline />
-            {item.flows?.length > 0 && <FlowsDropdown flows={item.flows} basePath={basePath} />}
+            {item.flows?.length > 1 && <FlowsDropdown flows={item.flows} basePath={basePath} />}
             {item.pages?.length > 1 && <PagesDropdown pages={item.pages} basePath={basePath} />}
             {canEditDelete && (
               <CardActionsMenu

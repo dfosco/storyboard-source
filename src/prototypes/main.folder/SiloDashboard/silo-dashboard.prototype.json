@@ -2,7 +2,7 @@
   "meta": {
     "title": "Silo Dashboard",
     "description": "Cloud silo utilization dashboard",
-    "author": ["dfosco"],
+    "author": ["filesystem-cc"],
     "tags": ["dashboard", "dark"]
   }
 }

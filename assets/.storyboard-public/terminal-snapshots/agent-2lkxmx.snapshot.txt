@@ -1,49 +1,49 @@
 SESSION: agent-2lkxmx | green-petrel
 CANVAS:  storyboard-demo
 BRANCH:  0.6.0
-TIME:    2026-05-17T07:32:32.061Z
+TIME:    2026-05-17T10:24:11.919Z
 
 ================================================================================
 SCREEN
 ================================================================================
 
-  I'll make the auto-advance only fire when the user actually submits in the current session, not when status comes
-   from flow data.
+
+❯ [System] Your terminal identity has been set. widgetId=agent-2lkxmx displayName=green-petrel
+  canvasId=storyboard-demo configFile=.storyboard/terminals/agent-2lkxmx.json serverUrl=http://localhost:1236 —
+  this is a configuration step, no response needed.
 
 
-● Locate edits (shell)
-  │ grep -n "handleSubmit\|useEffect\|useRef" src/prototypes/main.folder/StartupSignup/SignupForm.jsx
-  └ 5 lines...
+● Acknowledged.
 
 
-● Edit SignupForm.jsx +1 -1
-  └ src/prototypes/main.folder/StartupSignup/SignupForm.jsx
+● Tip: /cwd
+  └ Change working directory or show current directory
 
 
-● Edit SignupForm.jsx +4 -1
-  └ src/prototypes/main.folder/StartupSignup/SignupForm.jsx
+● Selected custom agent: terminal-agent
 
 
-● Save output (shell)
-  │ source .storyboard/terminals/sb-f3d5b3588da8.env
-  │ npx storyboard terminal output --summary "Gated submitting→success auto-advance behind a user-submit ref to
-  │ avoid hash pollution" --content "Fixed: auto-advance now only fires when handleSubmit set
-  │ userSubmittedRef.current=true. Visiting ?flow=submitting no longer writes signup.status=success into the URL
-  │ hash, so flow switches work again. NOTE: if user already has signup.status in their URL hash from earlier …
-  └ 3 lines...
+● IDE auto-connect skipped: session is already in use by another client
 
 
-● Fixed. Auto-advance is now gated behind a userSubmittedRef flag set inside handleSubmit, so visiting
-  ?flow=submitting no longer auto-writes signup.status=success into the hash. Flow switching should work again.
+! Failed to load 2 skills. Run /skills for more details.
 
-  Heads up: if your URL still has signup.status=... (or any signup.*=...) left in the hash from earlier testing,
-  those overrides will continue to mask the flow's scene defaults. Clear the #... portion of the URL once, then
-  click between the flow tiles — they should now drive Empty / Prefilled / Submitting / Success correctly.
 
- ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]                                                @index.jsx
+! This session may already be in use by another CLI or application. Changes made here could conflict with the other
+   instance.
+
+
+❯ [System] Your terminal identity has been set. widgetId=agent-2lkxmx displayName=green-petrel
+  canvasId=storyboard-demo configFile=.storyboard/terminals/agent-2lkxmx.json serverUrl=http://localhost:1236 —
+  this is a configuration step, no response needed.
+
+
+● Acknowledged.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ❯  
 
 
 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- 1 background /tasks · / commands · ? help            terminal-agent · Claude Opus 4.7 (1M context)(Internal only)
+ / commands · ? help                                  terminal-agent · Claude Opus 4.7 (1M context)(Internal only)

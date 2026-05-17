@@ -1,8 +1,14 @@
 {
   "widgetProps": {
-    "prettyName": "jade-grouse"
+    "agentId": "copilot",
+    "alias": "Leader",
+    "startupCommand": "copilot --agent terminal-agent",
+    "width": 1000,
+    "height": 800,
+    "prettyName": "jade-grouse",
+    "role": "leader"
   },
-  "displayName": "jade-grouse",
+  "displayName": "Leader",
   "connectedWidgets": [
     {
       "id": "agent-bqdgr2",
@@ -16,8 +22,8 @@
         "status": "running"
       },
       "position": {
-        "x": 4188,
-        "y": 1022
+        "x": 4202,
+        "y": 921
       }
     },
     {
@@ -55,15 +61,16 @@
       "id": "prototype-fgokz2",
       "type": "prototype",
       "props": {
-        "src": "/StartupSignup?flow=StartupSignup%2Fempty",
-        "width": 1440,
-        "height": 900,
+        "src": "/StartupSignup#signup.oauthProvider=google&signup.oauthIdentifier=danielfosco%40gmail.com&signup.oauthPassword=12345&signup.oauthStep=idle&signup.fullName=Danielfosco&signup.email=danielfosco%40gmail.com&signup.company=Gmail&signup.password=oauth-no-password&signup.agreedToTerms=true&signup.status=success",
+        "width": 1172.1428652523323,
+        "height": 566.071438681241,
         "zoom": 50,
-        "label": "Loopline Signup"
+        "label": "Loopline Signup",
+        "originalSrc": "/StartupSignup?flow=StartupSignup%2Fempty"
       },
       "position": {
-        "x": 1795,
-        "y": 2670
+        "x": 2014,
+        "y": 2705
       }
     }
   ],
@@ -101,7 +108,7 @@
   "role": "leader",
   "hubs": [
     {
-      "hubId": "hub_16ab1852a6",
+      "hubId": "hub_42d0103a29",
       "role": "leader",
       "goal": null,
       "peers": [
@@ -124,22 +131,22 @@
           "type": "agent"
         }
       ],
-      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_16ab1852a6.jsonl",
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_42d0103a29.jsonl",
       "activeConversationId": null,
       "hasHubToken": true,
       "pendingMessageToken": null
     }
   ],
   "viewport": {
-    "centerX": 3088,
-    "centerY": 7300,
-    "zoom": 42,
-    "topLeftX": 945,
-    "topLeftY": 6138,
-    "width": 4286,
-    "height": 2324
+    "centerX": 3779,
+    "centerY": 3678,
+    "zoom": 71,
+    "topLeftX": 1976,
+    "topLeftY": 2746,
+    "width": 3606,
+    "height": 1863
   },
-  "updatedAt": "2026-05-17T07:02:38.194Z",
+  "updatedAt": "2026-05-17T10:24:08.505Z",
   "widgetId": "agent-l3iu9a",
   "canvasId": "storyboard-demo",
   "canvasFile": null,
@@ -151,6 +158,6 @@
   "deleted": false,
   "agentStatus": null,
   "lastAgentSessionId": "fcd72686-dd01-4d05-b0fa-7c45e5ce11de",
-  "lastAgentSessionAt": "2026-05-16T22:08:22.429Z",
+  "lastAgentSessionAt": "2026-05-17T08:43:07.785Z",
   "lastAgentId": "copilot"
 }

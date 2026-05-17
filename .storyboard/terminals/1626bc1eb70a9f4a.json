@@ -1,0 +1,50 @@
+{
+  "widgetProps": {
+    "agentId": "claude",
+    "alias": "",
+    "startupCommand": "claude --agent terminal-agent --dangerously-skip-permissions",
+    "width": 1000,
+    "height": 800,
+    "prettyName": "peach-falcon",
+    "role": "member"
+  },
+  "displayName": "peach-falcon",
+  "connectedWidgets": [],
+  "messaging": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_608246e482",
+      "role": "member",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_608246e482.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 8012,
+    "centerY": 8712,
+    "zoom": 65,
+    "topLeftX": 6628,
+    "topLeftY": 7962,
+    "width": 2769,
+    "height": 1502
+  },
+  "updatedAt": "2026-05-17T07:08:24.670Z",
+  "widgetId": "agent-6q8fxt",
+  "canvasId": "storyboard-demo",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null,
+  "lastAgentSessionId": "25d40562-1dcf-499f-b88b-dc2183060f04",
+  "lastAgentSessionAt": "2026-05-17T07:08:21.549Z",
+  "lastAgentId": "claude"
+}

@@ -1,8 +1,12 @@
 {
   "widgetProps": {
-    "prettyName": "opal-osprey"
+    "alias": "Form",
+    "agentId": "copilot",
+    "startupCommand": "copilot --agent terminal-agent",
+    "prettyName": "opal-osprey",
+    "role": "member"
   },
-  "displayName": "opal-osprey",
+  "displayName": "Form",
   "connectedWidgets": [
     {
       "id": "agent-l3iu9a",
@@ -17,8 +21,8 @@
         "role": "leader"
       },
       "position": {
-        "x": 2563,
-        "y": 1841
+        "x": 2259,
+        "y": 1821
       }
     }
   ],
@@ -38,7 +42,7 @@
   "role": "member",
   "hubs": [
     {
-      "hubId": "hub_16ab1852a6",
+      "hubId": "hub_42d0103a29",
       "role": "member",
       "goal": null,
       "peers": [
@@ -61,22 +65,22 @@
           "type": "agent"
         }
       ],
-      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_16ab1852a6.jsonl",
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_42d0103a29.jsonl",
       "activeConversationId": null,
       "hasHubToken": false,
       "pendingMessageToken": null
     }
   ],
   "viewport": {
-    "centerX": 3088,
-    "centerY": 7300,
-    "zoom": 42,
-    "topLeftX": 945,
-    "topLeftY": 6138,
-    "width": 4286,
-    "height": 2324
+    "centerX": 3779,
+    "centerY": 3678,
+    "zoom": 71,
+    "topLeftX": 1976,
+    "topLeftY": 2746,
+    "width": 3606,
+    "height": 1863
   },
-  "updatedAt": "2026-05-17T07:02:39.703Z",
+  "updatedAt": "2026-05-17T10:24:08.507Z",
   "widgetId": "agent-v2qu53",
   "canvasId": "storyboard-demo",
   "canvasFile": null,
@@ -88,7 +92,7 @@
   "deleted": false,
   "agentStatus": null,
   "lastAgentSessionId": "734ed3c1-8608-4954-8d11-044ef64128c9",
-  "lastAgentSessionAt": "2026-05-16T22:09:56.449Z",
+  "lastAgentSessionAt": "2026-05-17T08:43:09.861Z",
   "lastAgentId": "copilot",
   "latestOutput": {
     "content": "Wired Google + GitHub OAuth buttons in SignupForm.jsx. Clicking either: sets signup.oauthProvider, sets signup.status='oauth' (button shows 'Connecting…' + disables both), pre-fills signup.fullName/email/company/password/agreedToTerms with provider-specific mock values, then after 900ms sets signup.status='success' to render the success card. Success card now mentions which provider was used when oauth flow ran.",

@@ -1,0 +1,73 @@
+{
+  "widgetProps": {
+    "agentId": "copilot",
+    "alias": "",
+    "startupCommand": "copilot --agent terminal-agent",
+    "width": 1000,
+    "height": 800,
+    "prettyName": "scarlet-gannet",
+    "role": "member"
+  },
+  "displayName": "scarlet-gannet",
+  "connectedWidgets": [
+    {
+      "id": "prototype-oays46",
+      "type": "prototype",
+      "props": {
+        "src": "/SiloDashboard?flow=SiloDashboard%2Fdefault",
+        "originalSrc": "/SiloDashboard?flow=SiloDashboard%2Fdefault",
+        "label": "",
+        "width": 2053.0179933519325,
+        "height": 1216.4887707626128
+      },
+      "position": {
+        "x": 2936,
+        "y": 8279
+      }
+    }
+  ],
+  "messaging": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_af6038585f",
+      "role": "member",
+      "goal": null,
+      "peers": [
+        {
+          "widgetId": "agent-1ultxz",
+          "displayName": "azure-osprey",
+          "role": "member",
+          "type": "agent"
+        }
+      ],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_af6038585f.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 5283,
+    "centerY": 9498,
+    "zoom": 85,
+    "topLeftX": 4224,
+    "topLeftY": 8924,
+    "width": 2118,
+    "height": 1148
+  },
+  "updatedAt": "2026-05-17T07:29:58.141Z",
+  "widgetId": "agent-9129wo",
+  "canvasId": "storyboard-demo",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null,
+  "lastAgentSessionId": "3b603d0f-2f94-47e1-9b7e-433a5b103c50",
+  "lastAgentSessionAt": "2026-05-17T07:29:54.904Z",
+  "lastAgentId": "copilot"
+}

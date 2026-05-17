@@ -1,8 +1,14 @@
 {
   "widgetProps": {
-    "prettyName": "opal-warbler"
+    "agentId": "copilot",
+    "alias": "Leader",
+    "startupCommand": "copilot --agent terminal-agent",
+    "width": 1000,
+    "height": 800,
+    "prettyName": "opal-warbler",
+    "role": "leader"
   },
-  "displayName": "opal-warbler",
+  "displayName": "Leader",
   "connectedWidgets": [
     {
       "id": "agent-aiagsz",
@@ -17,8 +23,8 @@
         "errorMessage": ""
       },
       "position": {
-        "x": 4433,
-        "y": 6537
+        "x": 4032,
+        "y": 6384
       }
     },
     {
@@ -34,8 +40,8 @@
         "errorMessage": ""
       },
       "position": {
-        "x": 4501,
-        "y": 5602
+        "x": 4032,
+        "y": 5616
       }
     },
     {
@@ -51,8 +57,8 @@
         "errorMessage": ""
       },
       "position": {
-        "x": 4273,
-        "y": 7298
+        "x": 4032,
+        "y": 7152
       }
     },
     {
@@ -66,8 +72,8 @@
         "height": 1216.4887707626128
       },
       "position": {
-        "x": 1596,
-        "y": 6815
+        "x": 1536,
+        "y": 7560
       }
     },
     {
@@ -76,12 +82,12 @@
       "props": {
         "src": "storyboard-demo--2026-05-17--00-13-14-udx7.png",
         "private": false,
-        "width": 600,
-        "height": 337
+        "width": 883.3559536944856,
+        "height": 496
       },
       "position": {
-        "x": 1778,
-        "y": 6024
+        "x": 1165,
+        "y": 6466
       }
     }
   ],
@@ -119,7 +125,7 @@
   "role": "leader",
   "hubs": [
     {
-      "hubId": "hub_251d40dfe4",
+      "hubId": "hub_8973d6c22d",
       "role": "leader",
       "goal": null,
       "peers": [
@@ -140,24 +146,30 @@
           "displayName": "Data",
           "role": "member",
           "type": "agent"
+        },
+        {
+          "widgetId": "agent-1ultxz",
+          "displayName": "azure-osprey",
+          "role": "member",
+          "type": "agent"
         }
       ],
-      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_251d40dfe4.jsonl",
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_8973d6c22d.jsonl",
       "activeConversationId": null,
       "hasHubToken": true,
       "pendingMessageToken": null
     }
   ],
   "viewport": {
-    "centerX": 3255,
-    "centerY": 6769,
-    "zoom": 42,
-    "topLeftX": 1112,
-    "topLeftY": 5607,
-    "width": 4286,
-    "height": 2324
+    "centerX": 3779,
+    "centerY": 3678,
+    "zoom": 71,
+    "topLeftX": 1976,
+    "topLeftY": 2746,
+    "width": 3606,
+    "height": 1863
   },
-  "updatedAt": "2026-05-17T07:02:41.054Z",
+  "updatedAt": "2026-05-17T10:24:08.510Z",
   "widgetId": "agent-5unog9",
   "canvasId": "storyboard-demo",
   "canvasFile": null,
@@ -169,6 +181,6 @@
   "deleted": false,
   "agentStatus": null,
   "lastAgentSessionId": "d1dfb3a3-36fc-4a51-bce9-0e6e6686d824",
-  "lastAgentSessionAt": "2026-05-16T22:12:27.349Z",
+  "lastAgentSessionAt": "2026-05-17T08:43:11.111Z",
   "lastAgentId": "copilot"
 }

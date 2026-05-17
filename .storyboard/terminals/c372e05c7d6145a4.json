@@ -1,8 +1,14 @@
 {
   "widgetProps": {
-    "prettyName": "iron-petrel"
+    "alias": "Charts",
+    "agentId": "copilot",
+    "startupCommand": "copilot --agent terminal-agent",
+    "prettyName": "iron-petrel",
+    "role": "member",
+    "status": "running",
+    "errorMessage": ""
   },
-  "displayName": "iron-petrel",
+  "displayName": "Charts",
   "connectedWidgets": [
     {
       "id": "agent-5unog9",
@@ -17,8 +23,8 @@
         "role": "leader"
       },
       "position": {
-        "x": 2582,
-        "y": 6072
+        "x": 2162,
+        "y": 6457
       }
     }
   ],
@@ -38,7 +44,7 @@
   "role": "member",
   "hubs": [
     {
-      "hubId": "hub_251d40dfe4",
+      "hubId": "hub_8973d6c22d",
       "role": "member",
       "goal": null,
       "peers": [
@@ -59,24 +65,30 @@
           "displayName": "Data",
           "role": "member",
           "type": "agent"
+        },
+        {
+          "widgetId": "agent-1ultxz",
+          "displayName": "azure-osprey",
+          "role": "member",
+          "type": "agent"
         }
       ],
-      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_251d40dfe4.jsonl",
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_8973d6c22d.jsonl",
       "activeConversationId": null,
       "hasHubToken": false,
       "pendingMessageToken": null
     }
   ],
   "viewport": {
-    "centerX": 3088,
-    "centerY": 6538,
-    "zoom": 42,
-    "topLeftX": 945,
-    "topLeftY": 5376,
-    "width": 4286,
-    "height": 2324
+    "centerX": 3779,
+    "centerY": 3678,
+    "zoom": 71,
+    "topLeftX": 1976,
+    "topLeftY": 2746,
+    "width": 3606,
+    "height": 1863
   },
-  "updatedAt": "2026-05-17T07:01:35.222Z",
+  "updatedAt": "2026-05-17T10:24:08.513Z",
   "widgetId": "agent-hrmw40",
   "canvasId": "storyboard-demo",
   "canvasFile": null,
@@ -93,7 +105,7 @@
     "updatedAt": "2026-05-16T22:34:37.325Z"
   },
   "lastAgentSessionId": "7e722d02-fb5b-48bf-a33b-668f52ad3e74",
-  "lastAgentSessionAt": "2026-05-16T22:34:04.747Z",
+  "lastAgentSessionAt": "2026-05-17T08:43:11.430Z",
   "lastAgentId": "copilot",
   "latestOutput": {
     "content": "Refreshed data (same shape, new values):\n\nworkspace: nimbus-forge / Acropolis\nuser: Idris Okafor (@idris)\nsummary:\n  cpu     42.50%  17/40  vCPUs\n  memory  71.25%  285/400 GiB\n  storage 33.75%  2.7/8  TiB\ntimeRange: Last hour, 22:42 → 23:42\n\nmetrics.object.json regenerated:\n  cpu     ~380–460 count (wobble)\n  memory  215 → 285 GiB (monotonic rise)\n  storage ~2.7 TiB flat (tiny wobble)\nTimestamps: 22:44 → 23:42, 2-min step, 30 samples.\n\nSame useFlowData/useObject paths as before — no changes for Scaffold or Charts.",

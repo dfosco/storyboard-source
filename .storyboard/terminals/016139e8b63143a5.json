@@ -1,0 +1,106 @@
+{
+  "widgetProps": {
+    "agentId": "copilot",
+    "alias": "",
+    "startupCommand": "copilot --agent terminal-agent",
+    "width": 1000,
+    "height": 800,
+    "prettyName": "azure-osprey",
+    "role": "member"
+  },
+  "displayName": "azure-osprey",
+  "connectedWidgets": [
+    {
+      "id": "component-set-jyuqnp",
+      "type": "component-set",
+      "props": {
+        "storyId": "chart-set",
+        "layout": "auto",
+        "width": 2562,
+        "height": 933,
+        "selected": "BubbleChart"
+      },
+      "position": {
+        "x": 4811,
+        "y": 8987
+      }
+    },
+    {
+      "id": "prototype-2n9i5q",
+      "type": "prototype",
+      "props": {
+        "src": "/SiloDashboard?flow=SiloDashboard%2Fdefault",
+        "originalSrc": "/SiloDashboard?flow=SiloDashboard%2Fdefault",
+        "label": "",
+        "width": 2053.0179933519325,
+        "height": 1216.4887707626128
+      },
+      "position": {
+        "x": 1536,
+        "y": 7560
+      }
+    }
+  ],
+  "messaging": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_8973d6c22d",
+      "role": "member",
+      "goal": null,
+      "peers": [
+        {
+          "widgetId": "agent-5unog9",
+          "displayName": "Leader",
+          "role": "leader",
+          "type": "agent"
+        },
+        {
+          "widgetId": "agent-aiagsz",
+          "displayName": "Scaffold",
+          "role": "member",
+          "type": "agent"
+        },
+        {
+          "widgetId": "agent-hrmw40",
+          "displayName": "Charts",
+          "role": "member",
+          "type": "agent"
+        },
+        {
+          "widgetId": "agent-wve8pt",
+          "displayName": "Data",
+          "role": "member",
+          "type": "agent"
+        }
+      ],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_8973d6c22d.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 3779,
+    "centerY": 3678,
+    "zoom": 71,
+    "topLeftX": 1976,
+    "topLeftY": 2746,
+    "width": 3606,
+    "height": 1863
+  },
+  "updatedAt": "2026-05-17T10:24:08.518Z",
+  "widgetId": "agent-1ultxz",
+  "canvasId": "storyboard-demo",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null,
+  "lastAgentSessionId": "7bcb927d-310d-4ab8-b330-c394d18d012c",
+  "lastAgentSessionAt": "2026-05-17T08:43:16.513Z",
+  "lastAgentId": "copilot"
+}
