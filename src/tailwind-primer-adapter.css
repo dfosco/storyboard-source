@@ -89,11 +89,6 @@
   --color-stone-900: var(--color-gray-900);
   --color-stone-950: var(--color-gray-950);
 
-  /* White / black surfaces follow the canvas so prototypes stay readable
-   * when the canvas itself flips to dark. */
-  --color-white: var(--bgColor-default, #ffffff);
-  --color-black: var(--fgColor-default, #000000);
-
   /* ---------------------------------------------------------------------
    * Accent scale — indigo / blue / violet / purple / sky / cyan
    * map onto Primer's accent ramp.

@@ -39,10 +39,10 @@ function GoogleOAuthModal({ step, identifier, password, onIdentifier, onPassword
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="w-full max-w-md overflow-hidden rounded-lg bg-white shadow-2xl">
-        <div className="flex items-center justify-between border-b border-gray-200 px-4 py-2 text-xs text-gray-500">
+      <div className="w-full max-w-md overflow-hidden rounded-lg bg-card text-foreground shadow-2xl">
+        <div className="flex items-center justify-between border-b border-border px-4 py-2 text-xs text-muted-foreground">
           <span className="font-mono">🔒 accounts.google.com</span>
-          <button onClick={onCancel} className="rounded p-1 hover:bg-gray-100" aria-label="Close">
+          <button onClick={onCancel} className="rounded p-1 hover:bg-muted" aria-label="Close">
             ✕
           </button>
         </div>
@@ -59,8 +59,8 @@ function GoogleOAuthModal({ step, identifier, password, onIdentifier, onPassword
 
           {isCredentials && (
             <>
-              <h2 className="mb-2 text-2xl text-gray-900">Sign in</h2>
-              <p className="mb-6 text-sm text-gray-600">to continue to Loopline</p>
+              <h2 className="mb-2 text-2xl text-foreground">Sign in</h2>
+              <p className="mb-6 text-sm text-muted-foreground">to continue to Loopline</p>
 
               {step === 'account' && (
                 <form
@@ -75,12 +75,12 @@ function GoogleOAuthModal({ step, identifier, password, onIdentifier, onPassword
                     value={identifier}
                     onChange={(e) => onIdentifier(e.target.value)}
                     placeholder="Email or phone"
-                    className="block w-full rounded border border-gray-400 px-3 py-3 text-sm text-gray-900 focus:border-[#1a73e8] focus:outline-none focus:ring-1 focus:ring-[#1a73e8]"
+                    className="block w-full rounded border border-border bg-background px-3 py-3 text-sm text-foreground focus:border-[#1a73e8] focus:outline-none focus:ring-1 focus:ring-[#1a73e8]"
                   />
                   <a href="#" className="mt-3 inline-block text-sm font-medium text-[#1a73e8]">
                     Forgot email?
                   </a>
-                  <p className="mt-6 text-xs text-gray-600">
+                  <p className="mt-6 text-xs text-muted-foreground">
                     Not your computer? Use Guest mode to sign in privately.
                   </p>
                   <a href="#" className="mt-1 inline-block text-sm font-medium text-[#1a73e8]">
@@ -93,7 +93,7 @@ function GoogleOAuthModal({ step, identifier, password, onIdentifier, onPassword
                     <button
                       type="submit"
                       disabled={!identifier.trim()}
-                      className="rounded bg-[#1a73e8] px-6 py-2 text-sm font-medium text-white hover:bg-[#1765cc] disabled:bg-gray-200 disabled:text-gray-400"
+                      className="rounded bg-[#1a73e8] px-6 py-2 text-sm font-medium text-white hover:bg-[#1765cc] disabled:bg-muted disabled:text-muted-foreground"
                     >
                       Next
                     </button>
@@ -108,12 +108,12 @@ function GoogleOAuthModal({ step, identifier, password, onIdentifier, onPassword
                     if (password.trim()) onNext()
                   }}
                 >
-                  <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-gray-300 px-3 py-1 text-sm text-gray-700">
+                  <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-sm text-foreground">
                     <span className="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-xs font-semibold text-indigo-700">
                       {(identifier[0] || 'A').toUpperCase()}
                     </span>
                     {identifier}
-                    <button type="button" onClick={() => onNext('back')} className="ml-1 text-gray-400 hover:text-gray-600">
+                    <button type="button" onClick={() => onNext('back')} className="ml-1 text-muted-foreground hover:text-foreground">
                       ⌄
                     </button>
                   </div>
@@ -123,10 +123,10 @@ function GoogleOAuthModal({ step, identifier, password, onIdentifier, onPassword
                     value={password}
                     onChange={(e) => onPassword(e.target.value)}
                     placeholder="Enter your password"
-                    className="block w-full rounded border border-gray-400 px-3 py-3 text-sm text-gray-900 focus:border-[#1a73e8] focus:outline-none focus:ring-1 focus:ring-[#1a73e8]"
+                    className="block w-full rounded border border-border bg-background px-3 py-3 text-sm text-foreground focus:border-[#1a73e8] focus:outline-none focus:ring-1 focus:ring-[#1a73e8]"
                   />
-                  <label className="mt-4 flex items-center gap-2 text-sm text-gray-700">
-                    <input type="checkbox" className="h-4 w-4 rounded border-gray-400" />
+                  <label className="mt-4 flex items-center gap-2 text-sm text-foreground">
+                    <input type="checkbox" className="h-4 w-4 rounded border-border" />
                     Show password
                   </label>
                   <div className="mt-8 flex items-center justify-between">
@@ -136,7 +136,7 @@ function GoogleOAuthModal({ step, identifier, password, onIdentifier, onPassword
                     <button
                       type="submit"
                       disabled={!password.trim()}
-                      className="rounded bg-[#1a73e8] px-6 py-2 text-sm font-medium text-white hover:bg-[#1765cc] disabled:bg-gray-200 disabled:text-gray-400"
+                      className="rounded bg-[#1a73e8] px-6 py-2 text-sm font-medium text-white hover:bg-[#1765cc] disabled:bg-muted disabled:text-muted-foreground"
                     >
                       Next
                     </button>
@@ -152,27 +152,27 @@ function GoogleOAuthModal({ step, identifier, password, onIdentifier, onPassword
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-base font-bold text-white">
                   🔁
                 </span>
-                <h2 className="text-xl text-gray-900">Loopline wants to access your Google Account</h2>
+                <h2 className="text-xl text-foreground">Loopline wants to access your Google Account</h2>
               </div>
-              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-gray-300 px-3 py-1 text-sm text-gray-700">
+              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-sm text-foreground">
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-xs font-semibold text-indigo-700">
                   {(identifier[0] || 'A').toUpperCase()}
                 </span>
                 {identifier}
               </div>
 
-              <p className="mb-2 text-sm font-medium text-gray-900">This will allow Loopline to:</p>
-              <ul className="mb-6 space-y-2 text-sm text-gray-700">
+              <p className="mb-2 text-sm font-medium text-foreground">This will allow Loopline to:</p>
+              <ul className="mb-6 space-y-2 text-sm text-foreground">
                 <li className="flex gap-2">
-                  <span className="text-gray-400">·</span>
+                  <span className="text-muted-foreground">·</span>
                   See your name, email address, and profile picture
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-gray-400">·</span>
+                  <span className="text-muted-foreground">·</span>
                   Associate you with your personal info on Google
                 </li>
               </ul>
-              <p className="mb-6 text-xs text-gray-500">
+              <p className="mb-6 text-xs text-muted-foreground">
                 Make sure you trust Loopline. You can review or remove access in your Google Account.
               </p>
 
@@ -180,7 +180,7 @@ function GoogleOAuthModal({ step, identifier, password, onIdentifier, onPassword
                 <button
                   type="button"
                   onClick={onCancel}
-                  className="rounded px-4 py-2 text-sm font-medium text-[#1a73e8] hover:bg-blue-50"
+                  className="rounded px-4 py-2 text-sm font-medium text-[#1a73e8] hover:bg-muted"
                 >
                   Cancel
                 </button>
@@ -205,28 +205,28 @@ function GoogleOAuthModal({ step, identifier, password, onIdentifier, onPassword
 function GitHubOAuthModal({ step, identifier, password, onIdentifier, onPassword, onNext, onAuthorize, onCancel }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="w-full max-w-md overflow-hidden rounded-md bg-[#f6f8fa] shadow-2xl">
-        <div className="flex items-center justify-between border-b border-gray-300 bg-white px-4 py-2 text-xs text-gray-500">
+      <div className="w-full max-w-md overflow-hidden rounded-md bg-background text-foreground shadow-2xl">
+        <div className="flex items-center justify-between border-b border-border bg-card px-4 py-2 text-xs text-muted-foreground">
           <span className="font-mono">🔒 github.com/login</span>
-          <button onClick={onCancel} className="rounded p-1 hover:bg-gray-100" aria-label="Close">
+          <button onClick={onCancel} className="rounded p-1 hover:bg-muted" aria-label="Close">
             ✕
           </button>
         </div>
 
-        <div className="flex flex-col items-center bg-[#f6f8fa] px-8 py-8">
-          <GitHubIcon className="mb-4 h-10 w-10 text-[#24292f]" />
+        <div className="flex flex-col items-center bg-background px-8 py-8">
+          <GitHubIcon className="mb-4 h-10 w-10 text-foreground" />
 
           {step !== 'consent' ? (
             <>
-              <h2 className="mb-6 text-xl font-light text-[#24292f]">Sign in to GitHub</h2>
+              <h2 className="mb-6 text-xl font-light text-foreground">Sign in to GitHub</h2>
               <form
-                className="w-full rounded-md border border-gray-300 bg-white p-4"
+                className="w-full rounded-md border border-border bg-card p-4"
                 onSubmit={(e) => {
                   e.preventDefault()
                   if (identifier.trim() && password.trim()) onNext()
                 }}
               >
-                <label className="block text-sm font-semibold text-[#24292f]">
+                <label className="block text-sm font-semibold text-foreground">
                   Username or email address
                 </label>
                 <input
@@ -234,10 +234,10 @@ function GitHubOAuthModal({ step, identifier, password, onIdentifier, onPassword
                   type="text"
                   value={identifier}
                   onChange={(e) => onIdentifier(e.target.value)}
-                  className="mt-1 mb-4 block w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm focus:border-[#0969da] focus:outline-none focus:ring-2 focus:ring-[#0969da]/30"
+                  className="mt-1 mb-4 block w-full rounded-md border border-border bg-background px-3 py-1.5 text-sm text-foreground focus:border-[#0969da] focus:outline-none focus:ring-2 focus:ring-[#0969da]/30"
                 />
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-semibold text-[#24292f]">Password</label>
+                  <label className="text-sm font-semibold text-foreground">Password</label>
                   <a href="#" className="text-xs text-[#0969da]">
                     Forgot password?
                   </a>
@@ -246,7 +246,7 @@ function GitHubOAuthModal({ step, identifier, password, onIdentifier, onPassword
                   type="password"
                   value={password}
                   onChange={(e) => onPassword(e.target.value)}
-                  className="mt-1 mb-4 block w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm focus:border-[#0969da] focus:outline-none focus:ring-2 focus:ring-[#0969da]/30"
+                  className="mt-1 mb-4 block w-full rounded-md border border-border bg-background px-3 py-1.5 text-sm text-foreground focus:border-[#0969da] focus:outline-none focus:ring-2 focus:ring-[#0969da]/30"
                 />
                 <button
                   type="submit"
@@ -256,7 +256,7 @@ function GitHubOAuthModal({ step, identifier, password, onIdentifier, onPassword
                   Sign in
                 </button>
               </form>
-              <p className="mt-4 w-full rounded-md border border-gray-300 bg-white px-4 py-3 text-center text-sm text-[#24292f]">
+              <p className="mt-4 w-full rounded-md border border-border bg-card px-4 py-3 text-center text-sm text-foreground">
                 New to GitHub?{' '}
                 <a href="#" className="text-[#0969da]">
                   Create an account
@@ -265,10 +265,10 @@ function GitHubOAuthModal({ step, identifier, password, onIdentifier, onPassword
               </p>
             </>
           ) : (
-            <div className="w-full rounded-md border border-gray-300 bg-white">
-              <div className="border-b border-gray-200 px-5 py-4">
-                <h2 className="text-lg font-semibold text-[#24292f]">Authorize Loopline</h2>
-                <p className="mt-1 text-sm text-gray-600">
+            <div className="w-full rounded-md border border-border bg-card">
+              <div className="border-b border-border px-5 py-4">
+                <h2 className="text-lg font-semibold text-foreground">Authorize Loopline</h2>
+                <p className="mt-1 text-sm text-muted-foreground">
                   Signed in as <span className="font-semibold">{identifier}</span>
                 </p>
               </div>
@@ -277,13 +277,13 @@ function GitHubOAuthModal({ step, identifier, password, onIdentifier, onPassword
                   <span className="flex h-12 w-12 items-center justify-center rounded-md bg-gradient-to-br from-indigo-500 to-violet-600 text-xl text-white">
                     🔁
                   </span>
-                  <div className="text-sm text-gray-700">
-                    <div className="font-semibold text-[#24292f]">Loopline by loopline-hq</div>
-                    <div className="text-xs text-gray-500">wants to access your GitHub account</div>
+                  <div className="text-sm text-foreground">
+                    <div className="font-semibold text-foreground">Loopline by loopline-hq</div>
+                    <div className="text-xs text-muted-foreground">wants to access your GitHub account</div>
                   </div>
                 </div>
-                <p className="mb-2 text-sm font-semibold text-[#24292f]">This application will be able to:</p>
-                <ul className="mb-4 space-y-2 rounded-md border border-gray-200 bg-[#f6f8fa] p-3 text-sm text-gray-700">
+                <p className="mb-2 text-sm font-semibold text-foreground">This application will be able to:</p>
+                <ul className="mb-4 space-y-2 rounded-md border border-border bg-muted p-3 text-sm text-foreground">
                   <li className="flex items-start gap-2">
                     <span className="mt-0.5 text-green-600">✓</span>
                     Read your profile info (name, email, avatar)
@@ -293,7 +293,7 @@ function GitHubOAuthModal({ step, identifier, password, onIdentifier, onPassword
                     Read your public repositories
                   </li>
                 </ul>
-                <p className="mb-4 text-xs text-gray-500">
+                <p className="mb-4 text-xs text-muted-foreground">
                   Authorizing will redirect to <span className="font-mono">loopline.app</span>
                 </p>
                 <button
@@ -306,7 +306,7 @@ function GitHubOAuthModal({ step, identifier, password, onIdentifier, onPassword
                 <button
                   type="button"
                   onClick={onCancel}
-                  className="mt-2 block w-full rounded-md border border-gray-300 bg-white px-4 py-1.5 text-sm font-medium text-[#24292f] hover:bg-gray-50"
+                  className="mt-2 block w-full rounded-md border border-border bg-card px-4 py-1.5 text-sm font-medium text-foreground hover:bg-muted"
                 >
                   Cancel
                 </button>
@@ -416,18 +416,18 @@ export default function SignupForm() {
   }
 
   const inputClass =
-    'mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30'
+    'mt-1 block w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder-muted-foreground shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30'
 
   return (
-    <div className="relative flex min-h-screen w-full items-center justify-center bg-white px-6 py-12">
+    <div className="relative flex min-h-screen w-full items-center justify-center bg-background px-6 py-12 text-foreground">
       <div className="w-full max-w-md">
         {isSuccess ? (
           <div className="rounded-xl border border-green-200 bg-green-50 p-6 text-center">
             <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-2xl">
               ✓
             </div>
-            <h2 className="text-xl font-semibold text-gray-900">You're in!</h2>
-            <p className="mt-1 text-sm text-gray-600">
+            <h2 className="text-xl font-semibold text-foreground">You're in!</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
               Welcome aboard, {safeName || 'friend'}.{' '}
               {oauthProvider
                 ? `Signed in with ${oauthProvider === 'google' ? 'Google' : 'GitHub'}.`
@@ -437,10 +437,10 @@ export default function SignupForm() {
         ) : (
           <>
             <div className="mb-8">
-              <h1 className="text-2xl font-semibold tracking-tight text-gray-900">
+              <h1 className="text-2xl font-semibold tracking-tight text-foreground">
                 Create your account
               </h1>
-              <p className="mt-1 text-sm text-gray-600">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Start closing the feedback loop in minutes. No credit card required.
               </p>
             </div>
@@ -450,7 +450,7 @@ export default function SignupForm() {
                 type="button"
                 onClick={() => openOAuth('google')}
                 disabled={isSubmitting}
-                className="inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex items-center justify-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-sm font-medium text-foreground shadow-sm hover:bg-muted focus:outline-none focus:ring-2 focus:ring-indigo-500/30 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <GoogleIcon />
                 Continue with Google
@@ -459,7 +459,7 @@ export default function SignupForm() {
                 type="button"
                 onClick={() => openOAuth('github')}
                 disabled={isSubmitting}
-                className="inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex items-center justify-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-sm font-medium text-foreground shadow-sm hover:bg-muted focus:outline-none focus:ring-2 focus:ring-indigo-500/30 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <GitHubIcon />
                 Continue with GitHub
@@ -468,10 +468,10 @@ export default function SignupForm() {
 
             <div className="relative mb-6">
               <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                <div className="w-full border-t border-gray-200" />
+                <div className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center">
-                <span className="bg-white px-2 text-xs uppercase tracking-wider text-gray-400">
+                <span className="bg-background px-2 text-xs uppercase tracking-wider text-muted-foreground">
                   or with email
                 </span>
               </div>
@@ -479,7 +479,7 @@ export default function SignupForm() {
 
             <form className="space-y-4" onSubmit={handleSubmit} noValidate>
               <div>
-                <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="fullName" className="block text-sm font-medium text-foreground">
                   Full name
                 </label>
                 <input
@@ -494,7 +494,7 @@ export default function SignupForm() {
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="email" className="block text-sm font-medium text-foreground">
                   Work email
                 </label>
                 <input
@@ -509,7 +509,7 @@ export default function SignupForm() {
               </div>
 
               <div>
-                <label htmlFor="company" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="company" className="block text-sm font-medium text-foreground">
                   Company
                 </label>
                 <input
@@ -524,7 +524,7 @@ export default function SignupForm() {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="password" className="block text-sm font-medium text-foreground">
                   Password
                 </label>
                 <input
@@ -544,9 +544,9 @@ export default function SignupForm() {
                   type="checkbox"
                   checked={safeAgreed}
                   onChange={(e) => setAgreedToTerms(e.target.checked)}
-                  className="mt-0.5 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                  className="mt-0.5 h-4 w-4 rounded border-border text-indigo-600 focus:ring-indigo-500"
                 />
-                <label htmlFor="terms" className="text-sm text-gray-600">
+                <label htmlFor="terms" className="text-sm text-muted-foreground">
                   I agree to the{' '}
                   <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
                     Terms of Service
@@ -562,13 +562,13 @@ export default function SignupForm() {
               <button
                 type="submit"
                 disabled={!canSubmit}
-                className="inline-flex w-full items-center justify-center rounded-md bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-indigo-300"
+                className="inline-flex w-full items-center justify-center rounded-md bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-background disabled:cursor-not-allowed disabled:bg-indigo-300"
               >
                 {isSubmitting ? 'Creating account…' : 'Create account'}
               </button>
             </form>
 
-            <p className="mt-6 text-center text-sm text-gray-600">
+            <p className="mt-6 text-center text-sm text-muted-foreground">
               Already have an account?{' '}
               <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
                 Sign in
