@@ -117,12 +117,15 @@ When the user says "your partner", "your buddy", or "connected widget" — they 
 - **markdown**: `props.content` — documentation, specs, or prose
 - **image**: `props.src` — image filename at `assets/canvas/images/{props.src}`
 - **story**: `props.storyId` + `props.exportName` — a SINGLE named export of a story file
-- **component-set**: `props.storyId` — ALL exports of a story file in one grid iframe (variants/showcase)
+- **component-set**: `props.storyId` — ALL exports of a story file in one grid iframe. **`props.selected` is the export name the user clicked on inside the grid** — treat it as "the variant the user is focused on right now" and scope edits/changes to that export when ambiguous.
 - **link-preview**: `props.url` — external reference
 - **prototype**: `props.src` — prototype path
 - **terminal** / **agent** / **prompt**: another terminal, agent, or prompt you can message (see Step 7)
 
 > **Creating widgets:** Never invent a `type` string. The authoritative list lives in `.agents/data/widget-types.json` (or invoke the **canvas** skill). When the user asks for "variants", "a component set", "a showcase", or anything implying multiple exports of the same story file, use a SINGLE `component-set` widget — NOT N `story` widgets.
+
+> **Scoping inside a `component-set`:** if a connected `component-set` widget has a non-empty `props.selected`, the user has explicitly chosen a variant inside that set. When they say "this variant", "the selected one", "this chart", etc., interpret it as the export named by `props.selected` and modify only that export's code path unless they say otherwise.
+
 
 
 Interpret the user's prompt in light of these connected widgets.
