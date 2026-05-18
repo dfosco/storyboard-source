@@ -513,12 +513,14 @@ export function buildSecondaryIframeUrl(widget) {
     const storyData = getStoryData(storyId)
     if (storyData?._storyModule) {
       const params = new URLSearchParams()
-      params.set('module', storyData._storyModule)
+      params.set('_sb_embed', '')
+      params.set('_sb_component_set', '')
       const layout = widget.props?.layout
       if (layout) params.set('layout', layout)
       const selected = widget.props?.selected
       if (selected) params.set('selected', selected)
-      return `${baseClean}/_storyboard/canvas/isolate-set?${params}`
+      const route = storyData._route || `/components/${storyId}`
+      return `${baseClean}${route}?${params}`
     }
     return null
   }

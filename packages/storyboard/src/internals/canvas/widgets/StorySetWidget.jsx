@@ -32,12 +32,18 @@ function resolveStorySetUrl(storyId, layout, selected, density, theme) {
   if (!story?._storyModule) return ''
   const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '')
   const params = new URLSearchParams()
-  params.set('module', story._storyModule)
+  // Route via the real story page (works in dev AND prod). The dev-only
+  // `_storyboard/canvas/isolate-set` middleware doesn't exist in deployed
+  // builds, so we mount ComponentSetPage at the story's route with
+  // `_sb_component_set` instead. `_sb_embed` keeps the canvas chrome off.
+  params.set('_sb_embed', '')
+  params.set('_sb_component_set', '')
   if (layout) params.set('layout', layout)
   if (selected) params.set('selected', selected)
   if (density) params.set('density', density)
   if (theme) params.set('theme', theme)
-  return `${base}/_storyboard/canvas/isolate-set?${params}`
+  const route = story._route || `/components/${storyId}`
+  return `${base}${route}?${params}`
 }
 
 export default forwardRef(function StorySetWidget({ id: widgetId, props, onUpdate, resizable }, ref) {
