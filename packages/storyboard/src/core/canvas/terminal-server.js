@@ -1433,7 +1433,7 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
                     )
                     if (paneContent.includes(readinessSignal)) runPostStartup('signal')
                   } catch { /* empty */ }
-                }, 3000)
+                }, 500)
                 // Soft-bind at 30s so the widget is addressable for hub/live
                 // messages even if Copilot's TUI is still warming up. The poller
                 // keeps running and will fire postStartup once .ready appears.
