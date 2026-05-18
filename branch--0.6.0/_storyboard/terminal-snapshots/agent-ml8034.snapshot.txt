@@ -1,0 +1,558 @@
+SESSION: agent-ml8034 | ash-owl
+CANVAS:  storyboard-demo
+BRANCH:  0.6.0
+TIME:    2026-05-17T15:57:57.253Z
+
+================================================================================
+SCREEN
+================================================================================
+
+  └ Toggle remote control from GitHub web and mobile
+
+
+! Failed to load 2 skills. Run /skills for more details.
+
+
+● Selected custom agent: terminal-agent
+
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically approved.
+
+
+❯ [System] Your terminal identity has been set. widgetId=agent-ml8034 displayName=ash-owl canvasId=storyboard-demo
+  configFile=.storyboard/terminals/agent-ml8034.json serverUrl=http://localhost:1236 — this is a configuration
+  step, no response needed.
+
+
+● I’ll load the current canvas and terminal context so future requests use the right widget state.
+
+
+● Read .selectedwidgets.json
+  │ .storyboard/.selectedwidgets.json
+  └ 30 lines read
+
+
+● Read agent-ml8034.json
+  │ .storyboard/terminals/agent-ml8034.json
+  └ 44 lines read
+
+
+● Context loaded. No connected widgets are currently attached; the selected widget is this agent on
+  storyboard-demo.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯  
+
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ / commands · ? help                                                                      terminal-agent · GPT-5.5
+
+================================================================================
+SCROLLBACK (last 60s)
+================================================================================
+
+[?996n[>c[>q  ╭─╮╭─╮
+  ╰─╯╰─╯  Copilot v1.0.49-1 uses AI.
+  █ ▘▝ █  Check for mistakes.
+   ▔▔▔▔
+
+
+● Tip: /remote
+  └ Toggle remote control from GitHub web and mobile
+
+
+! Failed to load 2 skills. Run /skills for more details.
+
+
+● Selected custom agent: terminal-agent
+
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+────────────────────────────────────────────────────────────────────────────────
+❯  
+
+
+────────────────────────────────────────────────────────────────────────────────
+ / commands · ? help                                   terminal-agent · GPT-5.5
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ╭─╮╭─╮
+  ╰─╯╰─╯  Copilot v1.0.49-1 uses AI.
+  █ ▘▝ █  Check for mistakes.
+   ▔▔▔▔
+
+
+● Tip: /remote
+  └ Toggle remote control from GitHub web and mobile
+
+
+! Failed to load 2 skills. Run /skills for more details.
+
+
+● Selected custom agent: terminal-agent
+
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+────────────────────────────────────────────────────────────────────────────────
+❯  
+
+
+────────────────────────────────────────────────────────────────────────────────
+ / commands · ? help                                   terminal-agent · GPT-5.5
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ╭─╮╭─╮
+  ╰─╯╰─╯  Copilot v1.0.49-1 uses AI.
+  █ ▘▝ █  Check for mistakes.
+   ▔▔▔▔● Tip: /remote
+  └ Toggle remote control from GitHub web and mobile! Failed to load 2 skills. Run /skills for more details.● Selected custom agent: terminal-agent ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                                                      terminal-agent · GPT-5.5
+
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                                                      terminal-agent · GPT-5.5  ╭─╮╭─╮
+  ╰─╯╰─╯  Copilot v1.0.49-1 uses AI.
+  █ ▘▝ █  Check for mistakes.
+   ▔▔▔▔
+
+
+● Tip: /remote
+  └ Toggle remote control from GitHub web and mobile
+
+
+! Failed to load 2 skills. Run /skills for more details.
+
+
+● Selected custom agent: terminal-agent
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                                                      terminal-agent · GPT-5.5
+  ╭─╮╭─╮
+  ╰─╯╰─╯  Copilot v1.0.49-1 uses AI.
+  █ ▘▝ █  Check for mistakes.
+   ▔▔▔▔
+
+
+● Tip: /remote
+  └ Toggle remote control from GitHub web and mobile
+
+
+! Failed to load 2 skills. Run /skills for more details.
+
+
+● Selected custom agent: terminal-agent
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                                                      terminal-agent · GPT-5.5
+┃ ❯ /allow-all on                                                                                                  ┃
+┃
+┃
+┃
+┃❯ /allow-all on  @ files · # issues                                                                       terminal-agent · GPT-5.5  ╭─╮╭─╮
+  ╰─╯╰─╯  Copilot v1.0.49-1 uses AI.
+  █ ▘▝ █  Check for mistakes.
+   ▔▔▔▔
+
+
+● Tip: /remote
+  └ Toggle remote control from GitHub web and mobile
+
+
+! Failed to load 2 skills. Run /skills for more details.
+
+
+● Selected custom agent: terminal-agent
+
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically approved.
+
+
+❯ [System] Your terminal identity has been set. widgetId=agent-ml8034 displayName=ash-owl canvasId=storyboard-demo   configFile=.storyboard/terminals/agent-ml8034.json serverUrl=http://localhost:1236 — this is a configuration       step, no response needed.                                                                                        
+
+
+
+
+
+
+
+
+
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── ● Thinking esc cancel                                                                    terminal-agent · GPT-5.5
+ ◉ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◎ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ○ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◎ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◉ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ● Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◉ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◎ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ○ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◎ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◉ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ● Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◉ Thinking esc cancel                                                                    terminal-agent · GPT-5.5  ╭─╮╭─╮
+  ╰─╯╰─╯  Copilot v1.0.49-1 uses AI.
+  █ ▘▝ █  Check for mistakes.
+   ▔▔▔▔
+
+
+● Tip: /remote
+  └ Toggle remote control from GitHub web and mobile
+
+
+! Failed to load 2 skills. Run /skills for more details.
+
+
+● Selected custom agent: terminal-agent
+
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically approved.
+
+
+❯ [System] Your terminal identity has been set. widgetId=agent-ml8034 displayName=ash-owl canvasId=storyboard-demo   configFile=.storyboard/terminals/agent-ml8034.json serverUrl=http://localhost:1236 — this is a configuration       step, no response needed.                                                                                        
+
+
+
+
+
+
+
+
+
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── ◎ Thinking esc cancel                                                                    terminal-agent · GPT-5.5
+  ╭─╮╭─╮
+  ╰─╯╰─╯  Copilot v1.0.49-1 uses AI.
+  █ ▘▝ █  Check for mistakes.
+   ▔▔▔▔
+
+
+● Tip: /remote
+  └ Toggle remote control from GitHub web and mobile
+
+
+! Failed to load 2 skills. Run /skills for more details.
+
+
+● Selected custom agent: terminal-agent
+
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically approved.
+
+
+❯ [System] Your terminal identity has been set. widgetId=agent-ml8034 displayName=ash-owl canvasId=storyboard-demo   configFile=.storyboard/terminals/agent-ml8034.json serverUrl=http://localhost:1236 — this is a configuration       step, no response needed.                                                                                        
+
+
+
+
+
+
+
+
+
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── ◎ Thinking esc cancel                                                                    terminal-agent · GPT-5.5
+ ◉ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ● Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◉ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◎ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ○ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◎ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◉ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ● Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◉ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◎ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ○ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◎ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◉ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ● Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◉ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◎ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ○ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◎ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◉ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ● Thinking esc cancel                                                                    terminal-agent · GPT-5.5● I’ll● I’ll load th ◉ Thinking esc cancel                                                                    terminal-agent · GPT-5.5● I’ll load the cur● I’ll load the current● I’ll load the current canvas ◎ Thinking esc cancel                                                                    terminal-agent · GPT-5.5● I’ll load the current canvas and● I’ll load the current canvas and terminal ○ Thinking esc cancel                                                                    terminal-agent · GPT-5.5● I’ll load the current canvas and terminal context so f● I’ll load the current canvas and terminal context so future● I’ll load the current canvas and terminal context so future reque ◎ Thinking esc cancel                                                                    terminal-agent · GPT-5.5● I’ll load the current canvas and terminal context so future requests  ╭─╮╭─╮
+  ╰─╯╰─╯  Copilot v1.0.49-1 uses AI.
+  █ ▘▝ █  Check for mistakes.
+   ▔▔▔▔
+
+
+● Tip: /remote
+  └ Toggle remote control from GitHub web and mobile
+
+
+! Failed to load 2 skills. Run /skills for more details.
+
+
+● Selected custom agent: terminal-agent
+
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically approved.
+
+
+❯ [System] Your terminal identity has been set. widgetId=agent-ml8034 displayName=ash-owl canvasId=storyboard-demo   configFile=.storyboard/terminals/agent-ml8034.json serverUrl=http://localhost:1236 — this is a configuration       step, no response needed.                                                                                        
+
+● I’ll load the current canvas and terminal context so future requests use the right widget stdget state.
+
+
+
+
+
+
+
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── ◉ Thinking esc cancel                                                                    terminal-agent · GPT-5.5
+ ● Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◉ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◎ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ○ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◎ Thinking esc cancel                                                                    terminal-agent · GPT-5.5 ◎ Loading context esc cancel                                                             terminal-agent · GPT-5.5 ● Loading context esc cancel                                                             terminal-agent · GPT-5.5 ◉ Loading context esc cancel                                                             terminal-agent · GPT-5.5 ◎ Loading context esc cancel                                                             terminal-agent · GPT-5.5 ○ Loading context esc cancel                                                             terminal-agent · GPT-5.5  ╰─╯╰─╯  Copilot v1.0.49-1 uses AI.
+  █ ▘▝ █  Check for mistakes.
+   ▔▔▔▔
+● Tip: /remote
+  └ Toggle remote control from GitHub web and mobile
+! Failed to load 2 skills. Run /skills for more details.
+● Selected custom agent: terminal-agent
+● All permissions are now enabled. Tool, path, and URL requests will be automatically approved.
+❯ [System] Your terminal identity has been set. widgetId=agent-ml8034 displayName=ash-owl canvasId=storyboard-demo   configFile=.storyboard/terminals/agent-ml8034.json serverUrl=http://localhost:1236 — this is a configuration       step, no response needed.                                                                                        ● I’ll load the current canvas and terminal context so future requests use the right widget state.
+○ Read .selectedwidgets.json
+  └ .storyboard/.selectedwidgets.json○ Read agent-ml8034.json
+  └ .storyboard/terminals/agent-ml8034.json ◎ Loading context esc cancel                                                             terminal-agent · GPT-5.5   ▔▔▔▔
+
+
+● Tip: /remote
+  └ Toggle remote control from GitHub web and mobile
+
+
+! Failed to load 2 skills. Run /skills for more details.
+● Selected custom agent: terminal-agent
+● All permissions are now enabled. Tool, path, and URL requests will be automatically approved.
+❯ [System] Your terminal identity has been set. widgetId=agent-ml8034 displayName=ash-owl canvasId=storyboard-demo   configFile=.storyboard/terminals/agent-ml8034.json serverUrl=http://localhost:1236 — this is a configuration       step, no response needed.                                                                                        
+
+● I’ll load the current canvas and terminal context so future requests use the right widget state.
+● Read .selectedwidgets.json
+  │ .storyboard/.selectedwidgets.json
+  └ 30 lines read
+● Read agent-ml8034.json
+  │ .storyboard/terminals/agent-ml8034.json
+  └ 44 lines read ◉ Loading context esc cancel                                                             terminal-agent · GPT-5.5 ● Loading context esc cancel                                                             terminal-agent · GPT-5.5 ◉ Loading context esc cancel                                                             terminal-agent · GPT-5.5   ▔▔▔▔
+
+
+● Tip: /remote
+  └ Toggle remote control from GitHub web and mobile
+
+
+! Failed to load 2 skills. Run /skills for more details.
+
+
+● Selected custom agent: terminal-agent
+
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically approved.
+
+
+❯ [System] Your terminal identity has been set. widgetId=agent-ml8034 displayName=ash-owl canvasId=storyboard-demo   configFile=.storyboard/terminals/agent-ml8034.json serverUrl=http://localhost:1236 — this is a configuration       step, no response needed.                                                                                        
+
+● I’ll load the current canvas and terminal context so future requests use the right widget state.
+
+
+● Read .selectedwidgets.json
+  │ .storyboard/.selectedwidgets.json
+  └ 30 lines read
+
+
+● Read agent-ml8034.json
+  │ .storyboard/terminals/agent-ml8034.json
+  └ 44 lines read
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── ◉ Loading context esc cancel                                                             terminal-agent · GPT-5.5
+   ▔▔▔▔
+
+
+● Tip: /remote
+  └ Toggle remote control from GitHub web and mobile
+
+
+! Failed to load 2 skills. Run /skills for more details.
+
+
+● Selected custom agent: terminal-agent
+
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically approved.
+
+
+❯ [System] Your terminal identity has been set. widgetId=agent-ml8034 displayName=ash-owl canvasId=storyboard-demo   configFile=.storyboard/terminals/agent-ml8034.json serverUrl=http://localhost:1236 — this is a configuration       step, no response needed.                                                                                        
+
+● I’ll load the current canvas and terminal context so future requests use the right widget state.
+
+
+● Read .selectedwidgets.json
+  │ .storyboard/.selectedwidgets.json
+  └ 30 lines read
+
+
+● Read agent-ml8034.json
+  │ .storyboard/terminals/agent-ml8034.json
+  └ 44 lines read
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── ◉ Loading context esc cancel                                                             terminal-agent · GPT-5.5
+ ◎ Loading context esc cancel                                                             terminal-agent · GPT-5.5 ○ Loading context esc cancel                                                             terminal-agent · GPT-5.5 ◎ Loading context esc cancel                                                             terminal-agent · GPT-5.5 ◉ Loading context esc cancel                                                             terminal-agent · GPT-5.5 ● Loading context esc cancel                                                             terminal-agent · GPT-5.5 ◉ Loading context esc cancel                                                             terminal-agent · GPT-5.5 ◎ Loading context esc cancel                                                             terminal-agent · GPT-5.5 ○ Loading context esc cancel                                                             terminal-agent · GPT-5.5 ◎ Loading context esc cancel                                                             terminal-agent · GPT-5.5● Tip: /remote
+  └ Toggle remote control from GitHub web and mobile
+! Failed to load 2 skills. Run /skills for more details.● Selected custom agent: terminal-agent● All permissions are now enabled. Tool, path, and URL requests will be automatically approved.❯ [System] Your terminal identity has been set. widgetId=agent-ml8034 displayName=ash-owl canvasId=storyboard-demo   configFile=.storyboard/terminals/agent-ml8034.json serverUrl=http://localhost:1236 — this is a configuration       step, no response needed.                                                                                        
+
+● I’ll load the current canvas and terminal context so future requests use the right widget state.● Read .selectedwidgets.json
+  │ .storyboard/.selectedwidgets.json
+  └ 30 lines read
+
+
+● Read agent-ml8034.json
+  │ .storyboard/terminals/agent-ml8034.json
+  └ 44 lines read
+
+
+● Cont ● Loading context esc cancel                                                             terminal-agent · GPT-5.5● Context loaded. N● Context loaded. No connecte ◉ Loading context esc cancel                                                             terminal-agent · GPT-5.5● Context loaded. No connected widget● Context loaded. No connected widgets are cur ◎ Loading context esc cancel                                                             terminal-agent · GPT-5.5● Context loaded. No connected widgets are currently at ○ Loading context esc cancel                                                             terminal-agent · GPT-5.5● Context loaded. No connected widgets are currently attachetache● Context loaded. No connected widgets are currently attachetached; the sele ◎ Loading context esc cancel                                                             terminal-agent · GPT-5.5● Context loaded. No connected widgets are currently attachetached; the selected widget is this ag / commands · ? help                                                                      terminal-agent · GPT-5.5  └ Toggle remote control from GitHub web and mobile
+! Failed to load 2 skills. Run /skills for more details.
+● Selected custom agent: terminal-agent
+● All permissions are now enabled. Tool, path, and URL requests will be automatically approved.
+❯ [System] Your terminal identity has been set. widgetId=agent-ml8034 displayName=ash-owl canvasId=storyboard-demo   configFile=.storyboard/terminals/agent-ml8034.json serverUrl=http://localhost:1236 — this is a configuration       step, no response needed.                                                                                        ● I’ll load the current canvas and terminal context so future requests use the right widget state.
+● Read .selectedwidgets.json
+  │ .storyboard/.selectedwidgets.json
+  └ 30 lines read
+● Read agent-ml8034.json
+  │ .storyboard/terminals/agent-ml8034.json
+  └ 44 lines read
+● Context loaded. No connected widgets are currently attached; the selected widget is this agent on
+  storyboard-demo.  └ Toggle remote control from GitHub web and mobile
+
+
+! Failed to load 2 skills. Run /skills for more details.
+
+
+● Selected custom agent: terminal-agent
+
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically approved.
+
+
+❯ [System] Your terminal identity has been set. widgetId=agent-ml8034 displayName=ash-owl canvasId=storyboard-demo   configFile=.storyboard/terminals/agent-ml8034.json serverUrl=http://localhost:1236 — this is a configuration       step, no response needed.                                                                                        
+
+● I’ll load the current canvas and terminal context so future requests use the right widget state.
+
+
+● Read .selectedwidgets.json
+  │ .storyboard/.selectedwidgets.json
+  └ 30 lines read
+
+
+● Read agent-ml8034.json
+  │ .storyboard/terminals/agent-ml8034.json
+  └ 44 lines read
+
+
+● Context loaded. No connected widgets are currently attached; the selected widget is this agent on
+  storyboard-demo.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                                                      terminal-agent · GPT-5.5
+  └ Toggle remote control from GitHub web and mobile
+
+
+! Failed to load 2 skills. Run /skills for more details.
+
+
+● Selected custom agent: terminal-agent
+
+
+● All permissions are now enabled. Tool, path, and URL requests will be automatically approved.
+
+
+❯ [System] Your terminal identity has been set. widgetId=agent-ml8034 displayName=ash-owl canvasId=storyboard-demo   configFile=.storyboard/terminals/agent-ml8034.json serverUrl=http://localhost:1236 — this is a configuration       step, no response needed.                                                                                        
+
+● I’ll load the current canvas and terminal context so future requests use the right widget state.
+
+
+● Read .selectedwidgets.json
+  │ .storyboard/.selectedwidgets.json
+  └ 30 lines read
+
+
+● Read agent-ml8034.json
+  │ .storyboard/terminals/agent-ml8034.json
+  └ 44 lines read
+
+
+● Context loaded. No connected widgets are currently attached; the selected widget is this agent on
+  storyboard-demo.
+
+ ~/workspace/storyboard-core/worktrees/0.6.0 [⎇ 0.6.0*%]
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────❯  
+
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── / commands · ? help                                                                      terminal-agent · GPT-5.5
