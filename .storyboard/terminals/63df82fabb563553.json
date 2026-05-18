@@ -85,15 +85,15 @@
     }
   ],
   "viewport": {
-    "centerX": 2844,
-    "centerY": 9030,
-    "zoom": 45,
+    "centerX": 9000,
+    "centerY": 5255,
+    "zoom": 10,
     "topLeftX": 0,
-    "topLeftY": 7560,
-    "width": 5689,
-    "height": 2940
+    "topLeftY": 200,
+    "width": 18000,
+    "height": 10110
   },
-  "updatedAt": "2026-05-17T11:05:37.465Z",
+  "updatedAt": "2026-05-18T11:34:04.274Z",
   "widgetId": "agent-wve8pt",
   "canvasId": "storyboard-demo",
   "canvasFile": null,
@@ -110,6 +110,6 @@
     "updatedAt": "2026-05-16T22:35:34.075Z"
   },
   "lastAgentSessionId": "d8fbb60d-99c4-4237-9f11-931751521051",
-  "lastAgentSessionAt": "2026-05-17T08:43:15.343Z",
+  "lastAgentSessionAt": "2026-05-18T10:36:21.518Z",
   "lastAgentId": "copilot"
 }

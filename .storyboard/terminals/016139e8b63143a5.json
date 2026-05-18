@@ -10,8 +10,8 @@
       "props": {
         "storyId": "chart-set",
         "layout": "auto",
-        "width": 2562,
-        "height": 933,
+        "width": 2568,
+        "height": 936,
         "selected": "BubbleChart"
       },
       "position": {
@@ -75,15 +75,15 @@
     }
   ],
   "viewport": {
-    "centerX": 2844,
-    "centerY": 9030,
-    "zoom": 45,
+    "centerX": 9000,
+    "centerY": 5255,
+    "zoom": 10,
     "topLeftX": 0,
-    "topLeftY": 7560,
-    "width": 5689,
-    "height": 2940
+    "topLeftY": 200,
+    "width": 18000,
+    "height": 10110
   },
-  "updatedAt": "2026-05-17T11:05:37.497Z",
+  "updatedAt": "2026-05-18T11:34:04.506Z",
   "widgetId": "agent-1ultxz",
   "canvasId": "storyboard-demo",
   "canvasFile": null,
@@ -95,6 +95,6 @@
   "deleted": false,
   "agentStatus": null,
   "lastAgentSessionId": "7bcb927d-310d-4ab8-b330-c394d18d012c",
-  "lastAgentSessionAt": "2026-05-17T08:43:16.513Z",
+  "lastAgentSessionAt": "2026-05-18T10:36:19.655Z",
   "lastAgentId": "copilot"
 }

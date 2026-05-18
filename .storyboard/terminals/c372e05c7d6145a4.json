@@ -74,15 +74,15 @@
     }
   ],
   "viewport": {
-    "centerX": 2844,
-    "centerY": 9030,
-    "zoom": 45,
+    "centerX": 9000,
+    "centerY": 5255,
+    "zoom": 10,
     "topLeftX": 0,
-    "topLeftY": 7560,
-    "width": 5689,
-    "height": 2940
+    "topLeftY": 200,
+    "width": 18000,
+    "height": 10110
   },
-  "updatedAt": "2026-05-17T11:05:37.435Z",
+  "updatedAt": "2026-05-18T11:34:01.885Z",
   "widgetId": "agent-hrmw40",
   "canvasId": "storyboard-demo",
   "canvasFile": null,
@@ -99,7 +99,7 @@
     "updatedAt": "2026-05-16T22:34:37.325Z"
   },
   "lastAgentSessionId": "7e722d02-fb5b-48bf-a33b-668f52ad3e74",
-  "lastAgentSessionAt": "2026-05-17T08:43:11.430Z",
+  "lastAgentSessionAt": "2026-05-18T10:36:19.532Z",
   "lastAgentId": "copilot",
   "latestOutput": {
     "content": "Refreshed data (same shape, new values):\n\nworkspace: nimbus-forge / Acropolis\nuser: Idris Okafor (@idris)\nsummary:\n  cpu     42.50%  17/40  vCPUs\n  memory  71.25%  285/400 GiB\n  storage 33.75%  2.7/8  TiB\ntimeRange: Last hour, 22:42 → 23:42\n\nmetrics.object.json regenerated:\n  cpu     ~380–460 count (wobble)\n  memory  215 → 285 GiB (monotonic rise)\n  storage ~2.7 TiB flat (tiny wobble)\nTimestamps: 22:44 → 23:42, 2-min step, 30 samples.\n\nSame useFlowData/useObject paths as before — no changes for Scaffold or Charts.",

@@ -55,7 +55,7 @@
       "id": "prototype-fgokz2",
       "type": "prototype",
       "props": {
-        "src": "/StartupSignup#signup.oauthProvider=google&signup.oauthIdentifier=danielfosco%40gmail.com&signup.oauthPassword=12345&signup.oauthStep=idle&signup.fullName=Danielfosco&signup.email=danielfosco%40gmail.com&signup.company=Gmail&signup.password=oauth-no-password&signup.agreedToTerms=true&signup.status=success",
+        "src": "/StartupSignup#signup.oauthProvider=github&signup.oauthIdentifier=dfosco&signup.oauthPassword=123445&signup.oauthStep=idle&signup.fullName=Dfosco&signup.email=dfosco%40users.noreply.github.com&signup.company=dfosco-org&signup.password=oauth-no-password&signup.agreedToTerms=true&signup.status=success",
         "width": 1172.1428652523323,
         "height": 566.071438681241,
         "zoom": 50,
@@ -132,15 +132,15 @@
     }
   ],
   "viewport": {
-    "centerX": 2844,
-    "centerY": 9030,
-    "zoom": 45,
+    "centerX": 9000,
+    "centerY": 5255,
+    "zoom": 10,
     "topLeftX": 0,
-    "topLeftY": 7560,
-    "width": 5689,
-    "height": 2940
+    "topLeftY": 200,
+    "width": 18000,
+    "height": 10110
   },
-  "updatedAt": "2026-05-17T11:05:34.077Z",
+  "updatedAt": "2026-05-18T11:33:14.543Z",
   "widgetId": "agent-l3iu9a",
   "canvasId": "storyboard-demo",
   "canvasFile": null,
@@ -152,6 +152,6 @@
   "deleted": false,
   "agentStatus": null,
   "lastAgentSessionId": "fcd72686-dd01-4d05-b0fa-7c45e5ce11de",
-  "lastAgentSessionAt": "2026-05-17T08:43:07.785Z",
+  "lastAgentSessionAt": "2026-05-18T10:36:14.876Z",
   "lastAgentId": "copilot"
 }

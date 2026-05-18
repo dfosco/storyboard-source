@@ -68,15 +68,15 @@
     }
   ],
   "viewport": {
-    "centerX": 2844,
-    "centerY": 9030,
-    "zoom": 45,
+    "centerX": 9000,
+    "centerY": 5255,
+    "zoom": 10,
     "topLeftX": 0,
-    "topLeftY": 7560,
-    "width": 5689,
-    "height": 2940
+    "topLeftY": 200,
+    "width": 18000,
+    "height": 10110
   },
-  "updatedAt": "2026-05-17T11:05:35.390Z",
+  "updatedAt": "2026-05-18T11:33:14.732Z",
   "widgetId": "agent-v2qu53",
   "canvasId": "storyboard-demo",
   "canvasFile": null,
@@ -88,7 +88,7 @@
   "deleted": false,
   "agentStatus": null,
   "lastAgentSessionId": "734ed3c1-8608-4954-8d11-044ef64128c9",
-  "lastAgentSessionAt": "2026-05-17T08:43:09.861Z",
+  "lastAgentSessionAt": "2026-05-18T10:36:17.073Z",
   "lastAgentId": "copilot",
   "latestOutput": {
     "content": "Wired Google + GitHub OAuth buttons in SignupForm.jsx. Clicking either: sets signup.oauthProvider, sets signup.status='oauth' (button shows 'Connecting…' + disables both), pre-fills signup.fullName/email/company/password/agreedToTerms with provider-specific mock values, then after 900ms sets signup.status='success' to render the success card. Success card now mentions which provider was used when oauth flow ran.",

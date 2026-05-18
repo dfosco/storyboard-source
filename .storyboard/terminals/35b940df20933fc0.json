@@ -1,0 +1,44 @@
+{
+  "widgetProps": {
+    "prettyName": "ash-owl"
+  },
+  "displayName": "ash-owl",
+  "connectedWidgets": [],
+  "messaging": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_f82b0d80df",
+      "role": "member",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_f82b0d80df.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 2495,
+    "centerY": 9442,
+    "zoom": 87,
+    "topLeftX": 1024,
+    "topLeftY": 8682,
+    "width": 2943,
+    "height": 1521
+  },
+  "updatedAt": "2026-05-17T15:57:11.510Z",
+  "widgetId": "agent-ml8034",
+  "canvasId": "storyboard-demo",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null,
+  "lastAgentSessionId": "729736f9-bccd-4589-b979-87d49d2881bb",
+  "lastAgentSessionAt": "2026-05-17T15:57:11.510Z",
+  "lastAgentId": "copilot"
+}

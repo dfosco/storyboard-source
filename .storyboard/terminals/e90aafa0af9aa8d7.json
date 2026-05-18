@@ -79,15 +79,15 @@
     }
   ],
   "viewport": {
-    "centerX": 2844,
-    "centerY": 9030,
-    "zoom": 45,
+    "centerX": 9000,
+    "centerY": 5255,
+    "zoom": 10,
     "topLeftX": 0,
-    "topLeftY": 7560,
-    "width": 5689,
-    "height": 2940
+    "topLeftY": 200,
+    "width": 18000,
+    "height": 10110
   },
-  "updatedAt": "2026-05-17T11:05:35.222Z",
+  "updatedAt": "2026-05-18T11:33:14.658Z",
   "widgetId": "agent-bqdgr2",
   "canvasId": "storyboard-demo",
   "canvasFile": null,
@@ -99,7 +99,7 @@
   "deleted": false,
   "agentStatus": null,
   "lastAgentSessionId": "d7d07a18-2650-4903-bc35-6e39bb979a52",
-  "lastAgentSessionAt": "2026-05-17T08:43:07.966Z",
+  "lastAgentSessionAt": "2026-05-18T10:36:14.952Z",
   "lastAgentId": "copilot",
   "latestOutput": {
     "content": "Toned Branding.jsx down: removed all gradients and blurred orbs. Solid indigo-950 background, white body text for contrast, indigo-500 used only on small accents (logo tile, check bullets, avatar). Testimonial is a quiet bordered card. Same content/layout, calmer feel.",

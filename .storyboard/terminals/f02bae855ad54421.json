@@ -74,15 +74,15 @@
     }
   ],
   "viewport": {
-    "centerX": 2844,
-    "centerY": 9030,
-    "zoom": 45,
+    "centerX": 9000,
+    "centerY": 5255,
+    "zoom": 10,
     "topLeftX": 0,
-    "topLeftY": 7560,
-    "width": 5689,
-    "height": 2940
+    "topLeftY": 200,
+    "width": 18000,
+    "height": 10110
   },
-  "updatedAt": "2026-05-17T11:05:37.391Z",
+  "updatedAt": "2026-05-18T11:34:01.780Z",
   "widgetId": "agent-aiagsz",
   "canvasId": "storyboard-demo",
   "canvasFile": null,
@@ -99,7 +99,7 @@
     "updatedAt": "2026-05-16T22:35:06.333Z"
   },
   "lastAgentSessionId": "0db3e8be-c768-4425-8033-e01c2ee1d5aa",
-  "lastAgentSessionAt": "2026-05-17T08:43:11.275Z",
+  "lastAgentSessionAt": "2026-05-18T10:36:17.783Z",
   "lastAgentId": "copilot",
   "latestOutput": {
     "content": "Built src/prototypes/main.folder/SiloDashboard/index.jsx (215 lines, Tailwind only, no Box/sx/CSS modules).\n\nStructure:\n- Outer min-h-screen bg-neutral-950 text-neutral-200 flex font-mono\n- Left w-56 sidebar: mint logo, SILO/maze-war labels, JUMP TO CMD+K pill, Docs link, MAZE-WAR section header, nav items (Projects/Images/Utilization[active text-emerald-400 bg-neutral-900]/Silo Access) using ICONS map\n- Right column: h-12 header (Utilization breadcrumb + Silo/user pills), main p-8 gap-6 with GraphIcon page title, 3 summary cards (SummaryCard with stacked emerald/violet bar from provisioned/quota), toolbar (SyncIcon + All projects select / Last hour select + date range), then ChartPanel slots.\n\nData wiring (use these paths):\n- useFlowData('summary') -> {cpu,memory,storage} each {label,percent,provisioned,quota,unit}\n- useFlowData('user'), useFlowData('workspace'), useFlowData('nav'), useFlowData('timeRange')\n- All have ?? fallbacks; SummaryCard guards null data.\n\nFor Charts (already integrated in this version): SiloChart accepts { data: [{t,v}], unit }. Wrap inside ChartPanel(title, data, unit). useObject('metrics','cpu'|'memory'|'storage').\n\nIcons used (all verified in primer-octicons.json): FileIcon, ImageIcon, ZapIcon, KeyIcon, GraphIcon, SyncIcon, CalendarIcon, PersonIcon, InfoIcon.",

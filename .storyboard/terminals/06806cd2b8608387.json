@@ -1,0 +1,44 @@
+{
+  "widgetProps": {
+    "prettyName": "ember-kite"
+  },
+  "displayName": "ember-kite",
+  "connectedWidgets": [],
+  "messaging": null,
+  "role": "member",
+  "hubs": [
+    {
+      "hubId": "hub_5ca70b20af",
+      "role": "member",
+      "goal": null,
+      "peers": [],
+      "messageLogPath": ".storyboard/messages/channels/hub--storyboard-demo--hub_5ca70b20af.jsonl",
+      "activeConversationId": null,
+      "hasHubToken": false,
+      "pendingMessageToken": null
+    }
+  ],
+  "viewport": {
+    "centerX": 9000,
+    "centerY": 5255,
+    "zoom": 10,
+    "topLeftX": 0,
+    "topLeftY": 200,
+    "width": 18000,
+    "height": 10110
+  },
+  "updatedAt": "2026-05-18T11:34:07.170Z",
+  "widgetId": "agent-19nvzy",
+  "canvasId": "storyboard-demo",
+  "canvasFile": null,
+  "branch": "0.6.0",
+  "worktree": "0.6.0",
+  "devDomain": "storyboard",
+  "serverUrl": "http://localhost:1236",
+  "workingDirectory": "/Users/dfosco/workspace/storyboard-core/worktrees/0.6.0",
+  "deleted": false,
+  "agentStatus": null,
+  "lastAgentSessionId": "46d63eaa-c9d7-4123-974d-8e79c26d1282",
+  "lastAgentSessionAt": "2026-05-18T10:36:39.659Z",
+  "lastAgentId": "copilot"
+}

@@ -79,15 +79,15 @@
     }
   ],
   "viewport": {
-    "centerX": 2844,
-    "centerY": 9030,
-    "zoom": 45,
+    "centerX": 9000,
+    "centerY": 5255,
+    "zoom": 10,
     "topLeftX": 0,
-    "topLeftY": 7560,
-    "width": 5689,
-    "height": 2940
+    "topLeftY": 200,
+    "width": 18000,
+    "height": 10110
   },
-  "updatedAt": "2026-05-17T11:05:36.169Z",
+  "updatedAt": "2026-05-18T11:33:59.872Z",
   "widgetId": "agent-2lkxmx",
   "canvasId": "storyboard-demo",
   "canvasFile": null,
@@ -104,7 +104,7 @@
     "updatedAt": "2026-05-16T22:14:34.355Z"
   },
   "lastAgentSessionId": "b3987208-9098-459a-8927-8b71b32d5367",
-  "lastAgentSessionAt": "2026-05-17T08:43:10.105Z",
+  "lastAgentSessionAt": "2026-05-18T10:36:17.264Z",
   "lastAgentId": "copilot",
   "latestOutput": {
     "content": "Fixed: auto-advance now only fires when handleSubmit set userSubmittedRef.current=true. Visiting ?flow=submitting no longer writes signup.status=success into the URL hash, so flow switches work again. NOTE: if user already has signup.status in their URL hash from earlier testing, they must clear the hash for flow tiles to drive state.",
