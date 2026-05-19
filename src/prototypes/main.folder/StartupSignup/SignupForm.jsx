@@ -426,7 +426,7 @@ export default function SignupForm() {
             <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--bgColor-success-emphasis)] text-2xl text-[var(--fgColor-onEmphasis)]">
               ✓
             </div>
-            <h2 className="text-xl font-semibold text-foreground">You're in!</h2>
+            <h2 className="text-xl font-semibold text-foreground">You&apos;re in!</h2>
             <p className="mt-1 text-sm text-muted-foreground">
               Welcome aboard, {safeName || 'friend'}.{' '}
               {oauthProvider
