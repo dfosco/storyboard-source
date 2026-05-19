@@ -99,6 +99,7 @@ const STARRED_KEY = 'sb-workspace-starred'
 const RECENT_KEY = 'sb-workspace-recent'
 const MAX_RECENT = 30
 const GROUP_BY_FOLDERS_KEY = 'sb-workspace-group-folders'
+const COLLAPSED_FOLDERS_KEY = 'sb-workspace-collapsed-folders'
 
 function readJSON(key, fallback) {
   try { return JSON.parse(localStorage.getItem(key)) || fallback }
@@ -1240,7 +1241,13 @@ function WorkspaceImpl({
   const [groupByFolders, setGroupByFolders] = useState(() => {
     try { return localStorage.getItem(GROUP_BY_FOLDERS_KEY) !== 'false' } catch { return true }
   })
-  const [collapsedFolders, setCollapsedFolders] = useState(new Set())
+  const [collapsedFolders, setCollapsedFolders] = useState(() => {
+    try {
+      const raw = localStorage.getItem(COLLAPSED_FOLDERS_KEY)
+      const parsed = raw ? JSON.parse(raw) : []
+      return new Set(Array.isArray(parsed) ? parsed : [])
+    } catch { return new Set() }
+  })
   const [hiddenItems, setHiddenItems] = useState(new Set())
   const { starred, toggle: toggleStar } = useStarred()
   const recentIds = useRecent()
@@ -1314,6 +1321,7 @@ function WorkspaceImpl({
       const next = new Set(prev)
       if (next.has(dirName)) next.delete(dirName)
       else next.add(dirName)
+      try { localStorage.setItem(COLLAPSED_FOLDERS_KEY, JSON.stringify([...next])) } catch { /* empty */ }
       return next
     })
   }, [])
