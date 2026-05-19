@@ -1,5 +1,11 @@
 # @dfosco/storyboard
 
+## 0.6.0-beta.20
+
+### Patch Changes
+
+-   Persist workspace folder collapsed state across page reloads.
+
 ## 0.6.0-beta.19
 
 ### Patch Changes
