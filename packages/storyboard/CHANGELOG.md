@@ -1,5 +1,11 @@
 # @dfosco/storyboard
 
+## 0.6.0-beta.21
+
+### Patch Changes
+
+-   Escape apostrophe in SignupForm to fix CI lint (no runtime change).
+
 ## 0.6.0-beta.20
 
 ### Patch Changes
