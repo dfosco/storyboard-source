@@ -1,5 +1,8 @@
 ![Storyboard](.readme/header-2.png)
 
+> [!NOTE]  
+> This README is a work in progress 
+
 Storyboard is an experimental prototyping system with an interactive canvas that can render agents, prototypes, components, markdown and more.
 
 <!-- Screenshot of storyboard with agents connected -->
@@ -19,8 +22,6 @@ Add GitHub issues, Figma files and other embeds next to your work
 
 <!-- lots of medias -->
 
-### Getting Started
-
 <!-- storyboard-launcher-download:start -->
 ## Storyboard Launcher (Desktop App)
 
@@ -34,11 +35,7 @@ sudo xattr -rd com.apple.quarantine '/Applications/Storyboard Launcher.app'
 
 ## Getting Started
 
-Storyboard is a static React application that only requires GitHub Pages to be deployed. It can also be easily deployed on other hosts like Vercel and Netlify, but GH Pages has the benefit of authentication being tied to your repository.
-
-To get started:
-
-1. Fork the example repository
+1. Fork the starter repository at https://github.com/dfosco/storyboard-example
 2. Enable GitHub Pages deployment (or set your external host)
 3. Add your team as collaborators on the repository so they can see the GitHub Pages deployment (in case you set it to private)
 
@@ -49,48 +46,21 @@ That's it! You can now start creating and pushing prototypes.
 Clone your fork of Storyboard, then:
 
 ```bash
-npm run setup
-```
-
-This will install dependencies, set up the [Caddy](https://caddyserver.com/) reverse proxy, and check for the GitHub CLI. After setup, start the dev server:
-
-```bash
-npx storyboard dev
-```
-
-Your storyboard instance will be available at `http://storyboard.localhost/storyboard/`.
-
-When working in a [git worktree](https://git-scm.com/docs/git-worktree), each worktree gets its own URL:
-
-```bash
-cd .worktrees/my-feature
-npx storyboard dev
-# → http://storyboard.localhost/branch--my-feature/storyboard/
-```
-
-#### Upgrading from a pre-0.5.0 version
-
-0.5.0 introduces a single per-machine **Storyboard Runtime** daemon that owns Vite child processes, port allocation, and the Caddy proxy's route table. If you're coming from `main` or any pre-0.5.0 release, run `reset` once to clear out the old per-repo Vite processes and Caddyfile-reload routes that the runtime can't see:
-
-```bash
-npx storyboard reset      # only needed when upgrading
 npm install
-npx storyboard setup
-npx storyboard dev
+npm run setup
+npm run dev
 ```
 
-`reset` SIGTERMs the old daemon (if any), stops orphan `vite` processes, clears Caddy's route table, and respawns a fresh runtime. It does not touch `node_modules`, `storyboard.config.json`, or any of your canvas state.
+Your storyboard instance will be available at `http://localhost:1234` (or another port if this is unavailable) 
 
-#### Storyboard CLI
+### Storyboard CLI
 
 The `storyboard` CLI (alias: `sb`) wraps all dev tooling. Run via `npx`:
 
 | Command | Description |
 |---------|-------------|
 | `npx storyboard dev` | Start runtime daemon + Caddy proxy + Vite dev server (alias for `run`) |
-| `npx storyboard reset` | Nuke daemon + Caddy routes + orphan vites; respawn fresh (use after upgrades) |
-| `npx storyboard setup` | Install deps, Caddy, start proxy |
-| `npx storyboard proxy` | Regenerate proxy config + reload |
+| `npx storyboard setup` | Install dependencies |
 | `npx storyboard update:version [version]` | Update storyboard packages to latest (or specific version) |
 
 ## Creating prototypes
@@ -263,6 +233,7 @@ This will import the data from `teamNavigation.object.json` in your prototype re
 
 Different prototypes can have objects with the same name too, and will match their local copies.
 
+<!-- 
 Let's dive deeper.
 
 #### Using object hooks
@@ -270,6 +241,8 @@ Let's dive deeper.
 #### Using flow hooks
 
 #### Using record hooks
+
+ -->
 
 #### Downsides to this approach
 
@@ -279,6 +252,7 @@ The code of your prototype will handle data in a way that's fundamentally differ
 
 Storyboard prototypes are meant to be used as a reference for **layout and interaction**, and designers and developers are expected to adjust the code to match production needs. It is a prototype after all, please don't copy and paste the code 😅
 
+<!-- 
 ### Design Tools
 
 #### Create
@@ -307,3 +281,5 @@ Storyboard prototypes are meant to be used as a reference for **layout and inter
 #### Figma Embeds
 
 #### Local Components
+
+ -->
