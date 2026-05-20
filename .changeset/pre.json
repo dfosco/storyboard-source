@@ -1,0 +1,10 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "@dfosco/storyboard": "0.6.0"
+  },
+  "changesets": [
+    "changeset-mpdbynuz"
+  ]
+}

@@ -1,98 +1,110 @@
 # @dfosco/storyboard
 
+## 0.6.1-beta.0
+
+### Patch Changes
+
+-   Fix slow / mis-attributed hub communication for hot-pool agent widgets.
+
+    Warm-handoff Copilot/Claude/Codex TUIs inherited `STORYBOARD_WIDGET_ID=pool-<…>` from the pool process, so messages sent via `storyboard messages send` / `storyboard hub send` / `storyboard terminal send` were signed by the pool id instead of the widget. The leader couldn't recognize replies from its hub members and would retry until enough messages eventually came through, making coordination feel slow.
+
+    -   New `resolveWidgetId()` helper: explicit flag → `STORYBOARD_WIDGET_ID_OVERRIDE` → non-pool `STORYBOARD_WIDGET_ID` → lookup in `.storyboard/terminal-sessions.json` keyed by tmux session name → fallback.
+    -   Wired into `messages`, `hub`, and `terminal` CLI commands.
+    -   Warm-handoff path in `terminal-server.js` now also writes the per-widget `.env.sh` and updates the tmux session env so newly forked shells start with the correct id.
+
 ## 0.6.0
 
 First stable release of the unified `@dfosco/storyboard` package — consolidates the prior split packages, ships the Storyboard Runtime daemon, and lands Copilot / Claude Code / Codex CLI auto-resume.
 
 ### Highlights
 
-- **Unified `@dfosco/storyboard` package** — single import replaces the old `@dfosco/storyboard-core`, `-react`, `-react-primer`, `-react-reshaped`, `-tiny-canvas` split.
-- **Storyboard Runtime daemon** — long-lived process owning the Caddy proxy + per-worktree Vite servers; auto-respawns on package version mismatch; new `sb reset` command for hard recovery.
-- **Auto-resuming agent widgets** — Copilot CLI, Claude Code, and Codex CLI all capture and resume per-widget session ids across `tmux kill-server`, dev-server restarts, and reboots.
-- **`terminal.config.json` + `.storyboard/scaffold/`** — dedicated, optional config file for terminal/agent settings with library defaults always available as a living reference.
-- **Canvas polish** — Alt+Click connector creation, auto-calculated anchors, URL-back fullscreen/split state for all widgets, immersive fullscreen for story/component-set, persistent workspace folder state.
-- **CLI polish** — `sb dev` alias of `sb run`, animated setup, mascot, quiet-by-default output, SIGINT→SIGTERM→SIGKILL shutdown.
+-   **Unified `@dfosco/storyboard` package** — single import replaces the old `@dfosco/storyboard-core`, `-react`, `-react-primer`, `-react-reshaped`, `-tiny-canvas` split.
+-   **Storyboard Runtime daemon** — long-lived process owning the Caddy proxy + per-worktree Vite servers; auto-respawns on package version mismatch; new `sb reset` command for hard recovery.
+-   **Auto-resuming agent widgets** — Copilot CLI, Claude Code, and Codex CLI all capture and resume per-widget session ids across `tmux kill-server`, dev-server restarts, and reboots.
+-   **`terminal.config.json` + `.storyboard/scaffold/`** — dedicated, optional config file for terminal/agent settings with library defaults always available as a living reference.
+-   **Canvas polish** — Alt+Click connector creation, auto-calculated anchors, URL-back fullscreen/split state for all widgets, immersive fullscreen for story/component-set, persistent workspace folder state.
+-   **CLI polish** — `sb dev` alias of `sb run`, animated setup, mascot, quiet-by-default output, SIGINT→SIGTERM→SIGKILL shutdown.
 
 ### 0.6.0 release timeline
 
-- **0.6.0-beta.0** — Keep app shell mounted across HMR + internal navigation; restore multi-worktree dev servers without the daemon; bias `src/{prototypes,components,templates}` toward Fast Refresh.
-- **0.6.0-beta.1** — Auto-resume Copilot agent sessions per widget; drop `--strictPort` (Vite rolls forward); replace `devDomain` with `repository.name`; add fixed-port config.
-- **0.6.0-beta.2** — Claude Code session capture + auto-resume; lint fix unblocking CI.
-- **0.6.0-beta.3** — Codex CLI session capture + auto-resume.
-- **0.6.0-beta.4** — Scaffold ships `canvas.agents` defaults with auto-resume wiring.
-- **0.6.0-beta.5** — Introduce `terminal.config.json` + auto-generated `.storyboard/scaffold/`; graceful resume fallback to fresh session.
-- **0.6.0-beta.6** — Install Copilot CLI via curl script; animated setup spinners; hot-pool config under `terminal.config.json`.
-- **0.6.0-beta.7** — Restore `Environment loaded` readiness echo; storyboard mascot in `sb dev`; `.user.json` marker drives version-drift setup.
-- **0.6.0-beta.8** — Don't `clear` after env source — it was wiping the readiness signal.
-- **0.6.0-beta.9** — Kill 30s context-delivery delay for Copilot agents.
-- **0.6.0-beta.10** — Copilot: use native `--allow-all` flag + `sessionStart` hook for true readiness.
-- **0.6.0-beta.11** — Restore `/allow-all on` postStartup for Copilot, gated on the `sessionStart` hook touching `.ready`.
-- **0.6.0-beta.12** — Codex: switch to `--dangerously-bypass-approvals-and-sandbox` (replacing removed `--full-auto`).
-- **0.6.0-beta.13** — Quiet dev CLI by default; mascot animation with per-frame delays + `--no-buddy`; silence esbuild shutdown noise.
-- **0.6.0-beta.14** — Always attempt agent `--resume` when sessionId is stored; SIGINT→SIGTERM→SIGKILL escalation on Ctrl+C.
-- **0.6.0-beta.15** — Auto-recover from Vite Outdated Optimize Dep 504s; 3-step fallback chain for agent resume.
-- **0.6.0-beta.16** — Remove unused CLI imports/helpers (lint fix).
-- **0.6.0-beta.17** — Component-set semantics for canvas widgets; HMR for story iframes; collision-cascade `--gap`; SignupForm polish.
-- **0.6.0-beta.18** — Prototype-embed subtracts header height so fixed elements aren't clipped; hide single-flow dropdown in Viewfinder.
-- **0.6.0-beta.19** — Route component-set widgets through the real story page (fixes white iframe in deployed branches); tighten `.ready` polling to 500ms.
-- **0.6.0-beta.20** — Persist workspace collapsed-folder state to localStorage.
-- **0.6.0-beta.21** — Escape apostrophe in SignupForm to satisfy CI lint.
+-   **0.6.0-beta.0** — Keep app shell mounted across HMR + internal navigation; restore multi-worktree dev servers without the daemon; bias `src/{prototypes,components,templates}` toward Fast Refresh.
+-   **0.6.0-beta.1** — Auto-resume Copilot agent sessions per widget; drop `--strictPort` (Vite rolls forward); replace `devDomain` with `repository.name`; add fixed-port config.
+-   **0.6.0-beta.2** — Claude Code session capture + auto-resume; lint fix unblocking CI.
+-   **0.6.0-beta.3** — Codex CLI session capture + auto-resume.
+-   **0.6.0-beta.4** — Scaffold ships `canvas.agents` defaults with auto-resume wiring.
+-   **0.6.0-beta.5** — Introduce `terminal.config.json` + auto-generated `.storyboard/scaffold/`; graceful resume fallback to fresh session.
+-   **0.6.0-beta.6** — Install Copilot CLI via curl script; animated setup spinners; hot-pool config under `terminal.config.json`.
+-   **0.6.0-beta.7** — Restore `Environment loaded` readiness echo; storyboard mascot in `sb dev`; `.user.json` marker drives version-drift setup.
+-   **0.6.0-beta.8** — Don't `clear` after env source — it was wiping the readiness signal.
+-   **0.6.0-beta.9** — Kill 30s context-delivery delay for Copilot agents.
+-   **0.6.0-beta.10** — Copilot: use native `--allow-all` flag + `sessionStart` hook for true readiness.
+-   **0.6.0-beta.11** — Restore `/allow-all on` postStartup for Copilot, gated on the `sessionStart` hook touching `.ready`.
+-   **0.6.0-beta.12** — Codex: switch to `--dangerously-bypass-approvals-and-sandbox` (replacing removed `--full-auto`).
+-   **0.6.0-beta.13** — Quiet dev CLI by default; mascot animation with per-frame delays + `--no-buddy`; silence esbuild shutdown noise.
+-   **0.6.0-beta.14** — Always attempt agent `--resume` when sessionId is stored; SIGINT→SIGTERM→SIGKILL escalation on Ctrl+C.
+-   **0.6.0-beta.15** — Auto-recover from Vite Outdated Optimize Dep 504s; 3-step fallback chain for agent resume.
+-   **0.6.0-beta.16** — Remove unused CLI imports/helpers (lint fix).
+-   **0.6.0-beta.17** — Component-set semantics for canvas widgets; HMR for story iframes; collision-cascade `--gap`; SignupForm polish.
+-   **0.6.0-beta.18** — Prototype-embed subtracts header height so fixed elements aren't clipped; hide single-flow dropdown in Viewfinder.
+-   **0.6.0-beta.19** — Route component-set widgets through the real story page (fixes white iframe in deployed branches); tighten `.ready` polling to 500ms.
+-   **0.6.0-beta.20** — Persist workspace collapsed-folder state to localStorage.
+-   **0.6.0-beta.21** — Escape apostrophe in SignupForm to satisfy CI lint.
 
 ### 0.5.0 release timeline
 
-- **0.5.0-alpha.0** — Initial unified `@dfosco/storyboard` package consolidating prior split packages, with CLI scaffolding and worktree skill polish.
-- **0.5.0-alpha.1** — Pre-bundle CJS-only deps for consumer apps; add messaging bus research + migrate-0.5.0 skill.
-- **0.5.0-alpha.2** — Hub/broadcast auto-propagation for agent connectors; hot pool zombie prevention; tmux color hardening.
-- **0.5.0-alpha.3** — CI release-publish made dual-compatible (unified + legacy) and `update:version` detects the unified package.
-- **0.5.0-alpha.4** — Scaffold `.agents/` skills/roles into client projects; fix command palette dialog context error.
-- **0.5.0-alpha.5** — Replace `Command.Dialog` with custom wrapper and externalize all stateful stores.
-- **0.5.0-alpha.6** — Auto-focus command palette input on open; add `sb pull` and `sb publish` CLI commands.
-- **0.5.0-alpha.7** — Replace Unicode glyphs with ASCII in terminal welcome menu.
-- **0.5.0-alpha.8** — Scaffold agent files to `.github/agents/` for Copilot CLI compatibility.
-- **0.5.0-alpha.9** — Fix BranchBar pushing entire page down via sticky portal.
-- **0.5.0-alpha.10** — Unified artifact creation API; durable hub message delivery; Alt+Click connector creation; zoom-aware resize handles.
-- **0.5.0-alpha.11** — Connector anchor selection avoids widget overlap; lint cleanup.
-- **0.5.0-alpha.12** — Auto-calculate connector anchors in API/CLI and tune curve scaling for close widgets.
-- **0.5.0-alpha.13** — Add `/primer` export with `ThemeSync` component.
-- **0.5.0-alpha.14** — Workspace: add sidebar visibility props, hide All artifacts by default, add component icon.
-- **0.5.0-alpha.15** — Detect when already inside the requested worktree; improve VS Code CLI symlink fallback.
-- **0.5.0-alpha.16** — Prevent NaN width/height in prototype widgets; add error boundaries for prototype isolation.
-- **0.5.0-alpha.17** — Forward all `storyboard.config.json` keys to runtime; add palette `See deployed branch` command.
-- **0.5.0-alpha.18** — Inspector falls back to plaintext for unregistered languages.
-- **0.5.0-alpha.19** — Surface Vite startup failures in `sb dev` instead of silently hanging.
-- **0.5.0-alpha.20** — Storyboard Runtime daemon (M2–M7): single-process proxy + dev-server orchestrator with hot pool, per-devDomain origin enforcement, and HMR fixes.
-- **0.5.0-alpha.21** — Markdown caret preservation in split panes; CreateDialog scrolling; agent status persistence; collab-bar visual polish.
-- **0.5.0-alpha.22** — Internal release (no user-facing commits).
-- **0.5.0-alpha.23** — Agents: add `working` status + agents-list API; prevent stale-state writes from wiping batched widgets.
-- **0.5.0-alpha.24** — Allow explicit `devDomain: storyboard`; add session/messaging/hook/canvas architecture docs.
-- **0.5.0-alpha.25** — Add `sb proxy restart` to kill+respawn the runtime daemon; CLI/store architecture docs.
-- **0.5.0-alpha.26** — Runtime: correct daemon binary path; clean up legacy setup proxy calls.
-- **0.5.0-alpha.27** — Runtime: set Origin header on Caddy admin API requests (fixes 403s).
-- **0.5.0-alpha.28** — Runtime: auto-respawn daemon on package version mismatch.
-- **0.5.0-alpha.29** — Toolbar `sync` icon for cycle-layout; BranchBar default dev-domain label.
-- **0.5.0-alpha.30** — URL-back fullscreen/split-screen state for all widgets; refresh-frame action; simplified component menu; many small polish fixes.
-- **0.5.0-beta.31** — Viewfinder refreshes workspace list on canvas add/remove.
-- **0.5.0-beta.32** — Lint: include `packages/storyboard/bin` in node globals scope.
-- **0.5.0-beta.33** — Exclude tilde-prefixed canvas files from routes and listings.
-- **0.5.0-beta.34** — Plug hot-pool acquire leak in canvas widget POST/batch endpoints; zoom-in when centering on agent.
-- **0.5.0-beta.35** — Normalize PromptWidget agent status; don't re-add locally deleted widgets via HMR merge.
-- **0.5.0-beta.36** — Await `document.fonts.ready` before ghostty atlas init (terminal fix).
-- **0.5.0-beta.37** — Hide Hub role selector when terminal/agent has no peers; source `.zshrc` when spawning agents.
-- **0.5.0-beta.38** — Alt+expand opens immersive fullscreen for story/storyset; precise inspector jump-to-line.
-- **0.5.0-beta.39** — Live route map + immediate navigate for canvas rename/duplicate.
-- **0.5.0-beta.40** — Resolve 2 lint errors blocking publish CI.
-- **0.5.0-beta.41** — Instant pan when jumping to ready agent; inspector scrolls restored selection into view.
-- **0.5.0-beta.42** — Trim the runtime daemon (HotPool/lease TTL removed); add `sb reset`; `sb dev` alias of `sb run`; force version-check on acquire.
-- **0.5.0-beta.43** — Tilde-prefixed canvases & prototypes are dev-only (not hidden).
-- **0.5.0-beta.44** — Wire template/recipe picker into Viewfinder + Command Palette.
-- **0.5.0-beta.45** — Artifact form: basic/advanced field tiers with collapsible toggle.
-- **0.5.0-beta.46** — Runtime: preserve daemon on version mismatch when servers are active.
-- **0.5.0-beta.47** — Hide branch switcher in local dev; guard against `@primer/react` Octicon imports.
-- **0.5.0-beta.48** — PromptWidget reconciles agent status from server when WS event is missed.
-- **0.5.0-beta.49** — PromptWidget handles nested canvas ids; falls back to widgetId-only status lookup.
-- **0.5.0-beta.50** — Vite: pre-bundle `@primer/react` + `react-compiler-runtime`.
-- **0.5.0-beta.51** — Data plugin: ignore `worktrees/`; surface Vite stderr in `sb dev`.
-- **0.5.0-beta.52** — Vite: pre-bundle `react-is` for `@primer/react` named imports.
+-   **0.5.0-alpha.0** — Initial unified `@dfosco/storyboard` package consolidating prior split packages, with CLI scaffolding and worktree skill polish.
+-   **0.5.0-alpha.1** — Pre-bundle CJS-only deps for consumer apps; add messaging bus research + migrate-0.5.0 skill.
+-   **0.5.0-alpha.2** — Hub/broadcast auto-propagation for agent connectors; hot pool zombie prevention; tmux color hardening.
+-   **0.5.0-alpha.3** — CI release-publish made dual-compatible (unified + legacy) and `update:version` detects the unified package.
+-   **0.5.0-alpha.4** — Scaffold `.agents/` skills/roles into client projects; fix command palette dialog context error.
+-   **0.5.0-alpha.5** — Replace `Command.Dialog` with custom wrapper and externalize all stateful stores.
+-   **0.5.0-alpha.6** — Auto-focus command palette input on open; add `sb pull` and `sb publish` CLI commands.
+-   **0.5.0-alpha.7** — Replace Unicode glyphs with ASCII in terminal welcome menu.
+-   **0.5.0-alpha.8** — Scaffold agent files to `.github/agents/` for Copilot CLI compatibility.
+-   **0.5.0-alpha.9** — Fix BranchBar pushing entire page down via sticky portal.
+-   **0.5.0-alpha.10** — Unified artifact creation API; durable hub message delivery; Alt+Click connector creation; zoom-aware resize handles.
+-   **0.5.0-alpha.11** — Connector anchor selection avoids widget overlap; lint cleanup.
+-   **0.5.0-alpha.12** — Auto-calculate connector anchors in API/CLI and tune curve scaling for close widgets.
+-   **0.5.0-alpha.13** — Add `/primer` export with `ThemeSync` component.
+-   **0.5.0-alpha.14** — Workspace: add sidebar visibility props, hide All artifacts by default, add component icon.
+-   **0.5.0-alpha.15** — Detect when already inside the requested worktree; improve VS Code CLI symlink fallback.
+-   **0.5.0-alpha.16** — Prevent NaN width/height in prototype widgets; add error boundaries for prototype isolation.
+-   **0.5.0-alpha.17** — Forward all `storyboard.config.json` keys to runtime; add palette `See deployed branch` command.
+-   **0.5.0-alpha.18** — Inspector falls back to plaintext for unregistered languages.
+-   **0.5.0-alpha.19** — Surface Vite startup failures in `sb dev` instead of silently hanging.
+-   **0.5.0-alpha.20** — Storyboard Runtime daemon (M2–M7): single-process proxy + dev-server orchestrator with hot pool, per-devDomain origin enforcement, and HMR fixes.
+-   **0.5.0-alpha.21** — Markdown caret preservation in split panes; CreateDialog scrolling; agent status persistence; collab-bar visual polish.
+-   **0.5.0-alpha.22** — Internal release (no user-facing commits).
+-   **0.5.0-alpha.23** — Agents: add `working` status + agents-list API; prevent stale-state writes from wiping batched widgets.
+-   **0.5.0-alpha.24** — Allow explicit `devDomain: storyboard`; add session/messaging/hook/canvas architecture docs.
+-   **0.5.0-alpha.25** — Add `sb proxy restart` to kill+respawn the runtime daemon; CLI/store architecture docs.
+-   **0.5.0-alpha.26** — Runtime: correct daemon binary path; clean up legacy setup proxy calls.
+-   **0.5.0-alpha.27** — Runtime: set Origin header on Caddy admin API requests (fixes 403s).
+-   **0.5.0-alpha.28** — Runtime: auto-respawn daemon on package version mismatch.
+-   **0.5.0-alpha.29** — Toolbar `sync` icon for cycle-layout; BranchBar default dev-domain label.
+-   **0.5.0-alpha.30** — URL-back fullscreen/split-screen state for all widgets; refresh-frame action; simplified component menu; many small polish fixes.
+-   **0.5.0-beta.31** — Viewfinder refreshes workspace list on canvas add/remove.
+-   **0.5.0-beta.32** — Lint: include `packages/storyboard/bin` in node globals scope.
+-   **0.5.0-beta.33** — Exclude tilde-prefixed canvas files from routes and listings.
+-   **0.5.0-beta.34** — Plug hot-pool acquire leak in canvas widget POST/batch endpoints; zoom-in when centering on agent.
+-   **0.5.0-beta.35** — Normalize PromptWidget agent status; don't re-add locally deleted widgets via HMR merge.
+-   **0.5.0-beta.36** — Await `document.fonts.ready` before ghostty atlas init (terminal fix).
+-   **0.5.0-beta.37** — Hide Hub role selector when terminal/agent has no peers; source `.zshrc` when spawning agents.
+-   **0.5.0-beta.38** — Alt+expand opens immersive fullscreen for story/storyset; precise inspector jump-to-line.
+-   **0.5.0-beta.39** — Live route map + immediate navigate for canvas rename/duplicate.
+-   **0.5.0-beta.40** — Resolve 2 lint errors blocking publish CI.
+-   **0.5.0-beta.41** — Instant pan when jumping to ready agent; inspector scrolls restored selection into view.
+-   **0.5.0-beta.42** — Trim the runtime daemon (HotPool/lease TTL removed); add `sb reset`; `sb dev` alias of `sb run`; force version-check on acquire.
+-   **0.5.0-beta.43** — Tilde-prefixed canvases & prototypes are dev-only (not hidden).
+-   **0.5.0-beta.44** — Wire template/recipe picker into Viewfinder + Command Palette.
+-   **0.5.0-beta.45** — Artifact form: basic/advanced field tiers with collapsible toggle.
+-   **0.5.0-beta.46** — Runtime: preserve daemon on version mismatch when servers are active.
+-   **0.5.0-beta.47** — Hide branch switcher in local dev; guard against `@primer/react` Octicon imports.
+-   **0.5.0-beta.48** — PromptWidget reconciles agent status from server when WS event is missed.
+-   **0.5.0-beta.49** — PromptWidget handles nested canvas ids; falls back to widgetId-only status lookup.
+-   **0.5.0-beta.50** — Vite: pre-bundle `@primer/react` + `react-compiler-runtime`.
+-   **0.5.0-beta.51** — Data plugin: ignore `worktrees/`; surface Vite stderr in `sb dev`.
+-   **0.5.0-beta.52** — Vite: pre-bundle `react-is` for `@primer/react` named imports.
 
 ## 0.6.0-beta.21
 
