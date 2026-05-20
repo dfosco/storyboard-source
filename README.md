@@ -2,8 +2,8 @@
 
 Storyboard is an experimental prototyping system with an interactive canvas that can render agents, prototypes, components, markdown and more.
 
-<< Screenshot of storyboard with agents connected>>
-<< Screenshot of storyboard with multiple protypes>>
+<!-- Screenshot of storyboard with agents connected -->
+<!-- Screenshot of storyboard with multiple protypes -->
 
 Storyboard is fully open-source, and can be deployed by your team with any static host (GitHub Page, Vercel, Netlify, etc). Some optional features require a GitHub account to be used.
 
