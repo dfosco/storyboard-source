@@ -10,6 +10,7 @@
  */
 
 import { getServerUrl } from './serverUrl.js'
+import { resolveWidgetId } from './resolveWidgetId.js'
 
 function parseArgs(args) {
   const result = { positional: [], flags: {} }
@@ -35,7 +36,7 @@ export async function handleSend() {
   const { positional, flags } = parseArgs(args)
 
   // Resolve sender identity from env
-  const senderWidgetId = process.env.STORYBOARD_WIDGET_ID || null
+  const senderWidgetId = resolveWidgetId(null)
 
   let targetWidgetId = null
   let message = null
@@ -115,7 +116,7 @@ export async function handleOutput() {
   const args = process.argv.slice(4) // skip: node, sb, terminal, output
   const { flags } = parseArgs(args)
 
-  const widgetId = flags.widget || process.env.STORYBOARD_WIDGET_ID
+  const widgetId = resolveWidgetId(flags.widget)
   const summary = flags.summary || ''
   const content = flags.content || ''
 
@@ -184,7 +185,7 @@ export async function handleRead() {
   const args = process.argv.slice(4) // skip: node, sb, terminal, read
   const { positional, flags } = parseArgs(args)
 
-  const widgetId = positional[0] || process.env.STORYBOARD_WIDGET_ID
+  const widgetId = positional[0] || resolveWidgetId(null)
   if (!widgetId) {
     console.error('Usage: storyboard terminal read <widgetId> [--length N]')
     process.exit(1)

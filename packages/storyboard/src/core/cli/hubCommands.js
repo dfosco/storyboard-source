@@ -16,6 +16,7 @@
  */
 
 import { parseSimpleArgs, jsonOut, die, post, get } from './cliHelpers.js'
+import { resolveWidgetId } from './resolveWidgetId.js'
 
 const sub = process.argv[3]
 const sub2 = process.argv[4]
@@ -84,7 +85,7 @@ async function run() {
 
     case 'goal': {
       const hubId = flags.hub
-      const senderId = flags.sender || process.env.STORYBOARD_WIDGET_ID
+      const senderId = resolveWidgetId(flags.sender)
       const goal = flags.goal || positional[0]
       if (!hubId || !senderId || !goal) die('--hub, --sender, and --goal are required')
       const data = await post(`${MESSAGING_BASE}/hub/goal`, { hubId, senderId, goal })
@@ -94,7 +95,7 @@ async function run() {
 
     case 'send': {
       const hubId = flags.hub
-      const senderId = flags.sender || process.env.STORYBOARD_WIDGET_ID
+      const senderId = resolveWidgetId(flags.sender)
       const body = flags.body || positional[0]
       if (!hubId || !senderId || !body) die('--hub, --sender, and --body are required')
       const payload = { hubId, senderId, body }
@@ -111,7 +112,7 @@ async function run() {
     case 'respond': {
       const hubId = flags.hub
       const messageId = flags.message
-      const widgetId = flags.widget || process.env.STORYBOARD_WIDGET_ID
+      const widgetId = resolveWidgetId(flags.widget)
       const body = flags.body || positional[0]
       if (!hubId || !messageId || !widgetId || !body) die('--hub, --message, --widget, and --body are required')
       const data = await post(`${MESSAGING_BASE}/hub/respond`, { hubId, messageId, widgetId, body })
@@ -160,13 +161,13 @@ async function run() {
 
       if (sub2 === 'start') {
         const hubId = flags.hub
-        const senderId = flags.sender || process.env.STORYBOARD_WIDGET_ID
+        const senderId = resolveWidgetId(flags.sender)
         if (!hubId || !senderId) die('--hub and --sender are required')
         const data = await post(`${MESSAGING_BASE}/conversation/start`, { hubId, senderId })
         jsonOut(data)
       } else if (sub2 === 'finality') {
         const hubId = flags.hub
-        const senderId = flags.sender || process.env.STORYBOARD_WIDGET_ID
+        const senderId = resolveWidgetId(flags.sender)
         const summary = flags.summary || ''
         const successor = flags.successor || null
         if (!hubId || !senderId) die('--hub and --sender are required')
@@ -174,7 +175,7 @@ async function run() {
         jsonOut(data)
       } else if (sub2 === 'reopen') {
         const hubId = flags.hub
-        const senderId = flags.sender || process.env.STORYBOARD_WIDGET_ID
+        const senderId = resolveWidgetId(flags.sender)
         const conversationId = flags.conversation
         const body = flags.body || ''
         if (!hubId || !senderId || !conversationId) die('--hub, --sender, and --conversation are required')

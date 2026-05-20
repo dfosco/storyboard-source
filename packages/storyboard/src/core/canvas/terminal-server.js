@@ -1194,6 +1194,34 @@ function handleConnection(ws, widgetId, canvasId, prettyName, widgetStartupComma
         // via a watcher on the pool-keyed capture file — copilot's env is
         // pool-keyed for the life of the warm process, so the user-level
         // hook always writes there, not to the widget-keyed file.)
+        //
+        // Also write the per-widget env.sh here so any future shells in
+        // the session inherit the correct STORYBOARD_WIDGET_ID. Note: the
+        // already-running TUI's process env is fixed at fork time and
+        // still carries the pool id; CLI commands that need the real
+        // widget id should use resolveWidgetId() (which falls back to
+        // .storyboard/terminal-sessions.json keyed by tmux session name).
+        try {
+          const envParts = [
+            `export STORYBOARD_WIDGET_ID="${widgetId}"`,
+            `export STORYBOARD_CANVAS_ID="${canvasId}"`,
+            `export STORYBOARD_BRANCH="${branch}"`,
+            `export STORYBOARD_SERVER_URL="${serverUrl}"`,
+            `export STORYBOARD_PROJECT_ROOT="${cwd}"`,
+          ]
+          const envScriptDir = join(cwd, '.storyboard', 'terminals')
+          mkdirSync(envScriptDir, { recursive: true })
+          writeFileSync(join(envScriptDir, `${widgetId}.env.sh`), envParts.join('\n') + '\n')
+          // Update tmux session env so newly-forked shells see the right id.
+          execSync(
+            `tmux set-environment -t "${tmuxName}" STORYBOARD_WIDGET_ID "${widgetId}" 2>/dev/null`,
+            { stdio: 'ignore' }
+          )
+          execSync(
+            `tmux set-environment -t "${tmuxName}" STORYBOARD_CANVAS_ID "${canvasId}" 2>/dev/null`,
+            { stdio: 'ignore' }
+          )
+        } catch { /* empty */ }
         const postStartup = resolvedAgentCfg?.postStartup || null
         // ── H2 fix: skip readiness re-poll on warm handoff.
         // The hot pool already verified readiness when it warmed this session.

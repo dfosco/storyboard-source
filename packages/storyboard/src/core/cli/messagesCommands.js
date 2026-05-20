@@ -9,6 +9,7 @@
  */
 
 import { parseSimpleArgs, jsonOut, die, post, get } from './cliHelpers.js'
+import { resolveWidgetId } from './resolveWidgetId.js'
 
 const sub = process.argv[3]
 const MESSAGING_BASE = '/_storyboard/messages'
@@ -47,7 +48,7 @@ async function run() {
     case 'publish': {
       const channel = flags.channel
       const type = flags.type
-      const senderId = flags.sender || process.env.STORYBOARD_WIDGET_ID
+      const senderId = resolveWidgetId(flags.sender)
       if (!channel) die('--channel is required')
 
       const payload = { channel, senderId }
@@ -67,7 +68,7 @@ async function run() {
     case 'send': {
       const channel = flags.channel
       const type = flags.type
-      const senderId = flags.sender || process.env.STORYBOARD_WIDGET_ID
+      const senderId = resolveWidgetId(flags.sender)
       if (!channel) die('--channel is required')
 
       const payload = { channel, senderId }
